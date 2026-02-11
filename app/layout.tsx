@@ -1,3 +1,10 @@
+/*
+ * @Author: LiZhiWei
+ * @Date: 2026-02-11 10:56:25
+ * @LastEditors: LiZhiWei
+ * @LastEditTime: 2026-02-11 14:25:09
+ * @Description: 
+ */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -16,12 +23,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "My Blog",
-    template: "%s | My Blog",
+    default: "Lee",
+    template: "%s | Lee",
   },
   description: "A personal blog built with Next.js and Supabase",
   openGraph: {
-    title: "My Blog",
+    title: "Lee",
     description: "A personal blog built with Next.js and Supabase",
     type: "website",
   },
