@@ -6,6 +6,7 @@ import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -84,7 +85,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <article className="container mx-auto px-4 md:px-6">
+        <article className="mx-auto w-full max-w-[1440px] px-4 md:px-6">
           {/* Header */}
           <div className="mx-auto max-w-2xl pt-12 pb-8 md:pt-20 md:pb-12">
             <Link
@@ -136,11 +137,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Cover Image */}
           {post.cover_image && (
             <div className="mx-auto max-w-3xl mb-10">
-              <img
-                src={post.cover_image}
-                alt={post.title}
-                className="w-full rounded-lg object-cover max-h-[480px]"
-              />
+              <div className="relative h-[240px] sm:h-[360px] md:h-[480px] overflow-hidden rounded-lg">
+                <Image
+                  src={post.cover_image}
+                  alt={post.title}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  className="object-cover"
+                />
+              </div>
             </div>
           )}
 

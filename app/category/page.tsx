@@ -31,7 +31,7 @@ export default async function CategoriesPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-10">
+      <main className="flex-1 mx-auto w-full max-w-[1440px] px-4 md:px-6 py-10">
         <div className="mb-10 max-w-2xl">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">所有分类</h1>
           <p className="text-muted-foreground">

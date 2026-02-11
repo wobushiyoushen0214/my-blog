@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { generateSlug } from "@/lib/utils";
 import { compressImageToMaxBytes } from "@/lib/image";
@@ -307,11 +308,23 @@ export function PostForm({ postId }: PostFormProps) {
 
             {(coverLocalPreviewUrl || form.cover_image) && (
               <div className="space-y-2">
-                <img
-                  src={coverLocalPreviewUrl || form.cover_image}
-                  alt="封面预览"
-                  className="h-28 w-full rounded-md object-cover border"
-                />
+                {(() => {
+                  const src = coverLocalPreviewUrl || form.cover_image;
+                  const unoptimized =
+                    src.startsWith("blob:") || src.startsWith("data:");
+                  return (
+                    <div className="relative h-28 w-full overflow-hidden rounded-md border">
+                      <Image
+                        src={src}
+                        alt="封面预览"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 768px"
+                        className="object-cover"
+                        unoptimized={unoptimized}
+                      />
+                    </div>
+                  );
+                })()}
                 <div className="flex items-center gap-2">
                   <Button
                     type="button"

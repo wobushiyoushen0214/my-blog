@@ -5,6 +5,7 @@ import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const PAGE_SIZE = 9;
 
@@ -60,7 +61,7 @@ export default async function HomePage({
       <main className="flex-1">
         {/* Hero + Featured */}
         {page === 1 && (
-          <div className="container mx-auto px-4 md:px-6 pt-16 pb-12 md:pt-24 md:pb-16">
+          <div className="mx-auto w-full max-w-[1440px] px-4 md:px-6 pt-16 pb-12 md:pt-24 md:pb-16">
             <div className="max-w-2xl mb-16">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.15] mb-4">
                 个人博客
@@ -77,10 +78,13 @@ export default async function HomePage({
               >
                 <div className="relative aspect-video overflow-hidden rounded-xl">
                   {featuredPost.cover_image ? (
-                    <img
+                    <Image
                       src={featuredPost.cover_image}
                       alt={featuredPost.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                      fill
+                      priority
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                     />
                   ) : (
                     <div className="h-full w-full bg-muted" />
@@ -122,7 +126,7 @@ export default async function HomePage({
         {page === 1 && <div className="border-t border-border/40" />}
 
         {/* Post Grid */}
-        <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
+        <div className="mx-auto w-full max-w-[1440px] px-4 md:px-6 py-12 md:py-16">
           <div className="flex items-baseline justify-between mb-10">
             <h2 className="text-lg font-semibold">
               {page === 1 ? "所有文章" : `第 ${page} 页`}
@@ -143,12 +147,12 @@ export default async function HomePage({
           ) : postsWithTags.length === 0 ? (
             <div className="text-center py-24">
               <p className="text-muted-foreground mb-4">暂无文章</p>
-              <Link
+              {/* <Link
                 href="/admin"
                 className="text-sm text-primary hover:underline"
               >
                 前往管理后台
-              </Link>
+              </Link> */}
             </div>
           ) : null}
 

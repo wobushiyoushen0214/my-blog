@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import type { Post, Tag } from "@/lib/types";
 
@@ -14,10 +15,12 @@ export function PostCard({ post }: PostCardProps) {
     >
       {post.cover_image && (
         <div className="relative aspect-video overflow-hidden rounded-lg mb-3">
-          <img
+          <Image
             src={post.cover_image}
             alt={post.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
           />
         </div>
       )}

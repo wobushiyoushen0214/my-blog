@@ -38,7 +38,7 @@ export default async function SearchPage({
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-12 md:py-20">
+      <main className="flex-1 mx-auto w-full max-w-[1440px] px-4 md:px-6 py-12 md:py-20">
         <div className="max-w-lg mx-auto mb-12">
           <h1 className="text-2xl font-bold mb-6 text-center">搜索</h1>
           <form className="relative">

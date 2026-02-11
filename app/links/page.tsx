@@ -14,7 +14,7 @@ export default async function LinksPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-12 md:py-16">
+      <main className="flex-1 mx-auto w-full max-w-[1440px] px-4 md:px-6 py-12 md:py-16">
         <div className="max-w-3xl">
           <h1 className="text-2xl md:text-3xl font-bold mb-3">友链</h1>
           <p className="text-muted-foreground mb-10">
@@ -48,4 +48,3 @@ export default async function LinksPage() {
     </div>
   );
 }
-

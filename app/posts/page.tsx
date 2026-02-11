@@ -77,7 +77,7 @@ export default async function PostsPage({
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-12 md:py-16">
+      <main className="flex-1 mx-auto w-full max-w-[1440px] px-4 md:px-6 py-12 md:py-16">
         <div className="flex items-baseline justify-between mb-10">
           <div className="space-y-1">
             <h1 className="text-2xl md:text-3xl font-bold">
@@ -103,9 +103,9 @@ export default async function PostsPage({
         ) : (
           <div className="text-center py-24">
             <p className="text-muted-foreground mb-4">暂无文章</p>
-            <Link href="/admin" className="text-sm text-primary hover:underline">
+            {/* <Link href="/admin" className="text-sm text-primary hover:underline">
               前往管理后台
-            </Link>
+            </Link> */}
           </div>
         )}
 
@@ -115,4 +115,3 @@ export default async function PostsPage({
     </div>
   );
 }
-

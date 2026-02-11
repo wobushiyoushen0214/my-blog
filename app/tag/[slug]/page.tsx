@@ -56,7 +56,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 container mx-auto px-4 md:px-6 py-10">
+        <main className="flex-1 mx-auto w-full max-w-[1440px] px-4 md:px-6 py-10">
           <Link
             href="/tag"
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
@@ -93,7 +93,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-10">
+      <main className="flex-1 mx-auto w-full max-w-[1440px] px-4 md:px-6 py-10">
         <div className="mb-10">
           <Link
             href="/tag"
