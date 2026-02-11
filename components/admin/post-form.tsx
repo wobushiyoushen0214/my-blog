@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { generateSlug } from "@/lib/utils";
+import { compressImageToMaxBytes } from "@/lib/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,9 +27,17 @@ interface PostFormProps {
   postId?: string;
 }
 
+const COVER_BUCKET = "covers";
+const COVER_MAX_BYTES = 300 * 1024;
+const COVER_MAX_UPLOAD_BYTES = 1024 * 1024;
+
 export function PostForm({ postId }: PostFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [coverUploading, setCoverUploading] = useState(false);
+  const [coverLocalPreviewUrl, setCoverLocalPreviewUrl] = useState<string | null>(
+    null
+  );
   const [categories, setCategories] = useState<Category[]>([]);
   const [allTags, setAllTags] = useState<Tag[]>([]);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
@@ -83,11 +92,94 @@ export function PostForm({ postId }: PostFormProps) {
     fetchData();
   }, [postId]);
 
+  useEffect(() => {
+    return () => {
+      if (coverLocalPreviewUrl) URL.revokeObjectURL(coverLocalPreviewUrl);
+    };
+  }, [coverLocalPreviewUrl]);
+
   const handleTitleChange = (title: string) => {
     setForm((prev) => ({
       ...prev,
       title,
     }));
+  };
+
+  const uploadCoverImage = async (file: File) => {
+    if (file.size > COVER_MAX_UPLOAD_BYTES) {
+      throw new Error("封面文件不能超过 1MB");
+    }
+
+    if (coverLocalPreviewUrl) URL.revokeObjectURL(coverLocalPreviewUrl);
+    setCoverLocalPreviewUrl(URL.createObjectURL(file));
+
+    const supabase = createClient();
+
+    let blob: Blob;
+    let contentType: string;
+    let extension: string;
+
+    if (file.size <= COVER_MAX_BYTES) {
+      blob = file;
+      contentType = file.type || "application/octet-stream";
+      extension = (file.name.split(".").pop() || "").toLowerCase() || "bin";
+    } else {
+      const result = await compressImageToMaxBytes(file, {
+        maxBytes: COVER_MAX_BYTES,
+        maxWidth: 1920,
+        maxHeight: 1920,
+        preferredType: "image/webp",
+      });
+      blob = result.blob;
+      contentType = result.contentType;
+      extension = result.extension;
+    }
+
+    const random =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : Math.random().toString(16).slice(2);
+    const date = new Date().toISOString().slice(0, 10);
+    const objectPath = `${date}/${random}.${extension}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(COVER_BUCKET)
+      .upload(objectPath, blob, {
+        upsert: true,
+        contentType,
+        cacheControl: "3600",
+      });
+
+    if (uploadError) {
+      throw new Error(uploadError.message);
+    }
+
+    const { data } = supabase.storage.from(COVER_BUCKET).getPublicUrl(objectPath);
+    if (!data.publicUrl) {
+      throw new Error("获取封面公开 URL 失败");
+    }
+
+    setForm((prev) => ({ ...prev, cover_image: data.publicUrl }));
+    setCoverLocalPreviewUrl(null);
+  };
+
+  const handleCoverFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setCoverUploading(true);
+    try {
+      await uploadCoverImage(file);
+      toast.success("封面已上传");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "封面上传失败";
+      toast.error(message);
+    } finally {
+      setCoverUploading(false);
+      e.target.value = "";
+    }
   };
 
   const toggleTag = (tagId: string) => {
@@ -102,6 +194,10 @@ export function PostForm({ postId }: PostFormProps) {
     e.preventDefault();
     if (!form.title) {
       toast.error("请填写标题");
+      return;
+    }
+    if (coverUploading) {
+      toast.error("封面上传中，请稍后再保存");
       return;
     }
 
@@ -197,13 +293,50 @@ export function PostForm({ postId }: PostFormProps) {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="cover_image">封面图片 URL</Label>
-          <Input
-            id="cover_image"
-            value={form.cover_image}
-            onChange={(e) => setForm({ ...form, cover_image: e.target.value })}
-            placeholder="https://example.com/image.jpg"
-          />
+          <Label>封面图片</Label>
+          <div className="space-y-3">
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleCoverFileChange}
+              disabled={coverUploading}
+            />
+            <div className="text-xs text-muted-foreground">
+              限制：不超过 300KB；300KB～1MB 自动压缩到 300KB 以下
+            </div>
+
+            {(coverLocalPreviewUrl || form.cover_image) && (
+              <div className="space-y-2">
+                <img
+                  src={coverLocalPreviewUrl || form.cover_image}
+                  alt="封面预览"
+                  className="h-28 w-full rounded-md object-cover border"
+                />
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setCoverLocalPreviewUrl(null);
+                      setForm({ ...form, cover_image: "" });
+                    }}
+                    disabled={coverUploading}
+                  >
+                    移除封面
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <Input
+              id="cover_image"
+              value={form.cover_image}
+              onChange={(e) => setForm({ ...form, cover_image: e.target.value })}
+              placeholder="或手动填写封面图片 URL"
+              disabled={coverUploading}
+            />
+          </div>
         </div>
       </div>
 

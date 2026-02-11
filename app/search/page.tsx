@@ -5,6 +5,7 @@ import { PostCard } from "@/components/post-card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import type { Metadata } from "next";
+import type { Category, Post } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "搜索",
@@ -19,7 +20,8 @@ export default async function SearchPage({
   const query = q?.trim() || "";
   const supabase = await createClient();
 
-  let posts: any[] = [];
+  type PostRow = Post & { category?: Category | null };
+  let posts: PostRow[] = [];
 
   if (query) {
     const { data } = await supabase
@@ -30,7 +32,7 @@ export default async function SearchPage({
       .order("created_at", { ascending: false })
       .limit(20);
 
-    posts = data || [];
+    posts = (data || []) as PostRow[];
   }
 
   return (
