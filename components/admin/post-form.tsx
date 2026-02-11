@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { generateSlug } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -82,18 +83,10 @@ export function PostForm({ postId }: PostFormProps) {
     fetchData();
   }, [postId]);
 
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  };
-
   const handleTitleChange = (title: string) => {
     setForm((prev) => ({
       ...prev,
       title,
-      slug: prev.slug || generateSlug(title),
     }));
   };
 
@@ -107,8 +100,8 @@ export function PostForm({ postId }: PostFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title || !form.slug) {
-      toast.error("请填写标题和 Slug");
+    if (!form.title) {
+      toast.error("请填写标题");
       return;
     }
 
@@ -117,7 +110,6 @@ export function PostForm({ postId }: PostFormProps) {
 
     const postData = {
       title: form.title,
-      slug: form.slug,
       content: form.content,
       excerpt: form.excerpt,
       cover_image: form.cover_image || null,
@@ -140,7 +132,7 @@ export function PostForm({ postId }: PostFormProps) {
     } else {
       const { data, error } = await supabase
         .from("posts")
-        .insert(postData)
+        .insert({ ...postData, slug: generateSlug() })
         .select("id")
         .single();
       if (error) {
@@ -172,25 +164,14 @@ export function PostForm({ postId }: PostFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="title">标题 *</Label>
-          <Input
-            id="title"
-            value={form.title}
-            onChange={(e) => handleTitleChange(e.target.value)}
-            placeholder="文章标题"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="slug">Slug *</Label>
-          <Input
-            id="slug"
-            value={form.slug}
-            onChange={(e) => setForm({ ...form, slug: e.target.value })}
-            placeholder="url-friendly-slug"
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="title">标题 *</Label>
+        <Input
+          id="title"
+          value={form.title}
+          onChange={(e) => handleTitleChange(e.target.value)}
+          placeholder="文章标题"
+        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

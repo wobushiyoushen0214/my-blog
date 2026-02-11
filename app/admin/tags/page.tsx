@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { generateSlug } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +22,7 @@ export default function AdminTagsPage() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", slug: "" });
+  const [form, setForm] = useState({ name: "" });
 
   const fetchTags = async () => {
     const supabase = createClient();
@@ -34,24 +35,17 @@ export default function AdminTagsPage() {
     fetchTags();
   }, []);
 
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.slug) {
-      toast.error("请填写名称和 Slug");
+    if (!form.name) {
+      toast.error("请填写名称");
       return;
     }
 
     const supabase = createClient();
     const { error } = await supabase
       .from("tags")
-      .insert({ name: form.name, slug: form.slug });
+      .insert({ name: form.name, slug: generateSlug() });
 
     if (error) {
       toast.error("创建失败: " + error.message);
@@ -60,7 +54,7 @@ export default function AdminTagsPage() {
 
     toast.success("标签已创建");
     setOpen(false);
-    setForm({ name: "", slug: "" });
+    setForm({ name: "" });
     fetchTags();
   };
 
@@ -105,20 +99,8 @@ export default function AdminTagsPage() {
                 <Input
                   id="name"
                   value={form.name}
-                  onChange={(e) => {
-                    const name = e.target.value;
-                    setForm({ name, slug: generateSlug(name) });
-                  }}
+                  onChange={(e) => setForm({ name: e.target.value })}
                   placeholder="标签名称"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="slug">Slug</Label>
-                <Input
-                  id="slug"
-                  value={form.slug}
-                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  placeholder="tag-slug"
                 />
               </div>
               <Button type="submit" className="w-full">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { Post, Tag } from "@/lib/types";
+import { Calendar, Eye } from "lucide-react";
 
 interface PostCardProps {
   post: Post & { category?: { name: string; slug: string } | null; tags?: Tag[] };
@@ -9,55 +9,64 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <Card className="group hover:shadow-lg transition-shadow">
-      {post.cover_image && (
-        <div className="overflow-hidden rounded-t-lg">
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group block rounded-xl border bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5"
+    >
+      {post.cover_image ? (
+        <div className="relative h-48 overflow-hidden">
           <img
             src={post.cover_image}
             alt={post.title}
-            className="h-48 w-full object-cover transition-transform group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+          {post.category && (
+            <Badge className="absolute top-3 left-3 text-xs font-normal bg-white/90 text-black hover:bg-white/90 border-0">
+              {post.category.name}
+            </Badge>
+          )}
+        </div>
+      ) : (
+        <div className="relative h-32 bg-gradient-to-br from-primary/5 via-accent/5 to-muted flex items-center justify-center">
+          {post.category && (
+            <Badge variant="secondary" className="absolute top-3 left-3 text-xs font-normal">
+              {post.category.name}
+            </Badge>
+          )}
         </div>
       )}
-      <CardHeader className="space-y-2">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <time dateTime={post.created_at}>
-            {new Date(post.created_at).toLocaleDateString("zh-CN")}
-          </time>
-          {post.category && (
-            <>
-              <span>&middot;</span>
-              <Link
-                href={`/category/${post.category.slug}`}
-                className="hover:text-foreground transition-colors"
-              >
-                {post.category.name}
-              </Link>
-            </>
-          )}
-          <span>&middot;</span>
-          <span>{post.view_count} 阅读</span>
-        </div>
-        <Link href={`/blog/${post.slug}`}>
-          <h2 className="text-xl font-semibold leading-tight hover:text-primary transition-colors">
-            {post.title}
-          </h2>
-        </Link>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <p className="text-muted-foreground line-clamp-2">{post.excerpt}</p>
-        {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {post.tags.map((tag) => (
-              <Link key={tag.id} href={`/tag/${tag.slug}`}>
-                <Badge variant="secondary" className="text-xs">
+      <div className="p-5 space-y-3">
+        <h2 className="text-lg font-semibold leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+          {post.title}
+        </h2>
+        {post.excerpt && (
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+            {post.excerpt}
+          </p>
+        )}
+        <div className="flex items-center justify-between pt-1">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {new Date(post.created_at).toLocaleDateString("zh-CN")}
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Eye className="h-3 w-3" />
+              {post.view_count}
+            </span>
+          </div>
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex gap-1">
+              {post.tags.slice(0, 2).map((tag) => (
+                <Badge key={tag.id} variant="outline" className="text-[10px] px-1.5 py-0 h-5 font-normal">
                   {tag.name}
                 </Badge>
-              </Link>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }

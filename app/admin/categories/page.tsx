@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { generateSlug } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +30,7 @@ export default function AdminCategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", slug: "" });
+  const [form, setForm] = useState({ name: "" });
 
   const fetchCategories = async () => {
     const supabase = createClient();
@@ -45,17 +46,10 @@ export default function AdminCategoriesPage() {
     fetchCategories();
   }, []);
 
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.slug) {
-      toast.error("请填写名称和 Slug");
+    if (!form.name) {
+      toast.error("请填写名称");
       return;
     }
 
@@ -64,7 +58,7 @@ export default function AdminCategoriesPage() {
     if (editId) {
       const { error } = await supabase
         .from("categories")
-        .update({ name: form.name, slug: form.slug })
+        .update({ name: form.name })
         .eq("id", editId);
       if (error) {
         toast.error("更新失败: " + error.message);
@@ -74,7 +68,7 @@ export default function AdminCategoriesPage() {
     } else {
       const { error } = await supabase
         .from("categories")
-        .insert({ name: form.name, slug: form.slug });
+        .insert({ name: form.name, slug: generateSlug() });
       if (error) {
         toast.error("创建失败: " + error.message);
         return;
@@ -84,13 +78,13 @@ export default function AdminCategoriesPage() {
 
     setOpen(false);
     setEditId(null);
-    setForm({ name: "", slug: "" });
+    setForm({ name: "" });
     fetchCategories();
   };
 
   const handleEdit = (category: Category) => {
     setEditId(category.id);
-    setForm({ name: category.name, slug: category.slug });
+    setForm({ name: category.name });
     setOpen(true);
   };
 
@@ -113,7 +107,7 @@ export default function AdminCategoriesPage() {
     setOpen(isOpen);
     if (!isOpen) {
       setEditId(null);
-      setForm({ name: "", slug: "" });
+      setForm({ name: "" });
     }
   };
 
@@ -142,23 +136,8 @@ export default function AdminCategoriesPage() {
                 <Input
                   id="name"
                   value={form.name}
-                  onChange={(e) => {
-                    const name = e.target.value;
-                    setForm({
-                      name,
-                      slug: editId ? form.slug : generateSlug(name),
-                    });
-                  }}
+                  onChange={(e) => setForm({ name: e.target.value })}
                   placeholder="分类名称"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="slug">Slug</Label>
-                <Input
-                  id="slug"
-                  value={form.slug}
-                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  placeholder="category-slug"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -173,7 +152,6 @@ export default function AdminCategoriesPage() {
         <TableHeader>
           <TableRow>
             <TableHead>名称</TableHead>
-            <TableHead>Slug</TableHead>
             <TableHead>创建时间</TableHead>
             <TableHead className="text-right">操作</TableHead>
           </TableRow>
@@ -182,7 +160,6 @@ export default function AdminCategoriesPage() {
           {categories.map((category) => (
             <TableRow key={category.id}>
               <TableCell className="font-medium">{category.name}</TableCell>
-              <TableCell>{category.slug}</TableCell>
               <TableCell>
                 {new Date(category.created_at).toLocaleDateString("zh-CN")}
               </TableCell>
@@ -209,7 +186,7 @@ export default function AdminCategoriesPage() {
           {categories.length === 0 && (
             <TableRow>
               <TableCell
-                colSpan={4}
+                colSpan={3}
                 className="text-center text-muted-foreground py-8"
               >
                 暂无分类

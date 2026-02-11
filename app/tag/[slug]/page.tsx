@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer";
 import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 const PAGE_SIZE = 9;
@@ -16,7 +17,8 @@ interface TagPageProps {
 export async function generateMetadata({
   params,
 }: TagPageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug);
   const supabase = await createClient();
   const { data: tag } = await supabase
     .from("tags")
@@ -29,7 +31,8 @@ export async function generateMetadata({
 }
 
 export default async function TagPage({ params, searchParams }: TagPageProps) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug);
   const { page: pageStr } = await searchParams;
   const page = Math.max(1, parseInt(pageStr || "1"));
   const supabase = await createClient();
@@ -53,11 +56,18 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-4">标签: {tag.name}</h1>
-          <p className="text-center py-20 text-muted-foreground">
-            该标签下暂无文章
-          </p>
+        <main className="flex-1 container mx-auto px-4 md:px-6 py-10">
+          <Link
+            href="/tag"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+          >
+            &larr; 所有标签
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{tag.name}</h1>
+          <div className="text-center py-24">
+            <p className="text-xl font-semibold mb-2">该标签下暂无文章</p>
+            <p className="text-muted-foreground">敬请期待更多内容</p>
+          </div>
         </main>
         <Footer />
       </div>
@@ -83,12 +93,18 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">标签: {tag.name}</h1>
+      <main className="flex-1 container mx-auto px-4 md:px-6 py-10">
+        <div className="mb-10">
+          <Link
+            href="/tag"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+          >
+            &larr; 所有标签
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-bold">{tag.name}</h1>
           <p className="mt-2 text-muted-foreground">共 {count || 0} 篇文章</p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {(posts || []).map((post) => (
             <PostCard key={post.id} post={{ ...post, tags: [] }} />
           ))}
