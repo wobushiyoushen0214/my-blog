@@ -3,8 +3,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
-import { Badge } from "@/components/ui/badge";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const PAGE_SIZE = 9;
@@ -58,129 +57,103 @@ export default async function HomePage({
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      {/* Hero */}
-      {page === 1 && (
-        <section className="relative overflow-hidden border-b">
-          <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/10" />
-          <div className="container mx-auto px-4 md:px-6 py-16 md:py-24 relative">
-            <div className="max-w-3xl space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm text-muted-foreground">
-                <BookOpen className="h-3.5 w-3.5" />
-                <span>个人博客</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
-                探索技术，
-                <br />
-                <span className="text-muted-foreground">分享生活与思考</span>
+      <main className="flex-1">
+        {/* Hero + Featured */}
+        {page === 1 && (
+          <div className="container mx-auto px-4 md:px-6 pt-16 pb-12 md:pt-24 md:pb-16">
+            <div className="max-w-2xl mb-16">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.15] mb-4">
+                个人博客
               </h1>
-              <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-                在这里记录学习的点滴、技术的感悟以及对生活的思考，希望能给你带来启发。
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                记录技术学习与生活思考
               </p>
             </div>
-          </div>
-        </section>
-      )}
 
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-10">
-        {/* Featured Post */}
-        {featuredPost && (
-          <section className="mb-12">
-            <Link
-              href={`/blog/${featuredPost.slug}`}
-              className="group block overflow-hidden rounded-2xl border bg-card transition-all hover:shadow-xl"
-            >
-              <div className="grid md:grid-cols-2 gap-0">
-                {featuredPost.cover_image ? (
-                  <div className="relative h-64 md:h-full overflow-hidden">
+            {featuredPost && (
+              <Link
+                href={`/blog/${featuredPost.slug}`}
+                className="group grid md:grid-cols-2 gap-8 items-center"
+              >
+                <div className="relative aspect-video overflow-hidden rounded-xl">
+                  {featuredPost.cover_image ? (
                     <img
                       src={featuredPost.cover_image}
                       alt={featuredPost.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
-                  </div>
-                ) : (
-                  <div className="relative h-64 md:h-full bg-linear-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                    <BookOpen className="h-16 w-16 text-muted-foreground/30" />
-                  </div>
-                )}
-                <div className="p-8 md:p-10 flex flex-col justify-center space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-xs font-normal">
-                      精选文章
-                    </Badge>
+                  ) : (
+                    <div className="h-full w-full bg-muted" />
+                  )}
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <time dateTime={featuredPost.created_at}>
+                      {new Date(featuredPost.created_at).toLocaleDateString(
+                        "zh-CN",
+                        { year: "numeric", month: "long", day: "numeric" }
+                      )}
+                    </time>
                     {featuredPost.category && (
-                      <Badge variant="outline" className="text-xs font-normal">
-                        {featuredPost.category.name}
-                      </Badge>
+                      <>
+                        <span className="text-border">&middot;</span>
+                        <span>{featuredPost.category.name}</span>
+                      </>
                     )}
                   </div>
                   <h2 className="text-2xl md:text-3xl font-bold leading-tight group-hover:text-primary transition-colors">
                     {featuredPost.title}
                   </h2>
-                  <p className="text-muted-foreground line-clamp-3 leading-relaxed">
-                    {featuredPost.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <time dateTime={featuredPost.created_at}>
-                        {new Date(featuredPost.created_at).toLocaleDateString(
-                          "zh-CN",
-                          { year: "numeric", month: "long", day: "numeric" }
-                        )}
-                      </time>
-                      <span>&middot;</span>
-                      <span>{featuredPost.view_count} 阅读</span>
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                      阅读全文 <ArrowRight className="h-4 w-4" />
-                    </span>
-                  </div>
+                  {featuredPost.excerpt && (
+                    <p className="text-muted-foreground leading-relaxed line-clamp-3">
+                      {featuredPost.excerpt}
+                    </p>
+                  )}
+                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:gap-2.5 transition-all">
+                    阅读全文 <ArrowRight className="h-4 w-4" />
+                  </span>
                 </div>
-              </div>
-            </Link>
-          </section>
+              </Link>
+            )}
+          </div>
         )}
 
+        {/* Divider */}
+        {page === 1 && <div className="border-t border-border/40" />}
+
         {/* Post Grid */}
-        <section>
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold">
-              {page === 1 ? "最新文章" : `第 ${page} 页`}
+        <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
+          <div className="flex items-baseline justify-between mb-10">
+            <h2 className="text-lg font-semibold">
+              {page === 1 ? "所有文章" : `第 ${page} 页`}
             </h2>
             {count !== null && (
               <span className="text-sm text-muted-foreground">
-                共 {count} 篇文章
+                {count} 篇
               </span>
             )}
           </div>
 
           {remainingPosts.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {remainingPosts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
             </div>
           ) : postsWithTags.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <div className="rounded-full bg-muted p-6 mb-6">
-                <BookOpen className="h-10 w-10 text-muted-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">暂无文章</h3>
-              <p className="text-muted-foreground mb-6">
-                去后台发布第一篇文章吧
-              </p>
+            <div className="text-center py-24">
+              <p className="text-muted-foreground mb-4">暂无文章</p>
               <Link
                 href="/admin"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                className="text-sm text-primary hover:underline"
               >
-                前往管理后台 <ArrowRight className="h-4 w-4" />
+                前往管理后台
               </Link>
             </div>
           ) : null}
 
           <Pagination currentPage={page} totalPages={totalPages} basePath="/" />
-        </section>
+        </div>
       </main>
 
       <Footer />

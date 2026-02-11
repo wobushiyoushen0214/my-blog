@@ -25,10 +25,10 @@ export function SearchBar() {
         <form onSubmit={handleSearch} className="flex items-center gap-1">
           <Input
             type="text"
-            placeholder="搜索文章..."
+            placeholder="搜索..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-40 h-8 text-sm"
+            className="w-36 h-8 text-sm bg-muted/50 border-border/50"
             autoFocus
             onBlur={() => {
               if (!query) setOpen(false);
@@ -36,8 +36,8 @@ export function SearchBar() {
           />
         </form>
       ) : (
-        <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
-          <Search className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setOpen(true)}>
+          <Search className="h-4 w-4" />
           <span className="sr-only">搜索</span>
         </Button>
       )}
