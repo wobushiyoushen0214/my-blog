@@ -18,6 +18,7 @@ export interface Category {
   id: string;
   name: string;
   slug: string;
+  type: 'post' | 'moment';
   created_at: string;
 }
 
@@ -36,10 +37,12 @@ export interface PostTag {
 export interface Comment {
   id: string;
   post_id: string;
+  parent_id: string | null;
   author_name: string;
   author_email: string;
   content: string;
   approved: boolean;
   created_at: string;
   post?: Post;
+  replies?: Comment[];
 }

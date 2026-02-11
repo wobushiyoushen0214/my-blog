@@ -10,10 +10,11 @@ import { HeaderClient } from "@/components/header-client";
 
 export async function Header() {
   const supabase = await createClient();
-  const [{ data: categories }, { data: tags }] = await Promise.all([
-    supabase.from("categories").select("id,name,slug").order("name"),
-    supabase.from("tags").select("id,name,slug").order("name"),
-  ]);
+  // Fetch categories with type
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("id,name,slug,type")
+    .order("name");
 
-  return <HeaderClient categories={categories || []} tags={tags || []} />;
+  return <HeaderClient categories={categories || []} />;
 }

@@ -10,58 +10,72 @@ const PAGE_SIZE = 12;
 export default async function MomentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; tag?: string }>;
+  searchParams: Promise<{ page?: string; category?: string }>;
 }) {
-  const { page: pageStr, tag: tagSlug } = await searchParams;
+  const { page: pageStr, category: categorySlug } = await searchParams;
   const page = Math.max(1, parseInt(pageStr || "1"));
   const supabase = await createClient();
 
-  let tagId: string | null = null;
-  let tagName: string | null = null;
+  let categoryId: string | null = null;
+  let categoryName: string | null = null;
 
-  if (tagSlug) {
-    const { data: tag } = await supabase
-      .from("tags")
+  if (categorySlug) {
+    const { data: category } = await supabase
+      .from("categories")
       .select("id,name")
-      .eq("slug", tagSlug)
+      .eq("slug", categorySlug)
+      .eq("type", "moment")
       .single();
-    if (tag) {
-      tagId = tag.id;
-      tagName = tag.name;
+    if (category) {
+      categoryId = category.id;
+      categoryName = category.name;
     }
   }
 
-  const { count } = tagId
-    ? await supabase
-        .from("posts")
-        .select("id, post_tags!inner(tag_id)", { count: "exact", head: true })
-        .eq("published", true)
-        .eq("post_tags.tag_id", tagId)
-    : await supabase
-        .from("posts")
-        .select("id", { count: "exact", head: true })
-        .eq("published", true);
+  // Base query: published posts with category.type = 'moment'
+  // Note: Supabase filtering on joined tables is tricky with !inner.
+  // We filter by category_id directly if selected, otherwise we need to filter by category type.
+  
+  let countQuery;
+
+  if (categoryId) {
+    countQuery = supabase
+      .from("posts")
+      .select("id", { count: "exact", head: true })
+      .eq("published", true)
+      .eq("category_id", categoryId);
+  } else {
+    countQuery = supabase
+      .from("posts")
+      .select("id, categories!inner(type)", { count: "exact", head: true })
+      .eq("published", true)
+      .eq("categories.type", "moment");
+  }
+
+  const { count } = await countQuery;
   const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
 
   let postsQuery = supabase
     .from("posts")
-    .select("*, category:categories(*)")
+    .select("*, category:categories!inner(*)")
     .eq("published", true)
+    .eq("category.type", "moment")
     .order("created_at", { ascending: false })
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
-  if (tagId) {
+  if (categoryId) {
     postsQuery = supabase
       .from("posts")
-      .select("*, category:categories(*), post_tags!inner(tag_id)")
+      .select("*, category:categories!inner(*)")
       .eq("published", true)
-      .eq("post_tags.tag_id", tagId)
+      .eq("category_id", categoryId) // This implicitly filters by type=moment because the categoryId was fetched with type=moment check
       .order("created_at", { ascending: false })
       .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   }
 
   const { data: posts } = await postsQuery;
 
+  // Fetch tags for display (optional, but good to keep)
   const postsWithTags = await Promise.all(
     (posts || []).map(async (post) => {
       const { data: postTags } = await supabase
@@ -78,7 +92,9 @@ export default async function MomentsPage({
     })
   );
 
-  const basePath = tagSlug ? `/moments?tag=${encodeURIComponent(tagSlug)}` : "/moments";
+  const basePath = categorySlug
+    ? `/moments?category=${encodeURIComponent(categorySlug)}`
+    : "/moments";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -87,10 +103,13 @@ export default async function MomentsPage({
         <div className="flex items-baseline justify-between mb-10">
           <div className="space-y-1">
             <h1 className="text-2xl md:text-3xl font-bold">
-              {tagName ? `见闻 · ${tagName}` : "见闻"}
+              {categoryName ? `见闻 · ${categoryName}` : "见闻"}
             </h1>
-            {tagName && (
-              <Link href="/moments" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {categoryName && (
+              <Link
+                href="/moments"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
                 查看全部见闻
               </Link>
             )}

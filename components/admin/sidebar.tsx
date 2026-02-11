@@ -56,7 +56,7 @@ export function AdminSidebar() {
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               }`}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className="h-4 w-4" suppressHydrationWarning />
               {item.label}
             </Link>
           );
@@ -67,14 +67,14 @@ export function AdminSidebar() {
           href="/"
           className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" suppressHydrationWarning />
           返回前台
         </Link>
         <button
           onClick={handleLogout}
           className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4" suppressHydrationWarning />
           退出登录
         </button>
       </div>

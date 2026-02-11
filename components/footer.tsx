@@ -15,7 +15,7 @@ export function Footer() {
               className="text-muted-foreground hover:text-foreground transition-colors"
               title="RSS Feed"
             >
-              <Rss className="h-3.5 w-3.5" />
+              <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
             </Link>
           </div>
           <Link

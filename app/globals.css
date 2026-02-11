@@ -129,6 +129,48 @@
   }
 }
 
+@keyframes rb-aurora-move {
+  0% {
+    transform: translate3d(-10%, -10%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10%, 5%, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-10%, -10%, 0) scale(1);
+  }
+}
+
+@keyframes rb-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@layer utilities {
+  .rb-aurora {
+    background:
+      radial-gradient(60% 60% at 20% 20%, color-mix(in oklab, var(--primary) 25%, transparent) 0%, transparent 60%),
+      radial-gradient(55% 55% at 80% 30%, color-mix(in oklab, var(--chart-2) 35%, transparent) 0%, transparent 62%),
+      radial-gradient(50% 50% at 40% 80%, color-mix(in oklab, var(--chart-4) 35%, transparent) 0%, transparent 62%);
+    filter: blur(28px) saturate(1.15);
+    opacity: 0.9;
+    animation: rb-aurora-move 14s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .rb-fade-in {
+    animation: rb-fade-in 500ms ease-out both;
+  }
+}
+
 /* Selection color */
 ::selection {
   @apply bg-primary/20;

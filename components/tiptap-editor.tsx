@@ -61,6 +61,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           "prose prose-neutral dark:prose-invert max-w-none min-h-[400px] p-4 focus:outline-none",
       },
     },
+    immediatelyRender: false,
   });
 
   if (!editor) return null;

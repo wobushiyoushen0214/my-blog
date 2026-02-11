@@ -9,9 +9,19 @@ import { toast } from "sonner";
 
 interface CommentFormProps {
   postId: string;
+  parentId?: string;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+  autoFocus?: boolean;
 }
 
-export function CommentForm({ postId }: CommentFormProps) {
+export function CommentForm({
+  postId,
+  parentId,
+  onSuccess,
+  onCancel,
+  autoFocus,
+}: CommentFormProps) {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     author_name: "",
@@ -31,6 +41,7 @@ export function CommentForm({ postId }: CommentFormProps) {
 
     const { error } = await supabase.from("comments").insert({
       post_id: postId,
+      parent_id: parentId || null,
       author_name: form.author_name,
       author_email: form.author_email,
       content: form.content,
@@ -45,17 +56,19 @@ export function CommentForm({ postId }: CommentFormProps) {
 
     toast.success("评论已提交，等待审核");
     setForm({ author_name: "", author_email: "", content: "" });
+    onSuccess?.();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="text-sm font-medium">发表评论</h3>
+      {!parentId && <h3 className="text-sm font-medium">发表评论</h3>}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Input
           value={form.author_name}
           onChange={(e) => setForm({ ...form, author_name: e.target.value })}
           placeholder="昵称 *"
           className="h-10 bg-muted/50 border-border/50"
+          autoFocus={autoFocus}
         />
         <Input
           type="email"
@@ -72,7 +85,18 @@ export function CommentForm({ postId }: CommentFormProps) {
         rows={3}
         className="resize-none bg-muted/50 border-border/50"
       />
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        {onCancel && (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onCancel}
+            disabled={loading}
+            size="sm"
+          >
+            取消
+          </Button>
+        )}
         <Button type="submit" disabled={loading} size="sm">
           {loading ? "提交中..." : "提交"}
         </Button>

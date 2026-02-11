@@ -37,7 +37,7 @@ export function SearchBar() {
         </form>
       ) : (
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setOpen(true)}>
-          <Search className="h-4 w-4" />
+          <Search className="h-4 w-4" suppressHydrationWarning />
           <span className="sr-only">搜索</span>
         </Button>
       )}

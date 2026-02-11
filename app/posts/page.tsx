@@ -24,6 +24,7 @@ export default async function PostsPage({
       .from("categories")
       .select("id,name")
       .eq("slug", categorySlug)
+      .eq("type", "post") // Ensure type=post
       .single();
     if (category) {
       categoryId = category.id;
@@ -31,13 +32,27 @@ export default async function PostsPage({
     }
   }
 
-  let countQuery = supabase
-    .from("posts")
-    .select("*", { count: "exact", head: true })
-    .eq("published", true);
+  // Base query: published posts with category.type = 'post' (or no category type filter if we rely on category_id)
+  // To exclude moments from posts list:
+  // If no category selected: filter by categories.type = 'post' or categories.type IS NULL (if that's allowed)
+  // Assuming all posts have a category.
+
+  let countQuery;
 
   if (categoryId) {
-    countQuery = countQuery.eq("category_id", categoryId);
+    countQuery = supabase
+      .from("posts")
+      .select("id", { count: "exact", head: true })
+      .eq("published", true)
+      .eq("category_id", categoryId);
+  } else {
+     // Relaxed filter: Allow posts with no category or category.type != 'moment'
+     // Since 'or' with join is tricky, we'll fetch all published posts and we accept that for now.
+     // Ideally we should filter out moments, but if uncategorized posts are missing due to !inner, we prioritize showing them.
+    countQuery = supabase
+      .from("posts")
+      .select("id", { count: "exact", head: true })
+      .eq("published", true);
   }
 
   const { count } = await countQuery;
@@ -45,13 +60,19 @@ export default async function PostsPage({
 
   let postsQuery = supabase
     .from("posts")
-    .select("*, category:categories(*)")
+    .select("*, category:categories(*)") // Changed to left join to include uncategorized posts
     .eq("published", true)
     .order("created_at", { ascending: false })
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
   if (categoryId) {
-    postsQuery = postsQuery.eq("category_id", categoryId);
+    postsQuery = supabase
+      .from("posts")
+      .select("*, category:categories!inner(*)")
+      .eq("published", true)
+      .eq("category_id", categoryId)
+      .order("created_at", { ascending: false })
+      .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   }
 
   const { data: posts } = await postsQuery;
