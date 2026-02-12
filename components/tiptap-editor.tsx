@@ -8,6 +8,9 @@ import Placeholder from "@tiptap/extension-placeholder";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { common, createLowlight } from "lowlight";
 import { Button } from "@/components/ui/button";
+import { useRef, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 import {
   Bold,
   Italic,
@@ -25,6 +28,7 @@ import {
   LinkIcon,
   CodeSquare,
   Minus,
+  Loader2,
 } from "lucide-react";
 
 const lowlight = createLowlight(common);
@@ -35,6 +39,9 @@ interface TiptapEditorProps {
 }
 
 export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -66,10 +73,47 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 
   if (!editor) return null;
 
-  const addImage = () => {
-    const url = window.prompt("输入图片 URL:");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("请选择图片文件");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("图片大小不能超过 5MB");
+      return;
+    }
+
+    setUploading(true);
+    const supabase = createClient();
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `post-images/${fileName}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from("images")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("images")
+        .getPublicUrl(filePath);
+
+      editor.chain().focus().setImage({ src: publicUrl }).run();
+      toast.success("图片上传成功");
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("图片上传失败");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -82,6 +126,13 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 
   return (
     <div className="rounded-md border">
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        ref={fileInputRef}
+        onChange={handleImageUpload}
+      />
       <div className="flex flex-wrap gap-1 border-b p-2">
         <Button
           type="button"
@@ -211,9 +262,14 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8"
-          onClick={addImage}
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
         >
-          <ImageIcon className="h-4 w-4" />
+          {uploading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ImageIcon className="h-4 w-4" />
+          )}
         </Button>
         <Button
           type="button"
