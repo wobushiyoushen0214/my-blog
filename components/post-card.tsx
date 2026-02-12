@@ -13,7 +13,7 @@ export function PostCard({ post }: PostCardProps) {
       href={`/blog/${post.slug}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-border/50 bg-card text-card-foreground transition-all hover:shadow-lg hover:-translate-y-1"
     >
-      {post.cover_image && (
+      {post.cover_image ? (
         <div className="relative aspect-video w-full overflow-hidden bg-muted">
           <Image
             src={post.cover_image}
@@ -22,6 +22,14 @@ export function PostCard({ post }: PostCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
+        </div>
+      ) : (
+        <div className="relative aspect-video w-full overflow-hidden bg-muted p-6 flex items-center justify-center text-center">
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold tracking-tight text-foreground/80 line-clamp-3">
+              {post.title}
+            </h3>
+          </div>
         </div>
       )}
       <div className="flex flex-1 flex-col p-5">
