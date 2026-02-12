@@ -75,7 +75,9 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 
   // Sync content updates from parent if changed externally (e.g. async fetch)
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
+    if (editor && content && content !== editor.getHTML()) {
+      // Avoid re-rendering if content is effectively the same to prevent cursor jumps
+      // A simple check is usually enough, but here we just check if it's different
       editor.commands.setContent(content);
     }
   }, [content, editor]);
