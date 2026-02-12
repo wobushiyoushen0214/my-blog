@@ -71,8 +71,6 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
     immediatelyRender: false,
   });
 
-  if (!editor) return null;
-
   // Sync content updates from parent if changed externally (e.g. async fetch)
   useEffect(() => {
     if (editor && content && content !== editor.getHTML()) {
@@ -81,6 +79,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
       editor.commands.setContent(content);
     }
   }, [content, editor]);
+
+  if (!editor) return null;
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
