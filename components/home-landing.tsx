@@ -96,9 +96,6 @@ export function HomeLanding({ children }: { children: React.ReactNode }) {
 
         <div className="relative mx-auto flex h-full w-full max-w-[1440px] flex-col justify-center px-4 md:px-6">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center rounded-full border border-border/50 bg-background/40 px-4 py-2 text-sm text-muted-foreground backdrop-blur">
-              Welcome
-            </div>
             <h1 className="mt-6 text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
               <BlurText
                 text="Lee 的个人博客"
@@ -119,9 +116,6 @@ export function HomeLanding({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="mt-10 rounded-2xl border border-border/50 bg-background/50 p-6 backdrop-blur">
-              <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                今日语录
-              </div>
               <div className="mt-3 min-h-[2.5rem]">
                 <p key={quoteIndex} className="rb-fade-in text-lg md:text-xl font-semibold">
                   {quotes[quoteIndex]}

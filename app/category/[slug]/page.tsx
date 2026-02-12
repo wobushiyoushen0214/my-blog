@@ -79,7 +79,7 @@ export default async function CategoryPage({
           <p className="mt-2 text-muted-foreground">共 {count || 0} 篇文章</p>
         </div>
         {(posts || []).length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
             {(posts || []).map((post) => (
               <PostCard key={post.id} post={{ ...post, tags: [] }} />
             ))}

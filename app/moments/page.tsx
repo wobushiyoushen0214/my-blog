@@ -120,7 +120,7 @@ export default async function MomentsPage({
         </div>
 
         {postsWithTags.length > 0 ? (
-          <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
             {postsWithTags.map((post) => (
               <PostCard key={post.id} post={post} />
             ))}
