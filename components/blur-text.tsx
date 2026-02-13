@@ -2,6 +2,12 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import type { Easing, TargetAndTransition, Transition } from "framer-motion";
+
+const easingMap = {
+  easeOut: [0.16, 1, 0.3, 1],
+  easeIn: [0.7, 0, 0.84, 0],
+} as const;
 
 export const BlurText = ({
   text,
@@ -22,9 +28,9 @@ export const BlurText = ({
   direction?: "top" | "bottom";
   threshold?: number;
   rootMargin?: string;
-  animationFrom?: any;
-  animationTo?: any;
-  easing?: any;
+  animationFrom?: TargetAndTransition;
+  animationTo?: TargetAndTransition;
+  easing?: keyof typeof easingMap | Easing;
   onAnimationComplete?: () => void;
   className?: string;
 }) => {
@@ -47,15 +53,16 @@ export const BlurText = ({
           transform: "translate3d(0,50px,0)",
         };
 
-  const defaultTo = [
-    {
-      filter: "blur(5px)",
-      opacity: 0.5,
-      transform:
-        direction === "top" ? "translate3d(0,5px,0)" : "translate3d(0,-5px,0)",
-    },
-    { filter: "blur(0px)", opacity: 1, transform: "translate3d(0,0,0)" },
-  ];
+  const defaultTo: TargetAndTransition = {
+    filter: ["blur(5px)", "blur(0px)"],
+    opacity: [0.5, 1],
+    transform: [
+      direction === "top"
+        ? "translate3d(0,5px,0)"
+        : "translate3d(0,-5px,0)",
+      "translate3d(0,0,0)",
+    ],
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -77,12 +84,10 @@ export const BlurText = ({
     return () => observer.disconnect();
   }, [threshold, rootMargin]);
 
-  const springs = {
-    easings: {
-      easeOut: [0.16, 1, 0.3, 1], // easeOutExpo
-      easeIn: [0.7, 0, 0.84, 0], // easeInExpo
-    },
-  };
+  const easingValue: Transition["ease"] =
+    typeof easing === "string" && easing in easingMap
+      ? easingMap[easing as keyof typeof easingMap]
+      : easing;
 
   return (
     <p ref={ref} className={`blur-text ${className} flex flex-wrap`}>
@@ -92,10 +97,9 @@ export const BlurText = ({
           initial={animationFrom || defaultFrom}
           animate={inView ? animationTo || defaultTo : animationFrom || defaultFrom}
           transition={{
-            duration: 1, // Default duration if not using spring
-            // @ts-ignore: Framer motion supports bezier arrays but type definition might be strict
-            ease: springs.easings[easing as keyof typeof springs.easings] || "easeOut",
-            delay: index * (delay / 1000), // Convert ms to s
+            duration: 1,
+            ease: easingValue || "easeOut",
+            delay: index * (delay / 1000),
           }}
           onAnimationComplete={() => {
             animatedCount.current += 1;

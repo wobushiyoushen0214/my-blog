@@ -115,7 +115,7 @@ export function HomeLanding({ children }: { children: React.ReactNode }) {
               />
             </div>
 
-            <div className="mt-10 rounded-2xl border border-border/50 bg-background/50 p-6 backdrop-blur">
+            <div className="mt-10 rounded-2xl border border-border/50 bg-background/60 p-6 shadow-sm backdrop-blur">
               <div className="mt-3 min-h-[2.5rem]">
                 <p key={quoteIndex} className="rb-fade-in text-lg md:text-xl font-semibold">
                   {quotes[quoteIndex]}
@@ -128,15 +128,18 @@ export function HomeLanding({ children }: { children: React.ReactNode }) {
         <div className="absolute inset-x-0 bottom-6 flex justify-center">
           <Button
             type="button"
-            variant="secondary"
-            className="h-10 rounded-full px-4 shadow-sm hover:shadow-md transition-shadow"
+            variant="ghost"
+            className="h-11 rounded-full px-5 gap-3 border border-border/40 bg-background/30 text-muted-foreground shadow-sm backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-background/70 hover:text-foreground hover:shadow-md"
             onClick={() => enterSecond("smooth")}
           >
-            <span className="text-sm">下滑进入</span>
-            <ChevronDown
-              className="ml-1.5 h-4 w-4 animate-bounce"
-              suppressHydrationWarning
-            />
+            <span className="text-sm font-medium">下滑进入</span>
+            <span className="h-4 w-px bg-border/60" />
+            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-border/60 bg-background/80 text-foreground/80">
+              <ChevronDown
+                className="h-4 w-4 motion-safe:animate-bounce"
+                suppressHydrationWarning
+              />
+            </span>
           </Button>
         </div>
       </section>
