@@ -10,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, FolderOpen, Search } from "lucide-react";
+import { ArrowRight, FolderOpen, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category } from "@/lib/types";
 
@@ -19,43 +19,81 @@ export const metadata: Metadata = {
 };
 
 type CategoryWithCount = Category & { postCount: number };
+type CategoryFilterType = "all" | Category["type"];
+
+const DEFAULT_TYPE: CategoryFilterType = "all";
 
 function normalizeQuery(query: string) {
   return query.replace(/[%,()]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function parseType(value?: string): CategoryFilterType {
+  return value === "post" || value === "moment" ? value : DEFAULT_TYPE;
 }
 
 function categoryTypeLabel(type: Category["type"]) {
   return type === "moment" ? "见闻分类" : "文章分类";
 }
 
+function filterTypeLabel(type: CategoryFilterType) {
+  if (type === "post") return "文章分类";
+  if (type === "moment") return "见闻分类";
+  return "全部分类";
+}
+
+function buildCategoryPath({
+  query,
+  type,
+}: {
+  query?: string;
+  type?: CategoryFilterType;
+} = {}) {
+  const params = new URLSearchParams();
+
+  if (query) params.set("q", query);
+  if (type && type !== DEFAULT_TYPE) params.set("type", type);
+
+  const search = params.toString();
+  return search ? `/category?${search}` : "/category";
+}
+
 export default async function CategoriesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; type?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, type: typeParam } = await searchParams;
   const rawQuery = q?.trim() || "";
   const query = normalizeQuery(rawQuery);
+  const contentType = parseType(typeParam);
   const supabase = await createClient();
 
-  const { data: categories } = await supabase
-    .from("categories")
-    .select("*")
-    .order("name");
+  const [{ data: categories }, { data: publishedPosts }] = await Promise.all([
+    supabase.from("categories").select("*").order("name"),
+    supabase.from("posts").select("id, category_id").eq("published", true),
+  ]);
 
-  const categoriesWithCount = await Promise.all(
-    (categories || []).map(async (category) => {
-      const { count } = await supabase
-        .from("posts")
-        .select("id", { count: "exact", head: true })
-        .eq("published", true)
-        .eq("category_id", category.id);
-      return { ...category, postCount: count || 0 };
+  const categoryCounts = (publishedPosts || []).reduce<Map<string, number>>(
+    (counts, post) => {
+      if (!post.category_id) return counts;
+      counts.set(post.category_id, (counts.get(post.category_id) || 0) + 1);
+      return counts;
+    },
+    new Map()
+  );
+
+  const categoriesWithCount: CategoryWithCount[] = (categories || []).map(
+    (category) => ({
+      ...category,
+      postCount: categoryCounts.get(category.id) || 0,
     })
   );
 
   const filteredCategories = categoriesWithCount.filter((category) => {
+    const typeMatched = contentType === DEFAULT_TYPE || category.type === contentType;
+    if (!typeMatched) return false;
     if (!query) return true;
+
     const text = [
       category.name,
       category.slug,
@@ -82,6 +120,14 @@ export default async function CategoriesPage({
     (sum, category) => sum + category.postCount,
     0
   );
+  const filteredPostCount = filteredCategories.reduce(
+    (sum, category) => sum + category.postCount,
+    0
+  );
+  const hasFilters = Boolean(query || contentType !== DEFAULT_TYPE);
+  const emptyFilteredDescription = query
+    ? `没有匹配「${query}」的分类，可以换个关键词或查看全部分类。`
+    : `当前没有${filterTypeLabel(contentType)}，可以切换到全部分类查看。`;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -89,45 +135,20 @@ export default async function CategoriesPage({
       <PublicPageShell className="max-w-[1280px]">
         <PublicPageHeader
           eyebrow="Categories"
-          title="所有分类"
+          title={contentType === DEFAULT_TYPE ? "所有分类" : filterTypeLabel(contentType)}
           description="按主题浏览文章和见闻，快速进入相关内容。"
           countLabel={`${filteredCategories.length} / ${categoriesWithCount.length} 个分类`}
         />
 
-        <section className="rounded-lg border bg-card p-3">
-          <form
-            className="flex flex-col gap-2 sm:flex-row"
-            role="search"
-            action="/category"
-          >
-            <label htmlFor="category-search" className="sr-only">
-              搜索分类
-            </label>
-            <div className="relative min-w-0 flex-1">
-              <Search
-                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                suppressHydrationWarning
-              />
-              <Input
-                id="category-search"
-                type="search"
-                name="q"
-                defaultValue={rawQuery}
-                placeholder="搜索分类名称或 slug..."
-                className="h-10 border-border/60 bg-background pl-10"
-              />
-            </div>
-            <Button type="submit">
-              <Search className="h-4 w-4" suppressHydrationWarning />
-              搜索
-            </Button>
-            {query ? (
-              <Button variant="outline" asChild>
-                <Link href="/category">清除</Link>
-              </Button>
-            ) : null}
-          </form>
-        </section>
+        <CategorySearchBar
+          rawQuery={rawQuery}
+          contentType={contentType}
+          hasFilters={hasFilters}
+        />
+
+        <CategoryTypeSwitch query={query} activeType={contentType} />
+
+        <ActiveCategorySummary query={query} contentType={contentType} />
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile
@@ -136,7 +157,10 @@ export default async function CategoriesPage({
           />
           <StatTile label="文章分类" value={allPostCategoryCount} />
           <StatTile label="见闻分类" value={allMomentCategoryCount} />
-          <StatTile label="已发布内容" value={totalPosts} />
+          <StatTile
+            label={hasFilters ? "匹配内容" : "已发布内容"}
+            value={hasFilters ? filteredPostCount : totalPosts}
+          />
         </div>
 
         {filteredCategories.length > 0 ? (
@@ -187,7 +211,7 @@ export default async function CategoriesPage({
           <PublicEmptyState
             icon={FolderOpen}
             title="没有匹配的分类"
-            description={`没有匹配「${query}」的分类，可以换个关键词或查看全部分类。`}
+            description={emptyFilteredDescription}
             action={
               <Button variant="outline" asChild>
                 <Link href="/category">查看全部分类</Link>
@@ -204,6 +228,142 @@ export default async function CategoriesPage({
       </PublicPageShell>
       <Footer />
     </div>
+  );
+}
+
+function CategorySearchBar({
+  rawQuery,
+  contentType,
+  hasFilters,
+}: {
+  rawQuery: string;
+  contentType: CategoryFilterType;
+  hasFilters: boolean;
+}) {
+  return (
+    <section className="rounded-lg border bg-card p-3">
+      <form
+        className="flex flex-col gap-2 sm:flex-row"
+        role="search"
+        action="/category"
+      >
+        {contentType !== DEFAULT_TYPE ? (
+          <input type="hidden" name="type" value={contentType} />
+        ) : null}
+        <label htmlFor="category-search" className="sr-only">
+          搜索分类
+        </label>
+        <div className="relative min-w-0 flex-1">
+          <Search
+            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            suppressHydrationWarning
+          />
+          <Input
+            id="category-search"
+            type="search"
+            name="q"
+            defaultValue={rawQuery}
+            placeholder="搜索分类名称或 slug..."
+            className="h-10 border-border/60 bg-background pl-10"
+          />
+        </div>
+        <Button type="submit" className="h-10">
+          <Search className="h-4 w-4" suppressHydrationWarning />
+          搜索
+        </Button>
+        {hasFilters ? (
+          <Button variant="outline" className="h-10" asChild>
+            <Link href="/category">清除</Link>
+          </Button>
+        ) : null}
+      </form>
+    </section>
+  );
+}
+
+function CategoryTypeSwitch({
+  query,
+  activeType,
+}: {
+  query: string;
+  activeType: CategoryFilterType;
+}) {
+  const items: Array<{ value: CategoryFilterType; label: string }> = [
+    { value: "all", label: "全部" },
+    { value: "post", label: "文章分类" },
+    { value: "moment", label: "见闻分类" },
+  ];
+
+  return (
+    <nav
+      aria-label="分类类型"
+      className="-mx-4 mt-4 flex gap-2 overflow-x-auto border-b border-border/50 px-4 pb-4 md:mx-0 md:px-0"
+    >
+      {items.map((item) => (
+        <Link
+          key={item.value}
+          href={buildCategoryPath({ query, type: item.value })}
+          aria-current={activeType === item.value ? "page" : undefined}
+          className={`inline-flex h-9 shrink-0 items-center rounded-md border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+            activeType === item.value
+              ? "border-primary/40 bg-primary/10 text-primary"
+              : "border-border/60 bg-background text-muted-foreground hover:border-primary/30 hover:text-primary"
+          }`}
+        >
+          {item.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function ActiveCategorySummary({
+  query,
+  contentType,
+}: {
+  query: string;
+  contentType: CategoryFilterType;
+}) {
+  const hasFilters = Boolean(query || contentType !== DEFAULT_TYPE);
+  if (!hasFilters) return null;
+
+  return (
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="text-xs text-muted-foreground">当前筛选</span>
+        {query ? (
+          <FilterPill
+            label={`关键词：${query}`}
+            href={buildCategoryPath({ type: contentType })}
+          />
+        ) : null}
+        {contentType !== DEFAULT_TYPE ? (
+          <FilterPill
+            label={`类型：${filterTypeLabel(contentType)}`}
+            href={buildCategoryPath({ query })}
+          />
+        ) : null}
+      </div>
+      <Link
+        href="/category"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        清除全部
+      </Link>
+    </section>
+  );
+}
+
+function FilterPill({ label, href }: { label: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      aria-label={`移除${label}`}
+    >
+      <span className="truncate">{label}</span>
+      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
+    </Link>
   );
 }
 
