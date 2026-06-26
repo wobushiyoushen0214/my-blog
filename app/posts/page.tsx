@@ -11,12 +11,17 @@ import {
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ArrowRight, FileText, Hash, Search } from "lucide-react";
+import { ArrowRight, FileText, Hash, Search, X } from "lucide-react";
+import type { ReactNode } from "react";
 import type { Category, Post, Tag } from "@/lib/types";
 
 const PAGE_SIZE = 10;
 const FEATURED_MIN_PAGE = 1;
+const DEFAULT_SORT = "newest";
+
+type SortOption = "newest" | "updated" | "popular";
 
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
@@ -25,17 +30,61 @@ type PostWithTaxonomy = Post & {
   tags?: Tag[];
 };
 
-function buildPostsPath(categorySlug?: string) {
-  return categorySlug ? `/posts?category=${encodeURIComponent(categorySlug)}` : "/posts";
+function normalizeQuery(query: string) {
+  return query.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function parseSort(value?: string): SortOption {
+  return value === "updated" || value === "popular" ? value : DEFAULT_SORT;
+}
+
+function buildKeywordFilter(query: string) {
+  return [
+    `title.ilike.%${query}%`,
+    `excerpt.ilike.%${query}%`,
+    `content.ilike.%${query}%`,
+  ].join(",");
+}
+
+function buildPostsPath({
+  categorySlug,
+  searchQuery,
+  sort,
+}: {
+  categorySlug?: string;
+  searchQuery?: string;
+  sort?: SortOption;
+} = {}) {
+  const params = new URLSearchParams();
+
+  if (categorySlug) params.set("category", categorySlug);
+  if (searchQuery) params.set("q", searchQuery);
+  if (sort && sort !== DEFAULT_SORT) params.set("sort", sort);
+
+  const query = params.toString();
+  return query ? `/posts?${query}` : "/posts";
 }
 
 export default async function PostsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; category?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    category?: string;
+    q?: string;
+    sort?: string;
+  }>;
 }) {
-  const { page: pageStr, category: categorySlug } = await searchParams;
+  const {
+    page: pageStr,
+    category: categorySlug,
+    q,
+    sort: sortParam,
+  } = await searchParams;
   const page = Math.max(1, parseInt(pageStr || "1", 10) || 1);
+  const rawQuery = q?.trim() || "";
+  const searchQuery = normalizeQuery(rawQuery);
+  const sort = parseSort(sortParam);
   const supabase = await createClient();
 
   const { data: categories } = await supabase
@@ -44,15 +93,33 @@ export default async function PostsPage({
     .eq("type", "post")
     .order("name");
 
-  const categorySummaries = await Promise.all(
-    (categories || []).map(async (category) => {
-      const { count } = await supabase
-        .from("posts")
-        .select("id", { count: "exact", head: true })
-        .eq("published", true)
-        .eq("category_id", category.id);
+  const articleCategories = (categories || []) as Category[];
+  const articleCategoryIds = articleCategories.map((category) => category.id);
 
-      return { ...category, postCount: count || 0 };
+  const [{ data: allArticlePosts }, { data: tags }] = await Promise.all([
+    articleCategoryIds.length > 0
+      ? supabase
+          .from("posts")
+          .select("id, category_id")
+          .eq("published", true)
+          .in("category_id", articleCategoryIds)
+      : Promise.resolve({ data: [] }),
+    supabase.from("tags").select("*").order("name"),
+  ]);
+
+  const categoryCounts = (allArticlePosts || []).reduce<Map<string, number>>(
+    (counts, post) => {
+      if (!post.category_id) return counts;
+      counts.set(post.category_id, (counts.get(post.category_id) || 0) + 1);
+      return counts;
+    },
+    new Map()
+  );
+
+  const categorySummaries: CategorySummary[] = articleCategories.map(
+    (category) => ({
+      ...category,
+      postCount: categoryCounts.get(category.id) || 0,
     })
   );
 
@@ -68,53 +135,83 @@ export default async function PostsPage({
       categoryName = selected.name;
     }
   }
+  const activeCategorySlug = categoryId ? categorySlug : undefined;
+  const hasArticleScope = Boolean(categoryId || articleCategoryIds.length > 0);
 
-  const countQuery = categoryId
-    ? supabase
-        .from("posts")
-        .select("id", { count: "exact", head: true })
-        .eq("published", true)
-        .eq("category_id", categoryId)
-    : supabase
-        .from("posts")
-        .select("id", { count: "exact", head: true })
-        .eq("published", true);
+  let countQuery = supabase
+    .from("posts")
+    .select("id", { count: "exact", head: true })
+    .eq("published", true);
 
-  const { count } = await countQuery;
+  if (categoryId) {
+    countQuery = countQuery.eq("category_id", categoryId);
+  } else if (articleCategoryIds.length > 0) {
+    countQuery = countQuery.in("category_id", articleCategoryIds);
+  }
+
+  if (searchQuery) {
+    countQuery = countQuery.or(buildKeywordFilter(searchQuery));
+  }
+
+  const { count } = hasArticleScope ? await countQuery : { count: 0 };
   const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
 
   const from = (page - 1) * PAGE_SIZE;
   const to = page * PAGE_SIZE - 1;
-  const postsQuery = categoryId
-    ? supabase
-        .from("posts")
-        .select("*, category:categories!inner(*)")
-        .eq("published", true)
-        .eq("category_id", categoryId)
-        .order("created_at", { ascending: false })
-        .range(from, to)
-    : supabase
-        .from("posts")
-        .select("*, category:categories(*)")
-        .eq("published", true)
-        .order("created_at", { ascending: false })
-        .range(from, to);
+  let postsQuery = supabase
+    .from("posts")
+    .select("*, category:categories(*)")
+    .eq("published", true);
 
-  const [{ data: posts }, { data: tags }] = await Promise.all([
-    postsQuery,
-    supabase.from("tags").select("*").order("name"),
-  ]);
+  if (categoryId) {
+    postsQuery = postsQuery.eq("category_id", categoryId);
+  } else if (articleCategoryIds.length > 0) {
+    postsQuery = postsQuery.in("category_id", articleCategoryIds);
+  }
 
-  const tagSummaries = await Promise.all(
-    (tags || []).map(async (tag) => {
-      const { count: tagCount } = await supabase
-        .from("post_tags")
-        .select("post_id", { count: "exact", head: true })
-        .eq("tag_id", tag.id);
+  if (searchQuery) {
+    postsQuery = postsQuery.or(buildKeywordFilter(searchQuery));
+  }
 
-      return { ...tag, postCount: tagCount || 0 };
-    })
+  if (sort === "popular") {
+    postsQuery = postsQuery
+      .order("view_count", { ascending: false })
+      .order("created_at", { ascending: false });
+  } else if (sort === "updated") {
+    postsQuery = postsQuery
+      .order("updated_at", { ascending: false })
+      .order("created_at", { ascending: false });
+  } else {
+    postsQuery = postsQuery.order("created_at", { ascending: false });
+  }
+
+  const { data: posts } = hasArticleScope
+    ? await postsQuery.range(from, to)
+    : { data: [] };
+
+  const allArticlePostIds = (allArticlePosts || []).map((post) => post.id);
+  const { data: articlePostTags } =
+    allArticlePostIds.length > 0
+      ? await supabase
+          .from("post_tags")
+          .select("post_id, tag_id")
+          .in("post_id", allArticlePostIds)
+      : { data: [] };
+
+  const tagCounts = (articlePostTags || []).reduce<Map<string, number>>(
+    (counts, postTag) => {
+      counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
+      return counts;
+    },
+    new Map()
   );
+  const tagSummaries: TagSummary[] = (tags || [])
+    .map((tag) => ({
+      ...tag,
+      postCount: tagCounts.get(tag.id) || 0,
+    }))
+    .filter((tag) => tag.postCount > 0)
+    .sort((a, b) => b.postCount - a.postCount);
 
   const postsWithTags = await Promise.all(
     ((posts || []) as unknown as PostWithTaxonomy[]).map(async (post) => {
@@ -137,11 +234,20 @@ export default async function PostsPage({
   );
 
   const shouldFeature =
-    page === FEATURED_MIN_PAGE && !categoryName && postsWithTags.length > 0;
+    page === FEATURED_MIN_PAGE &&
+    !categoryName &&
+    !searchQuery &&
+    sort === DEFAULT_SORT &&
+    postsWithTags.length > 0;
   const featuredPost = shouldFeature ? postsWithTags[0] : null;
   const listPosts = shouldFeature ? postsWithTags.slice(1) : postsWithTags;
-  const basePath = buildPostsPath(categorySlug);
+  const basePath = buildPostsPath({
+    categorySlug: activeCategorySlug,
+    searchQuery,
+    sort,
+  });
   const totalCount = count || 0;
+  const allArticleCount = allArticlePosts?.length || 0;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -149,8 +255,14 @@ export default async function PostsPage({
       <PublicPageShell className="max-w-[1280px]">
         <PublicPageHeader
           eyebrow="Posts"
-          title={categoryName ? `文章 · ${categoryName}` : "文章"}
-          description="系统整理的技术笔记、项目复盘与长期主题。"
+          title={
+            categoryName
+              ? `文章 · ${categoryName}`
+              : searchQuery
+                ? `文章 · ${searchQuery}`
+                : "文章"
+          }
+          description="系统整理的技术笔记、项目复盘与长期主题，可按分类、关键词和排序继续收窄。"
           countLabel={`${totalCount} 篇`}
           action={
             <Button variant="outline" asChild>
@@ -164,12 +276,28 @@ export default async function PostsPage({
 
         <CategoryNav
           categories={categorySummaries}
-          activeSlug={categorySlug}
-          totalCount={totalCount}
+          activeSlug={activeCategorySlug}
+          totalCount={allArticleCount}
+          searchQuery={searchQuery}
+          sort={sort}
+        />
+
+        <ListFilterBar
+          categorySlug={activeCategorySlug}
+          searchQuery={searchQuery}
+          rawQuery={rawQuery}
+          sort={sort}
+        />
+
+        <ActiveFilterSummary
+          categoryName={categoryName}
+          categorySlug={activeCategorySlug}
+          searchQuery={searchQuery}
+          sort={sort}
         />
 
         {postsWithTags.length > 0 ? (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
             <div className="min-w-0 space-y-8">
               {featuredPost ? (
                 <section aria-labelledby="featured-post-title" className="space-y-3">
@@ -195,10 +323,14 @@ export default async function PostsPage({
                         Latest
                       </p>
                       <h2 id="latest-posts-title" className="text-base font-medium">
-                        最新内容
+                        {sort === "popular"
+                          ? "热门内容"
+                          : sort === "updated"
+                            ? "最近更新"
+                            : "最新内容"}
                       </h2>
                     </div>
-                    {categoryName ? (
+                    {categoryName || searchQuery || sort !== DEFAULT_SORT ? (
                       <Link
                         href="/posts"
                         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
@@ -231,7 +363,7 @@ export default async function PostsPage({
                 title="分类"
                 description="按主题浏览长期内容。"
                 items={categorySummaries}
-                activeSlug={categorySlug}
+                activeSlug={activeCategorySlug}
                 hrefPrefix="/posts?category="
                 icon="category"
               />
@@ -247,12 +379,22 @@ export default async function PostsPage({
         ) : (
           <PublicEmptyState
             icon={FileText}
-            title={categoryName ? "当前分类暂无文章" : "暂无文章"}
-            description="发布文章后，内容会按时间顺序展示在这里。"
+            title={
+              searchQuery
+                ? "没有匹配的文章"
+                : categoryName
+                  ? "当前分类暂无文章"
+                  : "暂无文章"
+            }
+            description={
+              searchQuery
+                ? `没有找到包含「${searchQuery}」的文章，可以换个关键词或清除筛选。`
+                : "发布文章后，内容会按时间顺序展示在这里。"
+            }
             action={
-              categoryName ? (
+              categoryName || searchQuery || sort !== DEFAULT_SORT ? (
                 <Button variant="outline" asChild>
-                  <Link href="/posts">查看全部文章</Link>
+                  <Link href="/posts">清除筛选</Link>
                 </Button>
               ) : null
             }
@@ -268,10 +410,14 @@ function CategoryNav({
   categories,
   activeSlug,
   totalCount,
+  searchQuery,
+  sort,
 }: {
   categories: CategorySummary[];
   activeSlug?: string;
   totalCount: number;
+  searchQuery: string;
+  sort: SortOption;
 }) {
   if (categories.length === 0) return null;
 
@@ -280,14 +426,21 @@ function CategoryNav({
       aria-label="文章分类"
       className="-mx-4 flex gap-2 overflow-x-auto border-b border-border/50 px-4 pb-4 md:mx-0 md:px-0"
     >
-      <CategoryLink href="/posts" active={!activeSlug}>
+      <CategoryLink
+        href={buildPostsPath({ searchQuery, sort })}
+        active={!activeSlug}
+      >
         全部
         <span className="text-xs text-muted-foreground">{totalCount}</span>
       </CategoryLink>
       {categories.map((category) => (
         <CategoryLink
           key={category.id}
-          href={buildPostsPath(category.slug)}
+          href={buildPostsPath({
+            categorySlug: category.slug,
+            searchQuery,
+            sort,
+          })}
           active={activeSlug === category.slug}
         >
           {category.name}
@@ -307,7 +460,7 @@ function CategoryLink({
 }: {
   href: string;
   active: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Link
@@ -320,6 +473,138 @@ function CategoryLink({
       )}
     >
       {children}
+    </Link>
+  );
+}
+
+function ListFilterBar({
+  categorySlug,
+  searchQuery,
+  rawQuery,
+  sort,
+}: {
+  categorySlug?: string;
+  searchQuery: string;
+  rawQuery: string;
+  sort: SortOption;
+}) {
+  const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
+
+  return (
+    <section className="mt-5 rounded-lg border bg-card p-3">
+      <form
+        action="/posts"
+        role="search"
+        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_160px_auto_auto]"
+      >
+        {categorySlug ? (
+          <input type="hidden" name="category" value={categorySlug} />
+        ) : null}
+        <label htmlFor="posts-filter-search" className="sr-only">
+          搜索文章
+        </label>
+        <div className="relative min-w-0">
+          <Search
+            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            suppressHydrationWarning
+          />
+          <Input
+            id="posts-filter-search"
+            type="search"
+            name="q"
+            defaultValue={rawQuery}
+            placeholder="在文章中搜索标题、摘要或正文..."
+            className="h-10 border-border/60 bg-background pl-10"
+          />
+        </div>
+        <label htmlFor="posts-sort" className="sr-only">
+          文章排序
+        </label>
+        <select
+          id="posts-sort"
+          name="sort"
+          defaultValue={sort}
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          <option value="newest">最新发布</option>
+          <option value="updated">最近更新</option>
+          <option value="popular">阅读最多</option>
+        </select>
+        <Button type="submit" className="h-10">
+          筛选
+        </Button>
+        {hasFilters ? (
+          <Button variant="outline" className="h-10" asChild>
+            <Link href={buildPostsPath({ categorySlug })}>清除</Link>
+          </Button>
+        ) : null}
+      </form>
+    </section>
+  );
+}
+
+function getSortLabel(sort: SortOption) {
+  if (sort === "popular") return "阅读最多";
+  if (sort === "updated") return "最近更新";
+  return "最新发布";
+}
+
+function ActiveFilterSummary({
+  categoryName,
+  categorySlug,
+  searchQuery,
+  sort,
+}: {
+  categoryName: string | null;
+  categorySlug?: string;
+  searchQuery: string;
+  sort: SortOption;
+}) {
+  const hasFilters = Boolean(categoryName || searchQuery || sort !== DEFAULT_SORT);
+  if (!hasFilters) return null;
+
+  return (
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="text-xs text-muted-foreground">当前筛选</span>
+        {categoryName ? (
+          <FilterPill
+            label={`分类：${categoryName}`}
+            href={buildPostsPath({ searchQuery, sort })}
+          />
+        ) : null}
+        {searchQuery ? (
+          <FilterPill
+            label={`关键词：${searchQuery}`}
+            href={buildPostsPath({ categorySlug, sort })}
+          />
+        ) : null}
+        {sort !== DEFAULT_SORT ? (
+          <FilterPill
+            label={`排序：${getSortLabel(sort)}`}
+            href={buildPostsPath({ categorySlug, searchQuery })}
+          />
+        ) : null}
+      </div>
+      <Link
+        href="/posts"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        清除全部
+      </Link>
+    </section>
+  );
+}
+
+function FilterPill({ label, href }: { label: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      aria-label={`移除${label}`}
+    >
+      <span className="truncate">{label}</span>
+      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
     </Link>
   );
 }

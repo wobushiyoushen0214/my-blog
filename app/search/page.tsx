@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, FolderOpen, Hash, Search } from "lucide-react";
+import { ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -20,9 +20,41 @@ export const metadata: Metadata = {
 };
 
 type PostRow = Post & { category?: Category | null; tags?: Tag[] };
+type SearchType = "all" | "post" | "moment";
+type SortOption = "newest" | "updated" | "popular";
+
+const DEFAULT_TYPE: SearchType = "all";
+const DEFAULT_SORT: SortOption = "newest";
 
 function normalizeQuery(query: string) {
-  return query.replace(/[%,()]/g, " ").replace(/\s+/g, " ").trim();
+  return query.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function parseType(value?: string): SearchType {
+  return value === "post" || value === "moment" ? value : DEFAULT_TYPE;
+}
+
+function parseSort(value?: string): SortOption {
+  return value === "updated" || value === "popular" ? value : DEFAULT_SORT;
+}
+
+function buildSearchPath({
+  query,
+  type,
+  sort,
+}: {
+  query?: string;
+  type?: SearchType;
+  sort?: SortOption;
+}) {
+  const params = new URLSearchParams();
+
+  if (query) params.set("q", query);
+  if (type && type !== DEFAULT_TYPE) params.set("type", type);
+  if (sort && sort !== DEFAULT_SORT) params.set("sort", sort);
+
+  const search = params.toString();
+  return search ? `/search?${search}` : "/search";
 }
 
 function matchesQuery(values: Array<string | null | undefined>, query: string) {
@@ -39,10 +71,35 @@ function mergePosts(groups: PostRow[][]) {
     }
   });
 
-  return Array.from(seen.values()).sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  return Array.from(seen.values());
+}
+
+function getPostType(post: PostRow): Exclude<SearchType, "all"> {
+  return post.category?.type === "moment" ? "moment" : "post";
+}
+
+function filterPostsByType(posts: PostRow[], type: SearchType) {
+  if (type === "all") return posts;
+  return posts.filter((post) => getPostType(post) === type);
+}
+
+function filterCategoriesByType(categories: Category[], type: SearchType) {
+  if (type === "all") return categories;
+  return categories.filter((category) =>
+    type === "moment" ? category.type === "moment" : category.type !== "moment"
   );
+}
+
+function sortPosts(posts: PostRow[], sort: SortOption) {
+  return [...posts].sort((a, b) => {
+    if (sort === "popular") {
+      const viewDelta = (b.view_count || 0) - (a.view_count || 0);
+      if (viewDelta !== 0) return viewDelta;
+    }
+
+    const field = sort === "updated" ? "updated_at" : "created_at";
+    return new Date(b[field]).getTime() - new Date(a[field]).getTime();
+  });
 }
 
 async function attachTags(
@@ -70,24 +127,58 @@ async function attachTags(
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; type?: string; sort?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, type: typeParam, sort: sortParam } = await searchParams;
   const rawQuery = q?.trim() || "";
   const query = normalizeQuery(rawQuery);
+  const contentType = parseType(typeParam);
+  const sort = parseSort(sortParam);
   const supabase = await createClient();
 
-  const [{ data: categories }, { data: tags }, { data: recentData }] =
-    await Promise.all([
-      supabase.from("categories").select("*").order("name"),
-      supabase.from("tags").select("*").order("name"),
-      supabase
-        .from("posts")
-        .select("*, category:categories(*)")
-        .eq("published", true)
-        .order("created_at", { ascending: false })
-        .limit(6),
-    ]);
+  const [{ data: categories }, { data: tags }] = await Promise.all([
+    supabase.from("categories").select("*").order("name"),
+    supabase.from("tags").select("*").order("name"),
+  ]);
+
+  const typedCategories = (categories || []) as Category[];
+  const postCategoryIds = typedCategories
+    .filter((category) => category.type !== "moment")
+    .map((category) => category.id);
+  const momentCategoryIds = typedCategories
+    .filter((category) => category.type === "moment")
+    .map((category) => category.id);
+  const canQueryRecent =
+    contentType === "all" ||
+    (contentType === "post" && postCategoryIds.length > 0) ||
+    (contentType === "moment" && momentCategoryIds.length > 0);
+
+  let recentQuery = supabase
+    .from("posts")
+    .select("*, category:categories(*)")
+    .eq("published", true);
+
+  if (contentType === "post") {
+    recentQuery = recentQuery.in("category_id", postCategoryIds);
+  } else if (contentType === "moment") {
+    recentQuery = recentQuery.in("category_id", momentCategoryIds);
+  }
+
+  if (sort === "popular") {
+    recentQuery = recentQuery
+      .order("view_count", { ascending: false })
+      .order("created_at", { ascending: false });
+  } else if (sort === "updated") {
+    recentQuery = recentQuery
+      .order("updated_at", { ascending: false })
+      .order("created_at", { ascending: false });
+  } else {
+    recentQuery = recentQuery.order("created_at", { ascending: false });
+  }
+
+  const { data: recentData } = canQueryRecent
+    ? await recentQuery.limit(8)
+    : { data: [] };
 
   const categorySummaries = await Promise.all(
     (categories || []).map(async (category) => {
@@ -115,9 +206,12 @@ export default async function SearchPage({
   let matchedTags: Tag[] = [];
 
   if (query) {
-    const escaped = query.replace(/\./g, " ");
-    matchedCategories = (categories || []).filter((category) =>
-      matchesQuery([category.name, category.slug], query)
+    const escaped = query;
+    matchedCategories = filterCategoriesByType(
+      (categories || []).filter((category) =>
+        matchesQuery([category.name, category.slug], query)
+      ),
+      contentType
     );
     matchedTags = (tags || []).filter((tag) =>
       matchesQuery([tag.name, tag.slug], query)
@@ -143,7 +237,7 @@ export default async function SearchPage({
           ].join(",")
         )
         .order("created_at", { ascending: false })
-        .limit(24),
+        .limit(60),
       categoryIds.length > 0
         ? supabase
             .from("posts")
@@ -151,7 +245,7 @@ export default async function SearchPage({
             .eq("published", true)
             .in("category_id", categoryIds)
             .order("created_at", { ascending: false })
-            .limit(24)
+            .limit(60)
         : Promise.resolve({ data: [] }),
       tagIds.length > 0
         ? supabase
@@ -172,25 +266,42 @@ export default async function SearchPage({
             .eq("published", true)
             .in("id", tagPostIds)
             .order("created_at", { ascending: false })
-            .limit(24)
+            .limit(60)
         : { data: [] };
 
-    const mergedResults = mergePosts([
-      (keywordPosts || []) as unknown as PostRow[],
-      (categoryPosts || []) as unknown as PostRow[],
-      (tagPosts || []) as unknown as PostRow[],
-    ]).slice(0, 24);
+    const mergedResults = sortPosts(
+      filterPostsByType(
+        mergePosts([
+          (keywordPosts || []) as unknown as PostRow[],
+          (categoryPosts || []) as unknown as PostRow[],
+          (tagPosts || []) as unknown as PostRow[],
+        ]),
+        contentType
+      ),
+      sort
+    ).slice(0, 24);
 
     results = await attachTags(supabase, mergedResults);
   }
 
   const recentPosts = await attachTags(
     supabase,
-    (recentData || []) as unknown as PostRow[]
+    sortPosts(
+      filterPostsByType((recentData || []) as unknown as PostRow[], contentType),
+      sort
+    )
   );
   const shownPosts = query ? results : recentPosts;
   const featuredPost = shownPosts[0] || null;
   const listPosts = shownPosts.slice(1);
+  const hasFilters = Boolean(contentType !== DEFAULT_TYPE || sort !== DEFAULT_SORT);
+  const resultLabel = query
+    ? `${results.length} 条结果`
+    : contentType === "post"
+      ? `${recentPosts.length} 篇文章`
+      : contentType === "moment"
+        ? `${recentPosts.length} 条见闻`
+        : undefined;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -199,13 +310,13 @@ export default async function SearchPage({
         <PublicPageHeader
           eyebrow="Search"
           title={query ? `搜索 · ${query}` : "搜索与发现"}
-          description="按关键词检索标题、正文、分类和标签，也可以从主题入口继续探索。"
-          countLabel={query ? `${results.length} 条结果` : undefined}
+          description="按关键词检索标题、正文、分类和标签，也可以按内容类型和排序继续收窄。"
+          countLabel={resultLabel}
         />
 
         <section className="rounded-lg border bg-card p-3">
           <form
-            className="flex flex-col gap-2 sm:flex-row"
+            className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_150px_150px_auto_auto]"
             role="search"
             action="/search"
           >
@@ -226,17 +337,55 @@ export default async function SearchPage({
                 className="h-10 border-border/60 bg-background pl-10"
               />
             </div>
-            <Button type="submit" className="sm:w-auto">
+            <label htmlFor="search-type" className="sr-only">
+              内容类型
+            </label>
+            <select
+              id="search-type"
+              name="type"
+              defaultValue={contentType}
+              className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            >
+              <option value="all">全部内容</option>
+              <option value="post">只看文章</option>
+              <option value="moment">只看见闻</option>
+            </select>
+            <label htmlFor="search-sort" className="sr-only">
+              搜索排序
+            </label>
+            <select
+              id="search-sort"
+              name="sort"
+              defaultValue={sort}
+              className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            >
+              <option value="newest">最新发布</option>
+              <option value="updated">最近更新</option>
+              <option value="popular">阅读最多</option>
+            </select>
+            <Button type="submit" className="h-10">
               <Search className="h-4 w-4" suppressHydrationWarning />
               搜索
             </Button>
-            {query ? (
-              <Button variant="outline" asChild>
+            {query || hasFilters ? (
+              <Button variant="outline" className="h-10" asChild>
                 <Link href="/search">清除</Link>
               </Button>
             ) : null}
           </form>
         </section>
+
+        <TypeSwitch
+          query={query}
+          activeType={contentType}
+          sort={sort}
+        />
+
+        <ActiveSearchSummary
+          query={query}
+          activeType={contentType}
+          sort={sort}
+        />
 
         {query && (matchedCategories.length > 0 || matchedTags.length > 0) ? (
           <SearchMatchPanel
@@ -253,7 +402,19 @@ export default async function SearchPage({
                   <section className="space-y-3">
                     <SectionTitle
                       eyebrow={query ? "Best Match" : "Recent"}
-                      title={query ? "最相关内容" : "最近发布"}
+                      title={
+                        query
+                          ? sort === "popular"
+                            ? "热门匹配"
+                            : sort === "updated"
+                              ? "最近更新"
+                              : "最新匹配"
+                          : sort === "popular"
+                            ? "热门内容"
+                            : sort === "updated"
+                              ? "最近更新"
+                              : "最近发布"
+                      }
                     />
                     <PostCard
                       post={featuredPost}
@@ -279,11 +440,11 @@ export default async function SearchPage({
             ) : query ? (
               <PublicEmptyState
                 icon={Search}
-                title="没有找到相关文章"
-                description={`没有匹配「${query}」的内容，可以换个关键词或从右侧主题继续浏览。`}
+                title="没有找到匹配内容"
+                description={`没有匹配「${query}」的${contentType === "post" ? "文章" : contentType === "moment" ? "见闻" : "内容"}，可以换个关键词或清除筛选。`}
                 action={
                   <Button variant="outline" asChild>
-                    <Link href="/posts">查看全部文章</Link>
+                    <Link href="/search">清除筛选</Link>
                   </Button>
                 }
               />
@@ -319,8 +480,16 @@ export default async function SearchPage({
                 不确定关键词时，可以直接进入文章流按时间和主题浏览。
               </p>
               <Button className="mt-4 w-full" variant="outline" asChild>
-                <Link href="/posts">
-                  文章列表
+                <Link
+                  href={
+                    contentType === "moment"
+                      ? "/moments"
+                      : contentType === "post"
+                        ? "/posts"
+                        : "/posts"
+                  }
+                >
+                  {contentType === "moment" ? "见闻列表" : "文章列表"}
                   <ArrowRight className="h-4 w-4" suppressHydrationWarning />
                 </Link>
               </Button>
@@ -341,6 +510,118 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
       </p>
       <h2 className="mt-1 text-base font-medium">{title}</h2>
     </div>
+  );
+}
+
+function getSearchTypeLabel(type: SearchType) {
+  if (type === "post") return "文章";
+  if (type === "moment") return "见闻";
+  return "全部";
+}
+
+function getSortLabel(sort: SortOption) {
+  if (sort === "popular") return "阅读最多";
+  if (sort === "updated") return "最近更新";
+  return "最新发布";
+}
+
+function ActiveSearchSummary({
+  query,
+  activeType,
+  sort,
+}: {
+  query: string;
+  activeType: SearchType;
+  sort: SortOption;
+}) {
+  const hasFilters = Boolean(query || activeType !== DEFAULT_TYPE || sort !== DEFAULT_SORT);
+  if (!hasFilters) return null;
+
+  return (
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="text-xs text-muted-foreground">当前筛选</span>
+        {query ? (
+          <FilterPill
+            label={`关键词：${query}`}
+            href={buildSearchPath({ type: activeType, sort })}
+          />
+        ) : null}
+        {activeType !== DEFAULT_TYPE ? (
+          <FilterPill
+            label={`类型：${getSearchTypeLabel(activeType)}`}
+            href={buildSearchPath({ query, sort })}
+          />
+        ) : null}
+        {sort !== DEFAULT_SORT ? (
+          <FilterPill
+            label={`排序：${getSortLabel(sort)}`}
+            href={buildSearchPath({ query, type: activeType })}
+          />
+        ) : null}
+      </div>
+      <Link
+        href="/search"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        清除全部
+      </Link>
+    </section>
+  );
+}
+
+function FilterPill({ label, href }: { label: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      aria-label={`移除${label}`}
+    >
+      <span className="truncate">{label}</span>
+      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
+    </Link>
+  );
+}
+
+function TypeSwitch({
+  query,
+  activeType,
+  sort,
+}: {
+  query: string;
+  activeType: SearchType;
+  sort: SortOption;
+}) {
+  const items: Array<{ value: SearchType; label: string }> = [
+    { value: "all", label: "全部" },
+    { value: "post", label: "文章" },
+    { value: "moment", label: "见闻" },
+  ];
+
+  return (
+    <nav
+      aria-label="搜索内容类型"
+      className="-mx-4 mt-4 flex gap-2 overflow-x-auto border-b border-border/50 px-4 pb-4 md:mx-0 md:px-0"
+    >
+      {items.map((item) => (
+        <Link
+          key={item.value}
+          href={buildSearchPath({
+            query,
+            type: item.value,
+            sort,
+          })}
+          aria-current={activeType === item.value ? "page" : undefined}
+          className={`inline-flex h-9 shrink-0 items-center rounded-md border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+            activeType === item.value
+              ? "border-primary/40 bg-primary/10 text-primary"
+              : "border-border/60 bg-background text-muted-foreground hover:border-primary/30 hover:text-primary"
+          }`}
+        >
+          {item.label}
+        </Link>
+      ))}
+    </nav>
   );
 }
 

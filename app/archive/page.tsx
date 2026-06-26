@@ -9,6 +9,7 @@ import {
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
   CalendarDays,
@@ -19,6 +20,7 @@ import {
   NotebookText,
   Rss,
   Search,
+  X,
 } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
@@ -37,6 +39,7 @@ type ArchivePostBase = Pick<
 type ArchivePost = ArchivePostBase & {
   tags: Tag[];
 };
+type SearchType = "all" | "post" | "moment";
 
 type MonthGroup = {
   key: string;
@@ -55,6 +58,16 @@ type YearBucket = {
   count: number;
   months: Map<string, MonthGroup>;
 };
+
+const DEFAULT_TYPE: SearchType = "all";
+
+function normalizeQuery(query: string) {
+  return query.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function parseType(value?: string): SearchType {
+  return value === "post" || value === "moment" ? value : DEFAULT_TYPE;
+}
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("zh-CN", {
@@ -86,6 +99,56 @@ function getCategoryHref(category: Category) {
 
 function getContentTypeLabel(category?: Category | null) {
   return category?.type === "moment" ? "见闻" : "文章";
+}
+
+function getSearchTypeLabel(type: SearchType) {
+  if (type === "post") return "文章";
+  if (type === "moment") return "见闻";
+  return "全部";
+}
+
+function getArchivePostType(post: ArchivePost): Exclude<SearchType, "all"> {
+  return post.category?.type === "moment" ? "moment" : "post";
+}
+
+function buildArchivePath({
+  query,
+  type,
+}: {
+  query?: string;
+  type?: SearchType;
+} = {}) {
+  const params = new URLSearchParams();
+
+  if (query) params.set("q", query);
+  if (type && type !== DEFAULT_TYPE) params.set("type", type);
+
+  const search = params.toString();
+  return search ? `/archive?${search}` : "/archive";
+}
+
+function matchesArchiveQuery(post: ArchivePost, query: string) {
+  if (!query) return true;
+
+  const normalized = query.toLowerCase();
+  const searchableValues = [
+    post.title,
+    post.excerpt,
+    post.category?.name,
+    post.category?.slug,
+    ...post.tags.flatMap((tag) => [tag.name, tag.slug]),
+  ];
+
+  return searchableValues.some((value) =>
+    value?.toLowerCase().includes(normalized)
+  );
+}
+
+function filterArchivePosts(posts: ArchivePost[], query: string, type: SearchType) {
+  return posts.filter((post) => {
+    const typeMatched = type === DEFAULT_TYPE || getArchivePostType(post) === type;
+    return typeMatched && matchesArchiveQuery(post, query);
+  });
 }
 
 function groupArchivePosts(posts: ArchivePost[]): YearGroup[] {
@@ -120,7 +183,15 @@ function groupArchivePosts(posts: ArchivePost[]): YearGroup[] {
   }));
 }
 
-export default async function ArchivePage() {
+export default async function ArchivePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; type?: string }>;
+}) {
+  const { q, type: typeParam } = await searchParams;
+  const rawQuery = q?.trim() || "";
+  const searchQuery = normalizeQuery(rawQuery);
+  const contentType = parseType(typeParam);
   const supabase = await createClient();
 
   const [{ data: postRows }, { data: tags }] = await Promise.all([
@@ -159,14 +230,15 @@ export default async function ArchivePage() {
     ...post,
     tags: tagsByPostId.get(post.id) || [],
   }));
-  const yearGroups = groupArchivePosts(archivePosts);
-  const articleCount = archivePosts.filter(
+  const filteredPosts = filterArchivePosts(archivePosts, searchQuery, contentType);
+  const yearGroups = groupArchivePosts(filteredPosts);
+  const articleCount = filteredPosts.filter(
     (post) => post.category?.type !== "moment"
   ).length;
-  const momentCount = archivePosts.filter(
+  const momentCount = filteredPosts.filter(
     (post) => post.category?.type === "moment"
   ).length;
-  const totalViews = archivePosts.reduce(
+  const totalViews = filteredPosts.reduce(
     (sum, post) => sum + (post.view_count || 0),
     0
   );
@@ -175,7 +247,7 @@ export default async function ArchivePage() {
       ? `${yearGroups[yearGroups.length - 1].year} - ${yearGroups[0].year}`
       : yearGroups[0]?.year || "0";
   const categoryStats = Array.from(
-    archivePosts.reduce<Map<string, { category: Category; count: number }>>(
+    filteredPosts.reduce<Map<string, { category: Category; count: number }>>(
       (groups, post) => {
         if (!post.category) return groups;
         const current = groups.get(post.category.id);
@@ -188,6 +260,10 @@ export default async function ArchivePage() {
       new Map()
     ).values()
   ).sort((a, b) => b.count - a.count);
+  const hasFilters = Boolean(searchQuery || contentType !== DEFAULT_TYPE);
+  const countLabel = hasFilters
+    ? `${filteredPosts.length} / ${archivePosts.length} 篇内容`
+    : `${archivePosts.length} 篇内容`;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -197,7 +273,7 @@ export default async function ArchivePage() {
           eyebrow="Archive"
           title="归档"
           description="按发布时间回看文章和见闻，适合快速定位某个阶段的记录。"
-          countLabel={`${archivePosts.length} 篇内容`}
+          countLabel={countLabel}
           action={
             <Button variant="outline" asChild>
               <Link href="/search">
@@ -210,22 +286,47 @@ export default async function ArchivePage() {
 
         {archivePosts.length > 0 ? (
           <>
+            <ArchiveFilterBar
+              rawQuery={rawQuery}
+              contentType={contentType}
+              hasFilters={hasFilters}
+            />
+
+            <ActiveArchiveSummary query={searchQuery} contentType={contentType} />
+
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <ArchiveStat label="全部内容" value={archivePosts.length} />
+              <ArchiveStat label="当前内容" value={filteredPosts.length} />
               <ArchiveStat label="文章" value={articleCount} />
               <ArchiveStat label="见闻" value={momentCount} />
               <ArchiveStat label="年份跨度" value={yearRange} />
             </div>
 
-            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
-              <ArchiveTimeline yearGroups={yearGroups} totalViews={totalViews} />
+            {filteredPosts.length > 0 ? (
+              <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+                <ArchiveTimeline yearGroups={yearGroups} totalViews={totalViews} />
 
-              <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-                <YearIndex yearGroups={yearGroups} />
-                <CategoryDistribution items={categoryStats.slice(0, 8)} />
-                <BrowsePanel />
-              </aside>
-            </div>
+                <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+                  <YearIndex yearGroups={yearGroups} />
+                  <CategoryDistribution items={categoryStats.slice(0, 8)} />
+                  <BrowsePanel />
+                </aside>
+              </div>
+            ) : (
+              <PublicEmptyState
+                icon={Search}
+                title="没有匹配的归档内容"
+                description={
+                  searchQuery
+                    ? `没有找到包含「${searchQuery}」的${contentType === "post" ? "文章" : contentType === "moment" ? "见闻" : "内容"}，可以换个关键词或清除筛选。`
+                    : "当前类型下暂无归档内容，可以切换到全部内容查看。"
+                }
+                action={
+                  <Button variant="outline" asChild>
+                    <Link href="/archive">清除筛选</Link>
+                  </Button>
+                }
+              />
+            )}
           </>
         ) : (
           <PublicEmptyState
@@ -242,6 +343,115 @@ export default async function ArchivePage() {
       </PublicPageShell>
       <Footer />
     </div>
+  );
+}
+
+function ArchiveFilterBar({
+  rawQuery,
+  contentType,
+  hasFilters,
+}: {
+  rawQuery: string;
+  contentType: SearchType;
+  hasFilters: boolean;
+}) {
+  return (
+    <section className="rounded-lg border bg-card p-3">
+      <form
+        action="/archive"
+        role="search"
+        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_160px_auto_auto]"
+      >
+        <label htmlFor="archive-filter-search" className="sr-only">
+          搜索归档
+        </label>
+        <div className="relative min-w-0">
+          <Search
+            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            suppressHydrationWarning
+          />
+          <Input
+            id="archive-filter-search"
+            type="search"
+            name="q"
+            defaultValue={rawQuery}
+            placeholder="搜索标题、摘要、分类或标签..."
+            className="h-10 border-border/60 bg-background pl-10"
+          />
+        </div>
+        <label htmlFor="archive-type" className="sr-only">
+          归档类型
+        </label>
+        <select
+          id="archive-type"
+          name="type"
+          defaultValue={contentType}
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          <option value="all">全部内容</option>
+          <option value="post">只看文章</option>
+          <option value="moment">只看见闻</option>
+        </select>
+        <Button type="submit" className="h-10">
+          筛选
+        </Button>
+        {hasFilters ? (
+          <Button variant="outline" className="h-10" asChild>
+            <Link href="/archive">清除</Link>
+          </Button>
+        ) : null}
+      </form>
+    </section>
+  );
+}
+
+function ActiveArchiveSummary({
+  query,
+  contentType,
+}: {
+  query: string;
+  contentType: SearchType;
+}) {
+  const hasFilters = Boolean(query || contentType !== DEFAULT_TYPE);
+  if (!hasFilters) return null;
+
+  return (
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="text-xs text-muted-foreground">当前筛选</span>
+        {query ? (
+          <FilterPill
+            label={`关键词：${query}`}
+            href={buildArchivePath({ type: contentType })}
+          />
+        ) : null}
+        {contentType !== DEFAULT_TYPE ? (
+          <FilterPill
+            label={`类型：${getSearchTypeLabel(contentType)}`}
+            href={buildArchivePath({ query })}
+          />
+        ) : null}
+      </div>
+      <Link
+        href="/archive"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        清除全部
+      </Link>
+    </section>
+  );
+}
+
+function FilterPill({ label, href }: { label: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      aria-label={`移除${label}`}
+    >
+      <span className="truncate">{label}</span>
+      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
+    </Link>
   );
 }
 

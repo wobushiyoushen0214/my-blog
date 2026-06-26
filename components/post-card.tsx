@@ -2,11 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { ArrowRight, CalendarDays, Eye } from "lucide-react";
-import type { Post, Tag } from "@/lib/types";
+import { ArrowRight, CalendarDays, Clock3, Eye } from "lucide-react";
+import type { Category, Post, Tag } from "@/lib/types";
 
 interface PostCardProps {
-  post: Post & { category?: { name: string; slug: string } | null; tags?: Tag[] };
+  post: Post & {
+    category?: Pick<Category, "name" | "slug" | "type"> | null;
+    tags?: Tag[];
+  };
   variant?: "grid" | "featured" | "compact";
   ctaLabel?: string;
 }
@@ -23,6 +26,22 @@ function formatViews(value: number) {
   return new Intl.NumberFormat("zh-CN").format(value || 0);
 }
 
+function estimateReadingMinutes(post: Pick<Post, "title" | "content" | "excerpt">) {
+  const source = post.content || post.excerpt || post.title;
+  const text = source
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&[a-zA-Z0-9#]+;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const cjkCount = text.match(/[\u4e00-\u9fff]/g)?.length || 0;
+  const latinWordCount =
+    text
+      .replace(/[\u4e00-\u9fff]/g, " ")
+      .match(/[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*/g)?.length || 0;
+
+  return Math.max(1, Math.ceil(cjkCount / 450 + latinWordCount / 220));
+}
+
 export function PostCard({
   post,
   variant = "grid",
@@ -31,6 +50,8 @@ export function PostCard({
   const isFeatured = variant === "featured";
   const isCompact = variant === "compact";
   const showMedia = !isCompact;
+  const contentTypeLabel = post.category?.type === "moment" ? "见闻" : "文章";
+  const readingMinutes = estimateReadingMinutes(post);
 
   return (
     <Link
@@ -66,7 +87,7 @@ export function PostCard({
             <div className="flex h-full min-h-[220px] items-center justify-center p-6 text-center">
               <div className="max-w-xs space-y-2">
                 <span className="inline-flex rounded-md border bg-background px-2 py-1 text-xs text-muted-foreground">
-                  {post.category?.name || "Article"}
+                  {post.category?.name || contentTypeLabel}
                 </span>
                 <p className="line-clamp-3 text-sm font-medium leading-6 text-foreground/80">
                   {post.title}
@@ -92,6 +113,20 @@ export function PostCard({
             <span className="inline-flex items-center gap-1.5">
               <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
               {formatViews(post.view_count)} 阅读
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock3 className="h-3.5 w-3.5" suppressHydrationWarning />
+              约 {readingMinutes} 分钟
+            </span>
+            <span
+              className={cn(
+                "rounded-md border px-1.5 py-0.5 font-medium",
+                post.category?.type === "moment"
+                  ? "border-border/70 bg-muted/50 text-foreground"
+                  : "border-border/70 bg-background text-foreground"
+              )}
+            >
+              {contentTypeLabel}
             </span>
             {post.category ? (
               <span className="min-w-0 truncate rounded-md border bg-background px-1.5 py-0.5 font-medium text-foreground">
