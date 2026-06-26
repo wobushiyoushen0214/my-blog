@@ -8,6 +8,7 @@ import {
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
   CheckCircle2,
@@ -16,6 +17,7 @@ import {
   MessageSquareText,
   Rss,
   Search,
+  X,
 } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -33,8 +35,10 @@ type FriendLink = {
   tags?: string[];
   rss?: string;
 };
+type LinkStatus = "all" | FriendLink["status"];
 
 const friendLinks: FriendLink[] = [];
+const DEFAULT_STATUS: LinkStatus = "all";
 
 const applicationFields = [
   "站点名称和首页链接",
@@ -49,8 +53,73 @@ const linkRules = [
   "互链信息变更后可以再次留言，我会定期整理。",
 ];
 
-export default async function LinksPage() {
-  const groupedLinks = friendLinks.reduce<Record<string, FriendLink[]>>(
+const siteProfile = [
+  { label: "站点名称", value: "Lee 的个人博客" },
+  { label: "内容方向", value: "技术笔记、项目复盘、日常见闻" },
+  { label: "首页", value: "/" },
+  { label: "RSS", value: "/rss.xml" },
+];
+
+function normalizeQuery(query: string) {
+  return query.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function parseStatus(value?: string): LinkStatus {
+  return value === "active" || value === "new" ? value : DEFAULT_STATUS;
+}
+
+function getStatusLabel(status: LinkStatus) {
+  if (status === "active") return "已收录";
+  if (status === "new") return "新收录";
+  return "全部状态";
+}
+
+function buildLinksPath({
+  query,
+  status,
+}: {
+  query?: string;
+  status?: LinkStatus;
+} = {}) {
+  const params = new URLSearchParams();
+
+  if (query) params.set("q", query);
+  if (status && status !== DEFAULT_STATUS) params.set("status", status);
+
+  const search = params.toString();
+  return search ? `/links?${search}` : "/links";
+}
+
+function matchesQuery(item: FriendLink, query: string) {
+  if (!query) return true;
+
+  const normalized = query.toLowerCase();
+  const values = [
+    item.name,
+    item.href,
+    item.description,
+    item.category,
+    ...(item.tags || []),
+  ];
+
+  return values.some((value) => value.toLowerCase().includes(normalized));
+}
+
+export default async function LinksPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; status?: string }>;
+}) {
+  const { q, status: statusParam } = await searchParams;
+  const rawQuery = q?.trim() || "";
+  const query = normalizeQuery(rawQuery);
+  const status = parseStatus(statusParam);
+  const filteredLinks = friendLinks.filter(
+    (item) =>
+      matchesQuery(item, query) &&
+      (status === DEFAULT_STATUS || item.status === status)
+  );
+  const groupedLinks = filteredLinks.reduce<Record<string, FriendLink[]>>(
     (groups, item) => {
       groups[item.category] = [...(groups[item.category] || []), item];
       return groups;
@@ -58,7 +127,11 @@ export default async function LinksPage() {
     {}
   );
   const categories = Object.keys(groupedLinks);
-  const rssCount = friendLinks.filter((item) => item.rss).length;
+  const rssCount = filteredLinks.filter((item) => item.rss).length;
+  const hasFilters = Boolean(query || status !== DEFAULT_STATUS);
+  const countLabel = hasFilters
+    ? `${filteredLinks.length} / ${friendLinks.length} 个站点`
+    : `${friendLinks.length} 个站点`;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -68,7 +141,7 @@ export default async function LinksPage() {
           eyebrow="Links"
           title="友链"
           description="收录长期阅读和互相连接的站点，也作为发现独立写作者的入口。"
-          countLabel={`${friendLinks.length} 个站点`}
+          countLabel={countLabel}
           action={
             <Button variant="outline" asChild>
               <Link href="/posts">
@@ -82,15 +155,29 @@ export default async function LinksPage() {
           }
         />
 
+        {friendLinks.length > 0 ? (
+          <>
+            <LinkFilterBar
+              rawQuery={rawQuery}
+              status={status}
+              hasFilters={hasFilters}
+            />
+            <ActiveLinkSummary query={query} status={status} />
+          </>
+        ) : null}
+
         <div className="grid gap-3 sm:grid-cols-3">
-          <StatTile label="收录站点" value={friendLinks.length} />
+          <StatTile
+            label={hasFilters ? "匹配站点" : "收录站点"}
+            value={filteredLinks.length}
+          />
           <StatTile label="主题分组" value={categories.length} />
           <StatTile label="RSS 可订阅" value={rssCount} />
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0 space-y-8">
-            {friendLinks.length > 0 ? (
+            {filteredLinks.length > 0 ? (
               categories.map((category) => (
                 <section key={category} className="space-y-4">
                   <div className="border-b border-border/50 pb-3">
@@ -116,11 +203,27 @@ export default async function LinksPage() {
                   </div>
                 </section>
               ))
+            ) : friendLinks.length > 0 ? (
+              <PublicEmptyState
+                icon={Search}
+                title="没有匹配的站点"
+                description={
+                  query
+                    ? `没有匹配「${query}」的友链，可以换个关键词或清除筛选。`
+                    : "当前状态下暂无站点，可以清除筛选后查看全部。"
+                }
+                action={
+                  <Button variant="outline" asChild>
+                    <Link href="/links">清除筛选</Link>
+                  </Button>
+                }
+                className="max-w-none"
+              />
             ) : (
               <PublicEmptyState
                 icon={Link2}
                 title="暂无公开友链"
-                description="友链目录还没有公开收录。欢迎通过文章评论区留下站点信息，审核后会展示在这里。"
+                description="友链目录还没有公开收录。可以先参考右侧的本站信息，通过文章评论区留下站点资料。"
                 action={
                   <Button variant="outline" asChild>
                     <Link href="/posts">
@@ -138,6 +241,36 @@ export default async function LinksPage() {
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+            <InfoPanel
+              title="本站信息"
+              description="申请互链时可直接引用这些资料。"
+            >
+              <div className="divide-y divide-border/60">
+                {siteProfile.map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex items-start justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0"
+                  >
+                    <span className="shrink-0 text-muted-foreground">
+                      {item.label}
+                    </span>
+                    {item.value.startsWith("/") ? (
+                      <Link
+                        href={item.value}
+                        className="min-w-0 truncate text-right font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        {item.value}
+                      </Link>
+                    ) : (
+                      <span className="min-w-0 text-right font-medium">
+                        {item.value}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </InfoPanel>
+
             <InfoPanel
               title="申请互链"
               description="留言时带上这些信息，后续整理时可以直接录入。"
@@ -199,6 +332,115 @@ export default async function LinksPage() {
       </PublicPageShell>
       <Footer />
     </div>
+  );
+}
+
+function LinkFilterBar({
+  rawQuery,
+  status,
+  hasFilters,
+}: {
+  rawQuery: string;
+  status: LinkStatus;
+  hasFilters: boolean;
+}) {
+  return (
+    <section className="rounded-lg border bg-card p-3">
+      <form
+        action="/links"
+        role="search"
+        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_150px_auto_auto]"
+      >
+        <label htmlFor="links-search" className="sr-only">
+          搜索友链
+        </label>
+        <div className="relative min-w-0">
+          <Search
+            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            suppressHydrationWarning
+          />
+          <Input
+            id="links-search"
+            type="search"
+            name="q"
+            defaultValue={rawQuery}
+            placeholder="搜索站点名称、简介、分类或标签..."
+            className="h-10 border-border/60 bg-background pl-10"
+          />
+        </div>
+        <label htmlFor="links-status" className="sr-only">
+          友链状态
+        </label>
+        <select
+          id="links-status"
+          name="status"
+          defaultValue={status}
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          <option value="all">全部状态</option>
+          <option value="active">已收录</option>
+          <option value="new">新收录</option>
+        </select>
+        <Button type="submit" className="h-10">
+          筛选
+        </Button>
+        {hasFilters ? (
+          <Button variant="outline" className="h-10" asChild>
+            <Link href="/links">清除</Link>
+          </Button>
+        ) : null}
+      </form>
+    </section>
+  );
+}
+
+function ActiveLinkSummary({
+  query,
+  status,
+}: {
+  query: string;
+  status: LinkStatus;
+}) {
+  const hasFilters = Boolean(query || status !== DEFAULT_STATUS);
+  if (!hasFilters) return null;
+
+  return (
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="text-xs text-muted-foreground">当前筛选</span>
+        {query ? (
+          <FilterPill
+            label={`关键词：${query}`}
+            href={buildLinksPath({ status })}
+          />
+        ) : null}
+        {status !== DEFAULT_STATUS ? (
+          <FilterPill
+            label={`状态：${getStatusLabel(status)}`}
+            href={buildLinksPath({ query })}
+          />
+        ) : null}
+      </div>
+      <Link
+        href="/links"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        清除全部
+      </Link>
+    </section>
+  );
+}
+
+function FilterPill({ label, href }: { label: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      aria-label={`移除${label}`}
+    >
+      <span className="truncate">{label}</span>
+      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
+    </Link>
   );
 }
 

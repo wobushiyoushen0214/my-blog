@@ -5,6 +5,9 @@ const footerLinks = [
   { href: "/posts", label: "文章" },
   { href: "/moments", label: "见闻" },
   { href: "/archive", label: "归档" },
+  { href: "/category", label: "分类" },
+  { href: "/tag", label: "标签" },
+  { href: "/links", label: "友链" },
   { href: "/search", label: "搜索" },
 ];
 
