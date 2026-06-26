@@ -20,6 +20,8 @@ export const metadata: Metadata = {
 };
 
 type PostRow = Post & { category?: Category | null; tags?: Tag[] };
+type CategorySummary = Category & { postCount: number };
+type TagSummary = Tag & { postCount: number };
 type SearchType = "all" | "post" | "moment";
 type SortOption = "newest" | "updated" | "popular";
 
@@ -106,22 +108,39 @@ async function attachTags(
   supabase: Awaited<ReturnType<typeof createClient>>,
   posts: PostRow[]
 ) {
-  return Promise.all(
-    posts.map(async (post) => {
-      const { data: postTags } = await supabase
-        .from("post_tags")
-        .select("tag_id")
-        .eq("post_id", post.id);
+  if (posts.length === 0) return [];
 
-      if (!postTags || postTags.length === 0) {
-        return { ...post, tags: [] };
-      }
+  const postIds = posts.map((post) => post.id);
+  const { data: postTags } = await supabase
+    .from("post_tags")
+    .select("post_id, tag_id")
+    .in("post_id", postIds);
 
-      const tagIds = postTags.map((postTag) => postTag.tag_id);
-      const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-      return { ...post, tags: tags || [] };
-    })
+  const tagIds = Array.from(
+    new Set((postTags || []).map((postTag) => postTag.tag_id))
   );
+
+  if (tagIds.length === 0) {
+    return posts.map((post) => ({ ...post, tags: [] }));
+  }
+
+  const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
+  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as Tag]));
+  const tagsByPostId = new Map<string, Tag[]>();
+
+  (postTags || []).forEach((postTag) => {
+    const tag = tagById.get(postTag.tag_id);
+    if (!tag) return;
+
+    const current = tagsByPostId.get(postTag.post_id) || [];
+    current.push(tag);
+    tagsByPostId.set(postTag.post_id, current);
+  });
+
+  return posts.map((post) => ({
+    ...post,
+    tags: tagsByPostId.get(post.id) || [],
+  }));
 }
 
 export default async function SearchPage({
@@ -142,6 +161,7 @@ export default async function SearchPage({
   ]);
 
   const typedCategories = (categories || []) as Category[];
+  const typedTags = (tags || []) as Tag[];
   const postCategoryIds = typedCategories
     .filter((category) => category.type !== "moment")
     .map((category) => category.id);
@@ -180,8 +200,8 @@ export default async function SearchPage({
     ? await recentQuery.limit(8)
     : { data: [] };
 
-  const categorySummaries = await Promise.all(
-    (categories || []).map(async (category) => {
+  const categorySummaries: CategorySummary[] = await Promise.all(
+    typedCategories.map(async (category) => {
       const { count } = await supabase
         .from("posts")
         .select("id", { count: "exact", head: true })
@@ -191,8 +211,8 @@ export default async function SearchPage({
     })
   );
 
-  const tagSummaries = await Promise.all(
-    (tags || []).map(async (tag) => {
+  const tagSummaries: TagSummary[] = await Promise.all(
+    typedTags.map(async (tag) => {
       const { count } = await supabase
         .from("post_tags")
         .select("post_id", { count: "exact", head: true })
@@ -208,12 +228,12 @@ export default async function SearchPage({
   if (query) {
     const escaped = query;
     matchedCategories = filterCategoriesByType(
-      (categories || []).filter((category) =>
+      typedCategories.filter((category) =>
         matchesQuery([category.name, category.slug], query)
       ),
       contentType
     );
-    matchedTags = (tags || []).filter((tag) =>
+    matchedTags = typedTags.filter((tag) =>
       matchesQuery([tag.name, tag.slug], query)
     );
 
@@ -302,6 +322,14 @@ export default async function SearchPage({
       : contentType === "moment"
         ? `${recentPosts.length} 条见闻`
         : undefined;
+  const topCategories = categorySummaries
+    .filter((category) => category.postCount > 0)
+    .sort((a, b) => b.postCount - a.postCount)
+    .slice(0, 5);
+  const topTags = tagSummaries
+    .filter((tag) => tag.postCount > 0)
+    .sort((a, b) => b.postCount - a.postCount)
+    .slice(0, 10);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -386,6 +414,23 @@ export default async function SearchPage({
           activeType={contentType}
           sort={sort}
         />
+
+        {query ? (
+          <SearchResultSummary
+            resultCount={results.length}
+            matchedCategoryCount={matchedCategories.length}
+            matchedTagCount={matchedTags.length}
+            activeType={contentType}
+            sort={sort}
+          />
+        ) : (
+          <SearchStarterPanel
+            categories={topCategories}
+            tags={topTags}
+            activeType={contentType}
+            sort={sort}
+          />
+        )}
 
         {query && (matchedCategories.length > 0 || matchedTags.length > 0) ? (
           <SearchMatchPanel
@@ -625,6 +670,205 @@ function TypeSwitch({
   );
 }
 
+function SearchResultSummary({
+  resultCount,
+  matchedCategoryCount,
+  matchedTagCount,
+  activeType,
+  sort,
+}: {
+  resultCount: number;
+  matchedCategoryCount: number;
+  matchedTagCount: number;
+  activeType: SearchType;
+  sort: SortOption;
+}) {
+  const items = [
+    {
+      label: "结果",
+      value: `${resultCount}`,
+      detail: getSearchTypeLabel(activeType),
+    },
+    {
+      label: "主题",
+      value: `${matchedCategoryCount + matchedTagCount}`,
+      detail: `${matchedCategoryCount} 分类 / ${matchedTagCount} 标签`,
+    },
+    {
+      label: "排序",
+      value: getSortLabel(sort),
+      detail: "当前结果顺序",
+    },
+  ];
+
+  return (
+    <section
+      aria-label="搜索结果摘要"
+      className="mt-4 grid gap-2 sm:grid-cols-3"
+    >
+      {items.map((item) => (
+        <div
+          key={item.label}
+          className="rounded-lg border border-border/60 bg-card px-3 py-2.5"
+        >
+          <p className="text-xs text-muted-foreground">{item.label}</p>
+          <p className="mt-1 truncate text-sm font-medium">{item.value}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            {item.detail}
+          </p>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function SearchStarterPanel({
+  categories,
+  tags,
+  activeType,
+  sort,
+}: {
+  categories: CategorySummary[];
+  tags: TagSummary[];
+  activeType: SearchType;
+  sort: SortOption;
+}) {
+  const shortcuts: Array<{
+    label: string;
+    description: string;
+    href: string;
+    active?: boolean;
+  }> = [
+    {
+      label: "最新内容",
+      description: "按发布时间浏览",
+      href: buildSearchPath({ type: activeType, sort: "newest" }),
+      active: sort === "newest",
+    },
+    {
+      label: "最近更新",
+      description: "查看近期改动",
+      href: buildSearchPath({ type: activeType, sort: "updated" }),
+      active: sort === "updated",
+    },
+    {
+      label: "阅读最多",
+      description: "按阅读量排序",
+      href: buildSearchPath({ type: activeType, sort: "popular" }),
+      active: sort === "popular",
+    },
+    {
+      label: "只看文章",
+      description: "长期笔记与复盘",
+      href: buildSearchPath({ type: "post", sort }),
+      active: activeType === "post",
+    },
+    {
+      label: "只看见闻",
+      description: "短记录与观察",
+      href: buildSearchPath({ type: "moment", sort }),
+      active: activeType === "moment",
+    },
+  ];
+
+  return (
+    <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.76fr)]">
+      <div className="rounded-lg border bg-card">
+        <div className="border-b px-4 py-3">
+          <h2 className="text-sm font-medium">快速进入</h2>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            按内容类型或排序方式直接浏览。
+          </p>
+        </div>
+        <div className="grid gap-2 p-3 sm:grid-cols-2">
+          {shortcuts.map((item) => (
+            <Link
+              key={`${item.label}-${item.href}`}
+              href={item.href}
+              className={`group min-w-0 rounded-md border px-3 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                item.active
+                  ? "border-primary/35 bg-primary/10"
+                  : "border-border/60 bg-background hover:border-primary/30 hover:bg-muted/25"
+              }`}
+            >
+              <span className="block truncate text-sm font-medium transition-colors group-hover:text-primary">
+                {item.label}
+              </span>
+              <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                {item.description}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-lg border bg-card">
+        <div className="border-b px-4 py-3">
+          <h2 className="text-sm font-medium">高频主题</h2>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            选一个分类或标签继续探索。
+          </p>
+        </div>
+        {categories.length > 0 || tags.length > 0 ? (
+          <div className="space-y-3 p-3">
+            {categories.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <Link
+                    key={category.id}
+                    href={`/category/${category.slug}`}
+                    className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    <Badge
+                      variant="outline"
+                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
+                    >
+                      <FolderOpen
+                        className="h-3.5 w-3.5"
+                        suppressHydrationWarning
+                      />
+                      {category.name}
+                      <span className="text-[11px] opacity-70">
+                        {category.postCount}
+                      </span>
+                    </Badge>
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+            {tags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag.id}
+                    href={`/tag/${tag.slug}`}
+                    className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    <Badge
+                      variant="outline"
+                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
+                    >
+                      <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
+                      {tag.name}
+                      <span className="text-[11px] opacity-70">
+                        {tag.postCount}
+                      </span>
+                    </Badge>
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="px-4 py-5 text-sm text-muted-foreground">
+            暂无可浏览的主题。
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function SearchMatchPanel({
   categories,
   tags,
@@ -638,7 +882,7 @@ function SearchMatchPanel({
         <div>
           <p className="text-sm font-medium">主题命中</p>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            搜索结果已包含匹配分类和标签下的已发布内容。
+            匹配到 {categories.length} 个分类、{tags.length} 个标签。
           </p>
         </div>
         <div className="flex min-w-0 flex-wrap gap-2">
