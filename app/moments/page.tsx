@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import {
   PublicEmptyState,
@@ -15,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
+  CalendarDays,
+  Eye,
   FolderOpen,
   Hash,
   NotebookText,
@@ -71,26 +72,46 @@ function buildMomentsPath({
   return query ? `/moments?${query}` : "/moments";
 }
 
-async function attachTags(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  posts: PostWithTaxonomy[]
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+}
+
+function formatMonthDay(date: string) {
+  return new Date(date).toLocaleDateString("zh-CN", {
+    month: "2-digit",
+    day: "2-digit",
+  });
+}
+
+function formatYear(date: string) {
+  return String(new Date(date).getFullYear());
+}
+
+function formatViews(value: number) {
+  return new Intl.NumberFormat("zh-CN").format(value || 0);
+}
+
+function getMomentExcerpt(post: Pick<Post, "content" | "excerpt" | "title">) {
+  const source = post.excerpt || post.content || post.title;
+  return source
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&[a-zA-Z0-9#]+;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function attachTagsFromMap(
+  posts: PostWithTaxonomy[],
+  tagsByPostId: Map<string, Tag[]>
 ) {
-  return Promise.all(
-    posts.map(async (post) => {
-      const { data: postTags } = await supabase
-        .from("post_tags")
-        .select("tag_id")
-        .eq("post_id", post.id);
-
-      if (!postTags || postTags.length === 0) {
-        return { ...post, tags: [] };
-      }
-
-      const tagIds = postTags.map((postTag) => postTag.tag_id);
-      const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-      return { ...post, tags: tags || [] };
-    })
-  );
+  return posts.map((post) => ({
+    ...post,
+    tags: tagsByPostId.get(post.id) || [],
+  }));
 }
 
 export default async function MomentsPage({
@@ -209,10 +230,6 @@ export default async function MomentsPage({
   const { data: posts } = hasMomentScope
     ? await postsQuery.range(from, to)
     : { data: [] };
-  const postsWithTags = await attachTags(
-    supabase,
-    (posts || []) as unknown as PostWithTaxonomy[]
-  );
 
   const allMomentPostIds = (allMomentPosts || []).map((post) => post.id);
   const [{ data: tags }, { data: momentPostTags }] = await Promise.all([
@@ -224,6 +241,22 @@ export default async function MomentsPage({
           .in("post_id", allMomentPostIds)
       : Promise.resolve({ data: [] }),
   ]);
+
+  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as Tag]));
+  const tagsByPostId = (momentPostTags || []).reduce<Map<string, Tag[]>>(
+    (groups, postTag) => {
+      const tag = tagById.get(postTag.tag_id);
+      if (!tag) return groups;
+
+      groups.set(postTag.post_id, [...(groups.get(postTag.post_id) || []), tag]);
+      return groups;
+    },
+    new Map()
+  );
+  const postsWithTags = attachTagsFromMap(
+    (posts || []) as unknown as PostWithTaxonomy[],
+    tagsByPostId
+  );
 
   const tagCounts = (momentPostTags || []).reduce<Map<string, number>>(
     (counts, postTag) => {
@@ -250,6 +283,14 @@ export default async function MomentsPage({
     searchQuery,
     sort,
   });
+  const activeFilterCount = [
+    activeCategorySlug,
+    searchQuery,
+    sort !== DEFAULT_SORT ? sort : "",
+  ].filter(Boolean).length;
+  const visibleCategoryCount = categorySummaries.filter(
+    (category) => category.postCount > 0
+  ).length;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -298,54 +339,32 @@ export default async function MomentsPage({
           sort={sort}
         />
 
+        {totalMomentCount > 0 ? (
+          <MomentOverview
+            totalCount={totalCount}
+            allCount={totalMomentCount}
+            categoryCount={visibleCategoryCount}
+            tagCount={tagSummaries.length}
+            activeFilterCount={activeFilterCount}
+            sort={sort}
+          />
+        ) : null}
+
         {postsWithTags.length > 0 ? (
           <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
             <div className="min-w-0 space-y-8">
               {featuredMoment ? (
-                <section aria-labelledby="featured-moment-title" className="space-y-3">
-                  <SectionTitle eyebrow="Featured" title="近期见闻" id="featured-moment-title" />
-                  <PostCard
-                    post={featuredMoment}
-                    variant="featured"
-                    ctaLabel="阅读这条见闻"
-                  />
-                </section>
+                <MomentHighlight post={featuredMoment} />
               ) : null}
 
               {listMoments.length > 0 ? (
-                <section aria-labelledby="latest-moments-title" className="space-y-4">
-                  <div className="flex flex-col gap-1 border-b border-border/50 pb-3 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
-                        Latest
-                      </p>
-                      <h2 id="latest-moments-title" className="text-base font-medium">
-                        {sort === "popular"
-                          ? "热门记录"
-                          : sort === "updated"
-                            ? "最近更新"
-                            : "最新记录"}
-                      </h2>
-                    </div>
-                    {activeCategory || searchQuery || sort !== DEFAULT_SORT ? (
-                      <Link
-                        href="/moments"
-                        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
-                        全部见闻
-                        <ArrowRight
-                          className="h-4 w-4"
-                          suppressHydrationWarning
-                        />
-                      </Link>
-                    ) : null}
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {listMoments.map((post) => (
-                      <PostCard key={post.id} post={post} variant="compact" />
-                    ))}
-                  </div>
-                </section>
+                <MomentStream
+                  posts={listMoments}
+                  sort={sort}
+                  showAllLink={Boolean(
+                    activeCategory || searchQuery || sort !== DEFAULT_SORT
+                  )}
+                />
               ) : null}
 
               <Pagination
@@ -606,24 +625,225 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function SectionTitle({
-  eyebrow,
-  title,
-  id,
+function MomentOverview({
+  totalCount,
+  allCount,
+  categoryCount,
+  tagCount,
+  activeFilterCount,
+  sort,
 }: {
-  eyebrow: string;
-  title: string;
-  id: string;
+  totalCount: number;
+  allCount: number;
+  categoryCount: number;
+  tagCount: number;
+  activeFilterCount: number;
+  sort: SortOption;
 }) {
+  const items = [
+    {
+      label: "当前视图",
+      value: `${totalCount}`,
+      detail: activeFilterCount > 0 ? `${activeFilterCount} 个筛选` : "全部见闻",
+    },
+    {
+      label: "内容池",
+      value: `${allCount}`,
+      detail: `${categoryCount} 个分类`,
+    },
+    {
+      label: "关联标签",
+      value: `${tagCount}`,
+      detail: getSortLabel(sort),
+    },
+  ];
+
   return (
-    <div className="border-b border-border/50 pb-3">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
-        {eyebrow}
-      </p>
-      <h2 id={id} className="mt-1 text-base font-medium">
-        {title}
-      </h2>
-    </div>
+    <section
+      aria-label="见闻概览"
+      className="mt-4 grid gap-2 sm:grid-cols-3"
+    >
+      {items.map((item) => (
+        <div
+          key={item.label}
+          className="rounded-lg border border-border/60 bg-card px-3 py-2.5"
+        >
+          <p className="text-xs text-muted-foreground">{item.label}</p>
+          <p className="mt-1 truncate text-sm font-medium">{item.value}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            {item.detail}
+          </p>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
+  const excerpt = getMomentExcerpt(post);
+
+  return (
+    <section aria-labelledby="featured-moment-title" className="space-y-3">
+      <div className="border-b border-border/50 pb-3">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+          Featured
+        </p>
+        <h2 id="featured-moment-title" className="mt-1 text-base font-medium">
+          近期见闻
+        </h2>
+      </div>
+      <Link
+        href={`/blog/${post.slug}`}
+        className="group block rounded-lg border border-border/60 bg-card p-4 transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:p-5"
+      >
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
+            <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
+            {formatViews(post.view_count)} 阅读
+          </span>
+          {post.category ? (
+            <span className="rounded-md border bg-background px-1.5 py-0.5 font-medium text-foreground">
+              {post.category.name}
+            </span>
+          ) : null}
+        </div>
+        <h3 className="mt-3 text-xl font-semibold tracking-tight transition-colors group-hover:text-primary md:text-2xl">
+          {post.title}
+        </h3>
+        {excerpt ? (
+          <p className="mt-3 line-clamp-3 text-sm leading-7 text-muted-foreground">
+            {excerpt}
+          </p>
+        ) : null}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          {post.tags && post.tags.length > 0 ? (
+            <span className="flex min-w-0 flex-wrap gap-1.5">
+              {post.tags.slice(0, 4).map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant="outline"
+                  className="h-6 rounded-md px-2 text-[11px] font-normal"
+                >
+                  {tag.name}
+                </Badge>
+              ))}
+            </span>
+          ) : (
+            <span />
+          )}
+          <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-primary">
+            阅读这条见闻
+            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
+          </span>
+        </div>
+      </Link>
+    </section>
+  );
+}
+
+function MomentStream({
+  posts,
+  sort,
+  showAllLink,
+}: {
+  posts: PostWithTaxonomy[];
+  sort: SortOption;
+  showAllLink: boolean;
+}) {
+  const title =
+    sort === "popular" ? "热门记录" : sort === "updated" ? "最近更新" : "最新记录";
+
+  return (
+    <section aria-labelledby="latest-moments-title" className="space-y-4">
+      <div className="flex flex-col gap-1 border-b border-border/50 pb-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+            Stream
+          </p>
+          <h2 id="latest-moments-title" className="text-base font-medium">
+            {title}
+          </h2>
+        </div>
+        {showAllLink ? (
+          <Link
+            href="/moments"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            全部见闻
+            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
+          </Link>
+        ) : null}
+      </div>
+
+      <ol className="overflow-hidden rounded-lg border border-border/60 bg-card">
+        {posts.map((post) => {
+          const excerpt = getMomentExcerpt(post);
+          const updated =
+            post.updated_at.slice(0, 10) !== post.created_at.slice(0, 10);
+
+          return (
+            <li key={post.id} className="border-b border-border/60 last:border-b-0">
+              <Link
+                href={`/blog/${post.slug}`}
+                className="group grid min-w-0 gap-3 px-4 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50 sm:grid-cols-[88px_minmax(0,1fr)]"
+              >
+                <time
+                  dateTime={post.created_at}
+                  className="flex w-fit flex-row items-baseline gap-2 rounded-md border bg-background px-2.5 py-1.5 text-xs text-muted-foreground sm:w-full sm:flex-col sm:gap-0"
+                >
+                  <span className="font-medium text-foreground">
+                    {formatMonthDay(post.created_at)}
+                  </span>
+                  <span>{formatYear(post.created_at)}</span>
+                </time>
+
+                <span className="min-w-0">
+                  <span className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
+                    {post.category ? (
+                      <span className="rounded-md border bg-background px-1.5 py-0.5 font-medium text-foreground">
+                        {post.category.name}
+                      </span>
+                    ) : null}
+                    <span className="inline-flex items-center gap-1.5">
+                      <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
+                      {formatViews(post.view_count)} 阅读
+                    </span>
+                    {updated ? (
+                      <span>更新于 {formatDate(post.updated_at)}</span>
+                    ) : null}
+                  </span>
+                  <span className="mt-2 block truncate text-base font-medium tracking-tight transition-colors group-hover:text-primary">
+                    {post.title}
+                  </span>
+                  {excerpt ? (
+                    <span className="mt-1.5 block line-clamp-2 text-sm leading-6 text-muted-foreground">
+                      {excerpt}
+                    </span>
+                  ) : null}
+                  {post.tags && post.tags.length > 0 ? (
+                    <span className="mt-3 flex flex-wrap gap-1.5">
+                      {post.tags.slice(0, 4).map((tag) => (
+                        <Badge
+                          key={tag.id}
+                          variant="outline"
+                          className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
+                        >
+                          {tag.name}
+                        </Badge>
+                      ))}
+                    </span>
+                  ) : null}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 }
 
