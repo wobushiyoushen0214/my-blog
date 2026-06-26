@@ -65,6 +65,16 @@ function buildPostsPath({
   return query ? `/posts?${query}` : "/posts";
 }
 
+function attachTagsFromMap(
+  posts: PostWithTaxonomy[],
+  tagsByPostId: Map<string, Tag[]>
+) {
+  return posts.map((post) => ({
+    ...post,
+    tags: tagsByPostId.get(post.id) || [],
+  }));
+}
+
 export default async function PostsPage({
   searchParams,
 }: {
@@ -205,6 +215,17 @@ export default async function PostsPage({
     },
     new Map()
   );
+  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as Tag]));
+  const tagsByPostId = (articlePostTags || []).reduce<Map<string, Tag[]>>(
+    (groups, postTag) => {
+      const tag = tagById.get(postTag.tag_id);
+      if (!tag) return groups;
+
+      groups.set(postTag.post_id, [...(groups.get(postTag.post_id) || []), tag]);
+      return groups;
+    },
+    new Map()
+  );
   const tagSummaries: TagSummary[] = (tags || [])
     .map((tag) => ({
       ...tag,
@@ -213,24 +234,9 @@ export default async function PostsPage({
     .filter((tag) => tag.postCount > 0)
     .sort((a, b) => b.postCount - a.postCount);
 
-  const postsWithTags = await Promise.all(
-    ((posts || []) as unknown as PostWithTaxonomy[]).map(async (post) => {
-      const { data: postTags } = await supabase
-        .from("post_tags")
-        .select("tag_id")
-        .eq("post_id", post.id);
-
-      if (postTags && postTags.length > 0) {
-        const tagIds = postTags.map((pt) => pt.tag_id);
-        const { data: postTagData } = await supabase
-          .from("tags")
-          .select("*")
-          .in("id", tagIds);
-        return { ...post, tags: postTagData || [] };
-      }
-
-      return { ...post, tags: [] };
-    })
+  const postsWithTags = attachTagsFromMap(
+    (posts || []) as unknown as PostWithTaxonomy[],
+    tagsByPostId
   );
 
   const shouldFeature =
@@ -248,6 +254,14 @@ export default async function PostsPage({
   });
   const totalCount = count || 0;
   const allArticleCount = allArticlePosts?.length || 0;
+  const activeFilterCount = [
+    activeCategorySlug,
+    searchQuery,
+    sort !== DEFAULT_SORT ? sort : "",
+  ].filter(Boolean).length;
+  const visibleCategoryCount = categorySummaries.filter(
+    (category) => category.postCount > 0
+  ).length;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -295,6 +309,17 @@ export default async function PostsPage({
           searchQuery={searchQuery}
           sort={sort}
         />
+
+        {allArticleCount > 0 ? (
+          <PostsOverview
+            totalCount={totalCount}
+            allCount={allArticleCount}
+            categoryCount={visibleCategoryCount}
+            tagCount={tagSummaries.length}
+            activeFilterCount={activeFilterCount}
+            sort={sort}
+          />
+        ) : null}
 
         {postsWithTags.length > 0 ? (
           <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -403,6 +428,60 @@ export default async function PostsPage({
       </PublicPageShell>
       <Footer />
     </div>
+  );
+}
+
+function PostsOverview({
+  totalCount,
+  allCount,
+  categoryCount,
+  tagCount,
+  activeFilterCount,
+  sort,
+}: {
+  totalCount: number;
+  allCount: number;
+  categoryCount: number;
+  tagCount: number;
+  activeFilterCount: number;
+  sort: SortOption;
+}) {
+  const items = [
+    {
+      label: "当前视图",
+      value: `${totalCount}`,
+      detail: activeFilterCount > 0 ? `${activeFilterCount} 个筛选` : "全部文章",
+    },
+    {
+      label: "文章池",
+      value: `${allCount}`,
+      detail: `${categoryCount} 个分类`,
+    },
+    {
+      label: "关联标签",
+      value: `${tagCount}`,
+      detail: getSortLabel(sort),
+    },
+  ];
+
+  return (
+    <section
+      aria-label="文章概览"
+      className="mt-4 grid gap-2 sm:grid-cols-3"
+    >
+      {items.map((item) => (
+        <div
+          key={item.label}
+          className="rounded-lg border border-border/60 bg-card px-3 py-2.5"
+        >
+          <p className="text-xs text-muted-foreground">{item.label}</p>
+          <p className="mt-1 truncate text-sm font-medium">{item.value}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            {item.detail}
+          </p>
+        </div>
+      ))}
+    </section>
   );
 }
 
