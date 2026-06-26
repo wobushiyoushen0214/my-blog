@@ -13,11 +13,12 @@ import {
   FileText,
   FolderOpen,
   Hash,
+  MessageSquare,
   NotebookText,
   Rss,
   Search,
 } from "lucide-react";
-import type { Category, Post, Tag } from "@/lib/types";
+import type { Category, Comment, Post, Tag } from "@/lib/types";
 
 type PostWithTaxonomy = Post & {
   category?: Category | null;
@@ -25,6 +26,20 @@ type PostWithTaxonomy = Post & {
 };
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
+type Relation<T> = T | T[] | null | undefined;
+type RecentDiscussionRow = Pick<
+  Comment,
+  "id" | "author_name" | "content" | "created_at"
+> & {
+  post?: Relation<Pick<Post, "title" | "slug" | "published">>;
+};
+type RecentDiscussion = Pick<
+  Comment,
+  "id" | "author_name" | "content" | "created_at"
+> & {
+  postTitle: string;
+  postSlug: string;
+};
 
 async function attachTags(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -54,6 +69,18 @@ function categoryHref(category: CategorySummary) {
     : `/posts?category=${encodeURIComponent(category.slug)}`;
 }
 
+function firstRelation<T>(relation: Relation<T>) {
+  if (Array.isArray(relation)) return relation[0] || null;
+  return relation || null;
+}
+
+function formatShortDate(date: string) {
+  return new Date(date).toLocaleDateString("zh-CN", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export default async function HomePage() {
   const supabase = await createClient();
 
@@ -62,6 +89,7 @@ export default async function HomePage() {
     { data: publishedRows },
     { data: categories },
     { data: tags },
+    { data: recentCommentsData },
   ] = await Promise.all([
     supabase
       .from("posts")
@@ -75,6 +103,12 @@ export default async function HomePage() {
       .eq("published", true),
     supabase.from("categories").select("*").order("name"),
     supabase.from("tags").select("*").order("name"),
+    supabase
+      .from("comments")
+      .select("id,author_name,content,created_at,post:posts(title,slug,published)")
+      .eq("approved", true)
+      .order("created_at", { ascending: false })
+      .limit(6),
   ]);
 
   const categoryById = new Map(
@@ -146,6 +180,24 @@ export default async function HomePage() {
     (category) => category.postCount > 0
   ).length;
   const usedTagCount = tagSummaries.length;
+  const recentDiscussions: RecentDiscussion[] = (
+    (recentCommentsData || []) as unknown as RecentDiscussionRow[]
+  )
+    .map((comment) => {
+      const post = firstRelation(comment.post);
+      if (!post?.published || !post.slug || !post.title) return null;
+
+      return {
+        id: comment.id,
+        author_name: comment.author_name,
+        content: comment.content,
+        created_at: comment.created_at,
+        postTitle: post.title,
+        postSlug: post.slug,
+      };
+    })
+    .filter((comment): comment is RecentDiscussion => Boolean(comment))
+    .slice(0, 4);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -318,6 +370,7 @@ export default async function HomePage() {
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+            <RecentDiscussionPanel items={recentDiscussions} />
             <TopicPanel
               title="主题"
               description="按分类进入长期内容。"
@@ -366,6 +419,73 @@ export default async function HomePage() {
       </PublicPageShell>
       <Footer />
     </div>
+  );
+}
+
+function RecentDiscussionPanel({ items }: { items: RecentDiscussion[] }) {
+  return (
+    <section className="rounded-lg border bg-card">
+      <div className="border-b px-4 py-3">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-sm font-medium">近期讨论</h2>
+          <MessageSquare
+            className="h-4 w-4 text-muted-foreground"
+            suppressHydrationWarning
+          />
+        </div>
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+          最近通过审核的读者评论。
+        </p>
+      </div>
+      {items.length > 0 ? (
+        <div className="divide-y divide-border/60">
+          {items.map((item) => {
+            const initial =
+              item.author_name.trim().slice(0, 1).toUpperCase() || "?";
+
+            return (
+              <Link
+                key={item.id}
+                href={`/blog/${item.postSlug}#comments`}
+                className="group flex min-w-0 gap-3 px-4 py-3 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              >
+                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border bg-background text-xs font-medium text-muted-foreground">
+                  {initial}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex min-w-0 items-center justify-between gap-2">
+                    <span className="truncate text-sm font-medium transition-colors group-hover:text-primary">
+                      {item.author_name}
+                    </span>
+                    <time
+                      dateTime={item.created_at}
+                      className="shrink-0 text-xs text-muted-foreground"
+                    >
+                      {formatShortDate(item.created_at)}
+                    </time>
+                  </span>
+                  <span className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
+                    {item.content}
+                  </span>
+                  <span className="mt-1 block truncate text-xs text-muted-foreground/80">
+                    {item.postTitle}
+                  </span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="px-4 py-5">
+          <div className="rounded-lg border border-dashed border-border/70 bg-muted/20 p-4 text-sm">
+            <p className="font-medium">暂无公开讨论</p>
+            <p className="mt-1 leading-6 text-muted-foreground">
+              文章评论通过审核后，会出现在这里。
+            </p>
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 
