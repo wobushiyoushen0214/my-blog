@@ -6,7 +6,6 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
-import { PostCard } from "@/components/post-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -19,7 +18,9 @@ import {
   ChevronRight,
   Clock,
   Eye,
+  FileText,
   MessageSquare,
+  NotebookText,
   Tag,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -34,13 +35,15 @@ type PostWithCategory = Post & {
   category?: Category | null;
 };
 
+type CategoryMeta = Pick<Category, "name" | "slug" | "type">;
+
 type RelatedPost = Post & {
-  category?: { name: string; slug: string } | null;
+  category?: CategoryMeta | null;
   tags?: TagType[];
 };
 
 type NavigationPost = Pick<Post, "id" | "title" | "slug" | "created_at"> & {
-  category?: { name: string; slug: string } | null;
+  category?: CategoryMeta | null;
 };
 
 type TocItem = {
@@ -48,6 +51,8 @@ type TocItem = {
   text: string;
   level: 2 | 3;
 };
+
+type ContentType = "post" | "moment";
 
 const numberFormatter = new Intl.NumberFormat("zh-CN");
 
@@ -57,6 +62,27 @@ function formatDate(date: string) {
     month: "2-digit",
     day: "2-digit",
   });
+}
+
+function getContentType(category?: Pick<Category, "type"> | null): ContentType {
+  return category?.type === "moment" ? "moment" : "post";
+}
+
+function getContentTypeLabel(type: ContentType) {
+  return type === "moment" ? "见闻" : "文章";
+}
+
+function getContentListHref(type: ContentType) {
+  return type === "moment" ? "/moments" : "/posts";
+}
+
+function getCategoryBrowseHref(
+  category?: Pick<Category, "slug" | "type"> | null
+) {
+  if (!category) return "/posts";
+  return category.type === "moment"
+    ? `/moments?category=${encodeURIComponent(category.slug)}`
+    : `/posts?category=${encodeURIComponent(category.slug)}`;
 }
 
 function estimateReadingMinutes(html: string) {
@@ -225,22 +251,52 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     .eq("approved", true)
     .order("created_at", { ascending: true });
 
-  const relatedQuery = post.category_id
-    ? supabase
-        .from("posts")
-        .select("*, category:categories(*)")
-        .eq("published", true)
-        .eq("category_id", post.category_id)
-        .neq("id", post.id)
-        .order("created_at", { ascending: false })
-        .limit(3)
-    : supabase
-        .from("posts")
-        .select("*, category:categories(*)")
-        .eq("published", true)
-        .neq("id", post.id)
-        .order("created_at", { ascending: false })
-        .limit(3);
+  const { content: articleContent, headings } = buildArticleContent(post.content);
+  const readingMinutes = estimateReadingMinutes(post.content);
+  const commentCount = comments?.length || 0;
+  const contentType = getContentType(post.category);
+  const contentTypeLabel = getContentTypeLabel(contentType);
+  const contentListHref = getContentListHref(contentType);
+  const { data: siblingCategories } = await supabase
+    .from("categories")
+    .select("id")
+    .eq("type", contentType);
+  const siblingCategoryIds = (siblingCategories || []).map((category) => category.id);
+
+  let relatedQuery = supabase
+    .from("posts")
+    .select("*, category:categories(*)")
+    .eq("published", true)
+    .neq("id", post.id)
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  if (post.category_id) {
+    relatedQuery = relatedQuery.eq("category_id", post.category_id);
+  } else if (siblingCategoryIds.length > 0) {
+    relatedQuery = relatedQuery.in("category_id", siblingCategoryIds);
+  }
+
+  let previousPostQuery = supabase
+    .from("posts")
+    .select("id,title,slug,created_at, category:categories(name,slug,type)")
+    .eq("published", true)
+    .lt("created_at", post.created_at)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  let nextPostQuery = supabase
+    .from("posts")
+    .select("id,title,slug,created_at, category:categories(name,slug,type)")
+    .eq("published", true)
+    .gt("created_at", post.created_at)
+    .order("created_at", { ascending: true })
+    .limit(1);
+
+  if (siblingCategoryIds.length > 0) {
+    previousPostQuery = previousPostQuery.in("category_id", siblingCategoryIds);
+    nextPostQuery = nextPostQuery.in("category_id", siblingCategoryIds);
+  }
 
   const [
     { data: relatedPostsData },
@@ -248,22 +304,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     { data: nextPostData },
   ] = await Promise.all([
     relatedQuery,
-    supabase
-      .from("posts")
-      .select("id,title,slug,created_at, category:categories(name,slug)")
-      .eq("published", true)
-      .lt("created_at", post.created_at)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-    supabase
-      .from("posts")
-      .select("id,title,slug,created_at, category:categories(name,slug)")
-      .eq("published", true)
-      .gt("created_at", post.created_at)
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle(),
+    previousPostQuery.maybeSingle(),
+    nextPostQuery.maybeSingle(),
   ]);
   const relatedPosts = await attachTags(
     supabase,
@@ -271,9 +313,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
   const previousPost = previousPostData as unknown as NavigationPost | null;
   const nextPost = nextPostData as unknown as NavigationPost | null;
-  const { content: articleContent, headings } = buildArticleContent(post.content);
-  const readingMinutes = estimateReadingMinutes(post.content);
-  const commentCount = comments?.length || 0;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -281,19 +320,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <main className="flex-1">
         <article className="mx-auto w-full max-w-[1280px] px-4 py-10 md:px-6 md:py-14">
           <Link
-            href="/posts"
+            href={contentListHref}
             className="mb-8 inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
-            返回文章
+            返回{contentTypeLabel}
           </Link>
 
           <header className="grid gap-8 border-b border-border/50 pb-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
             <div className="min-w-0 space-y-5">
               <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 rounded-md border bg-background px-2 py-1 text-xs font-medium text-foreground">
+                  {contentType === "moment" ? (
+                    <NotebookText className="h-3.5 w-3.5" suppressHydrationWarning />
+                  ) : (
+                    <FileText className="h-3.5 w-3.5" suppressHydrationWarning />
+                  )}
+                  {contentTypeLabel}
+                </span>
                 {post.category ? (
                   <Link
-                    href={`/category/${post.category.slug}`}
+                    href={getCategoryBrowseHref(post.category)}
                     className="rounded-md border bg-background px-2 py-1 text-xs font-medium text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     {post.category.name}
@@ -345,6 +392,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               views={post.view_count + 1}
               comments={commentCount}
               updatedAt={post.updated_at || post.created_at}
+              contentTypeLabel={contentTypeLabel}
             />
           </header>
 
@@ -383,6 +431,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 category={post.category}
                 tags={tags}
                 commentCount={commentCount}
+                contentType={contentType}
               />
 
               <ArticlePager previousPost={previousPost} nextPost={nextPost} />
@@ -415,7 +464,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <aside className="space-y-4 lg:sticky lg:top-20">
               <TableOfContents headings={headings} />
 
-              <InfoPanel title="文章信息">
+              <InfoPanel title="内容信息">
+                <InfoRow label="类型" value={contentTypeLabel} />
                 <InfoRow label="阅读量" value={numberFormatter.format(post.view_count + 1)} />
                 <InfoRow label="评论" value={`${commentCount} 条`} />
                 <InfoRow label="更新" value={formatDate(post.updated_at || post.created_at)} />
@@ -433,14 +483,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     </a>
                   </Button>
                   <Button variant="outline" className="justify-between" asChild>
-                    <Link href="/posts">
-                      文章列表
+                    <Link href={contentListHref}>
+                      {contentTypeLabel}列表
                       <BookOpen className="h-4 w-4" suppressHydrationWarning />
                     </Link>
                   </Button>
                   {post.category ? (
                     <Button variant="outline" className="justify-between" asChild>
-                      <Link href={`/category/${post.category.slug}`}>
+                      <Link href={getCategoryBrowseHref(post.category)}>
                         {post.category.name}
                         <ArrowRight
                           className="h-4 w-4"
@@ -454,23 +504,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
               {relatedPosts.length > 0 ? (
                 <InfoPanel title="相关内容">
-                  <div className="space-y-3">
-                    {relatedPosts.map((relatedPost) => (
-                      <PostCard
-                        key={relatedPost.id}
-                        post={relatedPost}
-                        variant="compact"
-                      />
-                    ))}
-                  </div>
+                  <RelatedContentList posts={relatedPosts} />
                 </InfoPanel>
               ) : (
                 <InfoPanel title="继续阅读">
                   <p className="text-sm leading-6 text-muted-foreground">
-                    暂无同类文章，可以返回文章列表浏览更多内容。
+                    暂无同类内容，可以返回{contentTypeLabel}列表浏览更多记录。
                   </p>
                   <Button className="mt-3 w-full" variant="outline" asChild>
-                    <Link href="/posts">查看全部文章</Link>
+                    <Link href={contentListHref}>查看全部{contentTypeLabel}</Link>
                   </Button>
                 </InfoPanel>
               )}
@@ -487,11 +529,14 @@ function ArticleFinishPanel({
   category,
   tags,
   commentCount,
+  contentType,
 }: {
   category?: Category | null;
   tags: TagType[];
   commentCount: number;
+  contentType: ContentType;
 }) {
+  const contentTypeLabel = getContentTypeLabel(contentType);
   return (
     <section className="mt-12 rounded-lg border bg-card p-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -501,7 +546,7 @@ function ArticleFinishPanel({
           </p>
           <h2 className="mt-1 text-base font-medium">读完之后</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            可以继续查看同主题内容，或在评论区补充你的想法。
+            可以继续查看同主题{contentTypeLabel}，或在评论区补充你的想法。
           </p>
           {tags.length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
@@ -529,8 +574,8 @@ function ArticleFinishPanel({
             </a>
           </Button>
           <Button variant="outline" asChild>
-            <Link href={category ? `/category/${category.slug}` : "/posts"}>
-              {category ? "同类内容" : "更多文章"}
+            <Link href={category ? getCategoryBrowseHref(category) : getContentListHref(contentType)}>
+              {category ? "同类内容" : `更多${contentTypeLabel}`}
               <ArrowRight className="h-4 w-4" suppressHydrationWarning />
             </Link>
           </Button>
@@ -645,13 +690,20 @@ function ArticleMetaPanel({
   views,
   comments,
   updatedAt,
+  contentTypeLabel,
 }: {
   views: number;
   comments: number;
   updatedAt: string;
+  contentTypeLabel: string;
 }) {
   return (
-    <div className="grid gap-2 rounded-lg border bg-card p-3 sm:grid-cols-3 lg:grid-cols-1">
+    <div className="grid gap-2 rounded-lg border bg-card p-3 sm:grid-cols-2 lg:grid-cols-1">
+      <MetaItem
+        icon={contentTypeLabel === "见闻" ? NotebookText : FileText}
+        label="类型"
+        value={contentTypeLabel}
+      />
       <MetaItem
         icon={Eye}
         label="阅读"
@@ -667,6 +719,40 @@ function ArticleMetaPanel({
         label="更新"
         value={formatDate(updatedAt)}
       />
+    </div>
+  );
+}
+
+function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
+  return (
+    <div className="divide-y divide-border/60">
+      {posts.map((post) => {
+        const contentType = getContentType(post.category);
+        return (
+          <Link
+            key={post.id}
+            href={`/blog/${post.slug}`}
+            className="group block py-3 first:pt-0 last:pb-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+              <span className="rounded-md border bg-background px-1.5 py-0.5 text-foreground">
+                {getContentTypeLabel(contentType)}
+              </span>
+              {post.category ? (
+                <span className="min-w-0 truncate">{post.category.name}</span>
+              ) : null}
+            </div>
+            <h3 className="mt-2 line-clamp-2 text-sm font-medium leading-6 transition-colors group-hover:text-primary">
+              {post.title}
+            </h3>
+            {post.excerpt ? (
+              <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
+                {post.excerpt}
+              </p>
+            ) : null}
+          </Link>
+        );
+      })}
     </div>
   );
 }
