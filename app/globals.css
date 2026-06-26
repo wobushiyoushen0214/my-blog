@@ -56,7 +56,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.56 0.2 18);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -67,7 +67,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.56 0.2 18);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -90,8 +90,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.62 0.2 18);
+  --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -101,7 +101,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.62 0.2 18);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -157,11 +157,11 @@
 @layer utilities {
   .rb-aurora {
     background:
-      radial-gradient(60% 60% at 20% 20%, color-mix(in oklab, var(--primary) 25%, transparent) 0%, transparent 60%),
-      radial-gradient(55% 55% at 80% 30%, color-mix(in oklab, var(--chart-2) 35%, transparent) 0%, transparent 62%),
-      radial-gradient(50% 50% at 40% 80%, color-mix(in oklab, var(--chart-4) 35%, transparent) 0%, transparent 62%);
-    filter: blur(28px) saturate(1.15);
-    opacity: 0.9;
+      linear-gradient(135deg, color-mix(in oklab, var(--primary) 18%, transparent), transparent 42%),
+      linear-gradient(215deg, color-mix(in oklab, oklch(0.68 0.12 42) 16%, transparent), transparent 48%),
+      linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--muted) 70%, transparent) 100%);
+    filter: saturate(1.04);
+    opacity: 0.85;
     animation: rb-aurora-move 14s ease-in-out infinite;
     will-change: transform;
   }
@@ -191,4 +191,58 @@
 
 .tiptap:focus {
   outline: none;
+}
+
+/* Section entrance animation */
+@keyframes rb-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .rb-rise {
+    animation: rb-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hover-lift {
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -18px color-mix(in oklab, var(--primary) 28%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rb-rise {
+      animation: none;
+    }
+    .hover-lift:hover {
+      transform: none;
+    }
+  }
+}
+
+/* Prose (article) enhancements */
+.prose blockquote {
+  border-inline-start-color: color-mix(in oklab, var(--primary) 55%, var(--border));
+}
+
+.prose :not(pre) > code {
+  background: color-mix(in oklab, var(--primary) 10%, transparent);
+  color: var(--foreground);
+  padding: 0.15em 0.4em;
+  border-radius: 0.3rem;
+  font-weight: 500;
+}
+
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
 }

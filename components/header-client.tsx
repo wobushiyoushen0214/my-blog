@@ -19,9 +19,10 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`inline-flex h-8 items-center rounded-full px-3 text-sm font-medium transition-colors ${
+      aria-current={active ? "page" : undefined}
+      className={`inline-flex h-8 items-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
         active
-          ? "bg-accent text-foreground"
+          ? "bg-primary/10 text-primary"
           : "text-muted-foreground hover:bg-accent hover:text-foreground"
       }`}
     >
@@ -45,9 +46,10 @@ function HoverNav({
     <div className="relative group">
       <Link
         href={href}
-        className={`inline-flex h-8 items-center rounded-full px-3 text-sm font-medium transition-colors ${
+        aria-current={active ? "page" : undefined}
+        className={`inline-flex h-8 items-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
           active
-            ? "bg-accent text-foreground"
+            ? "bg-primary/10 text-primary"
             : "text-muted-foreground hover:bg-accent hover:text-foreground"
         }`}
       >
@@ -56,7 +58,7 @@ function HoverNav({
 
       <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-1/2 top-full z-50 -translate-x-1/2">
         <div className="h-2" />
-        <div className="w-60 rounded-md border bg-popover p-1 shadow-md">
+        <div className="w-64 rounded-md border bg-popover p-1 shadow-md">
           {items.map((item) =>
             item.disabled ? (
               <div
@@ -69,7 +71,7 @@ function HoverNav({
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                className="flex items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
               >
                 {item.label}
               </Link>
@@ -90,13 +92,17 @@ export function HeaderClient({
   const isHome = pathname === "/";
   const isPosts =
     pathname === "/posts" || pathname.startsWith("/blog") || pathname.startsWith("/category");
-  const isMoments = pathname === "/moments" || pathname.startsWith("/tag");
+  const isMoments = pathname === "/moments";
+  const isTags = pathname.startsWith("/tag");
+  const isArchive = pathname === "/archive";
   const isLinks = pathname === "/links";
 
   const postCategories = categories.filter((c) => !c.type || c.type === "post");
   const momentCategories = categories.filter((c) => c.type === "moment");
 
   const postItems = [
+    { href: "/posts", label: "全部文章" },
+    { href: "/category", label: "所有分类" },
     ...(postCategories.length > 0
       ? postCategories.slice(0, 12).map((c) => ({
           href: `/posts?category=${encodeURIComponent(c.slug)}`,
@@ -106,6 +112,7 @@ export function HeaderClient({
   ];
 
   const momentItems = [
+    { href: "/moments", label: "全部见闻" },
     ...(momentCategories.length > 0
       ? momentCategories.slice(0, 12).map((c) => ({
           href: `/moments?category=${encodeURIComponent(c.slug)}`,
@@ -118,16 +125,24 @@ export function HeaderClient({
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto grid h-14 w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
         <div className="flex items-center">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link
+            href="/"
+            className="group flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            <span className="flex size-6 items-center justify-center rounded-md bg-primary text-[13px] font-bold text-primary-foreground">
+              L
+            </span>
             <span className="text-base font-semibold tracking-tight">Lee</span>
           </Link>
         </div>
 
         <nav className="hidden md:flex items-center justify-center">
-          <div className="flex items-center gap-1 rounded-full border border-border/50 bg-background/40 px-2 py-1 backdrop-blur">
+          <div className="flex items-center gap-1 rounded-lg border border-border/50 bg-background/50 px-1.5 py-1 backdrop-blur">
             <NavLink href="/" label="首页" active={isHome} />
             <HoverNav href="/posts" label="文章" active={isPosts} items={postItems} />
             <HoverNav href="/moments" label="见闻" active={isMoments} items={momentItems} />
+            <NavLink href="/tag" label="标签" active={isTags} />
+            <NavLink href="/archive" label="归档" active={isArchive} />
             <NavLink href="/links" label="友链" active={isLinks} />
           </div>
         </nav>
@@ -137,6 +152,16 @@ export function HeaderClient({
           <ThemeToggle />
         </div>
       </div>
+      <nav className="border-t border-border/30 md:hidden" aria-label="移动端导航">
+        <div className="mx-auto flex w-full max-w-[1440px] gap-1 overflow-x-auto px-4 py-2">
+          <NavLink href="/" label="首页" active={isHome} />
+          <NavLink href="/posts" label="文章" active={isPosts} />
+          <NavLink href="/moments" label="见闻" active={isMoments} />
+          <NavLink href="/tag" label="标签" active={isTags} />
+          <NavLink href="/archive" label="归档" active={isArchive} />
+          <NavLink href="/links" label="友链" active={isLinks} />
+        </div>
+      </nav>
     </header>
   );
 }

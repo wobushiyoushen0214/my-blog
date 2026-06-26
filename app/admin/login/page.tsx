@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -37,13 +36,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">后台登录</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+    <div className="flex min-h-screen items-center justify-center bg-muted/20 px-4 py-10">
+      <div className="w-full max-w-sm">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-3 flex size-9 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
+            L
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight">后台登录</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            登录后可以管理文章、分类、标签和评论。
+          </p>
+        </div>
+        <div className="rounded-lg border bg-card p-5">
+          <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email">邮箱</Label>
               <Input
@@ -70,8 +75,8 @@ export default function LoginPage() {
               {loading ? "登录中..." : "登录"}
             </Button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

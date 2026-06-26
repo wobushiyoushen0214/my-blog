@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
+import { AdminFormSection } from "@/components/admin/admin-page";
 import {
   Select,
   SelectContent,
@@ -260,88 +260,96 @@ export function PostForm({ postId }: PostFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
-      <div className="space-y-2">
-        <Label htmlFor="title">标题 *</Label>
-        <Input
-          id="title"
-          value={form.title}
-          onChange={(e) => handleTitleChange(e.target.value)}
-          placeholder="文章标题"
-        />
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label>分类</Label>
-          <Select
-            value={form.category_id}
-            onValueChange={(value) =>
-              setForm({ ...form, category_id: value === "none" ? "" : value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="选择分类" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">无分类</SelectItem>
-              {categories.map((cat) => (
-                <SelectItem key={cat.id} value={cat.id}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label>封面图片</Label>
-          <div className="space-y-3">
+    <form onSubmit={handleSubmit} className="max-w-5xl space-y-6">
+      <AdminFormSection
+        title="基础信息"
+        description="标题、分类、封面和摘要会影响文章列表与详情页展示。"
+      >
+        <div className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="title">标题 *</Label>
             <Input
-              type="file"
-              accept="image/*"
-              onChange={handleCoverFileChange}
-              disabled={coverUploading}
+              id="title"
+              value={form.title}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              placeholder="文章标题"
+              required
             />
-            <div className="text-xs text-muted-foreground">
-              限制：不超过 300KB；300KB～1MB 自动压缩到 300KB 以下
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label>分类</Label>
+              <Select
+                value={form.category_id}
+                onValueChange={(value) =>
+                  setForm({ ...form, category_id: value === "none" ? "" : value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="选择分类" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">无分类</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="cover-file">封面图片</Label>
+              <Input
+                id="cover-file"
+                type="file"
+                accept="image/*"
+                onChange={handleCoverFileChange}
+                disabled={coverUploading}
+              />
+              <p className="text-xs text-muted-foreground">
+                不超过 300KB；300KB 到 1MB 会自动压缩到 300KB 以下。
+              </p>
+            </div>
+          </div>
 
-            {(coverLocalPreviewUrl || form.cover_image) && (
-              <div className="space-y-2">
-                {(() => {
-                  const src = coverLocalPreviewUrl || form.cover_image;
-                  const unoptimized =
-                    src.startsWith("blob:") || src.startsWith("data:");
-                  return (
-                    <div className="relative h-28 w-full overflow-hidden rounded-md border">
-                      <Image
-                        src={src}
-                        alt="封面预览"
-                        fill
-                        sizes="(max-width: 768px) 100vw, 768px"
-                        className="object-cover"
-                        unoptimized={unoptimized}
-                      />
-                    </div>
-                  );
-                })()}
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setCoverLocalPreviewUrl(null);
-                      setForm({ ...form, cover_image: "" });
-                    }}
-                    disabled={coverUploading}
-                  >
-                    移除封面
-                  </Button>
-                </div>
-              </div>
-            )}
+          {coverLocalPreviewUrl || form.cover_image ? (
+            <div className="space-y-2">
+              {(() => {
+                const src = coverLocalPreviewUrl || form.cover_image;
+                const unoptimized =
+                  src.startsWith("blob:") || src.startsWith("data:");
+                return (
+                  <div className="relative h-36 w-full overflow-hidden rounded-md border bg-muted">
+                    <Image
+                      src={src}
+                      alt="封面预览"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 768px"
+                      className="object-cover"
+                      unoptimized={unoptimized}
+                    />
+                  </div>
+                );
+              })()}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setCoverLocalPreviewUrl(null);
+                  setForm({ ...form, cover_image: "" });
+                }}
+                disabled={coverUploading}
+              >
+                移除封面
+              </Button>
+            </div>
+          ) : null}
 
+          <div className="space-y-2">
+            <Label htmlFor="cover_image">封面 URL</Label>
             <Input
               id="cover_image"
               value={form.cover_image}
@@ -350,73 +358,92 @@ export function PostForm({ postId }: PostFormProps) {
               disabled={coverUploading}
             />
           </div>
+
+          <div className="space-y-2">
+            <Label>标签</Label>
+            <div className="flex flex-wrap gap-2">
+              {allTags.map((tag) => {
+                const selected = selectedTagIds.includes(tag.id);
+                return (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => toggleTag(tag.id)}
+                    className={`inline-flex h-8 items-center gap-1 rounded-md border px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                      selected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-primary"
+                    }`}
+                  >
+                    {tag.name}
+                    {selected ? (
+                      <X className="h-3 w-3" suppressHydrationWarning />
+                    ) : null}
+                  </button>
+                );
+              })}
+              {allTags.length === 0 ? (
+                <span className="text-sm text-muted-foreground">
+                  暂无标签，请先在标签管理中创建。
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="excerpt">摘要</Label>
+            <Textarea
+              id="excerpt"
+              value={form.excerpt}
+              onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+              placeholder="文章摘要..."
+              rows={3}
+            />
+          </div>
         </div>
-      </div>
+      </AdminFormSection>
 
-      <div className="space-y-2">
-        <Label>标签</Label>
-        <div className="flex flex-wrap gap-2">
-          {allTags.map((tag) => (
-            <Badge
-              key={tag.id}
-              variant={selectedTagIds.includes(tag.id) ? "default" : "outline"}
-              className="cursor-pointer"
-              onClick={() => toggleTag(tag.id)}
-            >
-              {tag.name}
-              {selectedTagIds.includes(tag.id) && (
-                <X className="h-3 w-3 ml-1" />
-              )}
-            </Badge>
-          ))}
-          {allTags.length === 0 && (
-            <span className="text-sm text-muted-foreground">
-              暂无标签，请先在标签管理中创建
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="excerpt">摘要</Label>
-        <Textarea
-          id="excerpt"
-          value={form.excerpt}
-          onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-          placeholder="文章摘要..."
-          rows={3}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>内容</Label>
-        <TiptapEditor
-          content={form.content}
-          onChange={(content) => setForm({ ...form, content })}
-        />
-      </div>
-
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Switch
-            checked={form.published}
-            onCheckedChange={(checked) =>
-              setForm({ ...form, published: checked })
-            }
+      <AdminFormSection
+        title="正文内容"
+        description="支持富文本编辑、代码块、图片和链接。"
+      >
+        <div className="space-y-2">
+          <Label>内容</Label>
+          <TiptapEditor
+            content={form.content}
+            onChange={(content) => setForm({ ...form, content })}
           />
-          <Label>发布</Label>
         </div>
-        <div className="flex-1" />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.push("/admin/posts")}
-        >
-          取消
-        </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? "保存中..." : postId ? "更新文章" : "创建文章"}
-        </Button>
+      </AdminFormSection>
+
+      <div className="sticky bottom-0 z-10 -mx-4 border-t bg-background/90 px-4 py-4 backdrop-blur md:static md:mx-0 md:rounded-lg md:border md:bg-card">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-2">
+            <Switch
+              id="published"
+              checked={form.published}
+              onCheckedChange={(checked) =>
+                setForm({ ...form, published: checked })
+              }
+            />
+            <Label htmlFor="published">发布</Label>
+          </div>
+          <div className="flex-1" />
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 sm:flex-none"
+              onClick={() => router.push("/admin/posts")}
+            >
+              取消
+            </Button>
+            <Button type="submit" className="flex-1 sm:flex-none" disabled={loading}>
+              {loading ? "保存中..." : postId ? "更新文章" : "创建文章"}
+            </Button>
+          </div>
+        </div>
       </div>
     </form>
   );

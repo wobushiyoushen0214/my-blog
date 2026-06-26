@@ -15,6 +15,9 @@ const supabaseHostnames = Array.from(
 ) as string[];
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: process.cwd(),
+  },
   images: {
     remotePatterns: supabaseHostnames.flatMap((hostname) => [
       {

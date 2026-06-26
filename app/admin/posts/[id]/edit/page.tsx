@@ -2,6 +2,7 @@
 
 import { use } from "react";
 import { PostForm } from "@/components/admin/post-form";
+import { AdminPageHeader } from "@/components/admin/admin-page";
 
 export default function EditPostPage({
   params,
@@ -12,7 +13,11 @@ export default function EditPostPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">编辑文章</h1>
+      <AdminPageHeader
+        eyebrow="Editor"
+        title="编辑文章"
+        description="更新内容、封面、分类标签和发布状态。"
+      />
       <PostForm postId={id} />
     </div>
   );

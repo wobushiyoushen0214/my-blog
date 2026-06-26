@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { Comment } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Reply } from "lucide-react";
 import { CommentForm } from "./comment-form";
 
 interface CommentListProps {
@@ -15,9 +15,8 @@ interface CommentNode extends Comment {
 }
 
 export function CommentList({ comments }: CommentListProps) {
-  // Build comment tree
   const commentMap = new Map<string, CommentNode>();
-  
+
   comments.forEach((comment) => {
     commentMap.set(comment.id, { ...comment, children: [] });
   });
@@ -36,9 +35,15 @@ export function CommentList({ comments }: CommentListProps) {
 
   if (comments.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground py-6">
-        暂无评论
-      </p>
+      <div className="rounded-lg border border-dashed border-border/70 bg-muted/25 px-5 py-8 text-center">
+        <div className="mx-auto mb-3 flex size-9 items-center justify-center rounded-md border bg-background text-muted-foreground">
+          <MessageSquare className="h-4 w-4" suppressHydrationWarning />
+        </div>
+        <p className="text-sm font-medium">暂无评论</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          成为第一个留下想法的人。
+        </p>
+      </div>
     );
   }
 
@@ -53,14 +58,20 @@ export function CommentList({ comments }: CommentListProps) {
 
 function CommentItem({ comment }: { comment: CommentNode }) {
   const [replying, setReplying] = useState(false);
+  const initial = comment.author_name.trim().slice(0, 1).toUpperCase() || "?";
 
   return (
-    <div className="group">
+    <article className="group rounded-lg border border-transparent p-2 transition-colors hover:border-border/60 hover:bg-muted/20">
       <div className="flex gap-3">
+        <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-xs font-medium text-muted-foreground">
+          {initial}
+        </div>
         <div className="flex-1 space-y-1.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">{comment.author_name}</span>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="truncate text-sm font-semibold">
+                {comment.author_name}
+              </span>
               <span className="text-xs text-muted-foreground">
                 {new Date(comment.created_at).toLocaleDateString("zh-CN", {
                   year: "numeric",
@@ -71,20 +82,21 @@ function CommentItem({ comment }: { comment: CommentNode }) {
             </div>
             <Button
               variant="ghost"
-              size="icon"
-              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              size="sm"
+              className="h-7 px-2 text-xs opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
               onClick={() => setReplying(!replying)}
+              aria-expanded={replying}
             >
-              <MessageSquare className="h-3.5 w-3.5" />
-              <span className="sr-only">回复</span>
+              <Reply className="h-3.5 w-3.5" suppressHydrationWarning />
+              回复
             </Button>
           </div>
-          <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
+          <div className="whitespace-pre-wrap text-sm leading-7 text-foreground/90">
             {comment.content}
           </div>
-          
+
           {replying && (
-            <div className="mt-4 pl-4 border-l-2 border-border/50">
+            <div className="mt-4 border-l-2 border-border/50 pl-4">
               <CommentForm
                 postId={comment.post_id}
                 parentId={comment.id}
@@ -97,14 +109,13 @@ function CommentItem({ comment }: { comment: CommentNode }) {
         </div>
       </div>
 
-      {/* Render children recursively */}
       {comment.children.length > 0 && (
-        <div className="mt-4 pl-4 md:pl-6 border-l border-border/40 space-y-6">
+        <div className="mt-4 space-y-4 border-l border-border/40 pl-5 md:ml-4 md:pl-6">
           {comment.children.map((child) => (
             <CommentItem key={child.id} comment={child} />
           ))}
         </div>
       )}
-    </div>
+    </article>
   );
 }
