@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Archive,
   ArrowRight,
   FileText,
   FolderOpen,
@@ -141,6 +142,10 @@ export default async function HomePage() {
   );
   const featuredPost = postsWithTags[0] || null;
   const listPosts = postsWithTags.slice(1);
+  const usedCategoryCount = categorySummaries.filter(
+    (category) => category.postCount > 0
+  ).length;
+  const usedTagCount = tagSummaries.length;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -157,7 +162,7 @@ export default async function HomePage() {
                   Lee 的个人博客
                 </h1>
                 <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-                  记录技术学习、项目复盘和日常见闻。首页按最近更新和主题入口组织，方便继续阅读。
+                  记录技术学习、项目复盘和日常见闻。首页按内容类型、主题和时间线组织，方便继续阅读。
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -189,9 +194,9 @@ export default async function HomePage() {
                 action="/search"
               >
                 <label htmlFor="home-search" className="text-sm font-medium">
-                  搜索内容
+                  快速搜索
                 </label>
-                <div className="flex gap-2">
+                <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_130px]">
                   <div className="relative min-w-0 flex-1">
                     <Search
                       className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -201,11 +206,39 @@ export default async function HomePage() {
                       id="home-search"
                       type="search"
                       name="q"
-                      placeholder="搜索标题、摘要或正文..."
+                      placeholder="搜索标题、正文、分类或标签..."
                       className="h-10 border-border/60 bg-background pl-9"
                     />
                   </div>
-                  <Button type="submit">
+                  <label htmlFor="home-search-type" className="sr-only">
+                    搜索类型
+                  </label>
+                  <select
+                    id="home-search-type"
+                    name="type"
+                    defaultValue="all"
+                    className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  >
+                    <option value="all">全部内容</option>
+                    <option value="post">只看文章</option>
+                    <option value="moment">只看见闻</option>
+                  </select>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                  <label htmlFor="home-search-sort" className="sr-only">
+                    搜索排序
+                  </label>
+                  <select
+                    id="home-search-sort"
+                    name="sort"
+                    defaultValue="newest"
+                    className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  >
+                    <option value="newest">最新发布</option>
+                    <option value="updated">最近更新</option>
+                    <option value="popular">阅读最多</option>
+                  </select>
+                  <Button type="submit" className="h-10">
                     <Search
                       className="h-4 w-4"
                       suppressHydrationWarning
@@ -217,6 +250,13 @@ export default async function HomePage() {
             </section>
           </div>
         </section>
+
+        <DiscoveryRail
+          articleCount={articleCount}
+          momentCount={momentCount}
+          totalCount={publishedRows?.length || 0}
+          topicCount={usedCategoryCount + usedTagCount}
+        />
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile label="已发布内容" value={publishedRows?.length || 0} />
@@ -258,10 +298,10 @@ export default async function HomePage() {
                     </h2>
                   </div>
                   <Link
-                    href="/posts"
+                    href="/archive"
                     className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
-                    全部文章
+                    全部内容
                     <ArrowRight
                       className="h-4 w-4"
                       suppressHydrationWarning
@@ -326,6 +366,85 @@ export default async function HomePage() {
       </PublicPageShell>
       <Footer />
     </div>
+  );
+}
+
+function DiscoveryRail({
+  articleCount,
+  momentCount,
+  totalCount,
+  topicCount,
+}: {
+  articleCount: number;
+  momentCount: number;
+  totalCount: number;
+  topicCount: number;
+}) {
+  const items = [
+    {
+      href: "/posts",
+      label: "文章",
+      description: "技术笔记、项目复盘和长期主题",
+      countLabel: `${articleCount} 篇`,
+      icon: FileText,
+    },
+    {
+      href: "/moments",
+      label: "见闻",
+      description: "短记录、观察和轻量片段",
+      countLabel: `${momentCount} 条`,
+      icon: NotebookText,
+    },
+    {
+      href: "/archive",
+      label: "归档",
+      description: "按年份和月份回看全部内容",
+      countLabel: `${totalCount} 篇`,
+      icon: Archive,
+    },
+    {
+      href: "/category",
+      label: "主题索引",
+      description: "从分类和标签继续交叉发现",
+      countLabel: `${topicCount} 个入口`,
+      icon: FolderOpen,
+    },
+  ];
+
+  return (
+    <section
+      aria-label="内容浏览入口"
+      className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+    >
+      {items.map((item) => {
+        const Icon = item.icon;
+
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="group flex min-w-0 items-start gap-3 rounded-lg border bg-card p-4 transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground transition-colors group-hover:text-primary">
+              <Icon className="h-4 w-4" suppressHydrationWarning />
+            </span>
+            <span className="min-w-0">
+              <span className="flex min-w-0 items-center justify-between gap-2">
+                <span className="truncate text-sm font-medium transition-colors group-hover:text-primary">
+                  {item.label}
+                </span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {item.countLabel}
+                </span>
+              </span>
+              <span className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
+                {item.description}
+              </span>
+            </span>
+          </Link>
+        );
+      })}
+    </section>
   );
 }
 
