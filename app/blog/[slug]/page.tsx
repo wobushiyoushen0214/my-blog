@@ -40,6 +40,8 @@ type CategoryMeta = Pick<Category, "name" | "slug" | "type">;
 type RelatedPost = Post & {
   category?: CategoryMeta | null;
   tags?: TagType[];
+  relationLabel?: string;
+  relationRank?: number;
 };
 
 type NavigationPost = Pick<Post, "id" | "title" | "slug" | "created_at"> & {
@@ -167,22 +169,93 @@ async function attachTags(
   supabase: Awaited<ReturnType<typeof createClient>>,
   posts: RelatedPost[]
 ) {
-  return Promise.all(
-    posts.map(async (post) => {
-      const { data: postTags } = await supabase
-        .from("post_tags")
-        .select("tag_id")
-        .eq("post_id", post.id);
+  if (posts.length === 0) return [];
 
-      if (!postTags || postTags.length === 0) {
-        return { ...post, tags: [] };
-      }
+  const postIds = posts.map((post) => post.id);
+  const { data: postTags } = await supabase
+    .from("post_tags")
+    .select("post_id, tag_id")
+    .in("post_id", postIds);
 
-      const tagIds = postTags.map((postTag) => postTag.tag_id);
-      const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-      return { ...post, tags: tags || [] };
-    })
+  const tagIds = Array.from(
+    new Set((postTags || []).map((postTag) => postTag.tag_id))
   );
+
+  if (tagIds.length === 0) {
+    return posts.map((post) => ({ ...post, tags: [] }));
+  }
+
+  const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
+  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as TagType]));
+  const tagsByPostId = new Map<string, TagType[]>();
+
+  (postTags || []).forEach((postTag) => {
+    const tag = tagById.get(postTag.tag_id);
+    if (!tag) return;
+
+    tagsByPostId.set(postTag.post_id, [
+      ...(tagsByPostId.get(postTag.post_id) || []),
+      tag,
+    ]);
+  });
+
+  return posts.map((post) => ({
+    ...post,
+    tags: tagsByPostId.get(post.id) || [],
+  }));
+}
+
+function buildRelatedCandidates({
+  tagRelatedPosts,
+  categoryRelatedPosts,
+  sharedTagCounts,
+  currentCategoryId,
+}: {
+  tagRelatedPosts: RelatedPost[];
+  categoryRelatedPosts: RelatedPost[];
+  sharedTagCounts: Map<string, number>;
+  currentCategoryId: string | null;
+}) {
+  const byId = new Map<string, RelatedPost>();
+
+  const addPost = (post: RelatedPost) => {
+    const sharedTagCount = sharedTagCounts.get(post.id) || 0;
+    const sameCategory = Boolean(
+      currentCategoryId && post.category_id === currentCategoryId
+    );
+    const relationRank = sharedTagCount * 10 + (sameCategory ? 2 : 0);
+    const relationLabel =
+      sharedTagCount > 0
+        ? sameCategory
+          ? sharedTagCount > 1
+            ? `${sharedTagCount} 个共同标签 · 同分类`
+            : "同标签 · 同分类"
+          : sharedTagCount > 1
+            ? `${sharedTagCount} 个共同标签`
+            : "同标签"
+        : sameCategory
+          ? "同分类"
+          : "同类型";
+    const existing = byId.get(post.id);
+
+    if (existing && (existing.relationRank || 0) >= relationRank) return;
+    byId.set(post.id, {
+      ...post,
+      relationLabel,
+      relationRank,
+    });
+  };
+
+  tagRelatedPosts.forEach(addPost);
+  categoryRelatedPosts.forEach(addPost);
+
+  return Array.from(byId.values())
+    .sort((a, b) => {
+      const rankDelta = (b.relationRank || 0) - (a.relationRank || 0);
+      if (rankDelta !== 0) return rankDelta;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    })
+    .slice(0, 4);
 }
 
 export async function generateMetadata({
@@ -237,10 +310,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     .select("tag_id")
     .eq("post_id", post.id);
 
+  const currentTagIds = (postTags || []).map((pt) => pt.tag_id);
   let tags: TagType[] = [];
-  if (postTags && postTags.length > 0) {
-    const tagIds = postTags.map((pt) => pt.tag_id);
-    const { data } = await supabase.from("tags").select("*").in("id", tagIds);
+  if (currentTagIds.length > 0) {
+    const { data } = await supabase.from("tags").select("*").in("id", currentTagIds);
     tags = data || [];
   }
 
@@ -263,18 +336,54 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     .eq("type", contentType);
   const siblingCategoryIds = (siblingCategories || []).map((category) => category.id);
 
-  let relatedQuery = supabase
+  const { data: relatedPostTags } =
+    currentTagIds.length > 0
+      ? await supabase
+          .from("post_tags")
+          .select("post_id, tag_id")
+          .in("tag_id", currentTagIds)
+          .neq("post_id", post.id)
+      : { data: [] };
+
+  const sharedTagCounts = (relatedPostTags || []).reduce<Map<string, number>>(
+    (counts, postTag) => {
+      counts.set(postTag.post_id, (counts.get(postTag.post_id) || 0) + 1);
+      return counts;
+    },
+    new Map()
+  );
+  const tagRelatedPostIds = Array.from(sharedTagCounts.keys());
+
+  let tagRelatedPostsData: RelatedPost[] = [];
+  if (tagRelatedPostIds.length > 0) {
+    let tagRelatedQuery = supabase
+      .from("posts")
+      .select("*, category:categories(name,slug,type)")
+      .eq("published", true)
+      .in("id", tagRelatedPostIds)
+      .order("created_at", { ascending: false })
+      .limit(12);
+
+    if (siblingCategoryIds.length > 0) {
+      tagRelatedQuery = tagRelatedQuery.in("category_id", siblingCategoryIds);
+    }
+
+    const { data } = await tagRelatedQuery;
+    tagRelatedPostsData = (data || []) as unknown as RelatedPost[];
+  }
+
+  let categoryRelatedQuery = supabase
     .from("posts")
-    .select("*, category:categories(*)")
+    .select("*, category:categories(name,slug,type)")
     .eq("published", true)
     .neq("id", post.id)
     .order("created_at", { ascending: false })
-    .limit(3);
+    .limit(8);
 
   if (post.category_id) {
-    relatedQuery = relatedQuery.eq("category_id", post.category_id);
+    categoryRelatedQuery = categoryRelatedQuery.eq("category_id", post.category_id);
   } else if (siblingCategoryIds.length > 0) {
-    relatedQuery = relatedQuery.in("category_id", siblingCategoryIds);
+    categoryRelatedQuery = categoryRelatedQuery.in("category_id", siblingCategoryIds);
   }
 
   let previousPostQuery = supabase
@@ -299,17 +408,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const [
-    { data: relatedPostsData },
+    { data: categoryRelatedPostsData },
     { data: previousPostData },
     { data: nextPostData },
   ] = await Promise.all([
-    relatedQuery,
+    categoryRelatedQuery,
     previousPostQuery.maybeSingle(),
     nextPostQuery.maybeSingle(),
   ]);
+  const relatedCandidates = buildRelatedCandidates({
+    tagRelatedPosts: tagRelatedPostsData,
+    categoryRelatedPosts: (categoryRelatedPostsData || []) as unknown as RelatedPost[],
+    sharedTagCounts,
+    currentCategoryId: post.category_id,
+  });
   const relatedPosts = await attachTags(
     supabase,
-    (relatedPostsData || []) as unknown as RelatedPost[]
+    relatedCandidates
   );
   const previousPost = previousPostData as unknown as NavigationPost | null;
   const nextPost = nextPostData as unknown as NavigationPost | null;
@@ -738,7 +853,9 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
               <span className="rounded-md border bg-background px-1.5 py-0.5 text-foreground">
                 {getContentTypeLabel(contentType)}
               </span>
-              {post.category ? (
+              {post.relationLabel ? (
+                <span className="min-w-0 truncate">{post.relationLabel}</span>
+              ) : post.category ? (
                 <span className="min-w-0 truncate">{post.category.name}</span>
               ) : null}
             </div>
@@ -749,6 +866,19 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
               <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
                 {post.excerpt}
               </p>
+            ) : null}
+            {post.tags && post.tags.length > 0 ? (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {post.tags.slice(0, 3).map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    variant="outline"
+                    className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
+              </div>
             ) : null}
           </Link>
         );
