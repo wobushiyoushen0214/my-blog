@@ -42,6 +42,7 @@ type PostWithTaxonomy = Post & {
 
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
+type PostTagRow = { post_id: string; tag_id: string };
 
 function normalizeQuery(query: string) {
   return query.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim();
@@ -108,26 +109,24 @@ function getContentListLabel(type: SearchType) {
   return "文章列表";
 }
 
-async function attachTags(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  posts: PostWithTaxonomy[]
+function attachTagsFromRows(
+  posts: PostWithTaxonomy[],
+  postTags: PostTagRow[],
+  tags: Tag[]
 ) {
-  return Promise.all(
-    posts.map(async (post) => {
-      const { data: postTags } = await supabase
-        .from("post_tags")
-        .select("tag_id")
-        .eq("post_id", post.id);
+  const tagById = new Map(tags.map((tag) => [tag.id, tag]));
+  const tagsByPostId = postTags.reduce<Map<string, Tag[]>>((groups, postTag) => {
+    const tag = tagById.get(postTag.tag_id);
+    if (!tag) return groups;
 
-      if (!postTags || postTags.length === 0) {
-        return { ...post, tags: [] };
-      }
+    groups.set(postTag.post_id, [...(groups.get(postTag.post_id) || []), tag]);
+    return groups;
+  }, new Map());
 
-      const tagIds = postTags.map((postTag) => postTag.tag_id);
-      const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-      return { ...post, tags: tags || [] };
-    })
-  );
+  return posts.map((post) => ({
+    ...post,
+    tags: tagsByPostId.get(post.id) || [],
+  }));
 }
 
 export async function generateMetadata({
@@ -183,6 +182,8 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
   ]);
 
   const categoryRows = (categories || []) as Category[];
+  const tagRows = (tags || []) as Tag[];
+  const postTagRows = (allPostTags || []) as PostTagRow[];
   const publishedPostIds = new Set(
     (publishedPosts || []).map((post) => post.id)
   );
@@ -194,7 +195,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     .map((category) => category.id);
   const taggedPostIds = Array.from(
     new Set(
-      (allPostTags || [])
+      postTagRows
         .filter((postTag) => postTag.tag_id === tag.id)
         .map((postTag) => postTag.post_id)
     )
@@ -211,7 +212,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     },
     new Map()
   );
-  const tagPostCounts = (allPostTags || []).reduce<Map<string, Set<string>>>(
+  const tagPostCounts = postTagRows.reduce<Map<string, Set<string>>>(
     (counts, postTag) => {
       if (!publishedPostIds.has(postTag.post_id)) return counts;
       const current = counts.get(postTag.tag_id) || new Set<string>();
@@ -225,7 +226,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     ...category,
     postCount: categoryPostCounts.get(category.id) || 0,
   }));
-  const tagSummaries: TagSummary[] = ((tags || []) as Tag[]).map((item) => ({
+  const tagSummaries: TagSummary[] = tagRows.map((item) => ({
     ...item,
     postCount: tagPostCounts.get(item.id)?.size || 0,
   }));
@@ -291,9 +292,10 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
       page * PAGE_SIZE - 1
     );
 
-    postsWithTags = await attachTags(
-      supabase,
-      (posts || []) as unknown as PostWithTaxonomy[]
+    postsWithTags = attachTagsFromRows(
+      (posts || []) as unknown as PostWithTaxonomy[],
+      postTagRows,
+      tagRows
     );
   }
 

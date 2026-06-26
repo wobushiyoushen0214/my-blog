@@ -35,6 +35,8 @@ type PostWithTaxonomy = Post & {
 
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
+type PostTagRow = { post_id: string; tag_id: string };
+type PublishedPostRow = Pick<Post, "id" | "category_id">;
 
 function normalizeQuery(query: string) {
   return query.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim();
@@ -92,26 +94,24 @@ function getContentListHref(type: Category["type"]) {
   return type === "moment" ? "/moments" : "/posts";
 }
 
-async function attachTags(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  posts: PostWithTaxonomy[]
+function attachTagsFromRows(
+  posts: PostWithTaxonomy[],
+  postTags: PostTagRow[],
+  tags: Tag[]
 ) {
-  return Promise.all(
-    posts.map(async (post) => {
-      const { data: postTags } = await supabase
-        .from("post_tags")
-        .select("tag_id")
-        .eq("post_id", post.id);
+  const tagById = new Map(tags.map((tag) => [tag.id, tag]));
+  const tagsByPostId = postTags.reduce<Map<string, Tag[]>>((groups, postTag) => {
+    const tag = tagById.get(postTag.tag_id);
+    if (!tag) return groups;
 
-      if (!postTags || postTags.length === 0) {
-        return { ...post, tags: [] };
-      }
+    groups.set(postTag.post_id, [...(groups.get(postTag.post_id) || []), tag]);
+    return groups;
+  }, new Map());
 
-      const tagIds = postTags.map((postTag) => postTag.tag_id);
-      const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-      return { ...post, tags: tags || [] };
-    })
-  );
+  return posts.map((post) => ({
+    ...post,
+    tags: tagsByPostId.get(post.id) || [],
+  }));
 }
 
 export async function generateMetadata({
@@ -157,6 +157,8 @@ export default async function CategoryPage({
     { count: totalCategoryCount },
     { data: categories },
     { data: tags },
+    { data: publishedPosts },
+    { data: allPostTags },
   ] = await Promise.all([
     supabase
       .from("posts")
@@ -165,6 +167,8 @@ export default async function CategoryPage({
       .eq("category_id", typedCategory.id),
     supabase.from("categories").select("*").order("name"),
     supabase.from("tags").select("*").order("name"),
+    supabase.from("posts").select("id, category_id").eq("published", true),
+    supabase.from("post_tags").select("post_id, tag_id"),
   ]);
 
   let countQuery = supabase
@@ -208,28 +212,43 @@ export default async function CategoryPage({
     page * PAGE_SIZE - 1
   );
 
-  const [postsWithTags, categorySummaries, tagSummaries] = await Promise.all([
-    attachTags(supabase, (posts || []) as unknown as PostWithTaxonomy[]),
-    Promise.all(
-      (categories || []).map(async (item) => {
-        const { count: postCount } = await supabase
-          .from("posts")
-          .select("id", { count: "exact", head: true })
-          .eq("published", true)
-          .eq("category_id", item.id);
-        return { ...item, postCount: postCount || 0 };
-      })
-    ),
-    Promise.all(
-      (tags || []).map(async (tag) => {
-        const { count: postCount } = await supabase
-          .from("post_tags")
-          .select("post_id", { count: "exact", head: true })
-          .eq("tag_id", tag.id);
-        return { ...tag, postCount: postCount || 0 };
-      })
-    ),
-  ]);
+  const publishedRows = (publishedPosts || []) as PublishedPostRow[];
+  const postTagRows = (allPostTags || []) as PostTagRow[];
+  const tagRows = (tags || []) as Tag[];
+  const publishedPostIds = new Set(publishedRows.map((post) => post.id));
+  const categoryPostCounts = publishedRows.reduce<Map<string, number>>(
+    (counts, post) => {
+      if (!post.category_id) return counts;
+      counts.set(post.category_id, (counts.get(post.category_id) || 0) + 1);
+      return counts;
+    },
+    new Map()
+  );
+  const tagPostCounts = postTagRows.reduce<Map<string, Set<string>>>(
+    (counts, postTag) => {
+      if (!publishedPostIds.has(postTag.post_id)) return counts;
+      const current = counts.get(postTag.tag_id) || new Set<string>();
+      current.add(postTag.post_id);
+      counts.set(postTag.tag_id, current);
+      return counts;
+    },
+    new Map()
+  );
+  const postsWithTags = attachTagsFromRows(
+    (posts || []) as unknown as PostWithTaxonomy[],
+    postTagRows,
+    tagRows
+  );
+  const categorySummaries: CategorySummary[] = ((categories || []) as Category[]).map(
+    (item) => ({
+      ...item,
+      postCount: categoryPostCounts.get(item.id) || 0,
+    })
+  );
+  const tagSummaries: TagSummary[] = tagRows.map((tag) => ({
+    ...tag,
+    postCount: tagPostCounts.get(tag.id)?.size || 0,
+  }));
 
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
   const featuredPost =
