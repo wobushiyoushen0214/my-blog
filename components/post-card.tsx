@@ -57,7 +57,7 @@ export function PostCard({
     return (
       <Link
         href={`/blog/${post.slug}`}
-        className="group grid min-w-0 gap-3 border border-border/70 bg-card px-4 py-3 text-card-foreground transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem]"
+        className="group grid min-w-0 gap-3 border-y border-border/70 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem]"
       >
         <div className="text-xs tabular-nums text-muted-foreground">
           <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
@@ -88,7 +88,7 @@ export function PostCard({
                 <Badge
                   key={tag.id}
                   variant="outline"
-                  className="h-5 rounded-sm px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
+                  className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
                 >
                   {tag.name}
                 </Badge>
@@ -109,7 +109,7 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex min-w-0 overflow-hidden border border-border/70 bg-card text-card-foreground transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden border-y border-border/70 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured
           ? "flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]"
           : "flex-col",
@@ -152,7 +152,7 @@ export function PostCard({
       <div
         className={cn(
           "flex flex-1 flex-col",
-          isFeatured ? "p-5 md:p-6 lg:p-7" : isCompact ? "p-0" : "p-5"
+          isFeatured ? "py-5 md:py-6 lg:pl-6" : isCompact ? "p-0" : "py-5"
         )}
       >
         <div className="flex-1 space-y-3">
@@ -189,8 +189,8 @@ export function PostCard({
             className={cn(
               "line-clamp-2 font-serif leading-tight tracking-normal transition-opacity group-hover:opacity-70",
               isFeatured
-                ? "text-3xl md:text-4xl"
-                : "text-xl"
+                ? "text-2xl md:text-3xl"
+                : "text-lg md:text-xl"
             )}
           >
             {post.title}
@@ -213,7 +213,7 @@ export function PostCard({
               <Badge
                 key={tag.id}
                 variant="outline"
-                className="h-5 rounded-sm px-1.5 py-0 text-[10px] font-normal"
+                className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
               >
                 {tag.name}
               </Badge>

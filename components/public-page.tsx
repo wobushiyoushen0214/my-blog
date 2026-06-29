@@ -42,33 +42,36 @@ export function PublicPageHeader({
   action,
 }: PublicPageHeaderProps) {
   return (
-    <header className="mb-6 border border-border/70 bg-card p-5 md:p-6">
+    <header className="mb-6 border-y border-border/70 py-5 md:py-6">
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-4 inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mb-5 inline-flex h-9 items-center gap-1.5 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
           {backLabel}
         </Link>
       ) : null}
 
-      <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
-        <div className="min-w-0 space-y-2">
-          {eyebrow ? (
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              {eyebrow}
-            </p>
-          ) : null}
-          <div className="flex min-w-0 flex-wrap items-end gap-x-3 gap-y-2">
-            <h1 className="min-w-0 font-serif text-4xl leading-none tracking-normal md:text-5xl">
-              {title}
-            </h1>
-            {countLabel ? (
-              <span className="pb-1 text-sm text-muted-foreground">
-                {countLabel}
-              </span>
+      <div className="grid gap-4 md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-end">
+        <span className="font-mono text-xs text-muted-foreground">00</span>
+        <div className="min-w-0 space-y-3">
+          <div className="space-y-2 border-b border-border/60 pb-3">
+            {eyebrow ? (
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                {eyebrow}
+              </p>
             ) : null}
+            <div className="flex min-w-0 flex-wrap items-end gap-x-3 gap-y-2">
+              <h1 className="min-w-0 font-serif text-3xl leading-none tracking-normal md:text-4xl">
+                {title}
+              </h1>
+              {countLabel ? (
+                <span className="pb-1 text-sm text-muted-foreground">
+                  {countLabel}
+                </span>
+              ) : null}
+            </div>
           </div>
           {description ? (
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
@@ -107,7 +110,7 @@ export function PublicEmptyState({
       <div className="grid gap-4 sm:grid-cols-[2.5rem_minmax(0,1fr)]">
         <div className="text-xs tabular-nums text-muted-foreground">
           {Icon ? (
-            <span className="flex size-9 items-center justify-center border bg-card text-muted-foreground">
+            <span className="flex size-9 items-center justify-center border border-border/70 bg-background text-muted-foreground">
               <Icon className="h-4 w-4" suppressHydrationWarning />
             </span>
           ) : (
@@ -142,8 +145,8 @@ export function PublicInfoPanel({
   contentClassName,
 }: PublicInfoPanelProps) {
   return (
-    <section className={cn("border bg-card", className)}>
-      <div className="border-b px-4 py-3">
+    <section className={cn("border-y border-border/70", className)}>
+      <div className="border-b border-border/60 py-3">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -153,7 +156,7 @@ export function PublicInfoPanel({
           </p>
         ) : null}
       </div>
-      <div className={cn("p-4", contentClassName)}>{children}</div>
+      <div className={cn("py-3", contentClassName)}>{children}</div>
     </section>
   );
 }
@@ -208,7 +211,7 @@ export function PublicIndexLinks({
             <span className="inline-flex items-center gap-2 text-xs text-muted-foreground sm:justify-self-end">
               {item.meta ? <span>{item.meta}</span> : null}
               <ArrowRight
-                className="h-4 w-4 transition-colors group-hover:text-primary"
+                className="h-4 w-4 transition-colors group-hover:text-foreground"
                 suppressHydrationWarning
               />
             </span>
