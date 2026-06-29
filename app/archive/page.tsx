@@ -294,12 +294,30 @@ export default async function ArchivePage({
 
             <ActiveArchiveSummary query={searchQuery} contentType={contentType} />
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <ArchiveStat label="当前内容" value={filteredPosts.length} />
-              <ArchiveStat label="文章" value={articleCount} />
-              <ArchiveStat label="见闻" value={momentCount} />
-              <ArchiveStat label="年份跨度" value={yearRange} />
-            </div>
+            <ArchiveSummaryLedger
+              items={[
+                {
+                  label: "当前内容",
+                  value: filteredPosts.length,
+                  detail: hasFilters ? "筛选后条目" : "全部归档",
+                },
+                {
+                  label: "文章",
+                  value: articleCount,
+                  detail: "长期笔记",
+                },
+                {
+                  label: "见闻",
+                  value: momentCount,
+                  detail: "短记录",
+                },
+                {
+                  label: "年份跨度",
+                  value: yearRange,
+                  detail: `${yearGroups.length} 个年份`,
+                },
+              ]}
+            />
 
             {filteredPosts.length > 0 ? (
               <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
@@ -455,18 +473,34 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function ArchiveStat({
-  label,
-  value,
+function ArchiveSummaryLedger({
+  items,
 }: {
-  label: string;
-  value: number | string;
+  items: { label: string; value: number | string; detail: string }[];
 }) {
   return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
-    </div>
+    <section
+      aria-label="归档概览"
+      className="mt-4 divide-y divide-border/70 border-y border-border/70"
+    >
+      {items.map((item, index) => (
+        <div
+          key={item.label}
+          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_120px_minmax(0,1fr)]"
+        >
+          <span className="text-muted-foreground">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="min-w-0 truncate text-muted-foreground">
+            {item.label}
+          </span>
+          <span className="font-serif text-xl leading-none">{item.value}</span>
+          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
+            {item.detail}
+          </span>
+        </div>
+      ))}
+    </section>
   );
 }
 

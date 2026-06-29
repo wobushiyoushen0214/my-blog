@@ -467,18 +467,23 @@ function PostsOverview({
   return (
     <section
       aria-label="文章概览"
-      className="mt-4 grid gap-2 sm:grid-cols-3"
+      className="mt-4 divide-y divide-border/70 border-y border-border/70"
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <div
           key={item.label}
-        className="border border-border/70 bg-card px-3 py-2.5"
+          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
         >
-          <p className="text-xs text-muted-foreground">{item.label}</p>
-          <p className="mt-1 truncate text-sm font-medium">{item.value}</p>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+          <span className="text-muted-foreground">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="min-w-0 truncate text-muted-foreground">
+            {item.label}
+          </span>
+          <span className="font-serif text-xl leading-none">{item.value}</span>
+          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
             {item.detail}
-          </p>
+          </span>
         </div>
       ))}
     </section>

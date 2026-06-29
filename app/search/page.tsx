@@ -714,18 +714,23 @@ function SearchResultSummary({
   return (
     <section
       aria-label="搜索结果摘要"
-      className="mt-4 grid gap-2 sm:grid-cols-3"
+      className="mt-4 divide-y divide-border/70 border-y border-border/70"
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <div
           key={item.label}
-          className="border border-border/70 bg-card px-3 py-2.5"
+          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_120px_minmax(0,1fr)]"
         >
-          <p className="text-xs text-muted-foreground">{item.label}</p>
-          <p className="mt-1 truncate text-sm font-medium">{item.value}</p>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+          <span className="text-muted-foreground">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="min-w-0 truncate text-muted-foreground">
+            {item.label}
+          </span>
+          <span className="font-serif text-xl leading-none">{item.value}</span>
+          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
             {item.detail}
-          </p>
+          </span>
         </div>
       ))}
     </section>
@@ -783,8 +788,8 @@ function SearchStarterPanel({
 
   return (
     <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.76fr)]">
-      <div className="border bg-card">
-        <div className="border-b px-4 py-3">
+      <div>
+        <div className="border-b border-border/50 pb-3">
           <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
             快速进入
           </h2>
@@ -792,22 +797,30 @@ function SearchStarterPanel({
             按内容类型或排序方式直接浏览。
           </p>
         </div>
-        <div className="grid gap-2 p-3 sm:grid-cols-2">
-          {shortcuts.map((item) => (
+        <div className="divide-y divide-border/70 border-y border-border/70">
+          {shortcuts.map((item, index) => (
             <Link
               key={`${item.label}-${item.href}`}
               href={item.href}
-              className={`group min-w-0 rounded-md border px-3 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+              className={`group grid min-w-0 gap-2 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_90px] ${
                 item.active
-                  ? "border-primary/35 bg-primary/10"
-                  : "border-border/60 bg-background hover:border-primary/30 hover:bg-muted/25"
+                  ? "bg-primary/10 text-primary"
+                  : "hover:bg-muted/20"
               }`}
             >
-              <span className="block truncate text-sm font-medium transition-colors group-hover:text-primary">
-                {item.label}
+              <span className="text-muted-foreground">
+                {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="mt-0.5 block truncate text-xs text-muted-foreground">
-                {item.description}
+              <span className="min-w-0">
+                <span className="block truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
+                  {item.label}
+                </span>
+                <span className="mt-1 block truncate text-xs text-muted-foreground">
+                  {item.description}
+                </span>
+              </span>
+              <span className="text-xs text-muted-foreground sm:text-right">
+                {item.active ? "当前" : "打开"}
               </span>
             </Link>
           ))}
