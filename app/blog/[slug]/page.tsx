@@ -302,12 +302,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const [
     { data: postTags },
-    { data: tagRows },
     { data: comments },
     { data: siblingCategories },
   ] = await Promise.all([
     supabase.from("post_tags").select("tag_id").eq("post_id", post.id),
-    supabase.from("tags").select("*"),
     supabase
       .from("comments")
       .select("*")
@@ -321,14 +319,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       .eq("id", post.id),
   ]);
 
-  const allTags = (tagRows || []) as TagType[];
-  const tagById = new Map(allTags.map((tag) => [tag.id, tag]));
   const currentTagIds = ((postTags || []) as CurrentPostTagRow[]).map(
     (pt) => pt.tag_id
   );
-  const tags = currentTagIds
-    .map((tagId) => tagById.get(tagId))
-    .filter((tag): tag is TagType => Boolean(tag));
   const commentCount = comments?.length || 0;
   const siblingCategoryIds = (siblingCategories || []).map((category) => category.id);
 
@@ -428,10 +421,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           .select("post_id, tag_id")
           .in("post_id", relatedCandidateIds)
       : { data: [] };
+  const candidatePostTagRows = (candidatePostTags || []) as PostTag[];
+  const usedTagIds = Array.from(
+    new Set([
+      ...currentTagIds,
+      ...candidatePostTagRows.map((postTag) => postTag.tag_id),
+    ])
+  );
+  const { data: tagRows } =
+    usedTagIds.length > 0
+      ? await supabase.from("tags").select("*").in("id", usedTagIds)
+      : { data: [] };
+  const usedTags = (tagRows || []) as TagType[];
+  const tagById = new Map(usedTags.map((tag) => [tag.id, tag]));
+  const tags = currentTagIds
+    .map((tagId) => tagById.get(tagId))
+    .filter((tag): tag is TagType => Boolean(tag));
   const relatedPosts = attachTagsFromRows(
     relatedCandidates,
-    (candidatePostTags || []) as PostTag[],
-    allTags
+    candidatePostTagRows,
+    usedTags
   );
   const previousPost = previousPostData as unknown as NavigationPost | null;
   const nextPost = nextPostData as unknown as NavigationPost | null;
