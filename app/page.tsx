@@ -18,7 +18,7 @@ import {
   Rss,
   Search,
 } from "lucide-react";
-import type { Category, Comment, Post, Tag } from "@/lib/types";
+import type { Category, Comment, Post, PostTag, Tag } from "@/lib/types";
 
 type PostWithTaxonomy = Post & {
   category?: Category | null;
@@ -41,26 +41,31 @@ type RecentDiscussion = Pick<
   postSlug: string;
 };
 
-async function attachTags(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  posts: PostWithTaxonomy[]
+function attachTagsFromRows(
+  posts: PostWithTaxonomy[],
+  postTags: PostTag[],
+  tags: Tag[]
 ) {
-  return Promise.all(
-    posts.map(async (post) => {
-      const { data: postTags } = await supabase
-        .from("post_tags")
-        .select("tag_id")
-        .eq("post_id", post.id);
+  const tagById = new Map(tags.map((tag) => [tag.id, tag]));
+  const tagsByPostId = new Map<string, Tag[]>();
 
-      if (!postTags || postTags.length === 0) {
-        return { ...post, tags: [] };
-      }
+  postTags.forEach((postTag) => {
+    const tag = tagById.get(postTag.tag_id);
+    if (!tag) return;
 
-      const tagIds = postTags.map((postTag) => postTag.tag_id);
-      const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-      return { ...post, tags: tags || [] };
-    })
-  );
+    const groupedTags = tagsByPostId.get(postTag.post_id);
+    if (groupedTags) {
+      groupedTags.push(tag);
+      return;
+    }
+
+    tagsByPostId.set(postTag.post_id, [tag]);
+  });
+
+  return posts.map((post) => ({
+    ...post,
+    tags: tagsByPostId.get(post.id) || [],
+  }));
 }
 
 function categoryHref(category: CategorySummary) {
@@ -142,14 +147,16 @@ export default async function HomePage() {
           .in("post_id", publishedPostIds)
       : { data: [] };
 
-  const tagCounts = (postTags || []).reduce<Map<string, number>>(
+  const postTagRows = (postTags || []) as PostTag[];
+  const tagRows = (tags || []) as Tag[];
+  const tagCounts = postTagRows.reduce<Map<string, number>>(
     (counts, postTag) => {
       counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
       return counts;
     },
     new Map()
   );
-  const tagSummaries: TagSummary[] = (tags || [])
+  const tagSummaries: TagSummary[] = tagRows
     .map((tag) => ({
       ...tag,
       postCount: tagCounts.get(tag.id) || 0,
@@ -157,9 +164,10 @@ export default async function HomePage() {
     .filter((tag) => tag.postCount > 0)
     .sort((a, b) => b.postCount - a.postCount);
 
-  const postsWithTags = await attachTags(
-    supabase,
-    (recentData || []) as unknown as PostWithTaxonomy[]
+  const postsWithTags = attachTagsFromRows(
+    (recentData || []) as unknown as PostWithTaxonomy[],
+    postTagRows,
+    tagRows
   );
 
   const articleCount = (publishedRows || []).filter((post) => {

@@ -13,13 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
-import type { Category, Post, Tag } from "@/lib/types";
+import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "搜索",
 };
 
 type PostRow = Post & { category?: Category | null; tags?: Tag[] };
+type PublishedPostRow = Pick<Post, "id" | "category_id">;
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
 type SearchType = "all" | "post" | "moment";
@@ -104,37 +105,26 @@ function sortPosts(posts: PostRow[], sort: SortOption) {
   });
 }
 
-async function attachTags(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  posts: PostRow[]
-) {
+function attachTagsFromRows(posts: PostRow[], postTags: PostTag[], tags: Tag[]) {
   if (posts.length === 0) return [];
 
-  const postIds = posts.map((post) => post.id);
-  const { data: postTags } = await supabase
-    .from("post_tags")
-    .select("post_id, tag_id")
-    .in("post_id", postIds);
-
-  const tagIds = Array.from(
-    new Set((postTags || []).map((postTag) => postTag.tag_id))
-  );
-
-  if (tagIds.length === 0) {
-    return posts.map((post) => ({ ...post, tags: [] }));
-  }
-
-  const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as Tag]));
+  const postIds = new Set(posts.map((post) => post.id));
+  const tagById = new Map(tags.map((tag) => [tag.id, tag]));
   const tagsByPostId = new Map<string, Tag[]>();
 
-  (postTags || []).forEach((postTag) => {
+  postTags.forEach((postTag) => {
+    if (!postIds.has(postTag.post_id)) return;
+
     const tag = tagById.get(postTag.tag_id);
     if (!tag) return;
 
-    const current = tagsByPostId.get(postTag.post_id) || [];
-    current.push(tag);
-    tagsByPostId.set(postTag.post_id, current);
+    const groupedTags = tagsByPostId.get(postTag.post_id);
+    if (groupedTags) {
+      groupedTags.push(tag);
+      return;
+    }
+
+    tagsByPostId.set(postTag.post_id, [tag]);
   });
 
   return posts.map((post) => ({
@@ -155,13 +145,20 @@ export default async function SearchPage({
   const sort = parseSort(sortParam);
   const supabase = await createClient();
 
-  const [{ data: categories }, { data: tags }] = await Promise.all([
+  const [
+    { data: categories },
+    { data: tags },
+    { data: publishedRows },
+  ] = await Promise.all([
     supabase.from("categories").select("*").order("name"),
     supabase.from("tags").select("*").order("name"),
+    supabase.from("posts").select("id, category_id").eq("published", true),
   ]);
 
   const typedCategories = (categories || []) as Category[];
   const typedTags = (tags || []) as Tag[];
+  const typedPublishedRows = (publishedRows || []) as PublishedPostRow[];
+  const publishedPostIds = typedPublishedRows.map((post) => post.id);
   const postCategoryIds = typedCategories
     .filter((category) => category.type !== "moment")
     .map((category) => category.id);
@@ -196,30 +193,38 @@ export default async function SearchPage({
     recentQuery = recentQuery.order("created_at", { ascending: false });
   }
 
-  const { data: recentData } = canQueryRecent
-    ? await recentQuery.limit(8)
-    : { data: [] };
+  const [{ data: recentData }, { data: postTags }] = await Promise.all([
+    canQueryRecent ? recentQuery.limit(8) : Promise.resolve({ data: [] }),
+    publishedPostIds.length > 0
+      ? supabase
+          .from("post_tags")
+          .select("post_id, tag_id")
+          .in("post_id", publishedPostIds)
+      : Promise.resolve({ data: [] }),
+  ]);
+  const postTagRows = (postTags || []) as PostTag[];
 
-  const categorySummaries: CategorySummary[] = await Promise.all(
-    typedCategories.map(async (category) => {
-      const { count } = await supabase
-        .from("posts")
-        .select("id", { count: "exact", head: true })
-        .eq("published", true)
-        .eq("category_id", category.id);
-      return { ...category, postCount: count || 0 };
-    })
+  const categoryCounts = typedPublishedRows.reduce<Map<string, number>>(
+    (counts, post) => {
+      if (!post.category_id) return counts;
+      counts.set(post.category_id, (counts.get(post.category_id) || 0) + 1);
+      return counts;
+    },
+    new Map()
   );
+  const tagCounts = postTagRows.reduce<Map<string, number>>((counts, postTag) => {
+    counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
+    return counts;
+  }, new Map());
 
-  const tagSummaries: TagSummary[] = await Promise.all(
-    typedTags.map(async (tag) => {
-      const { count } = await supabase
-        .from("post_tags")
-        .select("post_id", { count: "exact", head: true })
-        .eq("tag_id", tag.id);
-      return { ...tag, postCount: count || 0 };
-    })
-  );
+  const categorySummaries: CategorySummary[] = typedCategories.map((category) => ({
+    ...category,
+    postCount: categoryCounts.get(category.id) || 0,
+  }));
+  const tagSummaries: TagSummary[] = typedTags.map((tag) => ({
+    ...tag,
+    postCount: tagCounts.get(tag.id) || 0,
+  }));
 
   let results: PostRow[] = [];
   let matchedCategories: Category[] = [];
@@ -239,11 +244,19 @@ export default async function SearchPage({
 
     const categoryIds = matchedCategories.map((category) => category.id);
     const tagIds = matchedTags.map((tag) => tag.id);
+    const matchedTagIds = new Set(tagIds);
+    const tagPostIds = Array.from(
+      new Set(
+        postTagRows
+          .filter((postTag) => matchedTagIds.has(postTag.tag_id))
+          .map((postTag) => postTag.post_id)
+      )
+    );
 
     const [
       { data: keywordPosts },
       { data: categoryPosts },
-      { data: matchedPostTags },
+      { data: tagPosts },
     ] = await Promise.all([
       supabase
         .from("posts")
@@ -267,27 +280,16 @@ export default async function SearchPage({
             .order("created_at", { ascending: false })
             .limit(60)
         : Promise.resolve({ data: [] }),
-      tagIds.length > 0
-        ? supabase
-            .from("post_tags")
-            .select("post_id")
-            .in("tag_id", tagIds)
-        : Promise.resolve({ data: [] }),
-    ]);
-
-    const tagPostIds = Array.from(
-      new Set((matchedPostTags || []).map((postTag) => postTag.post_id))
-    );
-    const { data: tagPosts } =
       tagPostIds.length > 0
-        ? await supabase
+        ? supabase
             .from("posts")
             .select("*, category:categories(*)")
             .eq("published", true)
             .in("id", tagPostIds)
             .order("created_at", { ascending: false })
             .limit(60)
-        : { data: [] };
+        : Promise.resolve({ data: [] }),
+    ]);
 
     const mergedResults = sortPosts(
       filterPostsByType(
@@ -301,16 +303,22 @@ export default async function SearchPage({
       sort
     ).slice(0, 24);
 
-    results = await attachTags(supabase, mergedResults);
+    results = attachTagsFromRows(mergedResults, postTagRows, typedTags);
   }
 
-  const recentPosts = await attachTags(
-    supabase,
-    sortPosts(
-      filterPostsByType((recentData || []) as unknown as PostRow[], contentType),
-      sort
-    )
-  );
+  const recentPosts = query
+    ? []
+    : attachTagsFromRows(
+        sortPosts(
+          filterPostsByType(
+            (recentData || []) as unknown as PostRow[],
+            contentType
+          ),
+          sort
+        ),
+        postTagRows,
+        typedTags
+      );
   const shownPosts = query ? results : recentPosts;
   const featuredPost = shownPosts[0] || null;
   const listPosts = shownPosts.slice(1);

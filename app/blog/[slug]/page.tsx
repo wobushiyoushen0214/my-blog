@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
-import type { Category, Post, Tag as TagType } from "@/lib/types";
+import type { Category, Post, PostTag, Tag as TagType } from "@/lib/types";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -47,6 +47,8 @@ type RelatedPost = Post & {
 type NavigationPost = Pick<Post, "id" | "title" | "slug" | "created_at"> & {
   category?: CategoryMeta | null;
 };
+
+type CurrentPostTagRow = Pick<PostTag, "tag_id">;
 
 type TocItem = {
   id: string;
@@ -165,38 +167,30 @@ function buildArticleContent(html: string) {
   return { content, headings };
 }
 
-async function attachTags(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  posts: RelatedPost[]
+function attachTagsFromRows(
+  posts: RelatedPost[],
+  postTags: PostTag[],
+  tags: TagType[]
 ) {
   if (posts.length === 0) return [];
 
-  const postIds = posts.map((post) => post.id);
-  const { data: postTags } = await supabase
-    .from("post_tags")
-    .select("post_id, tag_id")
-    .in("post_id", postIds);
-
-  const tagIds = Array.from(
-    new Set((postTags || []).map((postTag) => postTag.tag_id))
-  );
-
-  if (tagIds.length === 0) {
-    return posts.map((post) => ({ ...post, tags: [] }));
-  }
-
-  const { data: tags } = await supabase.from("tags").select("*").in("id", tagIds);
-  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as TagType]));
+  const postIds = new Set(posts.map((post) => post.id));
+  const tagById = new Map(tags.map((tag) => [tag.id, tag]));
   const tagsByPostId = new Map<string, TagType[]>();
 
-  (postTags || []).forEach((postTag) => {
+  postTags.forEach((postTag) => {
+    if (!postIds.has(postTag.post_id)) return;
+
     const tag = tagById.get(postTag.tag_id);
     if (!tag) return;
 
-    tagsByPostId.set(postTag.post_id, [
-      ...(tagsByPostId.get(postTag.post_id) || []),
-      tag,
-    ]);
+    const groupedTags = tagsByPostId.get(postTag.post_id);
+    if (groupedTags) {
+      groupedTags.push(tag);
+      return;
+    }
+
+    tagsByPostId.set(postTag.post_id, [tag]);
   });
 
   return posts.map((post) => ({
@@ -300,40 +294,42 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const post = postData as PostWithCategory;
 
-  await supabase
-    .from("posts")
-    .update({ view_count: post.view_count + 1 })
-    .eq("id", post.id);
-
-  const { data: postTags } = await supabase
-    .from("post_tags")
-    .select("tag_id")
-    .eq("post_id", post.id);
-
-  const currentTagIds = (postTags || []).map((pt) => pt.tag_id);
-  let tags: TagType[] = [];
-  if (currentTagIds.length > 0) {
-    const { data } = await supabase.from("tags").select("*").in("id", currentTagIds);
-    tags = data || [];
-  }
-
-  const { data: comments } = await supabase
-    .from("comments")
-    .select("*")
-    .eq("post_id", post.id)
-    .eq("approved", true)
-    .order("created_at", { ascending: true });
-
   const { content: articleContent, headings } = buildArticleContent(post.content);
   const readingMinutes = estimateReadingMinutes(post.content);
-  const commentCount = comments?.length || 0;
   const contentType = getContentType(post.category);
   const contentTypeLabel = getContentTypeLabel(contentType);
   const contentListHref = getContentListHref(contentType);
-  const { data: siblingCategories } = await supabase
-    .from("categories")
-    .select("id")
-    .eq("type", contentType);
+
+  const [
+    { data: postTags },
+    { data: tagRows },
+    { data: comments },
+    { data: siblingCategories },
+  ] = await Promise.all([
+    supabase.from("post_tags").select("tag_id").eq("post_id", post.id),
+    supabase.from("tags").select("*"),
+    supabase
+      .from("comments")
+      .select("*")
+      .eq("post_id", post.id)
+      .eq("approved", true)
+      .order("created_at", { ascending: true }),
+    supabase.from("categories").select("id").eq("type", contentType),
+    supabase
+      .from("posts")
+      .update({ view_count: post.view_count + 1 })
+      .eq("id", post.id),
+  ]);
+
+  const allTags = (tagRows || []) as TagType[];
+  const tagById = new Map(allTags.map((tag) => [tag.id, tag]));
+  const currentTagIds = ((postTags || []) as CurrentPostTagRow[]).map(
+    (pt) => pt.tag_id
+  );
+  const tags = currentTagIds
+    .map((tagId) => tagById.get(tagId))
+    .filter((tag): tag is TagType => Boolean(tag));
+  const commentCount = comments?.length || 0;
   const siblingCategoryIds = (siblingCategories || []).map((category) => category.id);
 
   const { data: relatedPostTags } =
@@ -354,9 +350,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
   const tagRelatedPostIds = Array.from(sharedTagCounts.keys());
 
-  let tagRelatedPostsData: RelatedPost[] = [];
-  if (tagRelatedPostIds.length > 0) {
-    let tagRelatedQuery = supabase
+  const tagRelatedPostsPromise = (async () => {
+    if (tagRelatedPostIds.length === 0) return { data: [] };
+
+    let query = supabase
       .from("posts")
       .select("*, category:categories(name,slug,type)")
       .eq("published", true)
@@ -365,12 +362,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       .limit(12);
 
     if (siblingCategoryIds.length > 0) {
-      tagRelatedQuery = tagRelatedQuery.in("category_id", siblingCategoryIds);
+      query = query.in("category_id", siblingCategoryIds);
     }
 
-    const { data } = await tagRelatedQuery;
-    tagRelatedPostsData = (data || []) as unknown as RelatedPost[];
-  }
+    return query;
+  })();
 
   let categoryRelatedQuery = supabase
     .from("posts")
@@ -408,23 +404,34 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const [
+    { data: tagRelatedPostsData },
     { data: categoryRelatedPostsData },
     { data: previousPostData },
     { data: nextPostData },
   ] = await Promise.all([
+    tagRelatedPostsPromise,
     categoryRelatedQuery,
     previousPostQuery.maybeSingle(),
     nextPostQuery.maybeSingle(),
   ]);
   const relatedCandidates = buildRelatedCandidates({
-    tagRelatedPosts: tagRelatedPostsData,
+    tagRelatedPosts: (tagRelatedPostsData || []) as unknown as RelatedPost[],
     categoryRelatedPosts: (categoryRelatedPostsData || []) as unknown as RelatedPost[],
     sharedTagCounts,
     currentCategoryId: post.category_id,
   });
-  const relatedPosts = await attachTags(
-    supabase,
-    relatedCandidates
+  const relatedCandidateIds = relatedCandidates.map((candidate) => candidate.id);
+  const { data: candidatePostTags } =
+    relatedCandidateIds.length > 0
+      ? await supabase
+          .from("post_tags")
+          .select("post_id, tag_id")
+          .in("post_id", relatedCandidateIds)
+      : { data: [] };
+  const relatedPosts = attachTagsFromRows(
+    relatedCandidates,
+    (candidatePostTags || []) as PostTag[],
+    allTags
   );
   const previousPost = previousPostData as unknown as NavigationPost | null;
   const nextPost = nextPostData as unknown as NavigationPost | null;
