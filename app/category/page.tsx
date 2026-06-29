@@ -250,9 +250,9 @@ function CategorySearchBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border bg-card p-3">
+    <section className="border-y border-border/70 py-3">
       <form
-        className="flex flex-col gap-2 sm:flex-row"
+        className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_88px_auto]"
         role="search"
         action="/category"
       >
@@ -273,17 +273,23 @@ function CategorySearchBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索分类名称或 slug..."
-            className="h-10 border-border/60 bg-background pl-10"
+            className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
           />
         </div>
-        <Button type="submit" className="h-10">
+        <button
+          type="submit"
+          className="inline-flex h-10 items-center justify-center gap-2 border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
           <Search className="h-4 w-4" suppressHydrationWarning />
           搜索
-        </Button>
+        </button>
         {hasFilters ? (
-          <Button variant="outline" className="h-10" asChild>
-            <Link href="/category">清除</Link>
-          </Button>
+          <Link
+            href="/category"
+            className="inline-flex h-10 items-center justify-center border border-border/70 bg-background px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            清除
+          </Link>
         ) : null}
       </form>
     </section>
@@ -306,17 +312,17 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="-mx-4 mt-4 flex gap-2 overflow-x-auto border-b border-border/50 px-4 pb-4 md:mx-0 md:px-0"
+      className="-mx-4 mt-4 flex gap-2 overflow-x-auto border-y border-border/60 px-4 py-3 md:mx-0 md:px-0"
     >
       {items.map((item) => (
         <Link
           key={item.value}
           href={buildCategoryPath({ query, type: item.value })}
           aria-current={activeType === item.value ? "page" : undefined}
-          className={`inline-flex h-9 shrink-0 items-center rounded-md border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          className={`inline-flex h-9 shrink-0 items-center border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeType === item.value
-              ? "border-primary/40 bg-primary/10 text-primary"
-              : "border-border/60 bg-background text-muted-foreground hover:border-primary/30 hover:text-primary"
+              ? "border-border/70 bg-muted/30 text-foreground"
+              : "border-border/60 bg-background text-muted-foreground hover:bg-muted/20 hover:text-foreground"
           }`}
         >
           {item.label}
@@ -337,7 +343,7 @@ function ActiveCategorySummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-y border-border/70 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -355,7 +361,7 @@ function ActiveCategorySummary({
       </div>
       <Link
         href="/category"
-        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center border-y border-border/60 px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -367,7 +373,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -451,7 +457,7 @@ function CategorySection({
                 {category.name}
               </span>
               <span className="mt-2 flex min-w-0 flex-wrap items-center gap-2">
-                <Badge variant="outline" className="rounded-md font-normal">
+                <Badge variant="outline" className="rounded-none font-normal">
                   {categoryTypeLabel(category.type)}
                 </Badge>
                 <span className="truncate text-sm text-muted-foreground">
@@ -463,7 +469,7 @@ function CategorySection({
               {category.postCount} 篇内容
             </span>
             <ArrowRight
-              className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:justify-self-end"
+              className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
               suppressHydrationWarning
             />
           </Link>

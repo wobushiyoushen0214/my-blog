@@ -199,8 +199,8 @@ export default async function TagsPage({
 
             <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
               {topTags.length > 0 ? (
-                <section className="border bg-card">
-                  <div className="border-b px-4 py-3">
+                <section className="border-y border-border/70">
+                  <div className="border-b border-border/60 py-3">
                     <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                       高频标签
                     </h2>
@@ -208,16 +208,16 @@ export default async function TagsPage({
                       从内容关联最多的关键词继续浏览。
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-2 p-3">
+                  <div className="flex flex-wrap gap-2 py-3">
                     {topTags.map((tag) => (
                       <Link
                         key={tag.id}
                         href={`/tag/${tag.slug}`}
-                        className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                       >
                         <Badge
                           variant="outline"
-                          className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+                          className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal transition-colors hover:bg-muted/30"
                         >
                           <Hash
                             className="h-3.5 w-3.5"
@@ -466,7 +466,7 @@ function TagResultRow({ tag, index }: { tag: TagWithCount; index: number }) {
       </span>
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-2">
-          <Badge variant="outline" className="rounded-md font-normal">
+          <Badge variant="outline" className="rounded-none font-normal">
             <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
             标签
           </Badge>
@@ -482,7 +482,7 @@ function TagResultRow({ tag, index }: { tag: TagWithCount; index: number }) {
         {tag.postCount} 篇内容
       </span>
       <ArrowRight
-        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:justify-self-end"
+        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
         suppressHydrationWarning
       />
     </Link>

@@ -569,9 +569,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 className="prose prose-neutral dark:prose-invert max-w-none
                   prose-headings:scroll-mt-24 prose-headings:font-serif prose-headings:font-normal prose-headings:tracking-normal
                   prose-p:leading-[1.85] prose-p:text-foreground/90
-                  prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                  prose-a:text-foreground prose-a:underline prose-a:decoration-border/80 prose-a:underline-offset-4 hover:prose-a:decoration-foreground
                   prose-img:rounded-none prose-img:border
-                  prose-blockquote:border-l-primary/50 prose-blockquote:not-italic prose-blockquote:text-muted-foreground
+                  prose-blockquote:border-l-border prose-blockquote:not-italic prose-blockquote:text-muted-foreground
                   prose-hr:border-border/60
                   prose-pre:rounded-none prose-pre:border prose-pre:bg-muted/60
                   prose-code:before:content-none prose-code:after:content-none

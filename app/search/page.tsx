@@ -806,7 +806,7 @@ function SearchStarterPanel({
               href={item.href}
               className={`group grid min-w-0 gap-2 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_90px] ${
                 item.active
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-muted/30 text-foreground"
                   : "hover:bg-muted/20"
               }`}
             >
@@ -829,8 +829,8 @@ function SearchStarterPanel({
         </div>
       </div>
 
-      <div className="border bg-card">
-        <div className="border-b px-4 py-3">
+      <div className="border-y border-border/70">
+        <div className="border-b border-border/60 py-3">
           <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
             高频主题
           </h2>
@@ -839,18 +839,18 @@ function SearchStarterPanel({
           </p>
         </div>
         {categories.length > 0 || tags.length > 0 ? (
-          <div className="space-y-3 p-3">
+          <div className="space-y-3 py-3">
             {categories.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
                   <Link
                     key={category.id}
                     href={`/category/${category.slug}`}
-                    className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     <Badge
                       variant="outline"
-                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
+                      className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
                     >
                       <FolderOpen
                         className="h-3.5 w-3.5"
@@ -871,11 +871,11 @@ function SearchStarterPanel({
                   <Link
                     key={tag.id}
                     href={`/tag/${tag.slug}`}
-                    className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     <Badge
                       variant="outline"
-                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
+                      className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
                     >
                       <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
                       {tag.name}
@@ -889,7 +889,7 @@ function SearchStarterPanel({
             ) : null}
           </div>
         ) : (
-          <div className="px-4 py-5 text-sm text-muted-foreground">
+          <div className="py-5 text-sm text-muted-foreground">
             暂无可浏览的主题。
           </div>
         )}
@@ -956,8 +956,8 @@ function DiscoveryPanel<T extends { id: string; name: string; postCount: number 
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="border bg-card">
-      <div className="border-b px-4 py-3">
+    <section className="border-y border-border/70">
+      <div className="border-b border-border/60 py-3">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -965,16 +965,16 @@ function DiscoveryPanel<T extends { id: string; name: string; postCount: number 
           {description}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 p-3">
+      <div className="flex flex-wrap gap-2 py-3">
         {visibleItems.map((item) => (
           <Link
             key={item.id}
             href={hrefFor(item)}
-            className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <Badge
               variant="outline"
-              className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
+              className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
             >
               {icon === "tag" ? (
                 <Hash className="h-3.5 w-3.5" suppressHydrationWarning />

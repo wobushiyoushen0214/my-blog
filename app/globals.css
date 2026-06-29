@@ -131,7 +131,7 @@
 
 /* Selection color */
 ::selection {
-  @apply bg-primary/20;
+  @apply bg-foreground/15 text-foreground;
 }
 
 /* Tiptap editor styles */

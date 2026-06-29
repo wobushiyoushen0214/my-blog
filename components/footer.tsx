@@ -27,7 +27,7 @@ export function Footer() {
             </div>
             <Link
               href="/rss.xml"
-              className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               title="RSS Feed"
             >
               <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
@@ -42,14 +42,14 @@ export function Footer() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               >
                 {item.label}
               </Link>
             ))}
             <Link
               href="/admin"
-              className="rounded-md text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               管理
             </Link>

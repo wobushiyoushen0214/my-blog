@@ -358,7 +358,7 @@ export default async function PostsPage({
                     {categoryName || searchQuery || sort !== DEFAULT_SORT ? (
                       <Link
                         href="/posts"
-                        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                       >
                         全部文章
                         <ArrowRight
@@ -717,8 +717,8 @@ function TopicPanel({
   if (items.length === 0) return null;
 
   return (
-    <section className="border bg-card">
-      <div className="border-b px-4 py-3">
+    <section className="border-y border-border/70">
+      <div className="border-b border-border/60 py-3">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -726,7 +726,7 @@ function TopicPanel({
           {description}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 p-3">
+      <div className="flex flex-wrap gap-2 py-3">
         {items.map((item) => {
           const href =
             icon === "category"
@@ -736,11 +736,15 @@ function TopicPanel({
             <Link
               key={item.id}
               href={href}
-              className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <Badge
-                variant={activeSlug === item.slug ? "default" : "outline"}
-                className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
+                variant="outline"
+                className={cn(
+                  "h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal",
+                  activeSlug === item.slug &&
+                    "border-border/70 bg-muted/30 text-foreground"
+                )}
               >
                 {icon === "tag" ? (
                   <Hash className="h-3.5 w-3.5" suppressHydrationWarning />

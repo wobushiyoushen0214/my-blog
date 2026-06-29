@@ -270,7 +270,7 @@ export function CommentForm({
           {errors.form ? (
             <p className="text-sm text-destructive">{errors.form}</p>
           ) : successMessage ? (
-            <p className="text-sm text-primary">{successMessage}</p>
+            <p className="text-sm text-foreground">{successMessage}</p>
           ) : null}
         </div>
 

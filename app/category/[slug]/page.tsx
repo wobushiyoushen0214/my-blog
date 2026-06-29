@@ -459,7 +459,7 @@ function CategoryFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border bg-card p-3">
+    <section className="border-y border-border/70 py-3">
       <form
         action={`/category/${encodeURIComponent(slug)}`}
         role="search"
@@ -479,7 +479,7 @@ function CategoryFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="在当前分类中搜索标题、摘要或正文..."
-            className="h-10 border-border/60 bg-background pl-10"
+            className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
           />
         </div>
         <label htmlFor="category-detail-sort" className="sr-only">
@@ -489,19 +489,25 @@ function CategoryFilterBar({
           id="category-detail-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
           <option value="popular">阅读最多</option>
         </select>
-        <Button type="submit" className="h-10">
+        <button
+          type="submit"
+          className="inline-flex h-10 items-center justify-center border border-border/70 bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
           筛选
-        </Button>
+        </button>
         {hasFilters ? (
-          <Button variant="outline" className="h-10" asChild>
-            <Link href={buildCategoryPath({ slug })}>清除</Link>
-          </Button>
+          <Link
+            href={buildCategoryPath({ slug })}
+            className="inline-flex h-10 items-center justify-center border border-border/70 bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            清除
+          </Link>
         ) : null}
       </form>
     </section>
@@ -521,7 +527,7 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-y border-border/70 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {searchQuery ? (
@@ -539,7 +545,7 @@ function ActiveFilterSummary({
       </div>
       <Link
         href={buildCategoryPath({ slug })}
-        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center border-y border-border/60 px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -551,7 +557,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -627,8 +633,8 @@ function TaxonomyPanel<T extends { id: string; slug: string; name: string; postC
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="border bg-card">
-      <div className="border-b px-4 py-3">
+    <section className="border-y border-border/70">
+      <div className="border-b border-border/60 py-3">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -636,16 +642,20 @@ function TaxonomyPanel<T extends { id: string; slug: string; name: string; postC
           {description}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 p-3">
+      <div className="flex flex-wrap gap-2 py-3">
         {visibleItems.map((item) => (
           <Link
             key={item.id}
             href={hrefFor(item)}
-            className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <Badge
-              variant={activeSlug === item.slug ? "default" : "outline"}
-              className={cn("h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal")}
+              variant="outline"
+              className={cn(
+                "h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal",
+                activeSlug === item.slug &&
+                  "border-border/70 bg-muted/30 text-foreground"
+              )}
             >
               {icon === "tag" ? (
                 <Hash className="h-3.5 w-3.5" suppressHydrationWarning />

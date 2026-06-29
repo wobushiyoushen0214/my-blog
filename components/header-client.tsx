@@ -22,7 +22,7 @@ function NavLink({
       aria-current={active ? "page" : undefined}
       className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
         active
-          ? "border-primary text-foreground"
+          ? "border-foreground text-foreground"
           : "border-transparent text-muted-foreground hover:text-foreground"
       }`}
     >
@@ -49,7 +49,7 @@ function HoverNav({
         aria-current={active ? "page" : undefined}
         className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
           active
-            ? "border-primary text-foreground"
+            ? "border-foreground text-foreground"
             : "border-transparent text-muted-foreground hover:text-foreground"
         }`}
       >
@@ -133,7 +133,7 @@ export function HeaderClient({
         <div className="flex items-center">
           <Link
             href="/"
-            className="group flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="group flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <span className="flex size-6 items-center justify-center border border-border bg-foreground text-[13px] font-bold text-background">
               L

@@ -145,15 +145,16 @@ export default async function LinksPage({
           description="收录长期阅读和互相连接的站点，也作为发现独立写作者的入口。"
           countLabel={countLabel}
           action={
-            <Button variant="outline" asChild>
-              <Link href="/posts">
-                <MessageSquareText
-                  className="h-4 w-4"
-                  suppressHydrationWarning
-                />
-                申请互链
-              </Link>
-            </Button>
+            <Link
+              href="/posts"
+              className="inline-flex h-9 items-center gap-2 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
+              <MessageSquareText
+                className="h-4 w-4"
+                suppressHydrationWarning
+              />
+              申请互链
+            </Link>
           }
         />
 
@@ -272,7 +273,7 @@ export default async function LinksPage({
                     {item.value.startsWith("/") ? (
                       <Link
                         href={item.value}
-                        className="min-w-0 truncate text-right font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                        className="min-w-0 truncate text-right font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                       >
                         {item.value}
                       </Link>
@@ -294,7 +295,7 @@ export default async function LinksPage({
                 {applicationFields.map((field) => (
                   <li key={field} className="flex gap-2 text-sm leading-6">
                     <CheckCircle2
-                      className="mt-1 h-4 w-4 shrink-0 text-primary"
+                      className="mt-1 h-4 w-4 shrink-0 text-muted-foreground"
                       suppressHydrationWarning
                     />
                     <span className="text-muted-foreground">{field}</span>
@@ -512,8 +513,8 @@ function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
             {item.name}
           </span>
           <Badge
-            variant={item.status === "new" ? "default" : "outline"}
-            className="rounded-md font-normal"
+            variant="outline"
+            className="rounded-none font-normal"
           >
             {item.status === "new" ? "新收录" : "已收录"}
           </Badge>
@@ -529,7 +530,7 @@ function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
             <Badge
               key={tag}
               variant="outline"
-              className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
+              className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
             >
               {tag}
             </Badge>
@@ -537,7 +538,7 @@ function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
           {item.rss ? (
             <Badge
               variant="outline"
-              className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
+              className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
             >
               <Rss className="h-3 w-3" suppressHydrationWarning />
               RSS
@@ -550,7 +551,7 @@ function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
         </span>
       )}
       <ExternalLink
-        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:justify-self-end"
+        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
         suppressHydrationWarning
       />
     </Link>
@@ -567,8 +568,8 @@ function InfoPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="border bg-card">
-      <div className="border-b px-4 py-3">
+    <section className="border-y border-border/70">
+      <div className="border-b border-border/60 py-3">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -576,7 +577,7 @@ function InfoPanel({
           {description}
         </p>
       </div>
-      <div className="p-4">{children}</div>
+      <div className="py-3">{children}</div>
     </section>
   );
 }

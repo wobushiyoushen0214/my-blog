@@ -568,8 +568,8 @@ function ArchiveTimeline({
 
 function MonthArchiveGroup({ group }: { group: MonthGroup }) {
   return (
-    <section className="overflow-hidden border bg-card">
-      <div className="flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3">
+    <section className="overflow-hidden border-y border-border/70">
+      <div className="flex items-center justify-between gap-3 border-b border-border/60 py-3">
         <div className="inline-flex items-center gap-2">
           <Clock3 className="h-4 w-4 text-muted-foreground" suppressHydrationWarning />
           <h4 className="text-sm font-medium">{group.label}</h4>
@@ -587,7 +587,7 @@ function MonthArchiveGroup({ group }: { group: MonthGroup }) {
 
 function ArchivePostRow({ post }: { post: ArchivePost }) {
   return (
-    <article className="grid gap-3 px-4 py-3 transition-colors hover:bg-muted/20 sm:grid-cols-[4.5rem_minmax(0,1fr)_auto]">
+    <article className="grid gap-3 py-3 transition-colors hover:bg-muted/20 sm:grid-cols-[4.5rem_minmax(0,1fr)_auto]">
       <time
         dateTime={post.created_at}
         className="text-sm font-medium tabular-nums text-muted-foreground"
@@ -597,14 +597,14 @@ function ArchivePostRow({ post }: { post: ArchivePost }) {
 
       <div className="min-w-0 space-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <Badge variant="outline" className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal">
+          <Badge variant="outline" className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal">
             {getContentTypeLabel(post.category)}
           </Badge>
           {post.category ? (
             <Badge
               variant="secondary"
               asChild
-              className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
+              className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
             >
               <Link href={getCategoryHref(post.category)}>{post.category.name}</Link>
             </Badge>
@@ -614,7 +614,7 @@ function ArchivePostRow({ post }: { post: ArchivePost }) {
         <h3 className="truncate text-base font-medium tracking-tight">
           <Link
             href={`/blog/${post.slug}`}
-            className="transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             {post.title}
           </Link>
@@ -633,7 +633,7 @@ function ArchivePostRow({ post }: { post: ArchivePost }) {
                 key={tag.id}
                 variant="outline"
                 asChild
-                className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
+                className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
               >
                 <Link href={`/tag/${tag.slug}`}>
                   <Hash className="h-3 w-3" suppressHydrationWarning />
