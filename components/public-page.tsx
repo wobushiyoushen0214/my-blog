@@ -42,11 +42,11 @@ export function PublicPageHeader({
   action,
 }: PublicPageHeaderProps) {
   return (
-    <header className="mb-6 border-y border-border/70 py-5 md:py-6">
+    <header className="mb-7 pt-2">
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-5 inline-flex h-9 items-center gap-1.5 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mb-5 inline-flex h-9 items-center gap-1.5 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
           {backLabel}
@@ -56,7 +56,7 @@ export function PublicPageHeader({
       <div className="grid gap-4 md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-end">
         <span className="font-mono text-xs text-muted-foreground">00</span>
         <div className="min-w-0 space-y-3">
-          <div className="space-y-2 border-b border-border/60 pb-3">
+          <div className="space-y-2">
             {eyebrow ? (
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
                 {eyebrow}
@@ -100,7 +100,7 @@ export function PublicActionLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-9 items-center gap-2 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-9 items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         className
       )}
     >
@@ -127,7 +127,7 @@ export function PublicEmptyState({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-2xl border-y border-border/70 py-8",
+        "mx-auto w-full max-w-2xl py-8",
         className
       )}
     >
@@ -169,8 +169,8 @@ export function PublicInfoPanel({
   contentClassName,
 }: PublicInfoPanelProps) {
   return (
-    <section className={cn("border-y border-border/70", className)}>
-      <div className="border-b border-border/60 py-3">
+    <section className={cn("py-1", className)}>
+      <div className="py-2">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -180,7 +180,7 @@ export function PublicInfoPanel({
           </p>
         ) : null}
       </div>
-      <div className={cn("py-3", contentClassName)}>{children}</div>
+      <div className={cn("py-2", contentClassName)}>{children}</div>
     </section>
   );
 }
@@ -205,7 +205,7 @@ export function PublicIndexLinks({
   if (items.length === 0) return null;
 
   return (
-    <nav aria-label={ariaLabel} className={cn("divide-y divide-border/60", className)}>
+    <nav aria-label={ariaLabel} className={cn("grid gap-1", className)}>
       {items.map((item, index) => {
         const Icon = item.icon;
 
@@ -213,7 +213,7 @@ export function PublicIndexLinks({
           <Link
             key={`${item.href}-${item.label}`}
             href={item.href}
-            className="group -mx-2 grid gap-2 px-2 py-3 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:items-center"
+            className="group -mx-2 grid gap-2 px-2 py-2.5 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:items-center"
           >
             <span className="text-xs tabular-nums text-muted-foreground">
               {Icon ? (

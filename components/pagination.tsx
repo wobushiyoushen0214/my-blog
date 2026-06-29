@@ -70,18 +70,18 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex min-h-12 min-w-10 items-center justify-center border-x border-transparent px-3 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex min-h-10 min-w-10 items-center justify-center px-3 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const edgeLinkClassName =
-    "flex min-h-12 items-center gap-1 px-3 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const disabledClassName =
-    "flex min-h-12 items-center gap-1 px-3 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground/35";
+    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground/35";
 
   return (
     <nav
-      className="mt-10 border-y border-border/70 sm:mt-12"
+      className="mt-10 sm:mt-12"
       aria-label="分页"
     >
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch divide-x divide-border/60">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-3">
         {safeCurrentPage > 1 ? (
           <Link
             href={getHref(safeCurrentPage - 1)}
@@ -118,8 +118,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
                 className={cn(
                   pageLinkClassName,
                   item === safeCurrentPage
-                    ? "border-border/70 bg-muted/30 text-foreground"
-                    : "text-muted-foreground hover:border-border/60 hover:bg-muted/20 hover:text-foreground"
+                    ? "bg-muted/30 text-foreground"
+                    : "text-muted-foreground hover:bg-muted/20 hover:text-foreground"
                 )}
                 aria-label={`第 ${item} 页`}
                 aria-current={item === safeCurrentPage ? "page" : undefined}

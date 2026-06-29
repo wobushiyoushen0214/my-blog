@@ -57,7 +57,7 @@ export function PostCard({
     return (
       <Link
         href={`/blog/${post.slug}`}
-        className="group grid min-w-0 gap-3 border-y border-border/70 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem]"
+        className="group grid min-w-0 gap-3 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem]"
       >
         <div className="text-xs tabular-nums text-muted-foreground">
           <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
@@ -109,7 +109,7 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex min-w-0 overflow-hidden border-y border-border/70 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured
           ? "flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]"
           : "flex-col",
