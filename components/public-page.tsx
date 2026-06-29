@@ -100,18 +100,28 @@ export function PublicEmptyState({
   return (
     <div
       className={cn(
-        "mx-auto max-w-xl border border-dashed border-border/70 bg-card px-6 py-12 text-center",
+        "mx-auto w-full max-w-2xl border-y border-border/70 py-8",
         className
       )}
     >
-      {Icon ? (
-        <div className="mx-auto mb-4 flex size-10 items-center justify-center border bg-background text-muted-foreground">
-          <Icon className="h-5 w-5" suppressHydrationWarning />
+      <div className="grid gap-4 sm:grid-cols-[2.5rem_minmax(0,1fr)]">
+        <div className="text-xs tabular-nums text-muted-foreground">
+          {Icon ? (
+            <span className="flex size-9 items-center justify-center border bg-card text-muted-foreground">
+              <Icon className="h-4 w-4" suppressHydrationWarning />
+            </span>
+          ) : (
+            "00"
+          )}
         </div>
-      ) : null}
-      <h2 className="font-serif text-2xl leading-tight">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
-      {action ? <div className="mt-5">{action}</div> : null}
+        <div className="min-w-0">
+          <h2 className="font-serif text-2xl leading-tight">{title}</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            {description}
+          </p>
+          {action ? <div className="mt-5">{action}</div> : null}
+        </div>
+      </div>
     </div>
   );
 }

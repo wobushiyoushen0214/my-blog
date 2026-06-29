@@ -284,13 +284,13 @@ function FeaturePlate({ post }: { post: PostWithTaxonomy | null }) {
               className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
             />
           ) : (
-            <div className="flex h-full min-h-[380px] items-center justify-center px-8 text-center">
-              <div className="max-w-sm">
-                <p className="font-serif text-5xl leading-none md:text-6xl">
-                  Lee Notes
-                </p>
-                <p className="mt-5 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="flex h-full min-h-[380px] items-end px-5 py-6 md:px-8">
+              <div className="max-w-md border-t border-border/70 pt-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                   Code / Work / Life
+                </p>
+                <p className="mt-3 font-serif text-4xl leading-none md:text-5xl">
+                  Lee Notes
                 </p>
               </div>
             </div>
@@ -528,8 +528,11 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
           ))}
         </div>
       ) : (
-        <div className="mt-8 border border-dashed p-8 text-sm leading-7 text-muted-foreground">
-          发布更多文章或见闻后，这里会形成一条最近更新目录。
+        <div className="mt-8 grid gap-3 border-y border-border/70 py-5 text-sm sm:grid-cols-[3rem_minmax(0,1fr)]">
+          <span className="text-xs tabular-nums text-muted-foreground">00</span>
+          <span className="leading-7 text-muted-foreground">
+            发布更多文章或见闻后，这里会形成一条最近更新目录。
+          </span>
         </div>
       )}
     </section>

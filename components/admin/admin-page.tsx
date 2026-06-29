@@ -52,15 +52,25 @@ export function AdminEmptyState({
   action,
 }: AdminEmptyStateProps) {
   return (
-    <div className="border border-dashed border-border/70 bg-muted/25 px-6 py-10 text-center">
-      {Icon ? (
-        <div className="mx-auto mb-4 flex size-10 items-center justify-center border bg-background text-muted-foreground">
-          <Icon className="h-5 w-5" suppressHydrationWarning />
+    <div className="border-y border-border/70 py-6">
+      <div className="grid gap-4 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-start">
+        <div className="text-xs tabular-nums text-muted-foreground">
+          {Icon ? (
+            <span className="flex size-9 items-center justify-center border bg-card text-muted-foreground">
+              <Icon className="h-4 w-4" suppressHydrationWarning />
+            </span>
+          ) : (
+            "00"
+          )}
         </div>
-      ) : null}
-      <h2 className="text-base font-medium">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
-      {action ? <div className="mt-5">{action}</div> : null}
+        <div className="min-w-0">
+          <h2 className="text-base font-medium">{title}</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            {description}
+          </p>
+        </div>
+        {action ? <div className="sm:justify-self-end">{action}</div> : null}
+      </div>
     </div>
   );
 }

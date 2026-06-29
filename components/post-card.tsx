@@ -135,12 +135,12 @@ export function PostCard({
               className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
           ) : (
-            <div className="flex h-full min-h-[220px] items-center justify-center bg-muted/30 p-6 text-center">
-              <div className="max-w-xs space-y-2">
+            <div className="flex h-full min-h-[220px] items-end bg-muted/20 p-5">
+              <div className="max-w-xs border-t border-border/70 pt-3">
                 <span className="inline-flex border bg-background px-2 py-1 text-xs text-muted-foreground">
                   {post.category?.name || contentTypeLabel}
                 </span>
-                <p className="line-clamp-3 font-serif text-lg leading-snug text-foreground/80">
+                <p className="mt-3 line-clamp-3 font-serif text-lg leading-snug text-foreground/80">
                   {post.title}
                 </p>
               </div>

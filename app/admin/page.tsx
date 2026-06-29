@@ -457,13 +457,16 @@ function PanelEmpty({
   actionLabel?: string;
 }) {
   return (
-    <div className="px-4 py-8 text-center">
-      <p className="text-sm font-medium">{title}</p>
-      <p className="mx-auto mt-1 max-w-sm text-sm leading-6 text-muted-foreground">
-        {description}
-      </p>
+    <div className="grid gap-3 px-4 py-6 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-start">
+      <span className="text-xs tabular-nums text-muted-foreground">00</span>
+      <div className="min-w-0">
+        <p className="text-sm font-medium">{title}</p>
+        <p className="mt-1 max-w-sm text-sm leading-6 text-muted-foreground">
+          {description}
+        </p>
+      </div>
       {actionHref && actionLabel ? (
-        <Button className="mt-4" size="sm" asChild>
+        <Button size="sm" asChild>
           <Link href={actionHref}>{actionLabel}</Link>
         </Button>
       ) : null}
