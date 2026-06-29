@@ -166,14 +166,27 @@ export default async function LinksPage({
           </>
         ) : null}
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <StatTile
-            label={hasFilters ? "匹配站点" : "收录站点"}
-            value={filteredLinks.length}
+        {friendLinks.length > 0 ? (
+          <SummaryLedger
+            items={[
+              {
+                label: hasFilters ? "匹配站点" : "收录站点",
+                value: filteredLinks.length,
+                detail: getStatusLabel(status),
+              },
+              {
+                label: "主题分组",
+                value: categories.length,
+                detail: "目录分栏",
+              },
+              {
+                label: "RSS 可订阅",
+                value: rssCount,
+                detail: "可持续阅读",
+              },
+            ]}
           />
-          <StatTile label="主题分组" value={categories.length} />
-          <StatTile label="RSS 可订阅" value={rssCount} />
-        </div>
+        ) : null}
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0 space-y-8">
@@ -196,9 +209,9 @@ export default async function LinksPage({
                       </span>
                     </div>
                   </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {groupedLinks[category].map((item) => (
-                      <FriendLinkCard key={item.href} item={item} />
+                  <div className="divide-y divide-border/70 border-y border-border/70">
+                    {groupedLinks[category].map((item, index) => (
+                      <FriendLinkRow key={item.href} item={item} index={index} />
                     ))}
                   </div>
                 </section>
@@ -446,48 +459,67 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function StatTile({ label, value }: { label: string; value: number }) {
+function SummaryLedger({
+  items,
+}: {
+  items: { label: string; value: number; detail: string }[];
+}) {
   return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
-    </div>
+    <section
+      aria-label="友链概览"
+      className="mt-6 divide-y divide-border/70 border-y border-border/70"
+    >
+      {items.map((item, index) => (
+        <div
+          key={item.label}
+          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
+        >
+          <span className="text-muted-foreground">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="min-w-0 truncate text-muted-foreground">
+            {item.label}
+          </span>
+          <span className="font-serif text-xl leading-none">{item.value}</span>
+          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
+            {item.detail}
+          </span>
+        </div>
+      ))}
+    </section>
   );
 }
 
-function FriendLinkCard({ item }: { item: FriendLink }) {
+function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
   return (
     <Link
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="group border border-border/70 bg-card p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group grid min-w-0 gap-3 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_120px_24px]"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h2 className="truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
-              {item.name}
-            </h2>
-            <Badge
-              variant={item.status === "new" ? "default" : "outline"}
-              className="rounded-md font-normal"
-            >
-              {item.status === "new" ? "新收录" : "已收录"}
-            </Badge>
-          </div>
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
-            {item.description}
-          </p>
-        </div>
-        <ExternalLink
-          className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
-          suppressHydrationWarning
-        />
-      </div>
+      <span className="text-sm text-muted-foreground">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <span className="min-w-0">
+        <span className="flex min-w-0 flex-wrap items-center gap-2">
+          <span className="truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
+            {item.name}
+          </span>
+          <Badge
+            variant={item.status === "new" ? "default" : "outline"}
+            className="rounded-md font-normal"
+          >
+            {item.status === "new" ? "新收录" : "已收录"}
+          </Badge>
+        </span>
+        <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
+          {item.description}
+        </span>
+      </span>
 
       {(item.tags && item.tags.length > 0) || item.rss ? (
-        <div className="mt-4 flex flex-wrap gap-1.5">
+        <span className="flex flex-wrap gap-1.5 sm:justify-end">
           {item.tags?.slice(0, 3).map((tag) => (
             <Badge
               key={tag}
@@ -506,8 +538,16 @@ function FriendLinkCard({ item }: { item: FriendLink }) {
               RSS
             </Badge>
           ) : null}
-        </div>
-      ) : null}
+        </span>
+      ) : (
+        <span className="text-sm text-muted-foreground sm:text-right">
+          {item.category}
+        </span>
+      )}
+      <ExternalLink
+        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:justify-self-end"
+        suppressHydrationWarning
+      />
     </Link>
   );
 }

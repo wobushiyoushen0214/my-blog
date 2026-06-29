@@ -303,11 +303,25 @@ export default async function CategoryPage({
         {(postsWithTags || []).length > 0 ? (
           <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
             <div className="min-w-0 space-y-8">
-              <section className="grid gap-3 sm:grid-cols-3">
-                <StatTile label="当前结果" value={totalCount} />
-                <StatTile label="全部内容" value={totalCategoryCount || 0} />
-                <StatTile label="排序" value={getSortLabel(sort)} />
-              </section>
+              <SummaryLedger
+                items={[
+                  {
+                    label: "当前结果",
+                    value: totalCount,
+                    detail: hasFilters ? "筛选后内容" : "当前分类",
+                  },
+                  {
+                    label: "全部内容",
+                    value: totalCategoryCount || 0,
+                    detail: typedCategory.name,
+                  },
+                  {
+                    label: "排序",
+                    value: getSortLabel(sort),
+                    detail: "当前视图",
+                  },
+                ]}
+              />
 
               {featuredPost ? (
                 <section className="space-y-3">
@@ -539,12 +553,34 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function StatTile({ label, value }: { label: string; value: number | string }) {
+function SummaryLedger({
+  items,
+}: {
+  items: { label: string; value: number | string; detail: string }[];
+}) {
   return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
-    </div>
+    <section
+      aria-label="分类内容概览"
+      className="divide-y divide-border/70 border-y border-border/70"
+    >
+      {items.map((item, index) => (
+        <div
+          key={item.label}
+          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_120px_minmax(0,1fr)]"
+        >
+          <span className="text-muted-foreground">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="min-w-0 truncate text-muted-foreground">
+            {item.label}
+          </span>
+          <span className="font-serif text-xl leading-none">{item.value}</span>
+          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
+            {item.detail}
+          </span>
+        </div>
+      ))}
+    </section>
   );
 }
 

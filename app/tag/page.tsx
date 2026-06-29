@@ -141,21 +141,30 @@ export default async function TagsPage({
 
         <ActiveTagSummary query={query} status={status} />
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <StatTile
-            label={hasFilters ? "匹配标签" : "全部标签"}
-            value={hasFilters ? filteredTags.length : tagsWithCount.length}
-          />
-          <StatTile label="已使用标签" value={usedTags.length} />
-          <StatTile
-            label={hasFilters ? "匹配关联" : "内容关联"}
-            value={hasFilters ? filteredTaggedPosts : totalTaggedPosts}
-          />
-          <StatTile
-            label="未使用标签"
-            value={tagsWithCount.length - usedTags.length}
-          />
-        </div>
+        <SummaryLedger
+          items={[
+            {
+              label: hasFilters ? "匹配标签" : "全部标签",
+              value: hasFilters ? filteredTags.length : tagsWithCount.length,
+              detail: statusLabel(status),
+            },
+            {
+              label: "已使用标签",
+              value: usedTags.length,
+              detail: "已有内容关联",
+            },
+            {
+              label: hasFilters ? "匹配关联" : "内容关联",
+              value: hasFilters ? filteredTaggedPosts : totalTaggedPosts,
+              detail: "发布内容引用",
+            },
+            {
+              label: "未使用标签",
+              value: tagsWithCount.length - usedTags.length,
+              detail: "等待整理",
+            },
+          ]}
+        />
 
         {filteredTags.length > 0 ? (
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -179,9 +188,9 @@ export default async function TagsPage({
                 </div>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
-                {filteredTags.map((tag) => (
-                  <TagResultCard key={tag.id} tag={tag} />
+              <div className="divide-y divide-border/70 border-y border-border/70">
+                {filteredTags.map((tag, index) => (
+                  <TagResultRow key={tag.id} tag={tag} index={index} />
                 ))}
               </div>
             </section>
@@ -413,39 +422,67 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function StatTile({ label, value }: { label: string; value: number }) {
+function SummaryLedger({
+  items,
+}: {
+  items: { label: string; value: number; detail: string }[];
+}) {
   return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
-    </div>
+    <section
+      aria-label="标签概览"
+      className="mt-6 divide-y divide-border/70 border-y border-border/70"
+    >
+      {items.map((item, index) => (
+        <div
+          key={item.label}
+          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
+        >
+          <span className="text-muted-foreground">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="min-w-0 truncate text-muted-foreground">
+            {item.label}
+          </span>
+          <span className="font-serif text-xl leading-none">{item.value}</span>
+          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
+            {item.detail}
+          </span>
+        </div>
+      ))}
+    </section>
   );
 }
 
-function TagResultCard({ tag }: { tag: TagWithCount }) {
+function TagResultRow({ tag, index }: { tag: TagWithCount; index: number }) {
   return (
     <Link
       href={`/tag/${tag.slug}`}
-      className="group border bg-card p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group grid min-w-0 gap-3 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_120px_24px]"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+      <span className="text-sm text-muted-foreground">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <span className="min-w-0">
+        <span className="flex min-w-0 flex-wrap items-center gap-2">
           <Badge variant="outline" className="rounded-md font-normal">
             <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
             标签
           </Badge>
-          <h3 className="mt-3 truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
-            {tag.name}
-          </h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {tag.postCount} 篇内容
-          </p>
-        </div>
-        <ArrowRight
-          className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
-          suppressHydrationWarning
-        />
-      </div>
+          <span className="truncate text-sm text-muted-foreground">
+            {tag.slug || "未设置 slug"}
+          </span>
+        </span>
+        <span className="mt-2 block truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
+          {tag.name}
+        </span>
+      </span>
+      <span className="text-sm text-muted-foreground sm:text-right">
+        {tag.postCount} 篇内容
+      </span>
+      <ArrowRight
+        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:justify-self-end"
+        suppressHydrationWarning
+      />
     </Link>
   );
 }
