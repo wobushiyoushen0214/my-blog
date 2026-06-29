@@ -149,27 +149,36 @@ export function CommentForm({
       onSubmit={handleSubmit}
       noValidate
       className={cn(
-        "space-y-4 border-y border-border/70 py-4",
-        compact && "rounded-none border-0 bg-transparent p-0"
+        "border-y border-border/70",
+        compact && "border-0 bg-transparent"
       )}
     >
       {!isReply ? (
-        <div className="space-y-1">
-          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            Comment / 发表评论
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            评论提交后会进入审核队列，通过后展示在页面中。
-          </p>
+        <div className="grid gap-2 border-b border-border/60 py-3 sm:grid-cols-[44px_minmax(0,1fr)]">
+          <span className="font-mono text-xs text-muted-foreground">00</span>
+          <div className="space-y-1">
+            <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              Comment / 发表评论
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              评论提交后会进入审核队列，通过后展示在页面中。
+            </p>
+          </div>
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">
-          回复会进入审核队列，通过后展示在对应评论下。
-        </p>
+        <div className="grid gap-2 border-b border-border/60 pb-3 sm:grid-cols-[36px_minmax(0,1fr)]">
+          <span className="font-mono text-xs text-muted-foreground">RE</span>
+          <p className="text-sm text-muted-foreground">
+            回复会进入审核队列，通过后展示在对应评论下。
+          </p>
+        </div>
       )}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor={ids.name}>
+      <div className="grid grid-cols-1 divide-y divide-border/60 border-b border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+        <div className="space-y-2 py-3 sm:pr-3">
+          <Label
+            htmlFor={ids.name}
+            className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground"
+          >
             昵称 *
           </Label>
           <Input
@@ -177,7 +186,7 @@ export function CommentForm({
             value={form.author_name}
             onChange={(e) => updateField("author_name", e.target.value)}
             placeholder="你的昵称"
-            className="h-10 border-border/70 bg-background"
+            className="h-10 rounded-none border-border/70 bg-background shadow-none"
             autoFocus={autoFocus}
             disabled={loading}
             maxLength={NAME_MAX_LENGTH}
@@ -191,8 +200,11 @@ export function CommentForm({
             </p>
           ) : null}
         </div>
-        <div className="space-y-2">
-          <Label htmlFor={ids.email}>
+        <div className="space-y-2 py-3 sm:pl-3">
+          <Label
+            htmlFor={ids.email}
+            className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground"
+          >
             邮箱（选填）
           </Label>
           <Input
@@ -201,7 +213,7 @@ export function CommentForm({
             value={form.author_email}
             onChange={(e) => updateField("author_email", e.target.value)}
             placeholder="you@example.com"
-            className="h-10 border-border/70 bg-background"
+            className="h-10 rounded-none border-border/70 bg-background shadow-none"
             disabled={loading}
             maxLength={EMAIL_MAX_LENGTH}
             aria-invalid={Boolean(errors.author_email)}
@@ -214,8 +226,11 @@ export function CommentForm({
           ) : null}
         </div>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor={ids.content}>
+      <div className="space-y-2 border-b border-border/60 py-3">
+        <Label
+          htmlFor={ids.content}
+          className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground"
+        >
           评论内容 *
         </Label>
         <Textarea
@@ -224,7 +239,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none border-border/70 bg-background"
+          className="resize-none rounded-none border-border/70 bg-background shadow-none"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}
@@ -250,30 +265,38 @@ export function CommentForm({
         </div>
       </div>
 
-      <div id={ids.formStatus} aria-live="polite" className="min-h-5">
-        {errors.form ? (
-          <p className="text-sm text-destructive">{errors.form}</p>
-        ) : successMessage ? (
-          <p className="text-sm text-primary">{successMessage}</p>
-        ) : null}
-      </div>
+      <div className="grid gap-3 py-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+        <div id={ids.formStatus} aria-live="polite" className="min-h-5">
+          {errors.form ? (
+            <p className="text-sm text-destructive">{errors.form}</p>
+          ) : successMessage ? (
+            <p className="text-sm text-primary">{successMessage}</p>
+          ) : null}
+        </div>
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        {onCancel && (
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          {onCancel && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onCancel}
+              disabled={loading}
+              size="sm"
+              className="rounded-none px-2 text-muted-foreground hover:text-foreground"
+            >
+              取消
+            </Button>
+          )}
           <Button
-            type="button"
-            variant="ghost"
-            onClick={onCancel}
+            type="submit"
             disabled={loading}
             size="sm"
+            className="rounded-none bg-foreground text-background hover:bg-foreground/90 hover:text-background"
           >
-            取消
+            <Send className="h-4 w-4" suppressHydrationWarning />
+            {loading ? "提交中..." : isReply ? "提交回复" : "提交评论"}
           </Button>
-        )}
-        <Button type="submit" disabled={loading} size="sm">
-          <Send className="h-4 w-4" suppressHydrationWarning />
-          {loading ? "提交中..." : isReply ? "提交回复" : "提交评论"}
-        </Button>
+        </div>
       </div>
     </form>
   );

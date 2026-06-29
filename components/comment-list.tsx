@@ -106,9 +106,9 @@ function CommentItem({ comment }: { comment: CommentNode }) {
               ) : null}
             </div>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="h-7 px-2 text-xs opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+              className="h-7 rounded-none border-border/60 bg-background px-2 text-xs text-muted-foreground opacity-100 hover:bg-muted/40 hover:text-foreground sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
               onClick={() => setReplying(!replying)}
               aria-expanded={replying}
               aria-label={`回复 ${comment.author_name}`}
@@ -123,9 +123,12 @@ function CommentItem({ comment }: { comment: CommentNode }) {
 
           {replying && (
             <div className="mt-4 border-y border-border/60 py-3">
-              <p className="mb-3 text-xs text-muted-foreground">
-                回复 {comment.author_name}
-              </p>
+              <div className="mb-3 grid gap-2 sm:grid-cols-[36px_minmax(0,1fr)]">
+                <span className="font-mono text-xs text-muted-foreground">IN</span>
+                <p className="text-xs text-muted-foreground">
+                  回复 {comment.author_name}
+                </p>
+              </div>
               <CommentForm
                 postId={comment.post_id}
                 parentId={comment.id}

@@ -70,87 +70,93 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex h-9 min-w-9 items-center justify-center border-b px-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex min-h-12 min-w-10 items-center justify-center border-x border-transparent px-3 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const edgeLinkClassName =
-    "inline-flex h-9 items-center gap-1 border-b border-transparent px-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "flex min-h-12 items-center gap-1 px-3 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const disabledClassName =
-    "inline-flex h-9 items-center gap-1 border-b border-transparent px-2 text-sm font-medium text-muted-foreground/35";
+    "flex min-h-12 items-center gap-1 px-3 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground/35";
 
   return (
     <nav
-      className="mt-10 flex flex-wrap items-center justify-between gap-3 border-y border-border/70 py-3 sm:mt-12"
+      className="mt-10 border-y border-border/70 sm:mt-12"
       aria-label="分页"
     >
-      {safeCurrentPage > 1 ? (
-        <Link
-          href={getHref(safeCurrentPage - 1)}
-          className={edgeLinkClassName}
-          aria-label={`上一页，第 ${safeCurrentPage - 1} 页`}
-        >
-          <ChevronLeft className="h-4 w-4" suppressHydrationWarning />
-          上一页
-        </Link>
-      ) : (
-        <span
-          className={disabledClassName}
-          aria-disabled="true"
-        >
-          <ChevronLeft className="h-4 w-4" suppressHydrationWarning />
-          上一页
-        </span>
-      )}
-
-      <div className="hidden items-center gap-1 sm:flex">
-        {items.map((item, index) =>
-          item === "ellipsis" ? (
-            <span
-              key={`ellipsis-${index}`}
-              className="inline-flex h-9 min-w-9 items-center justify-center px-2 text-sm text-muted-foreground/60"
-              aria-hidden="true"
-            >
-              ...
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch divide-x divide-border/60">
+        {safeCurrentPage > 1 ? (
+          <Link
+            href={getHref(safeCurrentPage - 1)}
+            className={cn(edgeLinkClassName, "justify-start")}
+            aria-label={`上一页，第 ${safeCurrentPage - 1} 页`}
+          >
+            <ChevronLeft className="h-4 w-4" suppressHydrationWarning />
+            <span>上一页</span>
+            <span className="hidden font-mono text-[11px] text-muted-foreground/70 sm:inline">
+              {String(safeCurrentPage - 1).padStart(2, "0")}
             </span>
-          ) : (
-            <Link
-              key={item}
-              href={getHref(item)}
-              className={cn(
-                pageLinkClassName,
-                item === safeCurrentPage
-                  ? "border-primary text-foreground"
-                  : "border-transparent text-muted-foreground hover:border-primary/60 hover:text-foreground"
-              )}
-              aria-label={`第 ${item} 页`}
-              aria-current={item === safeCurrentPage ? "page" : undefined}
-            >
-              {item}
-            </Link>
-          )
+          </Link>
+        ) : (
+          <span className={cn(disabledClassName, "justify-start")} aria-disabled="true">
+            <ChevronLeft className="h-4 w-4" suppressHydrationWarning />
+            <span>上一页</span>
+          </span>
+        )}
+
+        <div className="hidden max-w-[min(56vw,520px)] items-stretch overflow-x-auto sm:flex">
+          {items.map((item, index) =>
+            item === "ellipsis" ? (
+              <span
+                key={`ellipsis-${index}`}
+                className="inline-flex min-h-12 min-w-10 items-center justify-center px-3 font-mono text-xs text-muted-foreground/60"
+                aria-hidden="true"
+              >
+                ...
+              </span>
+            ) : (
+              <Link
+                key={item}
+                href={getHref(item)}
+                className={cn(
+                  pageLinkClassName,
+                  item === safeCurrentPage
+                    ? "border-border/70 bg-muted/30 text-foreground"
+                    : "text-muted-foreground hover:border-border/60 hover:bg-muted/20 hover:text-foreground"
+                )}
+                aria-label={`第 ${item} 页`}
+                aria-current={item === safeCurrentPage ? "page" : undefined}
+              >
+                {String(item).padStart(2, "0")}
+              </Link>
+            )
+          )}
+        </div>
+
+        <span className="inline-flex min-h-12 min-w-20 items-center justify-center px-3 font-mono text-xs text-muted-foreground sm:hidden">
+          {String(safeCurrentPage).padStart(2, "0")} /{" "}
+          {String(totalPages).padStart(2, "0")}
+        </span>
+
+        {safeCurrentPage < totalPages ? (
+          <Link
+            href={getHref(safeCurrentPage + 1)}
+            className={cn(edgeLinkClassName, "justify-end")}
+            aria-label={`下一页，第 ${safeCurrentPage + 1} 页`}
+          >
+            <span className="hidden font-mono text-[11px] text-muted-foreground/70 sm:inline">
+              {String(safeCurrentPage + 1).padStart(2, "0")}
+            </span>
+            <span>下一页</span>
+            <ChevronRight className="h-4 w-4" suppressHydrationWarning />
+          </Link>
+        ) : (
+          <span
+            className={cn(disabledClassName, "justify-end")}
+            aria-disabled="true"
+          >
+            <span>下一页</span>
+            <ChevronRight className="h-4 w-4" suppressHydrationWarning />
+          </span>
         )}
       </div>
-
-      <span className="inline-flex h-9 min-w-20 items-center justify-center border-b border-border/60 px-3 text-sm text-muted-foreground sm:hidden">
-        {safeCurrentPage} / {totalPages}
-      </span>
-
-      {safeCurrentPage < totalPages ? (
-        <Link
-          href={getHref(safeCurrentPage + 1)}
-          className={edgeLinkClassName}
-          aria-label={`下一页，第 ${safeCurrentPage + 1} 页`}
-        >
-          下一页
-          <ChevronRight className="h-4 w-4" suppressHydrationWarning />
-        </Link>
-      ) : (
-        <span
-          className={disabledClassName}
-          aria-disabled="true"
-        >
-          下一页
-          <ChevronRight className="h-4 w-4" suppressHydrationWarning />
-        </span>
-      )}
     </nav>
   );
 }
