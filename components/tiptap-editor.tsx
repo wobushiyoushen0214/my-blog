@@ -8,6 +8,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { common, createLowlight } from "lowlight";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useRef, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
@@ -41,6 +42,8 @@ interface TiptapEditorProps {
 export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [linkEditorOpen, setLinkEditorOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
 
   const editor = useEditor({
     extensions: [
@@ -126,11 +129,28 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
     }
   };
 
-  const addLink = () => {
-    const url = window.prompt("输入链接 URL:");
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
+  const openLinkEditor = () => {
+    const currentUrl = editor.getAttributes("link").href || "";
+    setLinkUrl(currentUrl);
+    setLinkEditorOpen(true);
+  };
+
+  const closeLinkEditor = () => {
+    setLinkEditorOpen(false);
+    setLinkUrl("");
+  };
+
+  const applyLink = () => {
+    const url = linkUrl.trim();
+
+    if (!url) {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      closeLinkEditor();
+      return;
     }
+
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    closeLinkEditor();
   };
 
   return (
@@ -308,15 +328,52 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         </Button>
         <Button
           type="button"
-          variant="ghost"
+          variant={editor.isActive("link") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
-          aria-label="插入链接"
-          title="插入链接"
-          onClick={addLink}
+          aria-label={editor.isActive("link") ? "编辑链接" : "插入链接"}
+          title={editor.isActive("link") ? "编辑链接" : "插入链接"}
+          onClick={openLinkEditor}
         >
           <LinkIcon className="h-4 w-4" />
         </Button>
+        {linkEditorOpen ? (
+          <div className="flex min-w-[240px] flex-1 items-center gap-1 border border-border/70 bg-background p-1">
+            <label htmlFor="editor-link-url" className="sr-only">
+              链接 URL
+            </label>
+            <Input
+              id="editor-link-url"
+              type="url"
+              value={linkUrl}
+              onChange={(event) => setLinkUrl(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  applyLink();
+                }
+                if (event.key === "Escape") {
+                  event.preventDefault();
+                  closeLinkEditor();
+                }
+              }}
+              placeholder="https://example.com"
+              className="h-8 border-border/60 bg-background text-sm"
+              autoFocus
+            />
+            <Button type="button" size="xs" onClick={applyLink}>
+              应用
+            </Button>
+            <Button
+              type="button"
+              size="xs"
+              variant="ghost"
+              onClick={closeLinkEditor}
+            >
+              取消
+            </Button>
+          </div>
+        ) : null}
         <div className="mx-1 w-px bg-border" />
         <Button
           type="button"
