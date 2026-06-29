@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import {
   AdminEmptyState,
   AdminPageHeader,
+  AdminSummaryLedger,
   AdminTableSurface,
 } from "@/components/admin/admin-page";
 import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
@@ -195,19 +196,32 @@ export function AdminCommentsClient({
 
       {comments.length > 0 ? (
         <>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <StatItem label="全部评论" value={numberFormatter.format(stats.total)} />
-            <StatItem
-              label="待审核"
-              value={numberFormatter.format(stats.pending)}
-              tone={stats.pending > 0 ? "attention" : "default"}
-            />
-            <StatItem label="已审核" value={numberFormatter.format(stats.approved)} />
-            <StatItem
-              label="涉及文章"
-              value={numberFormatter.format(stats.postCount)}
-            />
-          </div>
+          <AdminSummaryLedger
+            aria-label="评论管理摘要"
+            items={[
+              {
+                label: "全部评论",
+                value: numberFormatter.format(stats.total),
+                helper: "站点评论总量",
+              },
+              {
+                label: "待审核",
+                value: numberFormatter.format(stats.pending),
+                helper: "需要处理的评论",
+                tone: stats.pending > 0 ? "attention" : "default",
+              },
+              {
+                label: "已审核",
+                value: numberFormatter.format(stats.approved),
+                helper: "已通过的评论",
+              },
+              {
+                label: "涉及文章",
+                value: numberFormatter.format(stats.postCount),
+                helper: "评论关联的内容数",
+              },
+            ]}
+          />
 
           <section className="border bg-card">
             <div className="flex flex-col gap-3 border-b p-3 lg:flex-row lg:items-center lg:justify-between">
@@ -451,31 +465,6 @@ export function AdminCommentsClient({
           description="读者提交评论后，会在这里进行审核和管理。"
         />
       )}
-    </div>
-  );
-}
-
-function StatItem({
-  label,
-  value,
-  tone = "default",
-}: {
-  label: string;
-  value: string;
-  tone?: "default" | "attention";
-}) {
-  return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p
-        className={
-          tone === "attention"
-            ? "mt-1 text-xl font-semibold tracking-tight text-primary"
-            : "mt-1 text-xl font-semibold tracking-tight"
-        }
-      >
-        {value}
-      </p>
     </div>
   );
 }

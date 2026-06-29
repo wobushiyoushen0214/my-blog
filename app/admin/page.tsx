@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { AdminPageHeader } from "@/components/admin/admin-page";
+import {
+  AdminPageHeader,
+  AdminSummaryLedger,
+} from "@/components/admin/admin-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
-  Eye,
   FileText,
   FolderOpen,
-  MessageSquare,
   Plus,
   Tags,
 } from "lucide-react";
@@ -162,39 +163,38 @@ export default async function AdminDashboard() {
         }
       />
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricTile
-          label="内容总数"
-          value={formatNumber(postCount)}
-          helper={`${formatNumber(publishedCount)} 已发布 · ${formatNumber(
-            draftCount
-          )} 草稿`}
-          href="/admin/posts"
-          icon={FileText}
-        />
-        <MetricTile
-          label="待审核评论"
-          value={formatNumber(pendingCount)}
-          helper={`${formatNumber(commentCount)} 条评论总量`}
-          href="/admin/comments"
-          icon={MessageSquare}
-          attention={pendingCount > 0}
-        />
-        <MetricTile
-          label="总阅读量"
-          value={formatNumber(totalViews)}
-          helper="来自所有内容累计"
-          href="/admin/posts"
-          icon={Eye}
-        />
-        <MetricTile
-          label="内容结构"
-          value={`${formatNumber(categoryCount)} / ${formatNumber(tagCount)}`}
-          helper="分类 / 标签"
-          href="/admin/categories"
-          icon={FolderOpen}
-        />
-      </section>
+      <AdminSummaryLedger
+        aria-label="后台概览摘要"
+        items={[
+          {
+            label: "内容总数",
+            value: formatNumber(postCount),
+            helper: `${formatNumber(publishedCount)} 已发布 · ${formatNumber(
+              draftCount
+            )} 草稿`,
+            href: "/admin/posts",
+          },
+          {
+            label: "待审核评论",
+            value: formatNumber(pendingCount),
+            helper: `${formatNumber(commentCount)} 条评论总量`,
+            href: "/admin/comments",
+            tone: pendingCount > 0 ? "attention" : "default",
+          },
+          {
+            label: "总阅读量",
+            value: formatNumber(totalViews),
+            helper: "来自所有内容累计",
+            href: "/admin/posts",
+          },
+          {
+            label: "内容结构",
+            value: `${formatNumber(categoryCount)} / ${formatNumber(tagCount)}`,
+            helper: "分类 / 标签",
+            href: "/admin/categories",
+          },
+        ]}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <DashboardPanel
@@ -360,49 +360,6 @@ export default async function AdminDashboard() {
         </DashboardPanel>
       </div>
     </div>
-  );
-}
-
-function MetricTile({
-  label,
-  value,
-  helper,
-  href,
-  icon: Icon,
-  attention = false,
-}: {
-  label: string;
-  value: string;
-  helper: string;
-  href: string;
-  icon: LucideIcon;
-  attention?: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className="border bg-card px-4 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <p
-            className={
-              attention
-                ? "mt-1 text-2xl font-semibold tracking-tight text-primary"
-                : "mt-1 text-2xl font-semibold tracking-tight"
-            }
-          >
-            {value}
-          </p>
-        </div>
-        <Icon
-          className="mt-1 h-4 w-4 shrink-0 text-muted-foreground"
-          suppressHydrationWarning
-        />
-      </div>
-      <p className="mt-2 truncate text-xs text-muted-foreground">{helper}</p>
-    </Link>
   );
 }
 

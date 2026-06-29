@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -75,6 +76,77 @@ export function AdminTableSurface({
     <div className={cn("overflow-hidden border bg-card", className)}>
       <div className="overflow-x-auto">{children}</div>
     </div>
+  );
+}
+
+type AdminSummaryLedgerItem = {
+  label: string;
+  value: ReactNode;
+  helper?: ReactNode;
+  href?: string;
+  tone?: "default" | "primary" | "attention";
+};
+
+export function AdminSummaryLedger({
+  items,
+  className,
+  "aria-label": ariaLabel = "管理摘要",
+}: {
+  items: AdminSummaryLedgerItem[];
+  className?: string;
+  "aria-label"?: string;
+}) {
+  if (items.length === 0) return null;
+
+  return (
+    <section
+      className={cn("overflow-hidden border bg-card", className)}
+      aria-label={ariaLabel}
+    >
+      <div className="divide-y">
+        {items.map((item, index) => {
+          const content = (
+            <div className="grid gap-2 px-4 py-3 sm:grid-cols-[2.75rem_minmax(0,1fr)_auto] sm:items-center sm:gap-4">
+              <span className="text-xs tabular-nums text-muted-foreground">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-medium">{item.label}</span>
+                {item.helper ? (
+                  <span className="mt-1 block truncate text-xs leading-5 text-muted-foreground">
+                    {item.helper}
+                  </span>
+                ) : null}
+              </span>
+              <span
+                className={cn(
+                  "text-lg font-semibold tabular-nums tracking-tight sm:text-right",
+                  item.tone === "primary" || item.tone === "attention"
+                    ? "text-primary"
+                    : "text-foreground"
+                )}
+              >
+                {item.value}
+              </span>
+            </div>
+          );
+
+          if (item.href) {
+            return (
+              <Link
+                key={`${item.label}-${index}`}
+                href={item.href}
+                className="block transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              >
+                {content}
+              </Link>
+            );
+          }
+
+          return <div key={`${item.label}-${index}`}>{content}</div>;
+        })}
+      </div>
+    </section>
   );
 }
 

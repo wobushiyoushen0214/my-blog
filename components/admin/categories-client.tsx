@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import {
   AdminEmptyState,
   AdminPageHeader,
+  AdminSummaryLedger,
   AdminTableSurface,
 } from "@/components/admin/admin-page";
 import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
@@ -298,14 +299,26 @@ export function AdminCategoriesClient({
 
       {categories.length > 0 ? (
         <>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <StatItem label="全部分类" value={numberFormatter.format(stats.total)} />
-            <StatItem label="文章分类" value={numberFormatter.format(stats.post)} />
-            <StatItem
-              label="见闻分类"
-              value={numberFormatter.format(stats.moment)}
-            />
-          </div>
+          <AdminSummaryLedger
+            aria-label="分类管理摘要"
+            items={[
+              {
+                label: "全部分类",
+                value: numberFormatter.format(stats.total),
+                helper: "文章和见闻分类总数",
+              },
+              {
+                label: "文章分类",
+                value: numberFormatter.format(stats.post),
+                helper: "用于长文归档",
+              },
+              {
+                label: "见闻分类",
+                value: numberFormatter.format(stats.moment),
+                helper: "用于短内容归档",
+              },
+            ]}
+          />
 
           <section className="border bg-card">
             <div className="flex flex-col gap-3 border-b p-3 lg:flex-row lg:items-center lg:justify-between">
@@ -500,15 +513,6 @@ export function AdminCategoriesClient({
           }
         />
       )}
-    </div>
-  );
-}
-
-function StatItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
     </div>
   );
 }

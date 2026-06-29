@@ -10,8 +10,18 @@ import { Badge } from "@/components/ui/badge";
 import {
   AdminEmptyState,
   AdminPageHeader,
+  AdminSummaryLedger,
+  AdminTableSurface,
 } from "@/components/admin/admin-page";
 import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -212,13 +222,21 @@ export function AdminTagsClient({ initialTags }: { initialTags: Tag[] }) {
 
       {tags.length > 0 ? (
         <>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <StatItem label="全部标签" value={numberFormatter.format(stats.total)} />
-            <StatItem
-              label="近 30 天新增"
-              value={numberFormatter.format(stats.recent)}
-            />
-          </div>
+          <AdminSummaryLedger
+            aria-label="标签管理摘要"
+            items={[
+              {
+                label: "全部标签",
+                value: numberFormatter.format(stats.total),
+                helper: "可关联到文章的关键词",
+              },
+              {
+                label: "近 30 天新增",
+                value: numberFormatter.format(stats.recent),
+                helper: "最近维护的标签",
+              },
+            ]}
+          />
 
           <section className="border bg-card">
             <div className="flex flex-col gap-3 border-b p-3 lg:flex-row lg:items-center lg:justify-between">
@@ -290,59 +308,87 @@ export function AdminTagsClient({ initialTags }: { initialTags: Tag[] }) {
           {refreshing && filteredTags.length === 0 ? <TagsLoadingState /> : null}
 
           {filteredTags.length > 0 ? (
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredTags.map((tag) => (
-                <article
-                  key={tag.id}
-                  className="border bg-card p-4 transition-colors hover:bg-muted/20"
-                >
-                  <div className="flex min-w-0 items-start justify-between gap-3">
-                    <div className="min-w-0 space-y-2">
-                      <Badge
-                        variant="outline"
-                        className="max-w-full rounded-md font-normal"
-                      >
-                        <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-                        <span className="truncate">{tag.name}</span>
-                      </Badge>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {tag.slug || "无 slug"}
-                      </p>
+            <>
+              <AdminTableSurface className="hidden md:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>名称</TableHead>
+                      <TableHead>Slug</TableHead>
+                      <TableHead>创建时间</TableHead>
+                      <TableHead className="text-right">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredTags.map((tag) => (
+                      <TableRow key={tag.id} className="hover:bg-muted/40">
+                        <TableCell className="max-w-[260px]">
+                          <Badge
+                            variant="outline"
+                            className="max-w-full rounded-md font-normal"
+                          >
+                            <Hash
+                              className="h-3.5 w-3.5"
+                              suppressHydrationWarning
+                            />
+                            <span className="truncate">{tag.name}</span>
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="max-w-[260px] truncate text-muted-foreground">
+                          {tag.slug || "-"}
+                        </TableCell>
+                        <TableCell>{formatDate(tag.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <TagActions
+                            tag={tag}
+                            deleting={deletingId === tag.id}
+                            onDelete={handleDelete}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </AdminTableSurface>
+
+              <div className="divide-y border bg-card md:hidden">
+                {filteredTags.map((tag) => (
+                  <div key={tag.id} className="px-3 py-3">
+                    <div className="flex min-w-0 items-start justify-between gap-3">
+                      <div className="min-w-0 space-y-2">
+                        <Badge
+                          variant="outline"
+                          className="max-w-full rounded-md font-normal"
+                        >
+                          <Hash
+                            className="h-3.5 w-3.5"
+                            suppressHydrationWarning
+                          />
+                          <span className="truncate">{tag.name}</span>
+                        </Badge>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {tag.slug || "无 slug"}
+                        </p>
+                      </div>
+                      <TagActions
+                        tag={tag}
+                        deleting={deletingId === tag.id}
+                        onDelete={handleDelete}
+                      />
                     </div>
-                    <ConfirmActionDialog
-                      title="删除标签"
-                      description={`确定要删除「${tag.name}」吗？关联关系会一并移除。`}
-                      confirmLabel="删除"
-                      loading={deletingId === tag.id}
-                      disabled={deletingId === tag.id}
-                      onConfirm={() => handleDelete(tag.id)}
-                    >
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={`删除 ${tag.name}`}
-                        disabled={deletingId === tag.id}
-                      >
-                        <Trash2
-                          className="h-4 w-4 text-destructive"
+                    <div className="mt-3 text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1.5">
+                        <CalendarDays
+                          className="h-3.5 w-3.5"
                           suppressHydrationWarning
                         />
-                      </Button>
-                    </ConfirmActionDialog>
+                        {formatDate(tag.created_at)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="mt-4 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1.5">
-                      <CalendarDays
-                        className="h-3.5 w-3.5"
-                        suppressHydrationWarning
-                      />
-                      {formatDate(tag.created_at)}
-                    </span>
-                  </div>
-                </article>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           ) : (
             <AdminEmptyState
               icon={Search}
@@ -373,21 +419,47 @@ export function AdminTagsClient({ initialTags }: { initialTags: Tag[] }) {
   );
 }
 
-function StatItem({ label, value }: { label: string; value: string }) {
+function TagActions({
+  tag,
+  deleting,
+  onDelete,
+}: {
+  tag: Tag;
+  deleting: boolean;
+  onDelete: (id: string) => void | Promise<void>;
+}) {
   return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
-    </div>
+    <ConfirmActionDialog
+      title="删除标签"
+      description={`确定要删除「${tag.name}」吗？关联关系会一并移除。`}
+      confirmLabel="删除"
+      loading={deleting}
+      disabled={deleting}
+      onConfirm={() => onDelete(tag.id)}
+    >
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        aria-label={`删除 ${tag.name}`}
+        disabled={deleting}
+      >
+        <Trash2 className="h-4 w-4 text-destructive" suppressHydrationWarning />
+      </Button>
+    </ConfirmActionDialog>
   );
 }
 
 function TagsLoadingState() {
   return (
     <div className="border bg-card p-4" aria-live="polite">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="space-y-3">
         {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className="h-24 animate-pulse rounded-md bg-muted" />
+          <div key={index} className="flex animate-pulse items-center gap-3">
+            <div className="h-9 flex-1 rounded-md bg-muted" />
+            <div className="hidden h-9 w-44 rounded-md bg-muted sm:block" />
+            <div className="h-9 w-16 rounded-md bg-muted" />
+          </div>
         ))}
       </div>
       <span className="sr-only">正在刷新标签列表</span>

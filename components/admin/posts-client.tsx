@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import {
   AdminEmptyState,
   AdminPageHeader,
+  AdminSummaryLedger,
   AdminTableSurface,
 } from "@/components/admin/admin-page";
 import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
@@ -199,16 +200,32 @@ export function AdminPostsClient({ initialPosts }: { initialPosts: PostRow[] }) 
 
       {posts.length > 0 ? (
         <>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <StatItem label="全部内容" value={numberFormatter.format(stats.total)} />
-            <StatItem
-              label="已发布"
-              value={numberFormatter.format(stats.published)}
-              tone="primary"
-            />
-            <StatItem label="草稿" value={numberFormatter.format(stats.draft)} />
-            <StatItem label="总阅读量" value={numberFormatter.format(stats.views)} />
-          </div>
+          <AdminSummaryLedger
+            aria-label="文章管理摘要"
+            items={[
+              {
+                label: "全部内容",
+                value: numberFormatter.format(stats.total),
+                helper: "当前可管理的文章和见闻",
+              },
+              {
+                label: "已发布",
+                value: numberFormatter.format(stats.published),
+                helper: "已在前台公开显示",
+                tone: "primary",
+              },
+              {
+                label: "草稿",
+                value: numberFormatter.format(stats.draft),
+                helper: "仍在后台保存",
+              },
+              {
+                label: "总阅读量",
+                value: numberFormatter.format(stats.views),
+                helper: "所有内容累计阅读",
+              },
+            ]}
+          />
 
           <section className="border bg-card">
             <div className="flex flex-col gap-3 border-b p-3 lg:flex-row lg:items-center lg:justify-between">
@@ -454,31 +471,6 @@ export function AdminPostsClient({ initialPosts }: { initialPosts: PostRow[] }) 
           }
         />
       )}
-    </div>
-  );
-}
-
-function StatItem({
-  label,
-  value,
-  tone = "default",
-}: {
-  label: string;
-  value: string;
-  tone?: "default" | "primary";
-}) {
-  return (
-    <div className="border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p
-        className={
-          tone === "primary"
-            ? "mt-1 text-xl font-semibold tracking-tight text-primary"
-            : "mt-1 text-xl font-semibold tracking-tight"
-        }
-      >
-        {value}
-      </p>
     </div>
   );
 }
