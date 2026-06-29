@@ -17,7 +17,6 @@ import {
   X,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -124,15 +123,14 @@ export function SearchBar() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 px-2 sm:w-28 sm:justify-start sm:border sm:border-border/70 sm:bg-card"
+        <button
+          type="button"
+          className="inline-flex h-8 items-center justify-center gap-2 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-28 sm:justify-start"
           aria-keyshortcuts="/"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
           <span className="sr-only sm:not-sr-only">搜索</span>
-        </Button>
+        </button>
       </DialogTrigger>
       <DialogContent
         className="gap-0 overflow-hidden p-0 sm:max-w-xl"
@@ -145,11 +143,14 @@ export function SearchBar() {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSearch} className="border-b border-border/60 p-3 sm:p-4">
+        <form
+          onSubmit={handleSearch}
+          className="border-b border-border/60 px-3 py-3 sm:px-4 sm:py-4"
+        >
           <label htmlFor="header-search" className="sr-only">
             搜索关键词
           </label>
-          <div className="flex gap-2">
+          <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_84px_2.5rem]">
             <div className="relative min-w-0 flex-1">
               <Search
                 className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -162,26 +163,27 @@ export function SearchBar() {
                 placeholder="搜索标题、正文、分类或标签..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="h-10 border-border/60 bg-background pl-10 shadow-none"
+                className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
               />
             </div>
-            <Button type="submit" className="h-10">
+            <button
+              type="submit"
+              className="inline-flex h-10 items-center justify-center border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
               搜索
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
-              variant="ghost"
-              size="icon"
-              className="size-10"
+              className="inline-flex size-10 items-center justify-center border border-border/70 bg-background text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               aria-label="关闭搜索"
               onClick={() => setOpen(false)}
             >
               <X className="h-4 w-4" suppressHydrationWarning />
-            </Button>
+            </button>
           </div>
         </form>
 
-        <div className="p-3 sm:p-4">
+        <div className="px-3 py-3 sm:px-4 sm:py-4">
           <div className="mb-2 flex items-center justify-between gap-3">
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
               Explore
@@ -212,7 +214,7 @@ export function SearchBar() {
                     </span>
                   </span>
                   <ArrowRight
-                    className="hidden h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary sm:block"
+                    className="hidden h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground sm:block"
                     suppressHydrationWarning
                   />
                 </Link>

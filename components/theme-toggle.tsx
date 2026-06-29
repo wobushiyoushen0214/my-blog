@@ -2,17 +2,16 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme();
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-8 w-8 border border-border/70 bg-card"
+    <button
+      type="button"
+      className="relative inline-flex size-8 items-center justify-center border-y border-border/60 text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      aria-label="切换主题"
     >
       <Sun
         className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
@@ -23,6 +22,6 @@ export function ThemeToggle() {
         suppressHydrationWarning
       />
       <span className="sr-only">切换主题</span>
-    </Button>
+    </button>
   );
 }
