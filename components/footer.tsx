@@ -17,9 +17,12 @@ export function Footer() {
       <div className="mx-auto w-full max-w-[1320px] px-4 py-8 md:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <p className="font-serif text-sm text-foreground">
-              &copy; {new Date().getFullYear()} Lee
-            </p>
+            <div className="min-w-0">
+              <p className="font-serif text-sm text-foreground">Lee / Notes</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                &copy; {new Date().getFullYear()} · 想法、代码与日常见闻
+              </p>
+            </div>
             <Link
               href="/rss.xml"
               className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"

@@ -7,6 +7,8 @@
  */
 import { createClient } from "@/lib/supabase/server";
 
+const channelDescription = "想法、代码与日常见闻的个人记录。";
+
 export async function GET() {
   const supabase = await createClient();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -36,7 +38,7 @@ export async function GET() {
   <channel>
     <title>Lee</title>
     <link>${siteUrl}</link>
-    <description>A personal blog built with Next.js and Supabase</description>
+    <description>${channelDescription}</description>
     <language>zh-CN</language>
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>
     ${items}

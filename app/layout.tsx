@@ -11,6 +11,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
+const siteDescription = "想法、代码与日常见闻的个人记录。";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,10 +28,10 @@ export const metadata: Metadata = {
     default: "Lee",
     template: "%s | Lee",
   },
-  description: "A personal blog built with Next.js and Supabase",
+  description: siteDescription,
   openGraph: {
     title: "Lee",
-    description: "A personal blog built with Next.js and Supabase",
+    description: siteDescription,
     type: "website",
   },
 };
