@@ -6,6 +6,7 @@ import type { FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
   Archive,
+  ArrowRight,
   FileText,
   FolderOpen,
   Hash,
@@ -70,6 +71,12 @@ const quickLinks: QuickLink[] = [
     label: "友链",
     description: "站点和朋友链接",
     icon: Link2,
+  },
+  {
+    href: "/rss.xml",
+    label: "RSS",
+    description: "订阅站点更新",
+    icon: Rss,
   },
 ];
 
@@ -174,21 +181,15 @@ export function SearchBar() {
           </div>
         </form>
 
-        <div className="space-y-3 p-3 sm:p-4">
-          <div className="flex items-center justify-between gap-3">
+        <div className="p-3 sm:p-4">
+          <div className="mb-2 flex items-center justify-between gap-3">
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
               Explore
             </p>
-            <Button variant="ghost" size="xs" asChild>
-              <Link href="/rss.xml" onClick={() => setOpen(false)}>
-                <Rss className="h-3 w-3" suppressHydrationWarning />
-                RSS
-              </Link>
-            </Button>
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-2">
-            {quickLinks.map((item) => {
+          <div className="divide-y divide-border/60 border-y border-border/70">
+            {quickLinks.map((item, index) => {
               const Icon = item.icon;
 
               return (
@@ -196,9 +197,10 @@ export function SearchBar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="group flex min-w-0 items-start gap-3 border border-border/70 bg-card px-3 py-2.5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="group grid min-w-0 gap-3 px-2 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:items-center"
                 >
-                  <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center border bg-background text-muted-foreground transition-colors group-hover:text-foreground">
+                  <span className="flex items-center gap-2 text-xs tabular-nums text-muted-foreground">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
                     <Icon className="h-4 w-4" suppressHydrationWarning />
                   </span>
                   <span className="min-w-0">
@@ -209,6 +211,10 @@ export function SearchBar() {
                       {item.description}
                     </span>
                   </span>
+                  <ArrowRight
+                    className="hidden h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary sm:block"
+                    suppressHydrationWarning
+                  />
                 </Link>
               );
             })}

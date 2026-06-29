@@ -58,22 +58,28 @@ function HoverNav({
 
       <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-1/2 top-full z-50 -translate-x-1/2">
         <div className="h-2" />
-        <div className="w-64 rounded-md border border-border/80 bg-popover p-1 shadow-md">
-          {items.map((item) =>
+        <div className="w-72 border border-border/80 bg-popover">
+          {items.map((item, index) =>
             item.disabled ? (
               <div
                 key={item.label}
-                className="px-2 py-1.5 text-sm text-muted-foreground/70 select-none"
+                className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 border-b border-border/60 px-3 py-2 text-sm text-muted-foreground/70 last:border-b-0"
               >
-                {item.label}
+                <span className="text-xs tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span>{item.label}</span>
               </div>
             ) : (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 border-b border-border/60 px-3 py-2 text-sm text-muted-foreground outline-none transition-colors last:border-b-0 hover:bg-muted/20 hover:text-foreground focus:bg-muted/20 focus:text-foreground"
               >
-                {item.label}
+                <span className="text-xs tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="min-w-0 truncate">{item.label}</span>
               </Link>
             )
           )}
