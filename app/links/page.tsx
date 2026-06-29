@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
   PublicInfoPanel,
@@ -9,7 +10,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
@@ -229,9 +229,7 @@ export default async function LinksPage({
                     : "当前状态下暂无站点，可以清除筛选后查看全部。"
                 }
                 action={
-                  <Button variant="outline" asChild>
-                    <Link href="/links">清除筛选</Link>
-                  </Button>
+                  <PublicActionLink href="/links">清除筛选</PublicActionLink>
                 }
                 className="max-w-none"
               />
@@ -241,15 +239,13 @@ export default async function LinksPage({
                 title="暂无公开友链"
                 description="友链目录还没有公开收录。可以先参考右侧的本站信息，通过文章评论区留下站点资料。"
                 action={
-                  <Button variant="outline" asChild>
-                    <Link href="/posts">
-                      去文章区留言
-                      <ArrowRight
-                        className="h-4 w-4"
-                        suppressHydrationWarning
-                      />
-                    </Link>
-                  </Button>
+                  <PublicActionLink href="/posts">
+                    去文章区留言
+                    <ArrowRight
+                      className="h-4 w-4"
+                      suppressHydrationWarning
+                    />
+                  </PublicActionLink>
                 }
                 className="max-w-none"
               />

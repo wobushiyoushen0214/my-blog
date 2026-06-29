@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
   PublicInfoPanel,
@@ -10,7 +11,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, FolderOpen, Search, X } from "lucide-react";
 import type { Metadata } from "next";
@@ -222,9 +222,7 @@ export default async function CategoriesPage({
             title="没有匹配的分类"
             description={emptyFilteredDescription}
             action={
-              <Button variant="outline" asChild>
-                <Link href="/category">查看全部分类</Link>
-              </Button>
+              <PublicActionLink href="/category">查看全部分类</PublicActionLink>
             }
           />
         ) : (

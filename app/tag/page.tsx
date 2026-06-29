@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
   PublicInfoPanel,
@@ -10,7 +11,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
@@ -264,9 +264,7 @@ export default async function TagsPage({
             title="没有匹配的标签"
             description={emptyFilteredDescription}
             action={
-              <Button variant="outline" asChild>
-                <Link href="/tag">查看全部标签</Link>
-              </Button>
+              <PublicActionLink href="/tag">查看全部标签</PublicActionLink>
             }
           />
         ) : (

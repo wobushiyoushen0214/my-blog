@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
   PublicInfoPanel,
@@ -10,7 +11,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   CalendarDays,
@@ -276,12 +276,10 @@ export default async function ArchivePage({
           description="按发布时间回看文章和见闻，适合快速定位某个阶段的记录。"
           countLabel={countLabel}
           action={
-            <Button variant="outline" asChild>
-              <Link href="/search">
-                <Search className="h-4 w-4" suppressHydrationWarning />
-                搜索
-              </Link>
-            </Button>
+            <PublicActionLink href="/search">
+              <Search className="h-4 w-4" suppressHydrationWarning />
+              搜索
+            </PublicActionLink>
           }
         />
 
@@ -340,9 +338,7 @@ export default async function ArchivePage({
                     : "当前类型下暂无归档内容，可以切换到全部内容查看。"
                 }
                 action={
-                  <Button variant="outline" asChild>
-                    <Link href="/archive">清除筛选</Link>
-                  </Button>
+                  <PublicActionLink href="/archive">清除筛选</PublicActionLink>
                 }
               />
             )}
@@ -353,9 +349,7 @@ export default async function ArchivePage({
             title="暂无归档内容"
             description="发布文章或见闻后，这里会按年份和月份自动整理。"
             action={
-              <Button variant="outline" asChild>
-                <Link href="/posts">查看文章列表</Link>
-              </Button>
+              <PublicActionLink href="/posts">查看文章列表</PublicActionLink>
             }
           />
         )}

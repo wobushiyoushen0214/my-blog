@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { PostCard } from "@/components/post-card";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
   PublicInfoPanel,
@@ -11,7 +12,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FolderOpen, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
@@ -504,9 +504,7 @@ export default async function SearchPage({
                 title="没有找到匹配内容"
                 description={`没有匹配「${query}」的${contentType === "post" ? "文章" : contentType === "moment" ? "见闻" : "内容"}，可以换个关键词或清除筛选。`}
                 action={
-                  <Button variant="outline" asChild>
-                    <Link href="/search">清除筛选</Link>
-                  </Button>
+                  <PublicActionLink href="/search">清除筛选</PublicActionLink>
                 }
               />
             ) : (

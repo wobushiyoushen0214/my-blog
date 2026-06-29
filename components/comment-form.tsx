@@ -1,7 +1,6 @@
 "use client";
 
 import { useId, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -276,26 +275,23 @@ export function CommentForm({
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           {onCancel && (
-            <Button
+            <button
               type="button"
-              variant="ghost"
               onClick={onCancel}
               disabled={loading}
-              size="sm"
-              className="rounded-none px-2 text-muted-foreground hover:text-foreground"
+              className="inline-flex h-8 items-center justify-center px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
             >
               取消
-            </Button>
+            </button>
           )}
-          <Button
+          <button
             type="submit"
             disabled={loading}
-            size="sm"
-            className="rounded-none bg-foreground text-background hover:bg-foreground/90 hover:text-background"
+            className="inline-flex h-8 items-center justify-center gap-2 border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
           >
             <Send className="h-4 w-4" suppressHydrationWarning />
             {loading ? "提交中..." : isReply ? "提交回复" : "提交评论"}
-          </Button>
+          </button>
         </div>
       </div>
     </form>

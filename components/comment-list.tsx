@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { Comment } from "@/lib/types";
-import { Button } from "@/components/ui/button";
 import { MessageSquare, Reply } from "lucide-react";
 import { CommentForm } from "./comment-form";
 
@@ -105,17 +104,16 @@ function CommentItem({ comment }: { comment: CommentNode }) {
                 </span>
               ) : null}
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 rounded-none border-border/60 bg-background px-2 text-xs text-muted-foreground opacity-100 hover:bg-muted/40 hover:text-foreground sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+            <button
+              type="button"
+              className="inline-flex h-7 items-center justify-center gap-1.5 border border-border/60 bg-background px-2 text-xs font-medium text-muted-foreground opacity-100 transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
               onClick={() => setReplying(!replying)}
               aria-expanded={replying}
               aria-label={`回复 ${comment.author_name}`}
             >
               <Reply className="h-3.5 w-3.5" suppressHydrationWarning />
               回复
-            </Button>
+            </button>
           </div>
           <div className="whitespace-pre-wrap break-words text-sm leading-7 text-foreground/90">
             {comment.content}

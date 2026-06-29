@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
   PublicInfoPanel,
@@ -13,7 +14,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FolderOpen, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
@@ -330,12 +330,10 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
           backHref="/tag"
           backLabel="所有标签"
           action={
-            <Button variant="outline" asChild>
-              <Link href="/search">
-                <Search className="h-4 w-4" suppressHydrationWarning />
-                搜索
-              </Link>
-            </Button>
+            <PublicActionLink href="/search">
+              <Search className="h-4 w-4" suppressHydrationWarning />
+              搜索
+            </PublicActionLink>
           }
         />
 
@@ -468,9 +466,9 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
                 : "当前类型或排序下暂无内容，可以清除筛选后再试。"
             }
             action={
-              <Button variant="outline" asChild>
-                <Link href={`/tag/${encodeURIComponent(slug)}`}>清除筛选</Link>
-              </Button>
+              <PublicActionLink href={`/tag/${encodeURIComponent(slug)}`}>
+                清除筛选
+              </PublicActionLink>
             }
           />
         ) : (
@@ -479,9 +477,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
             title="该标签下暂无内容"
             description="后续关联到这个标签的内容会展示在这里。"
             action={
-              <Button variant="outline" asChild>
-                <Link href="/posts">查看全部文章</Link>
-              </Button>
+              <PublicActionLink href="/posts">查看全部文章</PublicActionLink>
             }
           />
         )}

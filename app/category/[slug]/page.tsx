@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
   PublicInfoPanel,
@@ -13,7 +14,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
@@ -277,12 +277,10 @@ export default async function CategoryPage({
           backHref="/category"
           backLabel="所有分类"
           action={
-            <Button variant="outline" asChild>
-              <Link href={getCategoryListHref(typedCategory)}>
-                <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-                类型列表
-              </Link>
-            </Button>
+            <PublicActionLink href={getCategoryListHref(typedCategory)}>
+              <ArrowRight className="h-4 w-4" suppressHydrationWarning />
+              类型列表
+            </PublicActionLink>
           }
         />
 
@@ -422,9 +420,9 @@ export default async function CategoryPage({
                 : "当前排序和筛选下暂无内容，可以清除条件后再试。"
             }
             action={
-              <Button variant="outline" asChild>
-                <Link href={`/category/${encodeURIComponent(slug)}`}>清除筛选</Link>
-              </Button>
+              <PublicActionLink href={`/category/${encodeURIComponent(slug)}`}>
+                清除筛选
+              </PublicActionLink>
             }
           />
         ) : (
@@ -433,11 +431,9 @@ export default async function CategoryPage({
             title="该分类下暂无内容"
             description="后续发布到这个分类的内容会展示在这里。"
             action={
-              <Button variant="outline" asChild>
-                <Link href={contentListHref}>
-                  查看全部{typedCategory.type === "moment" ? "见闻" : "文章"}
-                </Link>
-              </Button>
+              <PublicActionLink href={contentListHref}>
+                查看全部{typedCategory.type === "moment" ? "见闻" : "文章"}
+              </PublicActionLink>
             }
           />
         )}

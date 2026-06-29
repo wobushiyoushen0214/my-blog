@@ -4,12 +4,12 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Pagination } from "@/components/pagination";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
@@ -307,12 +307,10 @@ export default async function MomentsPage({
           description="更轻量的观察、摘录和阶段性记录，可按主题、关键词和排序快速收窄。"
           countLabel={`${totalCount} 条`}
           action={
-            <Button variant="outline" asChild>
-              <Link href="/search">
-                <Search className="h-4 w-4" suppressHydrationWarning />
-                搜索
-              </Link>
-            </Button>
+            <PublicActionLink href="/search">
+              <Search className="h-4 w-4" suppressHydrationWarning />
+              搜索
+            </PublicActionLink>
           }
         />
 
@@ -408,9 +406,7 @@ export default async function MomentsPage({
             }
             action={
               activeCategory || searchQuery || sort !== DEFAULT_SORT ? (
-                <Button variant="outline" asChild>
-                  <Link href="/moments">清除筛选</Link>
-                </Button>
+                <PublicActionLink href="/moments">清除筛选</PublicActionLink>
               ) : null
             }
           />

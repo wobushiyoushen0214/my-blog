@@ -85,6 +85,30 @@ export function PublicPageHeader({
   );
 }
 
+type PublicActionLinkProps = {
+  href: string;
+  children: ReactNode;
+  className?: string;
+};
+
+export function PublicActionLink({
+  href,
+  children,
+  className,
+}: PublicActionLinkProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "inline-flex h-9 items-center gap-2 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        className
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
+
 type PublicEmptyStateProps = {
   icon?: LucideIcon;
   title: string;

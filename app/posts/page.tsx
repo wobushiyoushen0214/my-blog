@@ -5,12 +5,12 @@ import { Footer } from "@/components/footer";
 import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import {
+  PublicActionLink,
   PublicEmptyState,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ArrowRight, FileText, Hash, Search, X } from "lucide-react";
@@ -279,12 +279,10 @@ export default async function PostsPage({
           description="系统整理的技术笔记、项目复盘与长期主题，可按分类、关键词和排序继续收窄。"
           countLabel={`${totalCount} 篇`}
           action={
-            <Button variant="outline" asChild>
-              <Link href="/search">
-                <Search className="h-4 w-4" suppressHydrationWarning />
-                搜索
-              </Link>
-            </Button>
+            <PublicActionLink href="/search">
+              <Search className="h-4 w-4" suppressHydrationWarning />
+              搜索
+            </PublicActionLink>
           }
         />
 
@@ -418,9 +416,7 @@ export default async function PostsPage({
             }
             action={
               categoryName || searchQuery || sort !== DEFAULT_SORT ? (
-                <Button variant="outline" asChild>
-                  <Link href="/posts">清除筛选</Link>
-                </Button>
+                <PublicActionLink href="/posts">清除筛选</PublicActionLink>
               ) : null
             }
           />
