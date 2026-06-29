@@ -20,10 +20,10 @@ function NavLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`inline-flex h-8 items-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+      className={`inline-flex h-8 items-center border-b px-2 font-mono text-xs uppercase tracking-[0.16em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
         active
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-accent hover:text-foreground"
+          ? "border-foreground text-foreground"
+          : "border-transparent text-muted-foreground hover:border-muted-foreground hover:text-foreground"
       }`}
     >
       {label}
@@ -47,10 +47,10 @@ function HoverNav({
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={`inline-flex h-8 items-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+        className={`inline-flex h-8 items-center border-b px-2 font-mono text-xs uppercase tracking-[0.16em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
           active
-            ? "bg-primary/10 text-primary"
-            : "text-muted-foreground hover:bg-accent hover:text-foreground"
+            ? "border-foreground text-foreground"
+            : "border-transparent text-muted-foreground hover:border-muted-foreground hover:text-foreground"
         }`}
       >
         {label}
@@ -58,7 +58,7 @@ function HoverNav({
 
       <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-1/2 top-full z-50 -translate-x-1/2">
         <div className="h-2" />
-        <div className="w-64 rounded-md border bg-popover p-1 shadow-md">
+        <div className="w-64 border bg-popover p-1 shadow-md">
           {items.map((item) =>
             item.disabled ? (
               <div
@@ -71,7 +71,7 @@ function HoverNav({
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                className="flex items-center px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
               >
                 {item.label}
               </Link>
@@ -122,22 +122,21 @@ export function HeaderClient({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <div className="mx-auto grid h-14 w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
         <div className="flex items-center">
           <Link
             href="/"
-            className="group flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="group flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <span className="flex size-6 items-center justify-center rounded-md bg-primary text-[13px] font-bold text-primary-foreground">
-              L
+            <span className="font-serif text-lg uppercase tracking-[0.18em]">
+              Lee Archive
             </span>
-            <span className="text-base font-semibold tracking-tight">Lee</span>
           </Link>
         </div>
 
         <nav className="hidden md:flex items-center justify-center">
-          <div className="flex items-center gap-1 rounded-lg border border-border/50 bg-background/50 px-1.5 py-1 backdrop-blur">
+          <div className="flex items-center gap-3 bg-background/50">
             <NavLink href="/" label="首页" active={isHome} />
             <HoverNav href="/posts" label="文章" active={isPosts} items={postItems} />
             <HoverNav href="/moments" label="见闻" active={isMoments} items={momentItems} />
