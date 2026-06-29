@@ -669,7 +669,7 @@ function ArticleFinishPanel({
 }) {
   const contentTypeLabel = getContentTypeLabel(contentType);
   return (
-    <section className="mt-12 border bg-card p-4">
+    <section className="mt-12 border-y border-border/70 py-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -751,7 +751,7 @@ function ArticlePager({
   return (
     <nav
       aria-label="相邻文章"
-      className="mt-6 grid gap-3 md:grid-cols-2"
+      className="mt-6 grid divide-y divide-border/70 border-y border-border/70 md:grid-cols-2 md:divide-x md:divide-y-0"
     >
       <NavigationPostCard
         post={previousPost}
@@ -774,7 +774,7 @@ function NavigationPostCard({
 }) {
   if (!post) {
     return (
-      <div className="rounded-lg border border-dashed border-border/60 bg-muted/20 p-4">
+      <div className="p-4">
         <p className="text-xs text-muted-foreground">{label}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           暂无更多相邻文章
@@ -786,7 +786,7 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group border bg-card p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (

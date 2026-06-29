@@ -35,21 +35,24 @@ export function CommentList({ comments }: CommentListProps) {
 
   if (comments.length === 0) {
     return (
-      <div className="border border-dashed border-border/70 bg-muted/25 px-5 py-8 text-center">
-        <div className="mx-auto mb-3 flex size-9 items-center justify-center border bg-background text-muted-foreground">
-          <MessageSquare className="h-4 w-4" suppressHydrationWarning />
+      <div className="grid gap-3 border-y border-border/70 py-5 text-sm sm:grid-cols-[44px_minmax(0,1fr)]">
+        <span className="text-muted-foreground">00</span>
+        <div>
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-muted-foreground" suppressHydrationWarning />
+            <p className="font-medium">暂无评论</p>
+          </div>
+          <p className="mt-2 leading-6 text-muted-foreground">
+            成为第一个留下想法的人；提交后会先进入审核队列。
+          </p>
         </div>
-        <p className="text-sm font-medium">暂无评论</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          成为第一个留下想法的人；提交后会先进入审核队列。
-        </p>
       </div>
     );
   }
 
   return (
-    <section className="overflow-hidden border bg-card">
-      <div className="flex flex-col gap-1 border-b border-border/60 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="border-y border-border/70">
+      <div className="flex flex-col gap-1 border-b border-border/60 py-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           公开讨论
         </p>
@@ -78,12 +81,9 @@ function CommentItem({ comment }: { comment: CommentNode }) {
   const replyCount = comment.children.length;
 
   return (
-    <article
-      className="group px-4 py-4 transition-colors hover:bg-muted/20"
-      role="listitem"
-    >
-      <div className="flex gap-3">
-        <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center border bg-background text-xs font-medium text-muted-foreground">
+    <article className="group py-4 transition-colors hover:bg-muted/20" role="listitem">
+      <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)]">
+        <div className="flex size-8 items-center justify-center border border-border/70 bg-background text-xs font-medium text-muted-foreground">
           {initial}
         </div>
         <div className="min-w-0 flex-1 space-y-2">
@@ -100,7 +100,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
                 {formattedDate}
               </time>
               {replyCount > 0 ? (
-                <span className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                <span className="border border-border/60 px-1.5 py-0.5 text-[11px] text-muted-foreground">
                   {replyCount} 条回复
                 </span>
               ) : null}
@@ -122,7 +122,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
           </div>
 
           {replying && (
-            <div className="mt-4 border border-border/60 bg-muted/20 p-3">
+            <div className="mt-4 border-y border-border/60 py-3">
               <p className="mb-3 text-xs text-muted-foreground">
                 回复 {comment.author_name}
               </p>

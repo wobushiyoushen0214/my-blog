@@ -149,14 +149,14 @@ export function CommentForm({
       onSubmit={handleSubmit}
       noValidate
       className={cn(
-        "space-y-4 border border-border/60 bg-card p-4",
+        "space-y-4 border-y border-border/70 py-4",
         compact && "rounded-none border-0 bg-transparent p-0"
       )}
     >
       {!isReply ? (
         <div className="space-y-1">
           <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            发表评论
+            Comment / 发表评论
           </h3>
           <p className="text-sm text-muted-foreground">
             评论提交后会进入审核队列，通过后展示在页面中。
@@ -177,7 +177,7 @@ export function CommentForm({
             value={form.author_name}
             onChange={(e) => updateField("author_name", e.target.value)}
             placeholder="你的昵称"
-            className="h-10 border-border/60 bg-muted/30"
+            className="h-10 border-border/70 bg-background"
             autoFocus={autoFocus}
             disabled={loading}
             maxLength={NAME_MAX_LENGTH}
@@ -201,7 +201,7 @@ export function CommentForm({
             value={form.author_email}
             onChange={(e) => updateField("author_email", e.target.value)}
             placeholder="you@example.com"
-            className="h-10 border-border/60 bg-muted/30"
+            className="h-10 border-border/70 bg-background"
             disabled={loading}
             maxLength={EMAIL_MAX_LENGTH}
             aria-invalid={Boolean(errors.author_email)}
@@ -224,7 +224,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none border-border/60 bg-muted/30"
+          className="resize-none border-border/70 bg-background"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}
