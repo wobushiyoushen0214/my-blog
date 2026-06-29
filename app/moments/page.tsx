@@ -483,8 +483,8 @@ function CategoryLink({
       className={cn(
         "inline-flex h-9 shrink-0 items-center gap-2 border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "border-primary/40 bg-primary/10 text-primary"
-          : "border-border/60 bg-background text-muted-foreground hover:border-primary/30 hover:text-primary"
+          ? "border-border/70 bg-muted/30 text-foreground"
+          : "border-border/60 bg-background text-muted-foreground hover:bg-muted/20 hover:text-foreground"
       )}
     >
       {children}
@@ -506,7 +506,7 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-5 border bg-card p-3">
+    <section className="mt-5 border-y border-border/70 py-3">
       <form
         action="/moments"
         role="search"
@@ -529,7 +529,7 @@ function ListFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="在见闻中搜索标题、摘要或正文..."
-            className="h-10 border-border/60 bg-background pl-10"
+            className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
           />
         </div>
         <label htmlFor="moments-sort" className="sr-only">
@@ -539,19 +539,25 @@ function ListFilterBar({
           id="moments-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
           <option value="popular">阅读最多</option>
         </select>
-        <Button type="submit" className="h-10">
+        <button
+          type="submit"
+          className="inline-flex h-10 items-center justify-center border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
           筛选
-        </Button>
+        </button>
         {hasFilters ? (
-          <Button variant="outline" className="h-10" asChild>
-            <Link href={buildMomentsPath({ categorySlug })}>清除</Link>
-          </Button>
+          <Link
+            href={buildMomentsPath({ categorySlug })}
+            className="inline-flex h-10 items-center justify-center border border-border/70 bg-background px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            清除
+          </Link>
         ) : null}
       </form>
     </section>
@@ -579,7 +585,7 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-y border-border/70 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {categoryName ? (
@@ -603,7 +609,7 @@ function ActiveFilterSummary({
       </div>
       <Link
         href="/moments"
-        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center border-y border-border/60 px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -615,7 +621,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>

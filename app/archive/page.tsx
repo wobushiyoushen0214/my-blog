@@ -375,7 +375,7 @@ function ArchiveFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border bg-card p-3">
+    <section className="border-y border-border/70 py-3">
       <form
         action="/archive"
         role="search"
@@ -395,7 +395,7 @@ function ArchiveFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索标题、摘要、分类或标签..."
-            className="h-10 border-border/60 bg-background pl-10"
+            className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
           />
         </div>
         <label htmlFor="archive-type" className="sr-only">
@@ -405,19 +405,25 @@ function ArchiveFilterBar({
           id="archive-type"
           name="type"
           defaultValue={contentType}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部内容</option>
           <option value="post">只看文章</option>
           <option value="moment">只看见闻</option>
         </select>
-        <Button type="submit" className="h-10">
+        <button
+          type="submit"
+          className="inline-flex h-10 items-center justify-center border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
           筛选
-        </Button>
+        </button>
         {hasFilters ? (
-          <Button variant="outline" className="h-10" asChild>
-            <Link href="/archive">清除</Link>
-          </Button>
+          <Link
+            href="/archive"
+            className="inline-flex h-10 items-center justify-center border border-border/70 bg-background px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            清除
+          </Link>
         ) : null}
       </form>
     </section>
@@ -435,7 +441,7 @@ function ActiveArchiveSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-y border-border/70 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -453,7 +459,7 @@ function ActiveArchiveSummary({
       </div>
       <Link
         href="/archive"
-        className="inline-flex h-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center border-y border-border/60 px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -465,7 +471,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
