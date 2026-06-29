@@ -34,7 +34,7 @@ export function CommentList({ comments }: CommentListProps) {
 
   if (comments.length === 0) {
     return (
-      <div className="grid gap-3 border-y border-border/70 py-5 text-sm sm:grid-cols-[44px_minmax(0,1fr)]">
+      <div className="grid gap-3 bg-muted/10 px-3 py-5 text-sm sm:grid-cols-[44px_minmax(0,1fr)]">
         <span className="text-muted-foreground">00</span>
         <div>
           <div className="flex items-center gap-2">
@@ -50,8 +50,8 @@ export function CommentList({ comments }: CommentListProps) {
   }
 
   return (
-    <section className="border-y border-border/70">
-      <div className="flex flex-col gap-1 border-b border-border/60 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <section>
+      <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           公开讨论
         </p>
@@ -59,7 +59,7 @@ export function CommentList({ comments }: CommentListProps) {
           {rootComments.length} 条线索 · {comments.length} 条评论
         </p>
       </div>
-      <div className="divide-y divide-border/60" role="list">
+      <div className="grid gap-1" role="list">
         {rootComments.map((comment) => (
           <CommentItem key={comment.id} comment={comment} />
         ))}
@@ -80,9 +80,9 @@ function CommentItem({ comment }: { comment: CommentNode }) {
   const replyCount = comment.children.length;
 
   return (
-    <article className="group py-4 transition-colors hover:bg-muted/20" role="listitem">
+    <article className="group -mx-2 px-2 py-4 transition-colors hover:bg-muted/20" role="listitem">
       <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)]">
-        <div className="flex size-8 items-center justify-center border border-border/70 bg-background text-xs font-medium text-muted-foreground">
+        <div className="flex size-8 items-center justify-center bg-muted/25 text-xs font-medium text-muted-foreground">
           {initial}
         </div>
         <div className="min-w-0 flex-1 space-y-2">
@@ -99,14 +99,14 @@ function CommentItem({ comment }: { comment: CommentNode }) {
                 {formattedDate}
               </time>
               {replyCount > 0 ? (
-                <span className="border border-border/60 px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                <span className="bg-muted/25 px-1.5 py-0.5 text-[11px] text-muted-foreground">
                   {replyCount} 条回复
                 </span>
               ) : null}
             </div>
             <button
               type="button"
-              className="inline-flex h-7 items-center justify-center gap-1.5 border border-border/60 bg-background px-2 text-xs font-medium text-muted-foreground opacity-100 transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+              className="inline-flex h-7 items-center justify-center gap-1.5 bg-muted/20 px-2 text-xs font-medium text-muted-foreground opacity-100 transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
               onClick={() => setReplying(!replying)}
               aria-expanded={replying}
               aria-label={`回复 ${comment.author_name}`}
@@ -120,7 +120,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
           </div>
 
           {replying && (
-            <div className="mt-4 border-y border-border/60 py-3">
+            <div className="mt-4 bg-muted/10 px-3 py-3">
               <div className="mb-3 grid gap-2 sm:grid-cols-[36px_minmax(0,1fr)]">
                 <span className="font-mono text-xs text-muted-foreground">IN</span>
                 <p className="text-xs text-muted-foreground">
@@ -142,7 +142,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
 
       {comment.children.length > 0 && (
         <div
-          className="mt-4 border-l border-border/50 pl-4 md:ml-4 md:pl-5"
+          className="mt-4 bg-muted/10 pl-4 md:ml-4 md:pl-5"
           role="list"
           aria-label={`${comment.author_name} 的回复`}
         >

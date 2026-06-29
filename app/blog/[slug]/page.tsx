@@ -452,22 +452,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <article className="mx-auto w-full max-w-[1180px] px-4 py-8 md:px-6 md:py-10">
           <Link
             href={contentListHref}
-            className="mb-6 inline-flex h-9 items-center gap-1.5 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="mb-6 inline-flex h-9 items-center gap-1.5 px-0 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
             返回{contentTypeLabel}
           </Link>
 
-          <header className="border-y border-border/70">
-            <div className="grid lg:grid-cols-[minmax(0,1fr)_280px] lg:divide-x lg:divide-border/60">
+          <header>
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
               <div className="min-w-0 py-5 md:py-6 lg:pr-6">
-                <div className="grid gap-3 border-b border-border/60 pb-4 sm:grid-cols-[44px_minmax(0,1fr)]">
+                <div className="grid gap-3 pb-4 sm:grid-cols-[44px_minmax(0,1fr)]">
                   <span className="font-mono text-xs text-muted-foreground">
                     01
                   </span>
                   <div className="min-w-0 space-y-3">
                     <div className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1.5 border border-border/70 bg-background px-2 py-1 font-medium text-foreground">
+                      <span className="inline-flex items-center gap-1.5 bg-muted/25 px-2 py-1 font-medium text-foreground">
                         {contentType === "moment" ? (
                           <NotebookText className="h-3.5 w-3.5" suppressHydrationWarning />
                         ) : (
@@ -478,7 +478,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       {post.category ? (
                         <Link
                           href={getCategoryBrowseHref(post.category)}
-                          className="border border-border/70 bg-background px-2 py-1 font-medium text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                          className="bg-muted/25 px-2 py-1 font-medium text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                         >
                           {post.category.name}
                         </Link>
@@ -517,7 +517,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
 
                 {tags.length > 0 ? (
-                  <div className="grid gap-3 border-t border-border/60 pt-4 sm:grid-cols-[44px_minmax(0,1fr)]">
+                  <div className="grid gap-3 pt-2 sm:grid-cols-[44px_minmax(0,1fr)]">
                     <span className="font-mono text-xs text-muted-foreground">
                       03
                     </span>
@@ -528,7 +528,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                           href={`/tag/${tag.slug}`}
                           className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                         >
-                          <Badge variant="outline" className="rounded-none font-normal">
+                          <Badge variant="secondary" className="rounded-none font-normal">
                             <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
                             {tag.name}
                           </Badge>
@@ -550,7 +550,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {post.cover_image ? (
             <div className="mt-6">
-              <div className="relative aspect-[16/9] w-full overflow-hidden border border-border/70 bg-muted md:aspect-[21/9]">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted md:aspect-[21/9]">
                 <Image
                   src={post.cover_image}
                   alt={post.title}
@@ -570,10 +570,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   prose-headings:scroll-mt-24 prose-headings:font-serif prose-headings:font-normal prose-headings:tracking-normal
                   prose-p:leading-[1.85] prose-p:text-foreground/90
                   prose-a:text-foreground prose-a:underline prose-a:decoration-border/80 prose-a:underline-offset-4 hover:prose-a:decoration-foreground
-                  prose-img:rounded-none prose-img:border
+                  prose-img:rounded-none
                   prose-blockquote:border-l-border prose-blockquote:not-italic prose-blockquote:text-muted-foreground
-                  prose-hr:border-border/60
-                  prose-pre:rounded-none prose-pre:border prose-pre:bg-muted/60
+                  prose-hr:border-border/30
+                  prose-pre:rounded-none prose-pre:bg-muted/60
                   prose-code:before:content-none prose-code:after:content-none
                   prose-code:rounded-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm"
                 dangerouslySetInnerHTML={{ __html: articleContent }}
@@ -591,7 +591,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <section
                 id="comments"
                 aria-labelledby="comments-title"
-                className="mt-16 border-t border-border/50 pt-10"
+                className="mt-16 pt-8"
               >
                 <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
@@ -697,8 +697,8 @@ function ArticleFinishPanel({
 }) {
   const contentTypeLabel = getContentTypeLabel(contentType);
   return (
-    <section className="mt-12 border-y border-border/70">
-      <div className="grid md:grid-cols-[minmax(0,1fr)_280px] md:divide-x md:divide-border/60">
+    <section className="mt-12 bg-muted/10 px-3 py-4">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_280px]">
         <div className="grid gap-3 py-4 md:grid-cols-[44px_minmax(0,1fr)] md:pr-5">
           <span className="font-mono text-xs text-muted-foreground">END</span>
           <div className="min-w-0">
@@ -718,7 +718,7 @@ function ArticleFinishPanel({
                   href={`/tag/${tag.slug}`}
                   className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 >
-                  <Badge variant="outline" className="rounded-none font-normal">
+                  <Badge variant="secondary" className="rounded-none font-normal">
                     <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
                     {tag.name}
                   </Badge>
@@ -727,10 +727,10 @@ function ArticleFinishPanel({
             </div>
           ) : null}
         </div>
-        <div className="grid border-t border-border/60 md:border-t-0">
+        <div className="grid gap-1">
           <a
             href="#comments"
-            className="group flex items-center justify-between gap-3 border-b border-border/60 px-0 py-3 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-4"
+            className="group flex items-center justify-between gap-3 px-0 py-3 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-4"
           >
             <span className="inline-flex items-center gap-2 text-muted-foreground group-hover:text-foreground">
               <MessageSquare className="h-4 w-4" suppressHydrationWarning />
@@ -793,7 +793,7 @@ function ArticlePager({
   return (
     <nav
       aria-label="相邻文章"
-      className="mt-6 grid divide-y divide-border/70 border-y border-border/70 md:grid-cols-2 md:divide-x md:divide-y-0"
+      className="mt-6 grid gap-2 md:grid-cols-2"
     >
       <NavigationPostCard
         post={previousPost}
@@ -828,7 +828,7 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group -mx-2 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
@@ -871,7 +871,7 @@ function ArticleMetaPanel({
   contentTypeLabel: string;
 }) {
   return (
-    <div className="h-full divide-y divide-border/60 border-t border-border/60 lg:border-t-0">
+    <div className="grid h-full gap-1 bg-muted/10 p-3">
       <MetaItem
         icon={contentTypeLabel === "见闻" ? NotebookText : FileText}
         label="类型"
@@ -898,17 +898,17 @@ function ArticleMetaPanel({
 
 function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
   return (
-    <div className="divide-y divide-border/60">
+    <div className="grid gap-1">
       {posts.map((post) => {
         const contentType = getContentType(post.category);
         return (
           <Link
             key={post.id}
             href={`/blog/${post.slug}`}
-            className="group block py-3 first:pt-0 last:pb-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="group -mx-2 block px-2 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-              <span className="border border-border/70 bg-background px-1.5 py-0.5 text-foreground">
+              <span className="bg-muted/25 px-1.5 py-0.5 text-foreground">
                 {getContentTypeLabel(contentType)}
               </span>
               {post.relationLabel ? (
@@ -930,7 +930,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                 {post.tags.slice(0, 3).map((tag) => (
                   <Badge
                     key={tag.id}
-                    variant="outline"
+                    variant="secondary"
                     className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
                   >
                     {tag.name}
@@ -971,8 +971,8 @@ function InfoPanel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-y border-border/70">
-      <div className="border-b border-border/60 py-3">
+    <section className="space-y-2 py-1">
+      <div className="py-2">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -984,7 +984,7 @@ function InfoPanel({
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-border/50 py-2 text-sm last:border-0">
+    <div className="flex items-center justify-between gap-3 py-2 text-sm">
       <span className="text-muted-foreground">{label}</span>
       <span className="font-medium">{value}</span>
     </div>

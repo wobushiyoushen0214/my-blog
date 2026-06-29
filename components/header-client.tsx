@@ -20,10 +20,10 @@ function NavLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
+      className={`inline-flex h-8 items-center px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
         active
-          ? "border-foreground text-foreground"
-          : "border-transparent text-muted-foreground hover:text-foreground"
+          ? "bg-muted/20 text-foreground"
+          : "text-muted-foreground hover:bg-muted/15 hover:text-foreground"
       }`}
     >
       {label}
@@ -47,10 +47,10 @@ function HoverNav({
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
+        className={`inline-flex h-8 items-center px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
           active
-            ? "border-foreground text-foreground"
-            : "border-transparent text-muted-foreground hover:text-foreground"
+            ? "bg-muted/20 text-foreground"
+            : "text-muted-foreground hover:bg-muted/15 hover:text-foreground"
         }`}
       >
         {label}
@@ -58,7 +58,7 @@ function HoverNav({
 
       <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 opacity-0 transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
         <div className="h-2" />
-        <div className="w-80 border border-border/70 bg-background p-2">
+        <div className="w-80 bg-background/95 p-2 backdrop-blur">
           <div className="px-1 pb-2">
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
               {label}目录
@@ -135,14 +135,14 @@ export function HeaderClient({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
       <div className="mx-auto grid h-14 w-full max-w-[1320px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
         <div className="flex items-center">
           <Link
             href="/"
             className="group flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <span className="flex size-6 items-center justify-center border border-border bg-foreground text-[13px] font-bold text-background">
+            <span className="flex size-6 items-center justify-center bg-foreground text-[13px] font-bold text-background">
               L
             </span>
             <span className="font-serif text-lg leading-none">Lee</span>
@@ -165,7 +165,7 @@ export function HeaderClient({
           <ThemeToggle />
         </div>
       </div>
-      <nav className="border-t border-border/50 md:hidden" aria-label="移动端导航">
+      <nav className="bg-muted/10 md:hidden" aria-label="移动端导航">
         <div className="mx-auto flex w-full max-w-[1320px] gap-4 overflow-x-auto px-4 py-2">
           <NavLink href="/" label="首页" active={isHome} />
           <NavLink href="/posts" label="文章" active={isPosts} />

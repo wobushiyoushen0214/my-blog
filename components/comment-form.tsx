@@ -148,12 +148,12 @@ export function CommentForm({
       onSubmit={handleSubmit}
       noValidate
       className={cn(
-        "border-y border-border/70",
-        compact && "border-0 bg-transparent"
+        "py-1",
+        compact && "bg-transparent py-0"
       )}
     >
       {!isReply ? (
-        <div className="grid gap-2 border-b border-border/60 py-3 sm:grid-cols-[44px_minmax(0,1fr)]">
+        <div className="grid gap-2 py-3 sm:grid-cols-[44px_minmax(0,1fr)]">
           <span className="font-mono text-xs text-muted-foreground">00</span>
           <div className="space-y-1">
             <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -165,15 +165,15 @@ export function CommentForm({
           </div>
         </div>
       ) : (
-        <div className="grid gap-2 border-b border-border/60 pb-3 sm:grid-cols-[36px_minmax(0,1fr)]">
+        <div className="grid gap-2 pb-3 sm:grid-cols-[36px_minmax(0,1fr)]">
           <span className="font-mono text-xs text-muted-foreground">RE</span>
           <p className="text-sm text-muted-foreground">
             回复会进入审核队列，通过后展示在对应评论下。
           </p>
         </div>
       )}
-      <div className="grid grid-cols-1 divide-y divide-border/60 border-b border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-        <div className="space-y-2 py-3 sm:pr-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="space-y-2 py-3">
           <Label
             htmlFor={ids.name}
             className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground"
@@ -199,7 +199,7 @@ export function CommentForm({
             </p>
           ) : null}
         </div>
-        <div className="space-y-2 py-3 sm:pl-3">
+        <div className="space-y-2 py-3">
           <Label
             htmlFor={ids.email}
             className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground"
@@ -225,7 +225,7 @@ export function CommentForm({
           ) : null}
         </div>
       </div>
-      <div className="space-y-2 border-b border-border/60 py-3">
+      <div className="space-y-2 py-3">
         <Label
           htmlFor={ids.content}
           className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground"
