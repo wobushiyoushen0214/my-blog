@@ -446,22 +446,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const nextPost = nextPostData as unknown as NavigationPost | null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <article className="mx-auto w-full max-w-[1440px] px-3 py-5 md:px-5 md:py-8">
+        <article className="mx-auto w-full max-w-[1280px] px-4 py-10 md:px-6 md:py-14">
           <Link
             href={contentListHref}
-            className="mb-5 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="mb-8 inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
             返回{contentTypeLabel}
           </Link>
 
-          <header className="grid gap-8 border border-border bg-card p-5 md:p-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-end">
-            <div className="min-w-0">
-              <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5 border border-border bg-background px-2 py-1 text-foreground">
+          <header className="grid gap-8 border-b border-border/50 pb-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+            <div className="min-w-0 space-y-5">
+              <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 rounded-md border bg-background px-2 py-1 text-xs font-medium text-foreground">
                   {contentType === "moment" ? (
                     <NotebookText className="h-3.5 w-3.5" suppressHydrationWarning />
                   ) : (
@@ -472,7 +472,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {post.category ? (
                   <Link
                     href={getCategoryBrowseHref(post.category)}
-                    className="border border-border bg-background px-2 py-1 text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="rounded-md border bg-background px-2 py-1 text-xs font-medium text-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     {post.category.name}
                   </Link>
@@ -490,8 +490,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </span>
               </div>
 
-              <div className="mt-10 space-y-6">
-                <h1 className="max-w-5xl font-serif text-5xl leading-none md:text-7xl">
+              <div className="space-y-4">
+                <h1 className="max-w-4xl text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
                   {post.title}
                 </h1>
                 {post.excerpt ? (
@@ -502,14 +502,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
 
               {tags.length > 0 ? (
-                <div className="mt-8 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
                     <Link
                       key={tag.id}
                       href={`/tag/${tag.slug}`}
-                      className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                     >
-                      #{tag.name}
+                      <Badge variant="outline" className="rounded-md font-normal">
+                        <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
+                        {tag.name}
+                      </Badge>
                     </Link>
                   ))}
                 </div>
@@ -525,8 +528,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </header>
 
           {post.cover_image ? (
-            <figure className="mt-5 border border-border bg-card">
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted md:aspect-[21/9]">
+            <div className="mt-8">
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg border bg-muted md:aspect-[21/9]">
                 <Image
                   src={post.cover_image}
                   alt={post.title}
@@ -536,26 +539,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   className="object-cover"
                 />
               </div>
-              <figcaption className="grid grid-cols-[1fr_auto] border-t border-border px-4 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                <span className="min-w-0 truncate">Plate - {post.title}</span>
-                <span>{post.category?.name || contentTypeLabel}</span>
-              </figcaption>
-            </figure>
+            </div>
           ) : null}
 
-          <div className="grid gap-10 py-8 lg:grid-cols-[minmax(0,780px)_300px] lg:items-start lg:justify-center">
-            <div className="min-w-0 border border-border bg-card p-5 md:p-8">
+          <div className="grid gap-10 py-10 lg:grid-cols-[minmax(0,760px)_280px] lg:items-start lg:justify-center">
+            <div className="min-w-0">
               <div
                 className="prose prose-neutral dark:prose-invert max-w-none
-                  prose-headings:scroll-mt-24 prose-headings:font-serif prose-headings:font-normal prose-headings:tracking-normal
+                  prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight
                   prose-p:leading-[1.85] prose-p:text-foreground/90
                   prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                  prose-img:rounded-none prose-img:border
+                  prose-img:rounded-lg prose-img:border
                   prose-blockquote:border-l-primary/50 prose-blockquote:not-italic prose-blockquote:text-muted-foreground
                   prose-hr:border-border/60
-                  prose-pre:rounded-none prose-pre:border prose-pre:bg-muted/60
+                  prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted/60
                   prose-code:before:content-none prose-code:after:content-none
-                  prose-code:rounded-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm"
+                  prose-code:rounded-md prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm"
                 dangerouslySetInnerHTML={{ __html: articleContent }}
               />
 
@@ -575,10 +574,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               >
                 <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                       Discussion
                     </p>
-                    <h2 id="comments-title" className="mt-2 font-serif text-4xl leading-none">
+                    <h2 id="comments-title" className="text-xl font-semibold tracking-tight">
                       评论
                     </h2>
                   </div>
@@ -670,13 +669,13 @@ function ArticleFinishPanel({
 }) {
   const contentTypeLabel = getContentTypeLabel(contentType);
   return (
-    <section className="mt-12 border border-border bg-background p-4">
+    <section className="mt-12 rounded-lg border bg-card p-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
             Next
           </p>
-          <h2 className="mt-2 font-serif text-3xl leading-none">读完之后</h2>
+          <h2 className="mt-1 text-base font-medium">读完之后</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             可以继续查看同主题{contentTypeLabel}，或在评论区补充你的想法。
           </p>
@@ -775,7 +774,7 @@ function NavigationPostCard({
 }) {
   if (!post) {
     return (
-      <div className="border border-dashed border-border bg-muted/20 p-4">
+      <div className="rounded-lg border border-dashed border-border/60 bg-muted/20 p-4">
         <p className="text-xs text-muted-foreground">{label}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           暂无更多相邻文章
@@ -787,7 +786,7 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group border border-border bg-background p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group rounded-lg border bg-card p-4 transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
@@ -798,7 +797,7 @@ function NavigationPostCard({
         ) : null}
         <div className={direction === "next" ? "min-w-0 text-right" : "min-w-0"}>
           <p className="text-xs text-muted-foreground">{label}</p>
-          <h3 className="mt-2 line-clamp-2 font-serif text-lg leading-snug transition-opacity group-hover:opacity-70">
+          <h3 className="mt-2 line-clamp-2 text-sm font-medium leading-6 transition-colors group-hover:text-primary">
             {post.title}
           </h3>
           {post.category ? (
@@ -830,7 +829,7 @@ function ArticleMetaPanel({
   contentTypeLabel: string;
 }) {
   return (
-    <div className="grid gap-0 border border-border bg-background sm:grid-cols-2 lg:grid-cols-1">
+    <div className="grid gap-2 rounded-lg border bg-card p-3 sm:grid-cols-2 lg:grid-cols-1">
       <MetaItem
         icon={contentTypeLabel === "见闻" ? NotebookText : FileText}
         label="类型"
@@ -857,7 +856,7 @@ function ArticleMetaPanel({
 
 function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
   return (
-    <div className="divide-y divide-border">
+    <div className="divide-y divide-border/60">
       {posts.map((post) => {
         const contentType = getContentType(post.category);
         return (
@@ -866,8 +865,8 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
             href={`/blog/${post.slug}`}
             className="group block py-3 first:pt-0 last:pb-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <div className="flex min-w-0 items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-              <span className="border bg-background px-1.5 py-0.5 text-foreground">
+            <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+              <span className="rounded-md border bg-background px-1.5 py-0.5 text-foreground">
                 {getContentTypeLabel(contentType)}
               </span>
               {post.relationLabel ? (
@@ -876,7 +875,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                 <span className="min-w-0 truncate">{post.category.name}</span>
               ) : null}
             </div>
-            <h3 className="mt-2 line-clamp-2 font-serif text-lg leading-snug transition-opacity group-hover:opacity-70">
+            <h3 className="mt-2 line-clamp-2 text-sm font-medium leading-6 transition-colors group-hover:text-primary">
               {post.title}
             </h3>
             {post.excerpt ? (
@@ -914,7 +913,7 @@ function MetaItem({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-3 border-b border-border px-3 py-3 last:border-b-0">
+    <div className="flex items-center gap-3 rounded-md bg-muted/30 px-3 py-2">
       <Icon className="h-4 w-4 text-muted-foreground" suppressHydrationWarning />
       <div>
         <p className="text-xs text-muted-foreground">{label}</p>
@@ -932,11 +931,9 @@ function InfoPanel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border border-border bg-card">
+    <section className="rounded-lg border bg-card">
       <div className="border-b px-4 py-3">
-        <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          {title}
-        </h2>
+        <h2 className="text-sm font-medium">{title}</h2>
       </div>
       <div className="p-4">{children}</div>
     </section>

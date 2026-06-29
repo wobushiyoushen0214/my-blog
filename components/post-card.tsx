@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { ArrowRight, CalendarDays, Clock3, Eye } from "lucide-react";
 import type { Category, Post, Tag } from "@/lib/types";
 
 interface PostCardProps {
@@ -40,140 +42,138 @@ function estimateReadingMinutes(post: Pick<Post, "title" | "content" | "excerpt"
   return Math.max(1, Math.ceil(cjkCount / 450 + latinWordCount / 220));
 }
 
-function cleanExcerpt(value: string) {
-  return value
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&[a-zA-Z0-9#]+;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 export function PostCard({
   post,
   variant = "grid",
-  ctaLabel = "Open Record",
+  ctaLabel = "阅读精选文章",
 }: PostCardProps) {
   const isFeatured = variant === "featured";
   const isCompact = variant === "compact";
   const showMedia = !isCompact;
-  const contentTypeLabel = post.category?.type === "moment" ? "Moment" : "Article";
+  const contentTypeLabel = post.category?.type === "moment" ? "见闻" : "文章";
   const readingMinutes = estimateReadingMinutes(post);
-  const excerpt = cleanExcerpt(post.excerpt || post.content || "");
-
-  if (isCompact) {
-    return (
-      <Link
-        href={`/blog/${post.slug}`}
-        className="group grid min-w-0 gap-3 border-b border-border px-0 py-5 transition-colors last:border-b-0 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[76px_minmax(0,1fr)_128px]"
-      >
-        <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
-          {formatDate(post.created_at).slice(5).replace("/", ".")}
-        </span>
-        <span className="min-w-0">
-          <span className="block font-serif text-2xl leading-tight transition-opacity group-hover:opacity-70">
-            {post.title}
-          </span>
-          {excerpt ? (
-            <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
-              {excerpt}
-            </span>
-          ) : null}
-        </span>
-        <span className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground md:text-right">
-          {post.category?.name || contentTypeLabel}
-        </span>
-      </Link>
-    );
-  }
 
   return (
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group grid min-w-0 overflow-hidden border border-border bg-card text-card-foreground transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden rounded-lg border border-border/60 bg-card text-card-foreground transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured
-          ? "lg:grid-cols-[minmax(0,0.92fr)_minmax(320px,1.08fr)]"
-          : "grid-rows-[auto_1fr]"
+          ? "flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]"
+          : "flex-col",
+        isCompact ? "p-4" : "hover-lift"
       )}
     >
       {showMedia ? (
-        <figure className="flex min-h-full flex-col border-b border-border bg-muted lg:border-b-0 lg:border-r">
-          <div
-            className={cn(
-              "relative min-h-[260px] flex-1 overflow-hidden",
-              isFeatured ? "lg:min-h-[420px]" : "aspect-[16/10]"
-            )}
-          >
-            {post.cover_image ? (
-              <Image
-                src={post.cover_image}
-                alt={post.title}
-                fill
-                sizes={
-                  isFeatured
-                    ? "(max-width: 1024px) 100vw, 46vw"
-                    : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                }
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-              />
-            ) : (
-              <div className="flex h-full min-h-[260px] items-center justify-center p-6 text-center">
-                <div>
-                  <p className="font-serif text-4xl leading-none">{contentTypeLabel}</p>
-                  <p className="mt-3 font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
-                    No plate attached
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-          <figcaption className="grid grid-cols-[1fr_auto] border-t border-border px-4 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="min-w-0 truncate">
-              {post.category?.name || contentTypeLabel}
-            </span>
-            <span>{formatViews(post.view_count)} reads</span>
-          </figcaption>
-        </figure>
-      ) : null}
-
-      <div className={cn("flex flex-col", isFeatured ? "p-6 md:p-8" : "p-5")}>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-          <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
-          <span>{readingMinutes} min</span>
-          <span>{contentTypeLabel}</span>
-        </div>
-
-        <h2
+        <div
           className={cn(
-            "mt-5 font-serif leading-none transition-opacity group-hover:opacity-70",
-            isFeatured ? "text-4xl md:text-6xl" : "text-3xl"
+            "relative w-full overflow-hidden bg-muted",
+            isFeatured ? "min-h-[260px] lg:min-h-full" : "aspect-[16/10]"
           )}
         >
-          {post.title}
-        </h2>
+          {post.cover_image ? (
+            <Image
+              src={post.cover_image}
+              alt={post.title}
+              fill
+              sizes={
+                isFeatured
+                  ? "(max-width: 1024px) 100vw, 58vw"
+                  : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              }
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+          ) : (
+            <div className="flex h-full min-h-[220px] items-center justify-center p-6 text-center">
+              <div className="max-w-xs space-y-2">
+                <span className="inline-flex rounded-md border bg-background px-2 py-1 text-xs text-muted-foreground">
+                  {post.category?.name || contentTypeLabel}
+                </span>
+                <p className="line-clamp-3 text-sm font-medium leading-6 text-foreground/80">
+                  {post.title}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : null}
 
-        {excerpt ? (
-          <p
+      <div
+        className={cn(
+          "flex flex-1 flex-col",
+          isFeatured ? "p-5 md:p-6 lg:p-7" : isCompact ? "p-0" : "p-5"
+        )}
+      >
+        <div className="flex-1 space-y-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
+              <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
+              {formatViews(post.view_count)} 阅读
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock3 className="h-3.5 w-3.5" suppressHydrationWarning />
+              约 {readingMinutes} 分钟
+            </span>
+            <span
+              className={cn(
+                "rounded-md border px-1.5 py-0.5 font-medium",
+                post.category?.type === "moment"
+                  ? "border-border/70 bg-muted/50 text-foreground"
+                  : "border-border/70 bg-background text-foreground"
+              )}
+            >
+              {contentTypeLabel}
+            </span>
+            {post.category ? (
+              <span className="min-w-0 truncate rounded-md border bg-background px-1.5 py-0.5 font-medium text-foreground">
+                {post.category.name}
+              </span>
+            ) : null}
+          </div>
+          <h2
             className={cn(
-              "mt-5 text-sm leading-7 text-muted-foreground",
-              isFeatured ? "line-clamp-5 max-w-xl" : "line-clamp-3"
+              "line-clamp-2 font-semibold tracking-tight transition-colors group-hover:text-primary",
+              isFeatured
+                ? "text-2xl leading-tight md:text-3xl"
+                : "text-lg leading-tight"
             )}
           >
-            {excerpt}
-          </p>
-        ) : null}
+            {post.title}
+          </h2>
+          {post.excerpt && (
+            <p
+              className={cn(
+                "text-sm leading-7 text-muted-foreground",
+                isFeatured ? "line-clamp-4" : "line-clamp-3"
+              )}
+            >
+              {post.excerpt}
+            </p>
+          )}
+        </div>
 
         {post.tags && post.tags.length > 0 ? (
-          <div className="mt-6 flex flex-wrap gap-x-3 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-            {post.tags.slice(0, 4).map((tag) => (
-              <span key={tag.id}>#{tag.name}</span>
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {post.tags.slice(0, 3).map((tag) => (
+              <Badge
+                key={tag.id}
+                variant="outline"
+                className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
+              >
+                {tag.name}
+              </Badge>
             ))}
           </div>
         ) : null}
 
         {isFeatured ? (
-          <span className="mt-auto pt-8 font-mono text-xs uppercase tracking-[0.16em]">
+          <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
             {ctaLabel}
+            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
           </span>
         ) : null}
       </div>

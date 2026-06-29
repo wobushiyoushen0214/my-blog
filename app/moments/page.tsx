@@ -23,7 +23,7 @@ import {
   X,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import type { Category, Post, PostTag, Tag } from "@/lib/types";
+import type { Category, Post, Tag } from "@/lib/types";
 
 const PAGE_SIZE = 10;
 const DEFAULT_SORT = "newest";
@@ -32,7 +32,6 @@ type SortOption = "newest" | "updated" | "popular";
 
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
-type PublishedPostRow = Pick<Post, "id" | "category_id">;
 type PostWithTaxonomy = Post & {
   category?: Category | null;
   tags?: Tag[];
@@ -137,22 +136,23 @@ export default async function MomentsPage({
   const sort = parseSort(sortParam);
   const supabase = await createClient();
 
-  const [
-    { data: momentCategories },
-    { data: publishedRows },
-    { data: tags },
-  ] = await Promise.all([
-    supabase.from("categories").select("*").eq("type", "moment").order("name"),
-    supabase.from("posts").select("id, category_id").eq("published", true),
-    supabase.from("tags").select("*").order("name"),
-  ]);
+  const { data: momentCategories } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("type", "moment")
+    .order("name");
 
   const categories = (momentCategories || []) as Category[];
   const categoryIds = categories.map((category) => category.id);
-  const categoryIdSet = new Set(categoryIds);
-  const allMomentPosts = ((publishedRows || []) as PublishedPostRow[]).filter(
-    (post) => post.category_id && categoryIdSet.has(post.category_id)
-  );
+
+  const { data: allMomentPosts } =
+    categoryIds.length > 0
+      ? await supabase
+          .from("posts")
+          .select("id, category_id")
+          .eq("published", true)
+          .in("category_id", categoryIds)
+      : { data: [] };
 
   const categoryCounts = (allMomentPosts || []).reduce<Map<string, number>>(
     (counts, post) => {
@@ -194,6 +194,10 @@ export default async function MomentsPage({
     countQuery = countQuery.or(buildKeywordFilter(searchQuery));
   }
 
+  const { count } = hasMomentScope ? await countQuery : { count: 0 };
+  const totalCount = count || 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
   const from = (page - 1) * PAGE_SIZE;
   const to = page * PAGE_SIZE - 1;
   let postsQuery = supabase
@@ -223,14 +227,13 @@ export default async function MomentsPage({
     postsQuery = postsQuery.order("created_at", { ascending: false });
   }
 
-  const allMomentPostIds = allMomentPosts.map((post) => post.id);
-  const [
-    { count },
-    { data: posts },
-    { data: momentPostTags },
-  ] = await Promise.all([
-    hasMomentScope ? countQuery : Promise.resolve({ count: 0 }),
-    hasMomentScope ? postsQuery.range(from, to) : Promise.resolve({ data: [] }),
+  const { data: posts } = hasMomentScope
+    ? await postsQuery.range(from, to)
+    : { data: [] };
+
+  const allMomentPostIds = (allMomentPosts || []).map((post) => post.id);
+  const [{ data: tags }, { data: momentPostTags }] = await Promise.all([
+    supabase.from("tags").select("*").order("name"),
     allMomentPostIds.length > 0
       ? supabase
           .from("post_tags")
@@ -238,40 +241,31 @@ export default async function MomentsPage({
           .in("post_id", allMomentPostIds)
       : Promise.resolve({ data: [] }),
   ]);
-  const totalCount = count || 0;
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-  const tagRows = (tags || []) as Tag[];
-  const momentPostTagRows = (momentPostTags || []) as PostTag[];
 
-  const tagById = new Map(tagRows.map((tag) => [tag.id, tag]));
-  const tagsByPostId = new Map<string, Tag[]>();
+  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as Tag]));
+  const tagsByPostId = (momentPostTags || []).reduce<Map<string, Tag[]>>(
+    (groups, postTag) => {
+      const tag = tagById.get(postTag.tag_id);
+      if (!tag) return groups;
 
-  momentPostTagRows.forEach((postTag) => {
-    const tag = tagById.get(postTag.tag_id);
-    if (!tag) return;
-
-    const groupedTags = tagsByPostId.get(postTag.post_id);
-    if (groupedTags) {
-      groupedTags.push(tag);
-      return;
-    }
-
-    tagsByPostId.set(postTag.post_id, [tag]);
-  });
-
+      groups.set(postTag.post_id, [...(groups.get(postTag.post_id) || []), tag]);
+      return groups;
+    },
+    new Map()
+  );
   const postsWithTags = attachTagsFromMap(
     (posts || []) as unknown as PostWithTaxonomy[],
     tagsByPostId
   );
 
-  const tagCounts = momentPostTagRows.reduce<Map<string, number>>(
+  const tagCounts = (momentPostTags || []).reduce<Map<string, number>>(
     (counts, postTag) => {
       counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
       return counts;
     },
     new Map()
   );
-  const tagSummaries: TagSummary[] = tagRows
+  const tagSummaries: TagSummary[] = (tags || [])
     .map((tag) => ({
       ...tag,
       postCount: tagCounts.get(tag.id) || 0,

@@ -13,19 +13,16 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-6">
-        <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
-          <div>
-            <p className="font-serif text-2xl uppercase tracking-[0.18em]">
-              Lee Archive
-            </p>
-            <p className="mt-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-              &copy; {new Date().getFullYear()} / Notes, Projects, Field Records
+    <footer className="border-t border-border/40">
+      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-6 py-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p className="text-sm text-muted-foreground">
+              &copy; {new Date().getFullYear()} Lee
             </p>
             <Link
               href="/rss.xml"
-              className="mt-4 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               title="RSS Feed"
             >
               <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
@@ -33,21 +30,21 @@ export function Footer() {
             </Link>
           </div>
           <nav
-            className="flex flex-wrap items-center gap-x-5 gap-y-2 md:justify-end"
+            className="flex flex-wrap items-center gap-x-4 gap-y-2"
             aria-label="页脚导航"
           >
             {footerLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="rounded-md text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               >
                 {item.label}
               </Link>
             ))}
             <Link
               href="/admin"
-              className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground/60 transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="rounded-md text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               管理
             </Link>

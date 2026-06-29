@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ArrowRight, FileText, Hash, Search, X } from "lucide-react";
 import type { ReactNode } from "react";
-import type { Category, Post, PostTag, Tag } from "@/lib/types";
+import type { Category, Post, Tag } from "@/lib/types";
 
 const PAGE_SIZE = 10;
 const FEATURED_MIN_PAGE = 1;
@@ -25,7 +25,6 @@ type SortOption = "newest" | "updated" | "popular";
 
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
-type PublishedPostRow = Pick<Post, "id" | "category_id">;
 type PostWithTaxonomy = Post & {
   category?: { name: string; slug: string } | null;
   tags?: Tag[];
@@ -98,22 +97,25 @@ export default async function PostsPage({
   const sort = parseSort(sortParam);
   const supabase = await createClient();
 
-  const [
-    { data: categories },
-    { data: publishedRows },
-    { data: tags },
-  ] = await Promise.all([
-    supabase.from("categories").select("*").eq("type", "post").order("name"),
-    supabase.from("posts").select("id, category_id").eq("published", true),
-    supabase.from("tags").select("*").order("name"),
-  ]);
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("type", "post")
+    .order("name");
 
   const articleCategories = (categories || []) as Category[];
   const articleCategoryIds = articleCategories.map((category) => category.id);
-  const articleCategoryIdSet = new Set(articleCategoryIds);
-  const allArticlePosts = ((publishedRows || []) as PublishedPostRow[]).filter(
-    (post) => post.category_id && articleCategoryIdSet.has(post.category_id)
-  );
+
+  const [{ data: allArticlePosts }, { data: tags }] = await Promise.all([
+    articleCategoryIds.length > 0
+      ? supabase
+          .from("posts")
+          .select("id, category_id")
+          .eq("published", true)
+          .in("category_id", articleCategoryIds)
+      : Promise.resolve({ data: [] }),
+    supabase.from("tags").select("*").order("name"),
+  ]);
 
   const categoryCounts = (allArticlePosts || []).reduce<Map<string, number>>(
     (counts, post) => {
@@ -161,6 +163,9 @@ export default async function PostsPage({
     countQuery = countQuery.or(buildKeywordFilter(searchQuery));
   }
 
+  const { count } = hasArticleScope ? await countQuery : { count: 0 };
+  const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
+
   const from = (page - 1) * PAGE_SIZE;
   const to = page * PAGE_SIZE - 1;
   let postsQuery = supabase
@@ -190,49 +195,38 @@ export default async function PostsPage({
     postsQuery = postsQuery.order("created_at", { ascending: false });
   }
 
-  const allArticlePostIds = allArticlePosts.map((post) => post.id);
-  const [
-    { count },
-    { data: posts },
-    { data: articlePostTags },
-  ] = await Promise.all([
-    hasArticleScope ? countQuery : Promise.resolve({ count: 0 }),
-    hasArticleScope ? postsQuery.range(from, to) : Promise.resolve({ data: [] }),
+  const { data: posts } = hasArticleScope
+    ? await postsQuery.range(from, to)
+    : { data: [] };
+
+  const allArticlePostIds = (allArticlePosts || []).map((post) => post.id);
+  const { data: articlePostTags } =
     allArticlePostIds.length > 0
-      ? supabase
+      ? await supabase
           .from("post_tags")
           .select("post_id, tag_id")
           .in("post_id", allArticlePostIds)
-      : Promise.resolve({ data: [] }),
-  ]);
-  const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
-  const tagRows = (tags || []) as Tag[];
-  const articlePostTagRows = (articlePostTags || []) as PostTag[];
+      : { data: [] };
 
-  const tagCounts = articlePostTagRows.reduce<Map<string, number>>(
+  const tagCounts = (articlePostTags || []).reduce<Map<string, number>>(
     (counts, postTag) => {
       counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
       return counts;
     },
     new Map()
   );
-  const tagById = new Map(tagRows.map((tag) => [tag.id, tag]));
-  const tagsByPostId = new Map<string, Tag[]>();
+  const tagById = new Map((tags || []).map((tag) => [tag.id, tag as Tag]));
+  const tagsByPostId = (articlePostTags || []).reduce<Map<string, Tag[]>>(
+    (groups, postTag) => {
+      const tag = tagById.get(postTag.tag_id);
+      if (!tag) return groups;
 
-  articlePostTagRows.forEach((postTag) => {
-    const tag = tagById.get(postTag.tag_id);
-    if (!tag) return;
-
-    const groupedTags = tagsByPostId.get(postTag.post_id);
-    if (groupedTags) {
-      groupedTags.push(tag);
-      return;
-    }
-
-    tagsByPostId.set(postTag.post_id, [tag]);
-  });
-
-  const tagSummaries: TagSummary[] = tagRows
+      groups.set(postTag.post_id, [...(groups.get(postTag.post_id) || []), tag]);
+      return groups;
+    },
+    new Map()
+  );
+  const tagSummaries: TagSummary[] = (tags || [])
     .map((tag) => ({
       ...tag,
       postCount: tagCounts.get(tag.id) || 0,
@@ -259,7 +253,7 @@ export default async function PostsPage({
     sort,
   });
   const totalCount = count || 0;
-  const allArticleCount = allArticlePosts.length;
+  const allArticleCount = allArticlePosts?.length || 0;
   const activeFilterCount = [
     activeCategorySlug,
     searchQuery,
