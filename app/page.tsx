@@ -3,6 +3,9 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import type { Category, Comment, Post, PostTag, Tag } from "@/lib/types";
 
 type PostWithTaxonomy = Post & {
@@ -357,18 +360,24 @@ function HeroPanel({
       <form
         action="/search"
         role="search"
-        className="mt-9 grid gap-2 border-y border-border/70 py-4 sm:grid-cols-[minmax(0,1fr)_120px_96px]"
+        className="mt-9 grid gap-2 border-y border-border/70 py-4 sm:grid-cols-[minmax(0,1fr)_120px_104px]"
       >
-        <label htmlFor="home-search" className="sr-only">
-          搜索关键词
-        </label>
-        <input
-          id="home-search"
-          name="q"
-          type="search"
-          placeholder="搜索标题、正文、分类或标签..."
-          className="h-10 min-w-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
-        />
+        <div className="relative min-w-0">
+          <label htmlFor="home-search" className="sr-only">
+            搜索关键词
+          </label>
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            suppressHydrationWarning
+          />
+          <Input
+            id="home-search"
+            name="q"
+            type="search"
+            placeholder="搜索标题、正文、分类或标签..."
+            className="h-10 border-border/60 bg-background/45 pl-9"
+          />
+        </div>
         <label htmlFor="home-search-type" className="sr-only">
           搜索类型
         </label>
@@ -376,18 +385,19 @@ function HeroPanel({
           id="home-search-type"
           name="type"
           defaultValue="all"
-          className="h-10 bg-transparent text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background/45 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部</option>
           <option value="post">文章</option>
           <option value="moment">见闻</option>
         </select>
-        <button
+        <Button
           type="submit"
-          className="h-10 border px-4 text-sm transition-colors hover:bg-foreground hover:text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="h-10"
         >
+          <Search className="h-4 w-4" suppressHydrationWarning />
           搜索
-        </button>
+        </Button>
       </form>
 
       <div className="mt-auto pt-10">
