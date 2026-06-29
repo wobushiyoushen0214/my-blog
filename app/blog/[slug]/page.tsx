@@ -458,7 +458,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             返回{contentTypeLabel}
           </Link>
 
-          <header className="grid gap-8 border-b border-border/70 pb-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+          <header className="grid gap-8 border border-border/70 bg-card p-5 md:p-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
             <div className="min-w-0 space-y-5">
               <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5 rounded-md border bg-background px-2 py-1 text-xs font-medium text-foreground">
@@ -491,7 +491,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
 
               <div className="space-y-4">
-                <h1 className="max-w-4xl font-serif text-4xl leading-none tracking-normal md:text-6xl">
+                <h1 className="max-w-4xl font-serif text-4xl leading-[0.98] tracking-normal md:text-6xl">
                   {post.title}
                 </h1>
                 {post.excerpt ? (
@@ -546,7 +546,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="min-w-0">
               <div
                 className="prose prose-neutral dark:prose-invert max-w-none
-                  prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight
+                  prose-headings:scroll-mt-24 prose-headings:font-serif prose-headings:font-normal prose-headings:tracking-normal
                   prose-p:leading-[1.85] prose-p:text-foreground/90
                   prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                   prose-img:rounded-lg prose-img:border

@@ -42,7 +42,7 @@ export function PublicPageHeader({
   action,
 }: PublicPageHeaderProps) {
   return (
-    <header className="mb-8 border-b border-border/70 pb-7">
+    <header className="mb-6 border border-border/70 bg-card p-5 md:p-6">
       {backHref && backLabel ? (
         <Link
           href={backHref}

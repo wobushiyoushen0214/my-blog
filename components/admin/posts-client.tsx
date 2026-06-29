@@ -11,6 +11,7 @@ import {
   AdminPageHeader,
   AdminTableSurface,
 } from "@/components/admin/admin-page";
+import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
 import {
   Select,
   SelectContent,
@@ -157,8 +158,6 @@ export function AdminPostsClient({ initialPosts }: { initialPosts: PostRow[] }) 
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("确定要删除这篇文章吗？")) return;
-
     setDeletingId(id);
     const supabase = createClient();
     await supabase.from("post_tags").delete().eq("post_id", id);
@@ -499,7 +498,7 @@ function RowActions({
 }: {
   post: PostRow;
   deleting: boolean;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => void | Promise<void>;
 }) {
   return (
     <div className="flex items-center justify-end gap-1">
@@ -508,15 +507,23 @@ function RowActions({
           <Pencil className="h-4 w-4" suppressHydrationWarning />
         </Link>
       </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={`删除 ${post.title}`}
+      <ConfirmActionDialog
+        title="删除文章"
+        description={`确定要删除「${post.title}」吗？该操作无法撤销。`}
+        confirmLabel="删除"
+        loading={deleting}
         disabled={deleting}
-        onClick={() => onDelete(post.id)}
+        onConfirm={() => onDelete(post.id)}
       >
-        <Trash2 className="h-4 w-4 text-destructive" suppressHydrationWarning />
-      </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`删除 ${post.title}`}
+          disabled={deleting}
+        >
+          <Trash2 className="h-4 w-4 text-destructive" suppressHydrationWarning />
+        </Button>
+      </ConfirmActionDialog>
     </div>
   );
 }

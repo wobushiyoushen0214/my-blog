@@ -224,7 +224,7 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
       <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-8 md:px-6 md:py-10">
-        <div className="overflow-hidden border border-border/70 bg-[hsl(41_43%_94%)] text-[#29241d] dark:bg-card dark:text-card-foreground">
+        <div className="overflow-hidden border border-border/80 bg-card text-card-foreground">
           <section
             aria-labelledby="home-hero-title"
             className="grid lg:min-h-[640px] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]"
@@ -258,7 +258,7 @@ export default async function HomePage() {
 
 function FeaturePlate({ post }: { post: PostWithTaxonomy | null }) {
   return (
-    <div className="flex min-h-[500px] flex-col border-b border-border/70 bg-[hsl(38_35%_91%)] p-4 md:p-6 lg:border-b-0 lg:border-r dark:bg-muted/25">
+    <div className="flex min-h-[500px] flex-col border-b border-border/70 bg-card p-4 md:p-6 lg:border-b-0 lg:border-r">
       <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
         <Link
           href="/"
@@ -338,7 +338,7 @@ function HeroPanel({
       <div className="mt-12 md:mt-16">
         <h1
           id="home-hero-title"
-          className="max-w-3xl font-serif text-4xl leading-[0.98] text-foreground md:text-6xl lg:text-7xl"
+          className="max-w-3xl font-serif text-5xl leading-[0.95] text-foreground md:text-7xl"
         >
           想法、代码
           <span className="block italic">与纸页相遇</span>
@@ -375,7 +375,7 @@ function HeroPanel({
             name="q"
             type="search"
             placeholder="搜索标题、正文、分类或标签..."
-            className="h-10 border-border/60 bg-background/45 pl-9"
+            className="h-10 border-border/70 bg-background/70 pl-9"
           />
         </div>
         <label htmlFor="home-search-type" className="sr-only">
@@ -385,7 +385,7 @@ function HeroPanel({
           id="home-search-type"
           name="type"
           defaultValue="all"
-          className="h-10 rounded-md border border-border/60 bg-background/45 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/70 bg-background/70 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部</option>
           <option value="post">文章</option>

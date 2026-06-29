@@ -368,7 +368,7 @@ export default async function PostsPage({
                       </Link>
                     ) : null}
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2 xl:gap-5">
+                  <div className="grid gap-2">
                     {listPosts.map((post) => (
                       <PostCard key={post.id} post={post} variant="compact" />
                     ))}

@@ -12,6 +12,7 @@ import {
   AdminPageHeader,
   AdminTableSurface,
 } from "@/components/admin/admin-page";
+import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
 import {
   Table,
   TableBody,
@@ -202,8 +203,6 @@ export function AdminCategoriesClient({
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("确定要删除这个分类吗？")) return;
-
     setDeletingId(id);
     const supabase = createClient();
     const { error } = await supabase.from("categories").delete().eq("id", id);
@@ -531,7 +530,7 @@ function CategoryActions({
   category: Category;
   deleting: boolean;
   onEdit: (category: Category) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => void | Promise<void>;
 }) {
   return (
     <div className="flex items-center justify-end gap-1">
@@ -544,15 +543,23 @@ function CategoryActions({
       >
         <Pencil className="h-4 w-4" suppressHydrationWarning />
       </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={`删除 ${category.name}`}
+      <ConfirmActionDialog
+        title="删除分类"
+        description={`确定要删除「${category.name}」吗？该操作无法撤销。`}
+        confirmLabel="删除"
+        loading={deleting}
         disabled={deleting}
-        onClick={() => onDelete(category.id)}
+        onConfirm={() => onDelete(category.id)}
       >
-        <Trash2 className="h-4 w-4 text-destructive" suppressHydrationWarning />
-      </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`删除 ${category.name}`}
+          disabled={deleting}
+        >
+          <Trash2 className="h-4 w-4 text-destructive" suppressHydrationWarning />
+        </Button>
+      </ConfirmActionDialog>
     </div>
   );
 }

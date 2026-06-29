@@ -11,6 +11,7 @@ import {
   AdminEmptyState,
   AdminPageHeader,
 } from "@/components/admin/admin-page";
+import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
 import {
   Dialog,
   DialogContent,
@@ -140,8 +141,6 @@ export function AdminTagsClient({ initialTags }: { initialTags: Tag[] }) {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("确定要删除这个标签吗？")) return;
-
     setDeletingId(id);
     const supabase = createClient();
     await supabase.from("post_tags").delete().eq("tag_id", id);
@@ -310,19 +309,27 @@ export function AdminTagsClient({ initialTags }: { initialTags: Tag[] }) {
                         {tag.slug || "无 slug"}
                       </p>
                     </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={`删除 ${tag.name}`}
+                    <ConfirmActionDialog
+                      title="删除标签"
+                      description={`确定要删除「${tag.name}」吗？关联关系会一并移除。`}
+                      confirmLabel="删除"
+                      loading={deletingId === tag.id}
                       disabled={deletingId === tag.id}
-                      onClick={() => handleDelete(tag.id)}
+                      onConfirm={() => handleDelete(tag.id)}
                     >
-                      <Trash2
-                        className="h-4 w-4 text-destructive"
-                        suppressHydrationWarning
-                      />
-                    </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`删除 ${tag.name}`}
+                        disabled={deletingId === tag.id}
+                      >
+                        <Trash2
+                          className="h-4 w-4 text-destructive"
+                          suppressHydrationWarning
+                        />
+                      </Button>
+                    </ConfirmActionDialog>
                   </div>
                   <div className="mt-4 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">

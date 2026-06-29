@@ -22,7 +22,7 @@ function NavLink({
       aria-current={active ? "page" : undefined}
       className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
         active
-          ? "border-foreground text-foreground"
+          ? "border-primary text-foreground"
           : "border-transparent text-muted-foreground hover:text-foreground"
       }`}
     >
@@ -49,7 +49,7 @@ function HoverNav({
         aria-current={active ? "page" : undefined}
         className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
           active
-            ? "border-foreground text-foreground"
+            ? "border-primary text-foreground"
             : "border-transparent text-muted-foreground hover:text-foreground"
         }`}
       >
@@ -58,7 +58,7 @@ function HoverNav({
 
       <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-1/2 top-full z-50 -translate-x-1/2">
         <div className="h-2" />
-        <div className="w-64 rounded-md border bg-popover p-1 shadow-md">
+        <div className="w-64 rounded-md border border-border/80 bg-popover p-1 shadow-md">
           {items.map((item) =>
             item.disabled ? (
               <div
@@ -122,14 +122,14 @@ export function HeaderClient({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75">
+    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
       <div className="mx-auto grid h-14 w-full max-w-[1320px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
         <div className="flex items-center">
           <Link
             href="/"
             className="group flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <span className="flex size-6 items-center justify-center border bg-foreground text-[13px] font-bold text-background">
+            <span className="flex size-6 items-center justify-center border border-border bg-foreground text-[13px] font-bold text-background">
               L
             </span>
             <span className="font-serif text-lg leading-none">Lee</span>
@@ -152,7 +152,7 @@ export function HeaderClient({
           <ThemeToggle />
         </div>
       </div>
-      <nav className="border-t border-border/30 md:hidden" aria-label="移动端导航">
+      <nav className="border-t border-border/50 md:hidden" aria-label="移动端导航">
         <div className="mx-auto flex w-full max-w-[1320px] gap-4 overflow-x-auto px-4 py-2">
           <NavLink href="/" label="首页" active={isHome} />
           <NavLink href="/posts" label="文章" active={isPosts} />

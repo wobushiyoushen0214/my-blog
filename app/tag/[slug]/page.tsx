@@ -385,7 +385,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
                             : "最新内容"
                     }
                   />
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-2">
                     {listPosts.map((post) => (
                       <PostCard key={post.id} post={post} variant="compact" />
                     ))}

@@ -53,6 +53,58 @@ export function PostCard({
   const contentTypeLabel = post.category?.type === "moment" ? "见闻" : "文章";
   const readingMinutes = estimateReadingMinutes(post);
 
+  if (isCompact) {
+    return (
+      <Link
+        href={`/blog/${post.slug}`}
+        className="group grid min-w-0 gap-3 border border-border/70 bg-card px-4 py-3 text-card-foreground transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem]"
+      >
+        <div className="text-xs tabular-nums text-muted-foreground">
+          <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+        </div>
+
+        <div className="min-w-0">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <span className="border border-border/70 bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+              {contentTypeLabel}
+            </span>
+            {post.category ? (
+              <span className="max-w-36 truncate border border-border/70 bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {post.category.name}
+              </span>
+            ) : null}
+          </div>
+          <h2 className="mt-2 line-clamp-2 font-serif text-xl leading-tight tracking-normal transition-opacity group-hover:opacity-70">
+            {post.title}
+          </h2>
+          {post.excerpt ? (
+            <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
+              {post.excerpt}
+            </p>
+          ) : null}
+          {post.tags && post.tags.length > 0 ? (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {post.tags.slice(0, 3).map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant="outline"
+                  className="h-5 rounded-sm px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
+                >
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="flex flex-wrap items-start gap-x-3 gap-y-1 text-xs text-muted-foreground sm:block sm:text-right">
+          <span className="block">{formatViews(post.view_count)} 阅读</span>
+          <span className="block sm:mt-1">约 {readingMinutes} 分钟</span>
+        </div>
+      </Link>
+    );
+  }
+
   return (
     <Link
       href={`/blog/${post.slug}`}
@@ -61,7 +113,6 @@ export function PostCard({
         isFeatured
           ? "flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]"
           : "flex-col",
-        isCompact ? "p-4" : ""
       )}
     >
       {showMedia ? (

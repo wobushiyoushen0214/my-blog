@@ -11,6 +11,7 @@ import {
   AdminPageHeader,
   AdminTableSurface,
 } from "@/components/admin/admin-page";
+import { ConfirmActionDialog } from "@/components/admin/confirm-action-dialog";
 import {
   Select,
   SelectContent,
@@ -163,8 +164,6 @@ export function AdminCommentsClient({
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("确定要删除这条评论吗？")) return;
-
     setDeletingId(id);
     const supabase = createClient();
     const { error } = await supabase.from("comments").delete().eq("id", id);
@@ -500,7 +499,7 @@ function CommentActions({
   approving: boolean;
   deleting: boolean;
   onApprove: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => void | Promise<void>;
 }) {
   return (
     <div className="flex items-center justify-end gap-1">
@@ -515,15 +514,23 @@ function CommentActions({
           <Check className="h-4 w-4 text-foreground" suppressHydrationWarning />
         </Button>
       ) : null}
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={`删除 ${comment.author_name} 的评论`}
+      <ConfirmActionDialog
+        title="删除评论"
+        description={`确定要删除 ${comment.author_name} 的这条评论吗？该操作无法撤销。`}
+        confirmLabel="删除"
+        loading={deleting}
         disabled={approving || deleting}
-        onClick={() => onDelete(comment.id)}
+        onConfirm={() => onDelete(comment.id)}
       >
-        <Trash2 className="h-4 w-4 text-destructive" suppressHydrationWarning />
-      </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`删除 ${comment.author_name} 的评论`}
+          disabled={approving || deleting}
+        >
+          <Trash2 className="h-4 w-4 text-destructive" suppressHydrationWarning />
+        </Button>
+      </ConfirmActionDialog>
     </div>
   );
 }

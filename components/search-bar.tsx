@@ -120,7 +120,7 @@ export function SearchBar() {
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 px-2 sm:w-28 sm:justify-start sm:border sm:border-border/60 sm:bg-background/60"
+          className="h-8 px-2 sm:w-28 sm:justify-start sm:border sm:border-border/70 sm:bg-card"
           aria-keyshortcuts="/"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />

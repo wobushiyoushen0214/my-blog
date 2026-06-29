@@ -482,7 +482,7 @@ export default async function SearchPage({
                       eyebrow={query ? "Results" : "More"}
                       title={query ? "更多结果" : "更多内容"}
                     />
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-2">
                       {listPosts.map((post) => (
                         <PostCard key={post.id} post={post} variant="compact" />
                       ))}
