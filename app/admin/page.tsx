@@ -381,7 +381,7 @@ function MetricTile({
   return (
     <Link
       href={href}
-      className="rounded-lg border bg-card px-4 py-3 transition-colors hover:border-primary/30 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="border bg-card px-4 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -420,10 +420,12 @@ function DashboardPanel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-lg border bg-card">
+    <section className="overflow-hidden border bg-card">
       <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 space-y-1">
-          <h2 className="text-sm font-medium">{title}</h2>
+          <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            {title}
+          </h2>
           <p className="text-xs leading-5 text-muted-foreground">{description}</p>
         </div>
         {actionHref && actionLabel ? (
@@ -451,9 +453,9 @@ function QuickAction({
   return (
     <Link
       href={href}
-      className="flex items-start gap-3 rounded-md border bg-background px-3 py-3 transition-colors hover:border-primary/30 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="flex items-start gap-3 border bg-background px-3 py-3 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
-      <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border bg-card text-muted-foreground">
+      <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center border bg-card text-muted-foreground">
         <Icon className="h-4 w-4" suppressHydrationWarning />
       </span>
       <span className="min-w-0">
@@ -478,7 +480,7 @@ function StructureRow({
   return (
     <Link
       href={href}
-      className="flex items-center justify-between gap-3 rounded-md border bg-background px-3 py-2.5 transition-colors hover:border-primary/30 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="flex items-center justify-between gap-3 border bg-background px-3 py-2.5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <span className="text-sm text-muted-foreground">{label}</span>
       <span className="text-sm font-medium tabular-nums">{value}</span>

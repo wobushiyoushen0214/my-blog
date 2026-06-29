@@ -370,10 +370,10 @@ export function PostForm({ postId }: PostFormProps) {
                     type="button"
                     aria-pressed={selected}
                     onClick={() => toggleTag(tag.id)}
-                    className={`inline-flex h-8 items-center gap-1 rounded-md border px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                    className={`inline-flex h-8 items-center gap-1 border px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                       selected
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-primary"
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border bg-background text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     {tag.name}
@@ -417,7 +417,7 @@ export function PostForm({ postId }: PostFormProps) {
         </div>
       </AdminFormSection>
 
-      <div className="sticky bottom-0 z-10 -mx-4 border-t bg-background/90 px-4 py-4 backdrop-blur md:static md:mx-0 md:rounded-lg md:border md:bg-card">
+      <div className="sticky bottom-0 z-10 -mx-4 border-t bg-background/90 px-4 py-4 backdrop-blur md:static md:mx-0 md:border md:bg-card">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">
             <Switch

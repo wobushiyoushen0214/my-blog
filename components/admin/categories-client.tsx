@@ -308,7 +308,7 @@ export function AdminCategoriesClient({
             />
           </div>
 
-          <section className="rounded-lg border bg-card">
+          <section className="border bg-card">
             <div className="flex flex-col gap-3 border-b p-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative min-w-0 flex-1 lg:max-w-sm">
                 <Search
@@ -437,7 +437,7 @@ export function AdminCategoriesClient({
                 {filteredCategories.map((category) => (
                   <article
                     key={category.id}
-                    className="rounded-lg border bg-card p-4 transition-colors hover:border-primary/30"
+                    className="border bg-card p-4 transition-colors hover:bg-muted/20"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 space-y-2">
@@ -507,7 +507,7 @@ export function AdminCategoriesClient({
 
 function StatItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border bg-card px-4 py-3">
+    <div className="border bg-card px-4 py-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
     </div>
@@ -516,7 +516,7 @@ function StatItem({ label, value }: { label: string; value: string }) {
 
 function CategoryTypeBadge({ type }: { type: CategoryType }) {
   return (
-    <Badge variant={type === "moment" ? "secondary" : "default"} className="rounded-md">
+    <Badge variant={type === "moment" ? "secondary" : "default"} className="rounded-sm">
       {typeLabel(type)}
     </Badge>
   );
@@ -559,7 +559,7 @@ function CategoryActions({
 
 function CategoriesLoadingState() {
   return (
-    <div className="rounded-lg border bg-card p-4" aria-live="polite">
+    <div className="border bg-card p-4" aria-live="polite">
       <div className="space-y-3">
         {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="flex animate-pulse items-center gap-3">

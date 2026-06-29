@@ -210,7 +210,7 @@ export function AdminCommentsClient({
             />
           </div>
 
-          <section className="rounded-lg border bg-card">
+          <section className="border bg-card">
             <div className="flex flex-col gap-3 border-b p-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative min-w-0 flex-1 lg:max-w-md">
                 <Search
@@ -333,7 +333,7 @@ export function AdminCommentsClient({
                           {comment.post?.title ? (
                             <Link
                               href={`/admin/posts/${comment.post_id}/edit`}
-                              className="block truncate text-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                              className="block truncate text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                             >
                               {comment.post.title}
                             </Link>
@@ -364,7 +364,7 @@ export function AdminCommentsClient({
                 {filteredComments.map((comment) => (
                   <article
                     key={comment.id}
-                    className="rounded-lg border bg-card p-4 transition-colors hover:border-primary/30"
+                    className="border bg-card p-4 transition-colors hover:bg-muted/20"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 space-y-1">
@@ -466,7 +466,7 @@ function StatItem({
   tone?: "default" | "attention";
 }) {
   return (
-    <div className="rounded-lg border bg-card px-4 py-3">
+    <div className="border bg-card px-4 py-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p
         className={
@@ -483,7 +483,7 @@ function StatItem({
 
 function CommentStatusBadge({ approved }: { approved: boolean }) {
   return (
-    <Badge variant={approved ? "default" : "secondary"} className="rounded-md">
+    <Badge variant={approved ? "default" : "secondary"} className="rounded-sm">
       {approved ? "已审核" : "待审核"}
     </Badge>
   );
@@ -512,7 +512,7 @@ function CommentActions({
           disabled={approving || deleting}
           onClick={() => onApprove(comment.id)}
         >
-          <Check className="h-4 w-4 text-primary" suppressHydrationWarning />
+          <Check className="h-4 w-4 text-foreground" suppressHydrationWarning />
         </Button>
       ) : null}
       <Button
@@ -530,7 +530,7 @@ function CommentActions({
 
 function CommentsLoadingState() {
   return (
-    <div className="rounded-lg border bg-card p-4" aria-live="polite">
+    <div className="border bg-card p-4" aria-live="polite">
       <div className="space-y-3">
         {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="flex animate-pulse items-center gap-3">

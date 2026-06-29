@@ -36,18 +36,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/20 px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex size-9 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
+          <div className="mx-auto mb-3 flex size-9 items-center justify-center border bg-foreground text-sm font-bold text-background">
             L
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">后台登录</h1>
+          <h1 className="font-serif text-3xl leading-none">后台登录</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             登录后可以管理文章、分类、标签和评论。
           </p>
         </div>
-        <div className="rounded-lg border bg-card p-5">
+        <div className="border bg-card p-5">
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email">邮箱</Label>

@@ -16,10 +16,10 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-muted/20 md:flex-row">
+    <div className="flex min-h-screen flex-col bg-background md:flex-row">
       <AdminSidebar />
-      <main className="min-w-0 flex-1 overflow-y-auto px-4 py-6 md:p-8">
-        <div className="mx-auto w-full max-w-7xl">{children}</div>
+      <main className="min-w-0 flex-1 overflow-y-auto px-4 py-5 md:p-6">
+        <div className="mx-auto w-full max-w-[1320px]">{children}</div>
       </main>
     </div>
   );
