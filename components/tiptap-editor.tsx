@@ -134,7 +134,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="border bg-card">
       <input
         type="file"
         accept="image/*"
@@ -142,12 +142,14 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         ref={fileInputRef}
         onChange={handleImageUpload}
       />
-      <div className="flex flex-wrap gap-1 border-b p-2">
+      <div className="flex flex-wrap gap-1 border-b bg-muted/20 p-2">
         <Button
           type="button"
           variant={editor.isActive("bold") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="加粗"
+          title="加粗"
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold className="h-4 w-4" />
@@ -157,6 +159,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant={editor.isActive("italic") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="斜体"
+          title="斜体"
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <Italic className="h-4 w-4" />
@@ -166,6 +170,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant={editor.isActive("strike") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="删除线"
+          title="删除线"
           onClick={() => editor.chain().focus().toggleStrike().run()}
         >
           <Strikethrough className="h-4 w-4" />
@@ -175,6 +181,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant={editor.isActive("code") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="行内代码"
+          title="行内代码"
           onClick={() => editor.chain().focus().toggleCode().run()}
         >
           <Code className="h-4 w-4" />
@@ -187,6 +195,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           }
           size="icon"
           className="h-8 w-8"
+          aria-label="一级标题"
+          title="一级标题"
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
@@ -200,6 +210,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           }
           size="icon"
           className="h-8 w-8"
+          aria-label="二级标题"
+          title="二级标题"
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
@@ -213,6 +225,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           }
           size="icon"
           className="h-8 w-8"
+          aria-label="三级标题"
+          title="三级标题"
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 3 }).run()
           }
@@ -225,6 +239,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant={editor.isActive("bulletList") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="无序列表"
+          title="无序列表"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <List className="h-4 w-4" />
@@ -234,6 +250,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant={editor.isActive("orderedList") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="有序列表"
+          title="有序列表"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <ListOrdered className="h-4 w-4" />
@@ -243,6 +261,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant={editor.isActive("blockquote") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="引用"
+          title="引用"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
           <Quote className="h-4 w-4" />
@@ -252,6 +272,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant={editor.isActive("codeBlock") ? "secondary" : "ghost"}
           size="icon"
           className="h-8 w-8"
+          aria-label="代码块"
+          title="代码块"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         >
           <CodeSquare className="h-4 w-4" />
@@ -261,6 +283,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8"
+          aria-label="分割线"
+          title="分割线"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
         >
           <Minus className="h-4 w-4" />
@@ -271,6 +295,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8"
+          aria-label={uploading ? "正在上传图片" : "上传图片"}
+          title={uploading ? "正在上传图片" : "上传图片"}
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
         >
@@ -285,6 +311,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8"
+          aria-label="插入链接"
+          title="插入链接"
           onClick={addLink}
         >
           <LinkIcon className="h-4 w-4" />
@@ -295,6 +323,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8"
+          aria-label="撤销"
+          title="撤销"
           onClick={() => editor.chain().focus().undo().run()}
         >
           <Undo className="h-4 w-4" />
@@ -304,6 +334,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8"
+          aria-label="重做"
+          title="重做"
           onClick={() => editor.chain().focus().redo().run()}
         >
           <Redo className="h-4 w-4" />
