@@ -56,33 +56,40 @@ function HoverNav({
         {label}
       </Link>
 
-      <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-1/2 top-full z-50 -translate-x-1/2">
+      <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 opacity-0 transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
         <div className="h-2" />
-        <div className="w-72 border border-border/80 bg-popover">
-          {items.map((item, index) =>
-            item.disabled ? (
-              <div
-                key={item.label}
-                className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 border-b border-border/60 px-3 py-2 text-sm text-muted-foreground/70 last:border-b-0"
-              >
-                <span className="text-xs tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span>{item.label}</span>
-              </div>
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 border-b border-border/60 px-3 py-2 text-sm text-muted-foreground outline-none transition-colors last:border-b-0 hover:bg-muted/20 hover:text-foreground focus:bg-muted/20 focus:text-foreground"
-              >
-                <span className="text-xs tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="min-w-0 truncate">{item.label}</span>
-              </Link>
-            )
-          )}
+        <div className="w-80 border border-border/70 bg-background p-2">
+          <div className="px-1 pb-2">
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {label}目录
+            </p>
+          </div>
+          <div className="grid gap-1">
+            {items.map((item, index) =>
+              item.disabled ? (
+                <div
+                  key={item.label}
+                  className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 px-1 py-1.5 text-sm text-muted-foreground/70"
+                >
+                  <span className="text-xs tabular-nums">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span>{item.label}</span>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 px-1 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/20 hover:text-foreground focus:bg-muted/20 focus:text-foreground"
+                >
+                  <span className="text-xs tabular-nums">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="min-w-0 truncate">{item.label}</span>
+                </Link>
+              )
+            )}
+          </div>
         </div>
       </div>
     </div>

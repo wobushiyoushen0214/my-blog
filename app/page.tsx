@@ -274,10 +274,10 @@ function HomeIndex({
   return (
     <section
       aria-labelledby="home-index-title"
-      className="border-y border-border/80"
+      className="border-t border-border/45 pt-6"
     >
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_360px] lg:divide-x lg:divide-border/70">
-        <div className="py-5 lg:pr-6">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div>
           <div className="grid gap-4 md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-start">
             <span className="font-mono text-xs text-muted-foreground">00</span>
             <div className="min-w-0">
@@ -296,7 +296,7 @@ function HomeIndex({
             </div>
             <Link
               href="/archive"
-              className="inline-flex h-9 items-center justify-center border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-9 items-center justify-center text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               Archive
             </Link>
@@ -306,15 +306,15 @@ function HomeIndex({
           <FeaturedDispatch post={featuredPost} />
         </div>
 
-        <aside className="border-t border-border/70 py-5 lg:border-t-0 lg:pl-6">
+        <aside className="pt-1">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
             Ledger
           </p>
-          <div className="mt-4 divide-y divide-border/70 border-y border-border/70">
+          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4">
             {stats.map((item, index) => (
               <div
                 key={item.label}
-                className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3 py-3 text-sm"
+                className="grid grid-cols-[32px_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm"
               >
                 <span className="font-mono text-xs text-muted-foreground">
                   {String(index + 1).padStart(2, "0")}
@@ -322,14 +322,14 @@ function HomeIndex({
                 <span className="min-w-0 truncate text-muted-foreground">
                   {item.label}
                 </span>
-                <span className="font-serif text-xl leading-none">
+                <span className="col-start-2 font-serif text-xl leading-none">
                   {item.value}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-5 divide-y divide-border/70 border-y border-border/70">
+          <div className="mt-7 grid gap-2">
             <InventoryRow
               href="/posts"
               code="P"
@@ -358,12 +358,12 @@ function HomeIndex({
         </aside>
       </div>
       {indexPosts.length > 0 ? (
-        <div className="grid divide-y divide-border/70 border-t border-border/70 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+        <div className="mt-6 grid gap-3 lg:grid-cols-3">
           {indexPosts.map((post) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group grid gap-2 py-3 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:px-4 first:lg:pl-0 last:lg:pr-0"
+              className="group grid gap-2 py-2 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <p className="text-xs text-muted-foreground">
                 {formatShortDate(post.created_at)} / {contentTypeLabel(post)}
@@ -384,7 +384,7 @@ function HomeSearch() {
     <form
       action="/search"
       role="search"
-      className="mt-5 grid gap-2 border-y border-border/70 py-3 sm:grid-cols-[minmax(0,1fr)_120px_96px]"
+      className="mt-6 grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px_96px]"
     >
       <div className="relative min-w-0">
         <label htmlFor="home-search" className="sr-only">
@@ -435,10 +435,10 @@ function FeaturedDispatch({ post }: { post: PostWithTaxonomy | null }) {
   return (
     <Link
       href={href}
-      className="group mt-5 grid gap-4 border-y border-border/70 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[112px_minmax(0,1fr)_auto]"
+      className="group mt-6 grid gap-4 py-2 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[88px_minmax(0,1fr)_auto]"
     >
       {post?.cover_image ? (
-        <span className="relative block aspect-[4/3] overflow-hidden border border-border/70 bg-muted">
+        <span className="relative block aspect-[4/3] overflow-hidden bg-muted">
           <Image
             src={post.cover_image}
             alt={post.title}
@@ -449,7 +449,7 @@ function FeaturedDispatch({ post }: { post: PostWithTaxonomy | null }) {
           />
         </span>
       ) : (
-        <span className="flex aspect-[4/3] items-end border border-border/70 bg-muted/20 p-2 text-xs text-muted-foreground">
+        <span className="flex items-start text-xs uppercase tracking-[0.18em] text-muted-foreground">
           Latest
         </span>
       )}
@@ -487,7 +487,7 @@ function InventoryRow({
   return (
     <Link
       href={href}
-      className="grid grid-cols-[44px_minmax(0,1fr)] gap-4 py-3 text-sm transition-colors hover:bg-background/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[44px_minmax(0,1fr)_180px]"
+      className="grid grid-cols-[32px_minmax(0,1fr)] gap-4 py-2 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[32px_minmax(0,1fr)_120px]"
     >
       <span className="text-muted-foreground">{code}</span>
       <span className="min-w-0 truncate font-serif text-lg italic leading-none">
@@ -502,7 +502,7 @@ function InventoryRow({
 
 function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
   return (
-    <section className="border-y border-border/70 py-4">
+    <section className="mt-8 border-t border-border/45 pt-6">
       <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)_auto] sm:items-end">
         <span className="font-mono text-xs text-muted-foreground">01</span>
         <div className="min-w-0">
@@ -515,19 +515,19 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
         </div>
         <Link
           href="/archive"
-          className="inline-flex h-9 items-center border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-9 items-center text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           全部归档
         </Link>
       </div>
 
       {posts.length > 0 ? (
-        <div className="mt-5 divide-y divide-border/70 border-y border-border/70">
+        <div className="mt-6 grid gap-4">
           {posts.map((post, index) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group grid gap-3 py-5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[76px_minmax(0,1fr)_132px]"
+              className="group grid gap-3 py-1 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[76px_minmax(0,1fr)_132px]"
             >
               <span className="text-sm text-muted-foreground">
                 {String(index + 1).padStart(2, "0")}.
@@ -548,7 +548,7 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid gap-3 border-y border-border/70 py-5 text-sm sm:grid-cols-[3rem_minmax(0,1fr)]">
+        <div className="mt-8 grid gap-3 py-3 text-sm sm:grid-cols-[3rem_minmax(0,1fr)]">
           <span className="text-xs tabular-nums text-muted-foreground">00</span>
           <span className="leading-7 text-muted-foreground">
             发布更多文章或见闻后，这里会形成一条最近更新目录。
@@ -569,7 +569,7 @@ function SideArchive({
   discussions: RecentDiscussion[];
 }) {
   return (
-    <aside className="space-y-4">
+    <aside className="space-y-7">
       <TopicList
         code="CA"
         title="主题"
@@ -607,7 +607,7 @@ function TopicList({
     .slice(0, limit);
 
   return (
-    <section className="border-y border-border/70 py-4">
+    <section>
       <div className="grid grid-cols-[36px_minmax(0,1fr)] gap-3">
         <span className="font-mono text-xs text-muted-foreground">{code}</span>
         <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -615,12 +615,12 @@ function TopicList({
         </p>
       </div>
       {visibleItems.length > 0 ? (
-        <div className="mt-4 divide-y divide-border/70 border-y border-border/70">
+        <div className="mt-4 grid gap-2">
           {visibleItems.map((item, index) => (
             <Link
               key={item.id}
               href={hrefFor(item)}
-              className="grid grid-cols-[36px_minmax(0,1fr)_42px] gap-3 py-3 text-sm transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="grid grid-cols-[36px_minmax(0,1fr)_42px] gap-3 py-1.5 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <span className="text-muted-foreground">
                 {String(index + 1).padStart(2, "0")}
@@ -643,7 +643,7 @@ function TopicList({
 
 function DiscussionList({ items }: { items: RecentDiscussion[] }) {
   return (
-    <section className="border-y border-border/70 py-4">
+    <section>
       <div className="grid grid-cols-[36px_minmax(0,1fr)] gap-3">
         <span className="font-mono text-xs text-muted-foreground">CM</span>
         <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -651,12 +651,12 @@ function DiscussionList({ items }: { items: RecentDiscussion[] }) {
         </p>
       </div>
       {items.length > 0 ? (
-        <div className="mt-4 divide-y divide-border/70 border-y border-border/70">
+        <div className="mt-4 grid gap-3">
           {items.map((item) => (
             <Link
               key={item.id}
               href={`/blog/${item.postSlug}#comments`}
-              className="block py-3 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="block py-1.5 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                 <span className="truncate">{item.author_name}</span>

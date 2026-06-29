@@ -125,7 +125,7 @@ export function SearchBar() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-8 items-center justify-center gap-2 border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-28 sm:justify-start"
+          className="inline-flex h-8 items-center justify-center gap-2 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-28 sm:justify-start"
           aria-keyshortcuts="/"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
@@ -133,7 +133,7 @@ export function SearchBar() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="gap-0 overflow-hidden p-0 sm:max-w-xl"
+        className="gap-0 overflow-hidden border-border/80 bg-background p-0 shadow-none sm:max-w-xl"
         showCloseButton={false}
       >
         <DialogHeader className="sr-only">
@@ -190,7 +190,7 @@ export function SearchBar() {
             </p>
           </div>
 
-          <div className="divide-y divide-border/60 border-y border-border/70">
+          <div className="grid gap-1">
             {quickLinks.map((item, index) => {
               const Icon = item.icon;
 
@@ -199,7 +199,7 @@ export function SearchBar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="group grid min-w-0 gap-3 px-2 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:items-center"
+                  className="group grid min-w-0 gap-3 px-2 py-2.5 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:items-center"
                 >
                   <span className="flex items-center gap-2 text-xs tabular-nums text-muted-foreground">
                     <span>{String(index + 1).padStart(2, "0")}</span>

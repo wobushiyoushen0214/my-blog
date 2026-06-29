@@ -9,7 +9,7 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      className="relative inline-flex size-8 items-center justify-center border-y border-border/60 text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="relative inline-flex size-8 items-center justify-center text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       aria-label="切换主题"
     >
