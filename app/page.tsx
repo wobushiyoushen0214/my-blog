@@ -3,7 +3,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import type { Category, Comment, Post, PostTag, Tag } from "@/lib/types";
@@ -224,23 +223,21 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
       <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-8 md:px-6 md:py-10">
-        <div className="overflow-hidden border border-border/80 bg-card text-card-foreground">
-          <section
-            aria-labelledby="home-hero-title"
-            className="grid lg:min-h-[640px] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]"
-          >
-            <FeaturePlate post={featuredPost} />
-            <HeroPanel
-              featuredPost={featuredPost}
-              indexPosts={indexPosts}
-              articleCount={articleCount}
-              momentCount={momentCount}
-              totalCount={publishedRows?.length || 0}
-              topicCount={usedCategoryCount + usedTagCount}
-              totalViews={totalViews}
-            />
-          </section>
-        </div>
+        <section
+          aria-labelledby="home-hero-title"
+          className="grid border-y border-border/80 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:divide-x lg:divide-border/70"
+        >
+          <FeaturePlate post={featuredPost} />
+          <HeroPanel
+            featuredPost={featuredPost}
+            indexPosts={indexPosts}
+            articleCount={articleCount}
+            momentCount={momentCount}
+            totalCount={publishedRows?.length || 0}
+            topicCount={usedCategoryCount + usedTagCount}
+            totalViews={totalViews}
+          />
+        </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
           <RecentLedger posts={ledgerPosts} />
@@ -258,7 +255,7 @@ export default async function HomePage() {
 
 function FeaturePlate({ post }: { post: PostWithTaxonomy | null }) {
   return (
-    <div className="flex min-h-[500px] flex-col border-b border-border/70 bg-card p-4 md:p-6 lg:border-b-0 lg:border-r">
+    <div className="flex flex-col border-b border-border/70 py-4 lg:border-b-0 lg:pr-5">
       <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
         <Link
           href="/"
@@ -269,10 +266,10 @@ function FeaturePlate({ post }: { post: PostWithTaxonomy | null }) {
         <span>Personal Journal</span>
       </div>
 
-      <figure className="mt-6 flex min-h-0 flex-1 flex-col border border-border/70 bg-background">
+      <figure className="mt-4 flex min-h-0 flex-1 flex-col border-y border-border/70 bg-background">
         <Link
           href={post ? `/blog/${post.slug}` : "/posts"}
-          className="group relative block min-h-[360px] flex-1 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="group relative block min-h-[260px] flex-1 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:min-h-[320px]"
         >
           {post?.cover_image ? (
             <Image
@@ -284,19 +281,19 @@ function FeaturePlate({ post }: { post: PostWithTaxonomy | null }) {
               className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
             />
           ) : (
-            <div className="flex h-full min-h-[380px] items-end px-5 py-6 md:px-8">
+            <div className="flex h-full min-h-[280px] items-end px-4 py-5 md:px-6">
               <div className="max-w-md border-t border-border/70 pt-4">
                 <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                   Code / Work / Life
                 </p>
-                <p className="mt-3 font-serif text-4xl leading-none md:text-5xl">
+                <p className="mt-3 font-serif text-3xl leading-none md:text-4xl">
                   Lee Notes
                 </p>
               </div>
             </div>
           )}
         </Link>
-        <figcaption className="grid gap-2 border-t border-border/70 px-4 py-3 text-xs text-muted-foreground sm:grid-cols-[1fr_auto]">
+        <figcaption className="grid gap-2 border-t border-border/70 py-3 text-xs text-muted-foreground sm:grid-cols-[1fr_auto]">
           <span className="min-w-0 truncate">
             封面记录 / {post?.category?.name || "未分类手记"}
           </span>
@@ -329,23 +326,23 @@ function HeroPanel({
     : "记录技术学习、项目复盘和日常见闻。这里把文章、短记录、分类索引和读者讨论整理成一份可以慢慢翻阅的个人档案。";
 
   return (
-    <div className="flex min-h-[500px] flex-col p-5 md:p-8 lg:p-10">
+    <div className="flex flex-col py-4 lg:pl-5">
       <div className="flex flex-col gap-3 text-xs uppercase tracking-[0.18em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <p>Selected Dispatch / 最新手记</p>
         <p>{formatNumber(totalViews)} Reads</p>
       </div>
 
-      <div className="mt-12 md:mt-16">
+      <div className="mt-8 border-y border-border/70 py-5">
         <h1
           id="home-hero-title"
-          className="max-w-3xl font-serif text-5xl leading-[0.95] text-foreground md:text-7xl"
+          className="max-w-3xl font-serif text-3xl leading-[1.02] text-foreground md:text-4xl"
         >
           想法、代码
           <span className="block italic">与纸页相遇</span>
         </h1>
       </div>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-[minmax(0,1fr)_180px]">
+      <div className="grid gap-4 border-b border-border/70 py-5 md:grid-cols-[minmax(0,1fr)_180px]">
         <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
           <span className="font-medium text-foreground">DISCOVER / </span>
           {excerpt}
@@ -360,7 +357,7 @@ function HeroPanel({
       <form
         action="/search"
         role="search"
-        className="mt-9 grid gap-2 border-y border-border/70 py-4 sm:grid-cols-[minmax(0,1fr)_120px_104px]"
+        className="grid gap-2 border-b border-border/70 py-4 sm:grid-cols-[minmax(0,1fr)_120px_96px]"
       >
         <div className="relative min-w-0">
           <label htmlFor="home-search" className="sr-only">
@@ -375,7 +372,7 @@ function HeroPanel({
             name="q"
             type="search"
             placeholder="搜索标题、正文、分类或标签..."
-            className="h-10 border-border/70 bg-background/70 pl-9"
+            className="h-10 rounded-none border-border/70 bg-background/70 pl-9 shadow-none"
           />
         </div>
         <label htmlFor="home-search-type" className="sr-only">
@@ -385,26 +382,26 @@ function HeroPanel({
           id="home-search-type"
           name="type"
           defaultValue="all"
-          className="h-10 rounded-md border border-border/70 bg-background/70 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-border/70 bg-background/70 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部</option>
           <option value="post">文章</option>
           <option value="moment">见闻</option>
         </select>
-        <Button
+        <button
           type="submit"
-          className="h-10"
+          className="inline-flex h-10 items-center justify-center gap-2 border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
           搜索
-        </Button>
+        </button>
       </form>
 
-      <div className="mt-auto pt-10">
+      <div className="mt-auto pt-5">
         <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
           Inventory
         </p>
-        <div className="mt-5 divide-y divide-border/70 border-y border-border/70">
+        <div className="mt-4 divide-y divide-border/70 border-y border-border/70">
           <InventoryRow
             href="/posts"
             code="01"
@@ -432,7 +429,7 @@ function HeroPanel({
         </div>
 
         {indexPosts.length > 0 ? (
-          <div className="mt-6 grid gap-0 divide-y divide-border/70 border-y border-border/70">
+          <div className="mt-4 grid gap-0 divide-y divide-border/70 border-y border-border/70">
             {indexPosts.map((post) => (
               <Link
                 key={post.id}
@@ -483,26 +480,27 @@ function InventoryRow({
 
 function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
   return (
-    <section className="border border-border/70 bg-card p-5 md:p-7">
-      <div className="flex items-end justify-between gap-4">
-        <div>
+    <section className="border-y border-border/70 py-4">
+      <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)_auto] sm:items-end">
+        <span className="font-mono text-xs text-muted-foreground">01</span>
+        <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
             Recent Ledger
           </p>
-          <h2 className="mt-2 font-serif text-3xl leading-none md:text-4xl">
+          <h2 className="mt-2 font-serif text-2xl leading-none md:text-3xl">
             最近入档
           </h2>
         </div>
         <Link
           href="/archive"
-          className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-9 items-center border-y border-border/60 px-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           全部归档
         </Link>
       </div>
 
       {posts.length > 0 ? (
-        <div className="mt-7 divide-y divide-border/70 border-y border-border/70">
+        <div className="mt-5 divide-y divide-border/70 border-y border-border/70">
           {posts.map((post, index) => (
             <Link
               key={post.id}
@@ -514,7 +512,7 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
                 {formatShortDate(post.created_at)}
               </span>
               <span className="min-w-0">
-                <span className="block font-serif text-xl leading-tight transition-opacity group-hover:opacity-70 md:text-2xl">
+                <span className="block font-serif text-lg leading-tight transition-opacity group-hover:opacity-70 md:text-xl">
                   {post.title}
                 </span>
                 <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
@@ -549,14 +547,16 @@ function SideArchive({
   discussions: RecentDiscussion[];
 }) {
   return (
-    <aside className="border border-border/70 bg-card">
+    <aside className="space-y-4">
       <TopicList
+        code="CA"
         title="主题"
         items={categories}
         limit={8}
         hrefFor={(item) => categoryHref(item as CategorySummary)}
       />
       <TopicList
+        code="TG"
         title="标签"
         items={tags}
         limit={12}
@@ -568,11 +568,13 @@ function SideArchive({
 }
 
 function TopicList({
+  code,
   title,
   items,
   limit,
   hrefFor,
 }: {
+  code: string;
   title: string;
   items: Array<CategorySummary | TagSummary>;
   limit: number;
@@ -583,10 +585,13 @@ function TopicList({
     .slice(0, limit);
 
   return (
-    <section className="border-b border-border/70 p-5">
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-        {title}
-      </p>
+    <section className="border-y border-border/70 py-4">
+      <div className="grid grid-cols-[36px_minmax(0,1fr)] gap-3">
+        <span className="font-mono text-xs text-muted-foreground">{code}</span>
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </p>
+      </div>
       {visibleItems.length > 0 ? (
         <div className="mt-4 divide-y divide-border/70 border-y border-border/70">
           {visibleItems.map((item, index) => (
@@ -616,17 +621,20 @@ function TopicList({
 
 function DiscussionList({ items }: { items: RecentDiscussion[] }) {
   return (
-    <section className="p-5">
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-        近期讨论
-      </p>
+    <section className="border-y border-border/70 py-4">
+      <div className="grid grid-cols-[36px_minmax(0,1fr)] gap-3">
+        <span className="font-mono text-xs text-muted-foreground">CM</span>
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          近期讨论
+        </p>
+      </div>
       {items.length > 0 ? (
-        <div className="mt-5 space-y-5">
+        <div className="mt-4 divide-y divide-border/70 border-y border-border/70">
           {items.map((item) => (
             <Link
               key={item.id}
               href={`/blog/${item.postSlug}#comments`}
-              className="block border-l pl-4 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="block py-3 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                 <span className="truncate">{item.author_name}</span>
