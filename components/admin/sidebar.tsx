@@ -68,6 +68,23 @@ export function AdminSidebar() {
           );
         })}
       </nav>
+      <div className="flex gap-2 border-t px-3 py-2 md:hidden">
+        <Link
+          href="/"
+          className="flex h-8 flex-1 items-center justify-center gap-1.5 border border-border/70 px-2 text-xs text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          <ChevronLeft className="h-3.5 w-3.5" suppressHydrationWarning />
+          返回前台
+        </Link>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex h-8 flex-1 items-center justify-center gap-1.5 border border-border/70 px-2 text-xs text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          <LogOut className="h-3.5 w-3.5" suppressHydrationWarning />
+          退出登录
+        </button>
+      </div>
       <div className="hidden space-y-2 border-t p-4 md:block">
         <Link
           href="/"
@@ -77,6 +94,7 @@ export function AdminSidebar() {
           返回前台
         </Link>
         <button
+          type="button"
           onClick={handleLogout}
           className="flex h-9 w-full items-center gap-2 border border-transparent px-3 text-sm text-muted-foreground transition-colors hover:border-border hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
