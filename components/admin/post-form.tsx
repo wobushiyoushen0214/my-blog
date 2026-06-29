@@ -277,7 +277,7 @@ export function PostForm({ postId }: PostFormProps) {
             />
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label>分类</Label>
               <Select
@@ -315,13 +315,13 @@ export function PostForm({ postId }: PostFormProps) {
           </div>
 
           {coverLocalPreviewUrl || form.cover_image ? (
-            <div className="space-y-2">
+            <div className="border-y border-border/70 py-3">
               {(() => {
                 const src = coverLocalPreviewUrl || form.cover_image;
                 const unoptimized =
                   src.startsWith("blob:") || src.startsWith("data:");
                 return (
-                  <div className="relative h-36 w-full overflow-hidden rounded-md border bg-muted">
+                  <div className="relative h-36 w-full overflow-hidden border bg-muted">
                     <Image
                       src={src}
                       alt="封面预览"
@@ -337,6 +337,7 @@ export function PostForm({ postId }: PostFormProps) {
                 type="button"
                 variant="outline"
                 size="sm"
+                className="mt-3"
                 onClick={() => {
                   setCoverLocalPreviewUrl(null);
                   setForm({ ...form, cover_image: "" });
@@ -361,7 +362,7 @@ export function PostForm({ postId }: PostFormProps) {
 
           <div className="space-y-2">
             <Label>标签</Label>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1 border-y border-border/70 py-3">
               {allTags.map((tag) => {
                 const selected = selectedTagIds.includes(tag.id);
                 return (
@@ -372,7 +373,7 @@ export function PostForm({ postId }: PostFormProps) {
                     onClick={() => toggleTag(tag.id)}
                     className={`inline-flex h-8 items-center gap-1 border px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                       selected
-                        ? "border-foreground bg-foreground text-background"
+                        ? "border-primary/50 bg-primary/10 text-primary"
                         : "border-border bg-background text-muted-foreground hover:text-foreground"
                     }`}
                   >

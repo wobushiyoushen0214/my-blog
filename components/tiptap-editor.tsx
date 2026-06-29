@@ -33,6 +33,9 @@ import {
 } from "lucide-react";
 
 const lowlight = createLowlight(common);
+const toolbarButtonClass =
+  "h-8 w-8 rounded-none border border-border/60 data-[variant=ghost]:bg-background/60 data-[variant=secondary]:border-primary/40 data-[variant=secondary]:bg-primary/10 data-[variant=secondary]:text-primary";
+const toolbarSeparatorClass = "mx-1 h-8 w-px bg-border/70";
 
 interface TiptapEditorProps {
   content: string;
@@ -162,12 +165,12 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         ref={fileInputRef}
         onChange={handleImageUpload}
       />
-      <div className="flex flex-wrap gap-1 border-b bg-muted/20 p-2">
+      <div className="flex flex-wrap gap-1 border-b bg-background p-2">
         <Button
           type="button"
           variant={editor.isActive("bold") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="加粗"
           title="加粗"
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -178,7 +181,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant={editor.isActive("italic") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="斜体"
           title="斜体"
           onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -189,7 +192,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant={editor.isActive("strike") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="删除线"
           title="删除线"
           onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -200,21 +203,21 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant={editor.isActive("code") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="行内代码"
           title="行内代码"
           onClick={() => editor.chain().focus().toggleCode().run()}
         >
           <Code className="h-4 w-4" />
         </Button>
-        <div className="mx-1 w-px bg-border" />
+        <div className={toolbarSeparatorClass} />
         <Button
           type="button"
           variant={
             editor.isActive("heading", { level: 1 }) ? "secondary" : "ghost"
           }
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="一级标题"
           title="一级标题"
           onClick={() =>
@@ -229,7 +232,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             editor.isActive("heading", { level: 2 }) ? "secondary" : "ghost"
           }
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="二级标题"
           title="二级标题"
           onClick={() =>
@@ -244,7 +247,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             editor.isActive("heading", { level: 3 }) ? "secondary" : "ghost"
           }
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="三级标题"
           title="三级标题"
           onClick={() =>
@@ -253,12 +256,12 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         >
           <Heading3 className="h-4 w-4" />
         </Button>
-        <div className="mx-1 w-px bg-border" />
+        <div className={toolbarSeparatorClass} />
         <Button
           type="button"
           variant={editor.isActive("bulletList") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="无序列表"
           title="无序列表"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -269,7 +272,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant={editor.isActive("orderedList") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="有序列表"
           title="有序列表"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -280,7 +283,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant={editor.isActive("blockquote") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="引用"
           title="引用"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -291,7 +294,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant={editor.isActive("codeBlock") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="代码块"
           title="代码块"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -302,19 +305,19 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="分割线"
           title="分割线"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
         >
           <Minus className="h-4 w-4" />
         </Button>
-        <div className="mx-1 w-px bg-border" />
+        <div className={toolbarSeparatorClass} />
         <Button
           type="button"
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label={uploading ? "正在上传图片" : "上传图片"}
           title={uploading ? "正在上传图片" : "上传图片"}
           onClick={() => fileInputRef.current?.click()}
@@ -330,7 +333,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant={editor.isActive("link") ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label={editor.isActive("link") ? "编辑链接" : "插入链接"}
           title={editor.isActive("link") ? "编辑链接" : "插入链接"}
           onClick={openLinkEditor}
@@ -374,12 +377,12 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             </Button>
           </div>
         ) : null}
-        <div className="mx-1 w-px bg-border" />
+        <div className={toolbarSeparatorClass} />
         <Button
           type="button"
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="撤销"
           title="撤销"
           onClick={() => editor.chain().focus().undo().run()}
@@ -390,7 +393,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           type="button"
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className={toolbarButtonClass}
           aria-label="重做"
           title="重做"
           onClick={() => editor.chain().focus().redo().run()}

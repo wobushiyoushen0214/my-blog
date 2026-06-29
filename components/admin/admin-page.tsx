@@ -170,14 +170,14 @@ export function AdminFormSection({
   children: ReactNode;
 }) {
   return (
-    <section className="border bg-card p-5">
-      <div className="mb-5 space-y-1">
+    <section className="border bg-card">
+      <div className="border-b px-4 py-3">
         <h2 className="text-base font-medium">{title}</h2>
         {description ? (
           <p className="text-sm leading-6 text-muted-foreground">{description}</p>
         ) : null}
       </div>
-      {children}
+      <div className="p-4 md:p-5">{children}</div>
     </section>
   );
 }
