@@ -1,23 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PostCard } from "@/components/post-card";
-import { PublicEmptyState, PublicPageShell } from "@/components/public-page";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Archive,
-  ArrowRight,
-  FileText,
-  FolderOpen,
-  Hash,
-  MessageSquare,
-  NotebookText,
-  Rss,
-  Search,
-} from "lucide-react";
 import type { Category, Comment, Post, PostTag, Tag } from "@/lib/types";
 
 type PostWithTaxonomy = Post & {
@@ -81,9 +66,33 @@ function firstRelation<T>(relation: Relation<T>) {
 
 function formatShortDate(date: string) {
   return new Date(date).toLocaleDateString("zh-CN", {
-    month: "short",
-    day: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
+}
+
+function formatLongDate(date: string) {
+  return new Date(date).toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+}
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("zh-CN").format(value || 0);
+}
+
+function stripHtml(value: string) {
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&[a-zA-Z0-9#]+;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function contentTypeLabel(post?: PostWithTaxonomy | null) {
+  return post?.category?.type === "moment" ? "见闻" : "文章";
 }
 
 export default async function HomePage() {
@@ -101,7 +110,7 @@ export default async function HomePage() {
       .select("*, category:categories(*)")
       .eq("published", true)
       .order("created_at", { ascending: false })
-      .limit(7),
+      .limit(8),
     supabase
       .from("posts")
       .select("id, category_id, view_count")
@@ -183,7 +192,8 @@ export default async function HomePage() {
     0
   );
   const featuredPost = postsWithTags[0] || null;
-  const listPosts = postsWithTags.slice(1);
+  const indexPosts = postsWithTags.slice(1, 4);
+  const ledgerPosts = postsWithTags.slice(1, 8);
   const usedCategoryCount = categorySummaries.filter(
     (category) => category.postCount > 0
   ).length;
@@ -208,465 +218,423 @@ export default async function HomePage() {
     .slice(0, 4);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
-      <PublicPageShell className="max-w-[1280px]">
-        <section className="border-b border-border/50 pb-8">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
-            <div className="min-w-0 space-y-4">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
-                Community Notes
-              </p>
-              <div className="space-y-3">
-                <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-                  Lee 的个人博客
-                </h1>
-                <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-                  记录技术学习、项目复盘和日常见闻。首页按内容类型、主题和时间线组织，方便继续阅读。
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <Button asChild>
-                  <Link href="/posts">
-                    阅读文章
-                    <ArrowRight
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/moments">
-                    <NotebookText
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                    浏览见闻
-                  </Link>
-                </Button>
-              </div>
-            </div>
+      <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-8 md:px-6 md:py-10">
+        <div className="overflow-hidden border border-border/70 bg-[hsl(41_43%_94%)] text-[#29241d] dark:bg-card dark:text-card-foreground">
+          <section
+            aria-labelledby="home-hero-title"
+            className="grid lg:min-h-[640px] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]"
+          >
+            <FeaturePlate post={featuredPost} />
+            <HeroPanel
+              featuredPost={featuredPost}
+              indexPosts={indexPosts}
+              articleCount={articleCount}
+              momentCount={momentCount}
+              totalCount={publishedRows?.length || 0}
+              topicCount={usedCategoryCount + usedTagCount}
+              totalViews={totalViews}
+            />
+          </section>
+        </div>
 
-            <section className="rounded-lg border bg-card p-3">
-              <form
-                className="flex flex-col gap-2"
-                role="search"
-                action="/search"
-              >
-                <label htmlFor="home-search" className="text-sm font-medium">
-                  快速搜索
-                </label>
-                <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_130px]">
-                  <div className="relative min-w-0 flex-1">
-                    <Search
-                      className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                      suppressHydrationWarning
-                    />
-                    <Input
-                      id="home-search"
-                      type="search"
-                      name="q"
-                      placeholder="搜索标题、正文、分类或标签..."
-                      className="h-10 border-border/60 bg-background pl-9"
-                    />
-                  </div>
-                  <label htmlFor="home-search-type" className="sr-only">
-                    搜索类型
-                  </label>
-                  <select
-                    id="home-search-type"
-                    name="type"
-                    defaultValue="all"
-                    className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                  >
-                    <option value="all">全部内容</option>
-                    <option value="post">只看文章</option>
-                    <option value="moment">只看见闻</option>
-                  </select>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
-                  <label htmlFor="home-search-sort" className="sr-only">
-                    搜索排序
-                  </label>
-                  <select
-                    id="home-search-sort"
-                    name="sort"
-                    defaultValue="newest"
-                    className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                  >
-                    <option value="newest">最新发布</option>
-                    <option value="updated">最近更新</option>
-                    <option value="popular">阅读最多</option>
-                  </select>
-                  <Button type="submit" className="h-10">
-                    <Search
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                    搜索
-                  </Button>
-                </div>
-              </form>
-            </section>
-          </div>
+        <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <RecentLedger posts={ledgerPosts} />
+          <SideArchive
+            categories={categorySummaries}
+            tags={tagSummaries}
+            discussions={recentDiscussions}
+          />
         </section>
-
-        <DiscoveryRail
-          articleCount={articleCount}
-          momentCount={momentCount}
-          totalCount={publishedRows?.length || 0}
-          topicCount={usedCategoryCount + usedTagCount}
-        />
-
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <StatTile label="已发布内容" value={publishedRows?.length || 0} />
-          <StatTile label="文章" value={articleCount} />
-          <StatTile label="见闻" value={momentCount} />
-          <StatTile label="累计阅读" value={totalViews} />
-        </div>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <div className="min-w-0 space-y-8">
-            {featuredPost ? (
-              <section aria-labelledby="home-featured-title" className="space-y-3">
-                <SectionTitle eyebrow="Latest" title="最近更新" id="home-featured-title" />
-                <PostCard post={featuredPost} variant="featured" />
-              </section>
-            ) : (
-              <PublicEmptyState
-                icon={FileText}
-                title="暂无内容"
-                description="发布文章或见闻后，最近更新会展示在这里。"
-                action={
-                  <Button variant="outline" asChild>
-                    <Link href="/posts">查看文章列表</Link>
-                  </Button>
-                }
-                className="max-w-none"
-              />
-            )}
-
-            {listPosts.length > 0 ? (
-              <section aria-labelledby="home-more-title" className="space-y-4">
-                <div className="flex flex-col gap-1 border-b border-border/50 pb-3 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
-                      More
-                    </p>
-                    <h2 id="home-more-title" className="text-base font-medium">
-                      更多内容
-                    </h2>
-                  </div>
-                  <Link
-                    href="/archive"
-                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    全部内容
-                    <ArrowRight
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                  </Link>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {listPosts.map((post) => (
-                    <PostCard key={post.id} post={post} variant="compact" />
-                  ))}
-                </div>
-              </section>
-            ) : null}
-          </div>
-
-          <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-            <RecentDiscussionPanel items={recentDiscussions} />
-            <TopicPanel
-              title="主题"
-              description="按分类进入长期内容。"
-              items={categorySummaries}
-              limit={10}
-              icon="category"
-            />
-            <TopicPanel
-              title="标签"
-              description="通过关键词交叉浏览。"
-              items={tagSummaries}
-              limit={14}
-              icon="tag"
-            />
-            <section className="rounded-lg border bg-card p-4">
-              <p className="text-sm font-medium">继续浏览</p>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                首页只展示最近内容，可以继续进入完整归档或订阅更新。
-              </p>
-              <div className="mt-4 grid gap-2">
-                <Button variant="outline" className="justify-between" asChild>
-                  <Link href="/category">
-                    所有分类
-                    <FolderOpen
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                  </Link>
-                </Button>
-                <Button variant="outline" className="justify-between" asChild>
-                  <Link href="/tag">
-                    所有标签
-                    <Hash className="h-4 w-4" suppressHydrationWarning />
-                  </Link>
-                </Button>
-                <Button variant="outline" className="justify-between" asChild>
-                  <Link href="/rss.xml">
-                    RSS 订阅
-                    <Rss className="h-4 w-4" suppressHydrationWarning />
-                  </Link>
-                </Button>
-              </div>
-            </section>
-          </aside>
-        </div>
-      </PublicPageShell>
+      </main>
       <Footer />
     </div>
   );
 }
 
-function RecentDiscussionPanel({ items }: { items: RecentDiscussion[] }) {
+function FeaturePlate({ post }: { post: PostWithTaxonomy | null }) {
   return (
-    <section className="rounded-lg border bg-card">
-      <div className="border-b px-4 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-medium">近期讨论</h2>
-          <MessageSquare
-            className="h-4 w-4 text-muted-foreground"
-            suppressHydrationWarning
-          />
-        </div>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          最近通过审核的读者评论。
+    <div className="flex min-h-[500px] flex-col border-b border-border/70 bg-[hsl(38_35%_91%)] p-4 md:p-6 lg:border-b-0 lg:border-r dark:bg-muted/25">
+      <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        <Link
+          href="/"
+          className="font-serif text-base text-foreground transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          Lee / Notes
+        </Link>
+        <span>Personal Journal</span>
+      </div>
+
+      <figure className="mt-6 flex min-h-0 flex-1 flex-col border border-border/70 bg-background">
+        <Link
+          href={post ? `/blog/${post.slug}` : "/posts"}
+          className="group relative block min-h-[360px] flex-1 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          {post?.cover_image ? (
+            <Image
+              src={post.cover_image}
+              alt={post.title}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 48vw"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+            />
+          ) : (
+            <div className="flex h-full min-h-[380px] items-center justify-center px-8 text-center">
+              <div className="max-w-sm">
+                <p className="font-serif text-5xl leading-none md:text-6xl">
+                  Lee Notes
+                </p>
+                <p className="mt-5 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  Code / Work / Life
+                </p>
+              </div>
+            </div>
+          )}
+        </Link>
+        <figcaption className="grid gap-2 border-t border-border/70 px-4 py-3 text-xs text-muted-foreground sm:grid-cols-[1fr_auto]">
+          <span className="min-w-0 truncate">
+            封面记录 / {post?.category?.name || "未分类手记"}
+          </span>
+          <span className="sm:text-right">{contentTypeLabel(post)} / Lee</span>
+        </figcaption>
+      </figure>
+    </div>
+  );
+}
+
+function HeroPanel({
+  featuredPost,
+  indexPosts,
+  articleCount,
+  momentCount,
+  totalCount,
+  topicCount,
+  totalViews,
+}: {
+  featuredPost: PostWithTaxonomy | null;
+  indexPosts: PostWithTaxonomy[];
+  articleCount: number;
+  momentCount: number;
+  totalCount: number;
+  topicCount: number;
+  totalViews: number;
+}) {
+  const excerpt = featuredPost
+    ? stripHtml(featuredPost.excerpt || featuredPost.content || featuredPost.title)
+    : "记录技术学习、项目复盘和日常见闻。这里把文章、短记录、分类索引和读者讨论整理成一份可以慢慢翻阅的个人档案。";
+
+  return (
+    <div className="flex min-h-[500px] flex-col p-5 md:p-8 lg:p-10">
+      <div className="flex flex-col gap-3 text-xs uppercase tracking-[0.18em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <p>Selected Dispatch / 最新手记</p>
+        <p>{formatNumber(totalViews)} Reads</p>
+      </div>
+
+      <div className="mt-12 md:mt-16">
+        <h1
+          id="home-hero-title"
+          className="max-w-3xl font-serif text-4xl leading-[0.98] text-foreground md:text-6xl lg:text-7xl"
+        >
+          想法、代码
+          <span className="block italic">与纸页相遇</span>
+        </h1>
+      </div>
+
+      <div className="mt-10 grid gap-6 md:grid-cols-[minmax(0,1fr)_180px]">
+        <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
+          <span className="font-medium text-foreground">DISCOVER / </span>
+          {excerpt}
+        </p>
+        <p className="border-l border-border/70 pl-5 font-serif text-xl italic leading-snug text-muted-foreground">
+          把值得复盘的
+          <br />
+          留在纸面上。
         </p>
       </div>
-      {items.length > 0 ? (
-        <div className="divide-y divide-border/60">
-          {items.map((item) => {
-            const initial =
-              item.author_name.trim().slice(0, 1).toUpperCase() || "?";
 
-            return (
+      <form
+        action="/search"
+        role="search"
+        className="mt-9 grid gap-2 border-y border-border/70 py-4 sm:grid-cols-[minmax(0,1fr)_120px_96px]"
+      >
+        <label htmlFor="home-search" className="sr-only">
+          搜索关键词
+        </label>
+        <input
+          id="home-search"
+          name="q"
+          type="search"
+          placeholder="搜索标题、正文、分类或标签..."
+          className="h-10 min-w-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
+        />
+        <label htmlFor="home-search-type" className="sr-only">
+          搜索类型
+        </label>
+        <select
+          id="home-search-type"
+          name="type"
+          defaultValue="all"
+          className="h-10 bg-transparent text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          <option value="all">全部</option>
+          <option value="post">文章</option>
+          <option value="moment">见闻</option>
+        </select>
+        <button
+          type="submit"
+          className="h-10 border px-4 text-sm transition-colors hover:bg-foreground hover:text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          搜索
+        </button>
+      </form>
+
+      <div className="mt-auto pt-10">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          Inventory
+        </p>
+        <div className="mt-5 divide-y divide-border/70 border-y border-border/70">
+          <InventoryRow
+            href="/posts"
+            code="01"
+            title="文章"
+            meta={`${articleCount} 篇长文`}
+          />
+          <InventoryRow
+            href="/moments"
+            code="02"
+            title="见闻"
+            meta={`${momentCount} 条短记录`}
+          />
+          <InventoryRow
+            href="/archive"
+            code="03"
+            title="归档"
+            meta={`${totalCount} 条记录`}
+          />
+          <InventoryRow
+            href="/category"
+            code="04"
+            title="主题"
+            meta={`${topicCount} 个入口`}
+          />
+        </div>
+
+        {indexPosts.length > 0 ? (
+          <div className="mt-6 grid gap-0 divide-y divide-border/70 border-y border-border/70">
+            {indexPosts.map((post) => (
               <Link
-                key={item.id}
-                href={`/blog/${item.postSlug}#comments`}
-                className="group flex min-w-0 gap-3 px-4 py-3 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                className="group grid gap-2 py-3 text-sm transition-colors hover:bg-background/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[88px_minmax(0,1fr)]"
               >
-                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border bg-background text-xs font-medium text-muted-foreground">
-                  {initial}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex min-w-0 items-center justify-between gap-2">
-                    <span className="truncate text-sm font-medium transition-colors group-hover:text-primary">
-                      {item.author_name}
-                    </span>
-                    <time
-                      dateTime={item.created_at}
-                      className="shrink-0 text-xs text-muted-foreground"
-                    >
-                      {formatShortDate(item.created_at)}
-                    </time>
-                  </span>
-                  <span className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
-                    {item.content}
-                  </span>
-                  <span className="mt-1 block truncate text-xs text-muted-foreground/80">
-                    {item.postTitle}
-                  </span>
-                </span>
+                <p className="text-xs text-muted-foreground">
+                  {formatShortDate(post.created_at)}
+                </p>
+                <h2 className="line-clamp-1 font-serif text-lg leading-snug transition-opacity group-hover:opacity-70">
+                  {post.title}
+                </h2>
               </Link>
-            );
-          })}
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function InventoryRow({
+  href,
+  code,
+  title,
+  meta,
+}: {
+  href: string;
+  code: string;
+  title: string;
+  meta: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="grid grid-cols-[44px_minmax(0,1fr)] gap-4 py-3 text-sm transition-colors hover:bg-background/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[44px_minmax(0,1fr)_180px]"
+    >
+      <span className="text-muted-foreground">{code}</span>
+      <span className="min-w-0 truncate font-serif text-lg italic leading-none">
+        {title}
+      </span>
+      <span className="hidden truncate text-right text-muted-foreground md:block">
+        {meta}
+      </span>
+    </Link>
+  );
+}
+
+function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
+  return (
+    <section className="border border-border/70 bg-card p-5 md:p-7">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            Recent Ledger
+          </p>
+          <h2 className="mt-2 font-serif text-3xl leading-none md:text-4xl">
+            最近入档
+          </h2>
+        </div>
+        <Link
+          href="/archive"
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          全部归档
+        </Link>
+      </div>
+
+      {posts.length > 0 ? (
+        <div className="mt-7 divide-y divide-border/70 border-y border-border/70">
+          {posts.map((post, index) => (
+            <Link
+              key={post.id}
+              href={`/blog/${post.slug}`}
+              className="group grid gap-3 py-5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[76px_minmax(0,1fr)_132px]"
+            >
+              <span className="text-sm text-muted-foreground">
+                {String(index + 1).padStart(2, "0")}.
+                {formatShortDate(post.created_at)}
+              </span>
+              <span className="min-w-0">
+                <span className="block font-serif text-xl leading-tight transition-opacity group-hover:opacity-70 md:text-2xl">
+                  {post.title}
+                </span>
+                <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
+                  {stripHtml(post.excerpt || post.content)}
+                </span>
+              </span>
+              <span className="text-sm text-muted-foreground md:text-right">
+                {post.category?.name || contentTypeLabel(post)}
+              </span>
+            </Link>
+          ))}
         </div>
       ) : (
-        <div className="px-4 py-5">
-          <div className="rounded-lg border border-dashed border-border/70 bg-muted/20 p-4 text-sm">
-            <p className="font-medium">暂无公开讨论</p>
-            <p className="mt-1 leading-6 text-muted-foreground">
-              文章评论通过审核后，会出现在这里。
-            </p>
-          </div>
+        <div className="mt-8 border border-dashed p-8 text-sm leading-7 text-muted-foreground">
+          发布更多文章或见闻后，这里会形成一条最近更新目录。
         </div>
       )}
     </section>
   );
 }
 
-function DiscoveryRail({
-  articleCount,
-  momentCount,
-  totalCount,
-  topicCount,
+function SideArchive({
+  categories,
+  tags,
+  discussions,
 }: {
-  articleCount: number;
-  momentCount: number;
-  totalCount: number;
-  topicCount: number;
-}) {
-  const items = [
-    {
-      href: "/posts",
-      label: "文章",
-      description: "技术笔记、项目复盘和长期主题",
-      countLabel: `${articleCount} 篇`,
-      icon: FileText,
-    },
-    {
-      href: "/moments",
-      label: "见闻",
-      description: "短记录、观察和轻量片段",
-      countLabel: `${momentCount} 条`,
-      icon: NotebookText,
-    },
-    {
-      href: "/archive",
-      label: "归档",
-      description: "按年份和月份回看全部内容",
-      countLabel: `${totalCount} 篇`,
-      icon: Archive,
-    },
-    {
-      href: "/category",
-      label: "主题索引",
-      description: "从分类和标签继续交叉发现",
-      countLabel: `${topicCount} 个入口`,
-      icon: FolderOpen,
-    },
-  ];
-
-  return (
-    <section
-      aria-label="内容浏览入口"
-      className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-    >
-      {items.map((item) => {
-        const Icon = item.icon;
-
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="group flex min-w-0 items-start gap-3 rounded-lg border bg-card p-4 transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground transition-colors group-hover:text-primary">
-              <Icon className="h-4 w-4" suppressHydrationWarning />
-            </span>
-            <span className="min-w-0">
-              <span className="flex min-w-0 items-center justify-between gap-2">
-                <span className="truncate text-sm font-medium transition-colors group-hover:text-primary">
-                  {item.label}
-                </span>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {item.countLabel}
-                </span>
-              </span>
-              <span className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
-                {item.description}
-              </span>
-            </span>
-          </Link>
-        );
-      })}
-    </section>
-  );
-}
-
-function StatTile({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-lg border bg-card px-4 py-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">
-        {new Intl.NumberFormat("zh-CN").format(value)}
-      </p>
-    </div>
-  );
-}
-
-function SectionTitle({
-  eyebrow,
-  title,
-  id,
-}: {
-  eyebrow: string;
-  title: string;
-  id: string;
+  categories: CategorySummary[];
+  tags: TagSummary[];
+  discussions: RecentDiscussion[];
 }) {
   return (
-    <div className="border-b border-border/50 pb-3">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
-        {eyebrow}
-      </p>
-      <h2 id={id} className="mt-1 text-base font-medium">
-        {title}
-      </h2>
-    </div>
+    <aside className="border border-border/70 bg-card">
+      <TopicList
+        title="主题"
+        items={categories}
+        limit={8}
+        hrefFor={(item) => categoryHref(item as CategorySummary)}
+      />
+      <TopicList
+        title="标签"
+        items={tags}
+        limit={12}
+        hrefFor={(item) => `/tag/${item.slug}`}
+      />
+      <DiscussionList items={discussions} />
+    </aside>
   );
 }
 
-function TopicPanel({
+function TopicList({
   title,
-  description,
   items,
   limit,
-  icon,
+  hrefFor,
 }: {
   title: string;
-  description: string;
   items: Array<CategorySummary | TagSummary>;
   limit: number;
-  icon: "category" | "tag";
+  hrefFor: (item: CategorySummary | TagSummary) => string;
 }) {
   const visibleItems = items
     .filter((item) => item.postCount > 0)
     .slice(0, limit);
 
-  if (visibleItems.length === 0) return null;
-
   return (
-    <section className="rounded-lg border bg-card">
-      <div className="border-b px-4 py-3">
-        <h2 className="text-sm font-medium">{title}</h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="flex flex-wrap gap-2 p-3">
-        {visibleItems.map((item) => {
-          const isTag = icon === "tag";
-          const href = isTag
-            ? `/tag/${item.slug}`
-            : categoryHref(item as CategorySummary);
-
-          return (
+    <section className="border-b border-border/70 p-5">
+      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        {title}
+      </p>
+      {visibleItems.length > 0 ? (
+        <div className="mt-4 divide-y divide-border/70 border-y border-border/70">
+          {visibleItems.map((item, index) => (
             <Link
               key={item.id}
-              href={href}
-              className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              href={hrefFor(item)}
+              className="grid grid-cols-[36px_minmax(0,1fr)_42px] gap-3 py-3 text-sm transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
-              <Badge
-                variant="outline"
-                className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
-              >
-                {isTag ? (
-                  <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-                ) : (
-                  <FolderOpen
-                    className="h-3.5 w-3.5"
-                    suppressHydrationWarning
-                  />
-                )}
+              <span className="text-muted-foreground">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="min-w-0 truncate font-serif text-lg leading-none">
                 {item.name}
-                <span className="text-[11px] opacity-70">{item.postCount}</span>
-              </Badge>
+              </span>
+              <span className="text-right text-muted-foreground">
+                {item.postCount}
+              </span>
             </Link>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-4 text-sm text-muted-foreground">暂无条目。</p>
+      )}
+    </section>
+  );
+}
+
+function DiscussionList({ items }: { items: RecentDiscussion[] }) {
+  return (
+    <section className="p-5">
+      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        近期讨论
+      </p>
+      {items.length > 0 ? (
+        <div className="mt-5 space-y-5">
+          {items.map((item) => (
+            <Link
+              key={item.id}
+              href={`/blog/${item.postSlug}#comments`}
+              className="block border-l pl-4 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
+              <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                <span className="truncate">{item.author_name}</span>
+                <time dateTime={item.created_at}>
+                  {formatLongDate(item.created_at)}
+                </time>
+              </div>
+              <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
+                {item.content}
+              </p>
+              <p className="mt-2 truncate font-serif text-base italic text-foreground">
+                {item.postTitle}
+              </p>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-4 text-sm leading-6 text-muted-foreground">
+          评论通过审核后，会展示在这里。
+        </p>
+      )}
     </section>
   );
 }
