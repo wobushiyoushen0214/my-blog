@@ -900,48 +900,30 @@ function SearchMatchPanel({
   tags: Tag[];
 }) {
   return (
-    <section className="mt-4 border bg-card p-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="text-sm font-medium">主题命中</p>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            匹配到 {categories.length} 个分类、{tags.length} 个标签。
-          </p>
-        </div>
-        <div className="flex min-w-0 flex-wrap gap-2">
-          {categories.slice(0, 6).map((category) => (
-            <Link
-              key={category.id}
-              href={`/category/${category.slug}`}
-              className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            >
-              <Badge
-                variant="outline"
-                className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
-              >
-                <FolderOpen className="h-3.5 w-3.5" suppressHydrationWarning />
-                {category.name}
-              </Badge>
-            </Link>
-          ))}
-          {tags.slice(0, 8).map((tag) => (
-            <Link
-              key={tag.id}
-              href={`/tag/${tag.slug}`}
-              className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            >
-              <Badge
-                variant="outline"
-                className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
-              >
-                <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-                {tag.name}
-              </Badge>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
+    <PublicInfoPanel
+      title="主题命中"
+      description={`匹配到 ${categories.length} 个分类、${tags.length} 个标签。`}
+      className="mt-4"
+      contentClassName="py-1"
+    >
+      <PublicIndexLinks
+        ariaLabel="搜索匹配主题"
+        items={[
+          ...categories.slice(0, 6).map((category) => ({
+            href: `/category/${category.slug}`,
+            label: category.name,
+            meta: "分类",
+            icon: FolderOpen,
+          })),
+          ...tags.slice(0, 8).map((tag) => ({
+            href: `/tag/${tag.slug}`,
+            label: tag.name,
+            meta: "标签",
+            icon: Hash,
+          })),
+        ]}
+      />
+    </PublicInfoPanel>
   );
 }
 

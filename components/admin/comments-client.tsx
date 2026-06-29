@@ -373,11 +373,11 @@ export function AdminCommentsClient({
                 </Table>
               </AdminTableSurface>
 
-              <div className="grid gap-3 md:hidden">
+              <div className="divide-y border bg-card md:hidden">
                 {filteredComments.map((comment) => (
                   <article
                     key={comment.id}
-                    className="border bg-card p-4 transition-colors hover:bg-muted/20"
+                    className="px-3 py-3 transition-colors hover:bg-muted/20"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 space-y-1">
