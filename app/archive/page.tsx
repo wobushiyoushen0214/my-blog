@@ -4,6 +4,8 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
   PublicEmptyState,
+  PublicIndexLinks,
+  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
@@ -11,7 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  ArrowRight,
   CalendarDays,
   Clock3,
   Eye,
@@ -648,23 +649,16 @@ function ArchivePostRow({ post }: { post: ArchivePost }) {
 
 function YearIndex({ yearGroups }: { yearGroups: YearGroup[] }) {
   return (
-    <section className="border bg-card p-4">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        年份索引
-      </p>
-      <div className="mt-3 grid gap-1">
-        {yearGroups.map((yearGroup) => (
-          <Link
-            key={yearGroup.year}
-            href={`#archive-${yearGroup.year}`}
-            className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            <span>{yearGroup.year}</span>
-            <span>{yearGroup.count}</span>
-          </Link>
-        ))}
-      </div>
-    </section>
+    <PublicInfoPanel title="年份索引" contentClassName="py-1">
+      <PublicIndexLinks
+        ariaLabel="按年份浏览归档"
+        items={yearGroups.map((yearGroup) => ({
+          href: `#archive-${yearGroup.year}`,
+          label: yearGroup.year,
+          meta: `${yearGroup.count} 篇`,
+        }))}
+      />
+    </PublicInfoPanel>
   );
 }
 
@@ -676,64 +670,49 @@ function CategoryDistribution({
   if (items.length === 0) return null;
 
   return (
-    <section className="border bg-card p-4">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        主题分布
-      </p>
-      <div className="mt-3 grid gap-1">
-        {items.map((item) => (
-          <Link
-            key={item.category.id}
-            href={getCategoryHref(item.category)}
-            className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            <span className="min-w-0 truncate">{item.category.name}</span>
-            <span className="shrink-0">{item.count}</span>
-          </Link>
-        ))}
-      </div>
-    </section>
+    <PublicInfoPanel title="主题分布" contentClassName="py-1">
+      <PublicIndexLinks
+        ariaLabel="按主题浏览归档"
+        items={items.map((item) => ({
+          href: getCategoryHref(item.category),
+          label: item.category.name,
+          meta: `${item.count} 篇`,
+        }))}
+      />
+    </PublicInfoPanel>
   );
 }
 
 function BrowsePanel() {
   return (
-    <section className="border bg-card p-4">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        继续浏览
-      </p>
-      <p className="mt-1 text-sm leading-6 text-muted-foreground">
-        也可以按内容类型、主题或订阅源继续发现内容。
-      </p>
-      <div className="mt-4 grid gap-2">
-        <Button variant="outline" className="justify-between" asChild>
-          <Link href="/posts">
-            <span className="inline-flex items-center gap-2">
-              <FileText className="h-4 w-4" suppressHydrationWarning />
-              文章
-            </span>
-            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-          </Link>
-        </Button>
-        <Button variant="outline" className="justify-between" asChild>
-          <Link href="/moments">
-            <span className="inline-flex items-center gap-2">
-              <NotebookText className="h-4 w-4" suppressHydrationWarning />
-              见闻
-            </span>
-            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-          </Link>
-        </Button>
-        <Button variant="outline" className="justify-between" asChild>
-          <Link href="/rss.xml">
-            <span className="inline-flex items-center gap-2">
-              <Rss className="h-4 w-4" suppressHydrationWarning />
-              RSS
-            </span>
-            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-          </Link>
-        </Button>
-      </div>
-    </section>
+    <PublicInfoPanel
+      title="继续浏览"
+      description="也可以按内容类型、主题或订阅源继续发现内容。"
+      contentClassName="py-1"
+    >
+      <PublicIndexLinks
+        ariaLabel="归档继续浏览"
+        items={[
+          {
+            href: "/posts",
+            label: "文章",
+            description: "按长文和专题继续浏览",
+            icon: FileText,
+          },
+          {
+            href: "/moments",
+            label: "见闻",
+            description: "浏览片段记录和轻量观察",
+            icon: NotebookText,
+          },
+          {
+            href: "/rss.xml",
+            label: "RSS",
+            description: "订阅站点更新",
+            icon: Rss,
+          },
+        ]}
+      />
+    </PublicInfoPanel>
   );
 }

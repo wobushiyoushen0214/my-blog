@@ -5,13 +5,15 @@ import { Footer } from "@/components/footer";
 import { PostCard } from "@/components/post-card";
 import {
   PublicEmptyState,
+  PublicIndexLinks,
+  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
+import { FolderOpen, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
@@ -527,28 +529,22 @@ export default async function SearchPage({
               icon="tag"
               limit={16}
             />
-            <section className="border bg-card p-4">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                继续浏览
-              </p>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                不确定关键词时，可以直接进入文章流按时间和主题浏览。
-              </p>
-              <Button className="mt-4 w-full" variant="outline" asChild>
-                <Link
-                  href={
-                    contentType === "moment"
-                      ? "/moments"
-                      : contentType === "post"
-                        ? "/posts"
-                        : "/posts"
-                  }
-                >
-                  {contentType === "moment" ? "见闻列表" : "文章列表"}
-                  <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-                </Link>
-              </Button>
-            </section>
+            <PublicInfoPanel
+              title="继续浏览"
+              description="不确定关键词时，可以直接进入内容流按时间和主题浏览。"
+              contentClassName="py-1"
+            >
+              <PublicIndexLinks
+                ariaLabel="搜索页继续浏览"
+                items={[
+                  {
+                    href: contentType === "moment" ? "/moments" : "/posts",
+                    label: contentType === "moment" ? "见闻列表" : "文章列表",
+                    description: "回到时间索引继续筛选",
+                  },
+                ]}
+              />
+            </PublicInfoPanel>
           </aside>
         </div>
       </PublicPageShell>

@@ -4,6 +4,8 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
   PublicEmptyState,
+  PublicIndexLinks,
+  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
@@ -191,34 +193,27 @@ export default async function CategoriesPage({
             </div>
 
             <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <section className="border bg-card p-4">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                  继续浏览
-                </p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  不确定主题时，可以直接从文章流或搜索入口继续探索。
-                </p>
-                <div className="mt-4 grid gap-2">
-                  <Button variant="outline" className="justify-between" asChild>
-                    <Link href="/posts">
-                      文章列表
-                      <ArrowRight
-                        className="h-4 w-4"
-                        suppressHydrationWarning
-                      />
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="justify-between" asChild>
-                    <Link href="/search">
-                      搜索内容
-                      <ArrowRight
-                        className="h-4 w-4"
-                        suppressHydrationWarning
-                      />
-                    </Link>
-                  </Button>
-                </div>
-              </section>
+              <PublicInfoPanel
+                title="继续浏览"
+                description="不确定主题时，可以直接从文章流或搜索入口继续探索。"
+                contentClassName="py-1"
+              >
+                <PublicIndexLinks
+                  ariaLabel="分类页继续浏览"
+                  items={[
+                    {
+                      href: "/posts",
+                      label: "文章列表",
+                      description: "按时间、分类和阅读量筛选长文",
+                    },
+                    {
+                      href: "/search",
+                      label: "搜索内容",
+                      description: "用关键词跨文章和见闻检索",
+                    },
+                  ]}
+                />
+              </PublicInfoPanel>
             </aside>
           </div>
         ) : categoriesWithCount.length > 0 ? (

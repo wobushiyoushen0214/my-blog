@@ -4,6 +4,8 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
   PublicEmptyState,
+  PublicIndexLinks,
+  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
@@ -232,34 +234,28 @@ export default async function TagsPage({
                 </section>
               ) : null}
 
-              <section className="border bg-card p-4">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                  继续浏览
-                </p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  标签适合交叉检索；如果想按时间或主题浏览，可以切换入口。
-                </p>
-                <div className="mt-4 grid gap-2">
-                  <Button variant="outline" className="justify-between" asChild>
-                    <Link href="/posts">
-                      文章列表
-                      <ArrowRight
-                        className="h-4 w-4"
-                        suppressHydrationWarning
-                      />
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="justify-between" asChild>
-                    <Link href="/category">
-                      所有分类
-                      <FolderOpen
-                        className="h-4 w-4"
-                        suppressHydrationWarning
-                      />
-                    </Link>
-                  </Button>
-                </div>
-              </section>
+              <PublicInfoPanel
+                title="继续浏览"
+                description="标签适合交叉检索；如果想按时间或主题浏览，可以切换入口。"
+                contentClassName="py-1"
+              >
+                <PublicIndexLinks
+                  ariaLabel="标签页继续浏览"
+                  items={[
+                    {
+                      href: "/posts",
+                      label: "文章列表",
+                      description: "回到按时间排序的长文流",
+                    },
+                    {
+                      href: "/category",
+                      label: "所有分类",
+                      description: "按一级主题浏览内容",
+                      icon: FolderOpen,
+                    },
+                  ]}
+                />
+              </PublicInfoPanel>
             </aside>
           </div>
         ) : tagsWithCount.length > 0 ? (

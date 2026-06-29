@@ -7,13 +7,15 @@ import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
 import {
   PublicEmptyState,
+  PublicIndexLinks,
+  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
+import { FolderOpen, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -432,28 +434,28 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
                 icon="category"
                 limit={10}
               />
-              <section className="border bg-card p-4">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                  继续浏览
-                </p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  可以切换到内容流，或进入搜索页扩大范围。
-                </p>
-                <div className="mt-4 grid gap-2">
-                  <Button variant="outline" className="justify-between" asChild>
-                    <Link href={getContentListHref(contentType)}>
-                      {getContentListLabel(contentType)}
-                      <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="justify-between" asChild>
-                    <Link href="/search">
-                      搜索内容
-                      <Search className="h-4 w-4" suppressHydrationWarning />
-                    </Link>
-                  </Button>
-                </div>
-              </section>
+              <PublicInfoPanel
+                title="继续浏览"
+                description="可以切换到内容流，或进入搜索页扩大范围。"
+                contentClassName="py-1"
+              >
+                <PublicIndexLinks
+                  ariaLabel="标签详情继续浏览"
+                  items={[
+                    {
+                      href: getContentListHref(contentType),
+                      label: getContentListLabel(contentType),
+                      description: "回到对应内容流",
+                    },
+                    {
+                      href: "/search",
+                      label: "搜索内容",
+                      description: "跨标签和分类扩大范围",
+                      icon: Search,
+                    },
+                  ]}
+                />
+              </PublicInfoPanel>
             </aside>
           </div>
         ) : totalTaggedCount > 0 ? (

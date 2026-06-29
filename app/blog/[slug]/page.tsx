@@ -6,6 +6,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
+import { PublicIndexLinks } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -603,34 +604,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </InfoPanel>
 
               <InfoPanel title="阅读路径">
-                <div className="grid gap-2">
-                  <Button variant="outline" className="justify-between" asChild>
-                    <a href="#comments">
-                      参与讨论
-                      <MessageSquare
-                        className="h-4 w-4"
-                        suppressHydrationWarning
-                      />
-                    </a>
-                  </Button>
-                  <Button variant="outline" className="justify-between" asChild>
-                    <Link href={contentListHref}>
-                      {contentTypeLabel}列表
-                      <BookOpen className="h-4 w-4" suppressHydrationWarning />
-                    </Link>
-                  </Button>
-                  {post.category ? (
-                    <Button variant="outline" className="justify-between" asChild>
-                      <Link href={getCategoryBrowseHref(post.category)}>
-                        {post.category.name}
-                        <ArrowRight
-                          className="h-4 w-4"
-                          suppressHydrationWarning
-                        />
-                      </Link>
-                    </Button>
-                  ) : null}
-                </div>
+                <PublicIndexLinks
+                  ariaLabel="文章阅读路径"
+                  items={[
+                    {
+                      href: "#comments",
+                      label: "参与讨论",
+                      description: `${commentCount} 条已审核评论`,
+                      icon: MessageSquare,
+                    },
+                    {
+                      href: contentListHref,
+                      label: `${contentTypeLabel}列表`,
+                      description: "返回同类内容索引",
+                      icon: BookOpen,
+                    },
+                    ...(post.category
+                      ? [
+                          {
+                            href: getCategoryBrowseHref(post.category),
+                            label: post.category.name,
+                            description: "浏览同一分类下的内容",
+                            icon: ArrowRight,
+                          },
+                        ]
+                      : []),
+                  ]}
+                />
               </InfoPanel>
 
               {relatedPosts.length > 0 ? (
@@ -642,9 +642,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <p className="text-sm leading-6 text-muted-foreground">
                     暂无同类内容，可以返回{contentTypeLabel}列表浏览更多记录。
                   </p>
-                  <Button className="mt-3 w-full" variant="outline" asChild>
-                    <Link href={contentListHref}>查看全部{contentTypeLabel}</Link>
-                  </Button>
+                  <PublicIndexLinks
+                    ariaLabel="继续阅读"
+                    className="mt-3"
+                    items={[
+                      {
+                        href: contentListHref,
+                        label: `查看全部${contentTypeLabel}`,
+                        description: "回到列表继续浏览",
+                      },
+                    ]}
+                  />
                 </InfoPanel>
               )}
             </aside>
@@ -829,7 +837,7 @@ function ArticleMetaPanel({
   contentTypeLabel: string;
 }) {
   return (
-    <div className="grid gap-2 border bg-card p-3 sm:grid-cols-2 lg:grid-cols-1">
+    <div className="divide-y divide-border/60 border bg-card">
       <MetaItem
         icon={contentTypeLabel === "见闻" ? NotebookText : FileText}
         label="类型"
@@ -913,12 +921,10 @@ function MetaItem({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-md bg-muted/30 px-3 py-2">
+    <div className="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2.5">
       <Icon className="h-4 w-4 text-muted-foreground" suppressHydrationWarning />
-      <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-sm font-medium">{value}</p>
-      </div>
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-sm font-medium tabular-nums">{value}</span>
     </div>
   );
 }

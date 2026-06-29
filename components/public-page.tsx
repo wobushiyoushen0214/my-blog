@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type PublicPageShellProps = {
@@ -113,5 +113,98 @@ export function PublicEmptyState({
       <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
       {action ? <div className="mt-5">{action}</div> : null}
     </div>
+  );
+}
+
+type PublicInfoPanelProps = {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  className?: string;
+  contentClassName?: string;
+};
+
+export function PublicInfoPanel({
+  title,
+  description,
+  children,
+  className,
+  contentClassName,
+}: PublicInfoPanelProps) {
+  return (
+    <section className={cn("border bg-card", className)}>
+      <div className="border-b px-4 py-3">
+        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </h2>
+        {description ? (
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            {description}
+          </p>
+        ) : null}
+      </div>
+      <div className={cn("p-4", contentClassName)}>{children}</div>
+    </section>
+  );
+}
+
+type PublicIndexLinkItem = {
+  href: string;
+  label: string;
+  description?: string;
+  meta?: ReactNode;
+  icon?: LucideIcon;
+};
+
+export function PublicIndexLinks({
+  items,
+  ariaLabel,
+  className,
+}: {
+  items: PublicIndexLinkItem[];
+  ariaLabel: string;
+  className?: string;
+}) {
+  if (items.length === 0) return null;
+
+  return (
+    <nav aria-label={ariaLabel} className={cn("divide-y divide-border/60", className)}>
+      {items.map((item, index) => {
+        const Icon = item.icon;
+
+        return (
+          <Link
+            key={`${item.href}-${item.label}`}
+            href={item.href}
+            className="group -mx-2 grid gap-2 px-2 py-3 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:items-center"
+          >
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {Icon ? (
+                <Icon className="h-4 w-4" suppressHydrationWarning />
+              ) : (
+                String(index + 1).padStart(2, "0")
+              )}
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate font-medium text-foreground">
+                {item.label}
+              </span>
+              {item.description ? (
+                <span className="mt-1 block line-clamp-2 text-xs leading-5 text-muted-foreground">
+                  {item.description}
+                </span>
+              ) : null}
+            </span>
+            <span className="inline-flex items-center gap-2 text-xs text-muted-foreground sm:justify-self-end">
+              {item.meta ? <span>{item.meta}</span> : null}
+              <ArrowRight
+                className="h-4 w-4 transition-colors group-hover:text-primary"
+                suppressHydrationWarning
+              />
+            </span>
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

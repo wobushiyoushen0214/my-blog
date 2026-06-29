@@ -3,6 +3,8 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
   PublicEmptyState,
+  PublicIndexLinks,
+  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
 } from "@/components/public-page";
@@ -311,37 +313,34 @@ export default async function LinksPage({
               </ul>
             </InfoPanel>
 
-            <section className="border bg-card p-4">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                继续浏览
-              </p>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                如果只是想发现内容，可以从文章流或搜索入口继续。
-              </p>
-              <div className="mt-4 grid gap-2">
-                <Button variant="outline" className="justify-between" asChild>
-                  <Link href="/posts">
-                    文章列表
-                    <ArrowRight
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                  </Link>
-                </Button>
-                <Button variant="outline" className="justify-between" asChild>
-                  <Link href="/search">
-                    搜索内容
-                    <Search className="h-4 w-4" suppressHydrationWarning />
-                  </Link>
-                </Button>
-                <Button variant="outline" className="justify-between" asChild>
-                  <Link href="/rss.xml">
-                    RSS 订阅
-                    <Rss className="h-4 w-4" suppressHydrationWarning />
-                  </Link>
-                </Button>
-              </div>
-            </section>
+            <PublicInfoPanel
+              title="继续浏览"
+              description="如果只是想发现内容，可以从文章流或搜索入口继续。"
+              contentClassName="py-1"
+            >
+              <PublicIndexLinks
+                ariaLabel="友链页继续浏览"
+                items={[
+                  {
+                    href: "/posts",
+                    label: "文章列表",
+                    description: "进入按时间整理的长文流",
+                  },
+                  {
+                    href: "/search",
+                    label: "搜索内容",
+                    description: "按关键词查找站内内容",
+                    icon: Search,
+                  },
+                  {
+                    href: "/rss.xml",
+                    label: "RSS 订阅",
+                    description: "订阅最新发布",
+                    icon: Rss,
+                  },
+                ]}
+              />
+            </PublicInfoPanel>
           </aside>
         </div>
       </PublicPageShell>

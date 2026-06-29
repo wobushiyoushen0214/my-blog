@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
-  CalendarDays,
   Eye,
   FolderOpen,
   Hash,
@@ -699,32 +698,42 @@ function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
       </div>
       <Link
         href={`/blog/${post.slug}`}
-        className="group block border border-border/70 bg-card p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:p-5"
+        className="group block border-y border-border/70 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:py-5"
       >
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
-            <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
-            {formatViews(post.view_count)} 阅读
-          </span>
-          {post.category ? (
-            <span className="rounded-md border bg-background px-1.5 py-0.5 font-medium text-foreground">
-              {post.category.name}
-            </span>
-          ) : null}
+        <div className="grid gap-3 text-sm sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:items-start">
+          <time
+            dateTime={post.created_at}
+            className="text-xs tabular-nums text-muted-foreground"
+          >
+            {formatDate(post.created_at)}
+          </time>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
+              {post.category ? (
+                <span className="border border-border/70 bg-background px-1.5 py-0.5 font-medium text-foreground">
+                  {post.category.name}
+                </span>
+              ) : null}
+              <span className="inline-flex items-center gap-1.5">
+                <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
+                {formatViews(post.view_count)} 阅读
+              </span>
+            </div>
+            <h3 className="mt-3 font-serif text-2xl leading-tight tracking-normal transition-opacity group-hover:opacity-70 md:text-3xl">
+              {post.title}
+            </h3>
+            {excerpt ? (
+              <p className="mt-3 line-clamp-3 text-sm leading-7 text-muted-foreground">
+                {excerpt}
+              </p>
+            ) : null}
+          </div>
+          <ArrowRight
+            className="hidden h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary sm:block"
+            suppressHydrationWarning
+          />
         </div>
-        <h3 className="mt-3 font-serif text-2xl leading-tight tracking-normal transition-opacity group-hover:opacity-70 md:text-3xl">
-          {post.title}
-        </h3>
-        {excerpt ? (
-          <p className="mt-3 line-clamp-3 text-sm leading-7 text-muted-foreground">
-            {excerpt}
-          </p>
-        ) : null}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3 sm:ml-[6.25rem]">
           {post.tags && post.tags.length > 0 ? (
             <span className="flex min-w-0 flex-wrap gap-1.5">
               {post.tags.slice(0, 4).map((tag) => (
@@ -740,10 +749,6 @@ function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
           ) : (
             <span />
           )}
-          <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-foreground">
-            阅读这条见闻
-            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-          </span>
         </div>
       </Link>
     </section>
