@@ -57,11 +57,11 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex min-w-0 overflow-hidden rounded-lg border border-border/60 bg-card text-card-foreground transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden border border-border/70 bg-card text-card-foreground transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured
           ? "flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]"
           : "flex-col",
-        isCompact ? "p-4" : "hover-lift"
+        isCompact ? "p-4" : ""
       )}
     >
       {showMedia ? (
@@ -84,12 +84,12 @@ export function PostCard({
               className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
           ) : (
-            <div className="flex h-full min-h-[220px] items-center justify-center p-6 text-center">
+            <div className="flex h-full min-h-[220px] items-center justify-center bg-muted/30 p-6 text-center">
               <div className="max-w-xs space-y-2">
-                <span className="inline-flex rounded-md border bg-background px-2 py-1 text-xs text-muted-foreground">
+                <span className="inline-flex border bg-background px-2 py-1 text-xs text-muted-foreground">
                   {post.category?.name || contentTypeLabel}
                 </span>
-                <p className="line-clamp-3 text-sm font-medium leading-6 text-foreground/80">
+                <p className="line-clamp-3 font-serif text-lg leading-snug text-foreground/80">
                   {post.title}
                 </p>
               </div>
@@ -120,7 +120,7 @@ export function PostCard({
             </span>
             <span
               className={cn(
-                "rounded-md border px-1.5 py-0.5 font-medium",
+                "border px-1.5 py-0.5 font-medium",
                 post.category?.type === "moment"
                   ? "border-border/70 bg-muted/50 text-foreground"
                   : "border-border/70 bg-background text-foreground"
@@ -129,17 +129,17 @@ export function PostCard({
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="min-w-0 truncate rounded-md border bg-background px-1.5 py-0.5 font-medium text-foreground">
+              <span className="min-w-0 truncate border bg-background px-1.5 py-0.5 font-medium text-foreground">
                 {post.category.name}
               </span>
             ) : null}
           </div>
           <h2
             className={cn(
-              "line-clamp-2 font-semibold tracking-tight transition-colors group-hover:text-primary",
+              "line-clamp-2 font-serif leading-tight tracking-normal transition-opacity group-hover:opacity-70",
               isFeatured
-                ? "text-2xl leading-tight md:text-3xl"
-                : "text-lg leading-tight"
+                ? "text-3xl md:text-4xl"
+                : "text-xl"
             )}
           >
             {post.title}
@@ -162,7 +162,7 @@ export function PostCard({
               <Badge
                 key={tag.id}
                 variant="outline"
-                className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
+                className="h-5 rounded-sm px-1.5 py-0 text-[10px] font-normal"
               >
                 {tag.name}
               </Badge>
@@ -171,7 +171,7 @@ export function PostCard({
         ) : null}
 
         {isFeatured ? (
-          <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+          <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
             {ctaLabel}
             <ArrowRight className="h-4 w-4" suppressHydrationWarning />
           </span>

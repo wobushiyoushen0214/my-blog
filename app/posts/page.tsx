@@ -328,7 +328,7 @@ export default async function PostsPage({
                 <section aria-labelledby="featured-post-title" className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                         Featured
                       </p>
                       <h2 id="featured-post-title" className="text-base font-medium">
@@ -344,7 +344,7 @@ export default async function PostsPage({
                 <section aria-labelledby="latest-posts-title" className="space-y-4">
                   <div className="flex flex-col gap-1 border-b border-border/50 pb-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                         Latest
                       </p>
                       <h2 id="latest-posts-title" className="text-base font-medium">
@@ -472,7 +472,7 @@ function PostsOverview({
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-lg border border-border/60 bg-card px-3 py-2.5"
+        className="border border-border/70 bg-card px-3 py-2.5"
         >
           <p className="text-xs text-muted-foreground">{item.label}</p>
           <p className="mt-1 truncate text-sm font-medium">{item.value}</p>
@@ -545,7 +545,7 @@ function CategoryLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center gap-2 rounded-md border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-9 shrink-0 items-center gap-2 border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
           ? "border-primary/40 bg-primary/10 text-primary"
           : "border-border/60 bg-background text-muted-foreground hover:border-primary/30 hover:text-primary"
@@ -570,7 +570,7 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-5 rounded-lg border bg-card p-3">
+    <section className="mt-5 border bg-card p-3">
       <form
         action="/posts"
         role="search"
@@ -643,7 +643,7 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {categoryName ? (
@@ -706,9 +706,11 @@ function TopicPanel({
   if (items.length === 0) return null;
 
   return (
-    <section className="rounded-lg border bg-card">
+    <section className="border bg-card">
       <div className="border-b px-4 py-3">
-        <h2 className="text-sm font-medium">{title}</h2>
+        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
           {description}
         </p>

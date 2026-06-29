@@ -449,7 +449,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <article className="mx-auto w-full max-w-[1280px] px-4 py-10 md:px-6 md:py-14">
+        <article className="mx-auto w-full max-w-[1180px] px-4 py-8 md:px-6 md:py-10">
           <Link
             href={contentListHref}
             className="mb-8 inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
@@ -458,7 +458,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             返回{contentTypeLabel}
           </Link>
 
-          <header className="grid gap-8 border-b border-border/50 pb-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+          <header className="grid gap-8 border-b border-border/70 pb-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
             <div className="min-w-0 space-y-5">
               <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5 rounded-md border bg-background px-2 py-1 text-xs font-medium text-foreground">
@@ -491,7 +491,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
 
               <div className="space-y-4">
-                <h1 className="max-w-4xl text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
+                <h1 className="max-w-4xl font-serif text-4xl leading-none tracking-normal md:text-6xl">
                   {post.title}
                 </h1>
                 {post.excerpt ? (
@@ -529,7 +529,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {post.cover_image ? (
             <div className="mt-8">
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg border bg-muted md:aspect-[21/9]">
+              <div className="relative aspect-[16/9] w-full overflow-hidden border bg-muted md:aspect-[21/9]">
                 <Image
                   src={post.cover_image}
                   alt={post.title}
@@ -574,7 +574,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               >
                 <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                       Discussion
                     </p>
                     <h2 id="comments-title" className="text-xl font-semibold tracking-tight">
@@ -669,10 +669,10 @@ function ArticleFinishPanel({
 }) {
   const contentTypeLabel = getContentTypeLabel(contentType);
   return (
-    <section className="mt-12 rounded-lg border bg-card p-4">
+    <section className="mt-12 border bg-card p-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
             Next
           </p>
           <h2 className="mt-1 text-base font-medium">读完之后</h2>
@@ -786,7 +786,7 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group rounded-lg border bg-card p-4 transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group border bg-card p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
@@ -829,7 +829,7 @@ function ArticleMetaPanel({
   contentTypeLabel: string;
 }) {
   return (
-    <div className="grid gap-2 rounded-lg border bg-card p-3 sm:grid-cols-2 lg:grid-cols-1">
+    <div className="grid gap-2 border bg-card p-3 sm:grid-cols-2 lg:grid-cols-1">
       <MetaItem
         icon={contentTypeLabel === "见闻" ? NotebookText : FileText}
         label="类型"
@@ -931,9 +931,11 @@ function InfoPanel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border bg-card">
+    <section className="border bg-card">
       <div className="border-b px-4 py-3">
-        <h2 className="text-sm font-medium">{title}</h2>
+        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </h2>
       </div>
       <div className="p-4">{children}</div>
     </section>

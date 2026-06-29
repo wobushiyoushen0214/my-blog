@@ -418,8 +418,10 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
                 icon="category"
                 limit={10}
               />
-              <section className="rounded-lg border bg-card p-4">
-                <p className="text-sm font-medium">继续浏览</p>
+              <section className="border bg-card p-4">
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                  继续浏览
+                </p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                   可以切换到内容流，或进入搜索页扩大范围。
                 </p>
@@ -487,7 +489,7 @@ function TagFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="rounded-lg border bg-card p-3">
+    <section className="border bg-card p-3">
       <form
         action={`/tag/${encodeURIComponent(slug)}`}
         role="search"
@@ -566,7 +568,7 @@ function ActiveTagFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {searchQuery ? (
@@ -613,7 +615,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
 
 function StatTile({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-lg border bg-card px-4 py-3">
+    <div className="border bg-card px-4 py-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
     </div>
@@ -623,7 +625,7 @@ function StatTile({ label, value }: { label: string; value: number | string }) {
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="border-b border-border/50 pb-3">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
         {eyebrow}
       </p>
       <h2 className="mt-1 text-base font-medium">{title}</h2>
@@ -658,9 +660,11 @@ function TaxonomyPanel<
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="rounded-lg border bg-card">
+    <section className="border bg-card">
       <div className="border-b px-4 py-3">
-        <h2 className="text-sm font-medium">{title}</h2>
+        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
           {description}
         </p>

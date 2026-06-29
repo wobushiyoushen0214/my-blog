@@ -20,10 +20,10 @@ function NavLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`inline-flex h-8 items-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+      className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
         active
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-accent hover:text-foreground"
+          ? "border-foreground text-foreground"
+          : "border-transparent text-muted-foreground hover:text-foreground"
       }`}
     >
       {label}
@@ -47,10 +47,10 @@ function HoverNav({
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={`inline-flex h-8 items-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+        className={`inline-flex h-8 items-center border-b px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
           active
-            ? "bg-primary/10 text-primary"
-            : "text-muted-foreground hover:bg-accent hover:text-foreground"
+            ? "border-foreground text-foreground"
+            : "border-transparent text-muted-foreground hover:text-foreground"
         }`}
       >
         {label}
@@ -122,22 +122,22 @@ export function HeaderClient({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto grid h-14 w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75">
+      <div className="mx-auto grid h-14 w-full max-w-[1320px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
         <div className="flex items-center">
           <Link
             href="/"
             className="group flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <span className="flex size-6 items-center justify-center rounded-md bg-primary text-[13px] font-bold text-primary-foreground">
+            <span className="flex size-6 items-center justify-center border bg-foreground text-[13px] font-bold text-background">
               L
             </span>
-            <span className="text-base font-semibold tracking-tight">Lee</span>
+            <span className="font-serif text-lg leading-none">Lee</span>
           </Link>
         </div>
 
         <nav className="hidden md:flex items-center justify-center">
-          <div className="flex items-center gap-1 rounded-lg border border-border/50 bg-background/50 px-1.5 py-1 backdrop-blur">
+          <div className="flex items-center gap-4">
             <NavLink href="/" label="首页" active={isHome} />
             <HoverNav href="/posts" label="文章" active={isPosts} items={postItems} />
             <HoverNav href="/moments" label="见闻" active={isMoments} items={momentItems} />
@@ -153,7 +153,7 @@ export function HeaderClient({
         </div>
       </div>
       <nav className="border-t border-border/30 md:hidden" aria-label="移动端导航">
-        <div className="mx-auto flex w-full max-w-[1440px] gap-1 overflow-x-auto px-4 py-2">
+        <div className="mx-auto flex w-full max-w-[1320px] gap-4 overflow-x-auto px-4 py-2">
           <NavLink href="/" label="首页" active={isHome} />
           <NavLink href="/posts" label="文章" active={isPosts} />
           <NavLink href="/moments" label="见闻" active={isMoments} />

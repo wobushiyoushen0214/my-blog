@@ -181,7 +181,7 @@ export default async function LinksPage({
               categories.map((category) => (
                 <section key={category} className="space-y-4">
                   <div className="border-b border-border/50 pb-3">
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                       Directory
                     </p>
                     <div className="mt-1 flex items-end justify-between gap-3">
@@ -298,8 +298,10 @@ export default async function LinksPage({
               </ul>
             </InfoPanel>
 
-            <section className="rounded-lg border bg-card p-4">
-              <p className="text-sm font-medium">继续浏览</p>
+            <section className="border bg-card p-4">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                继续浏览
+              </p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
                 如果只是想发现内容，可以从文章流或搜索入口继续。
               </p>
@@ -345,7 +347,7 @@ function LinkFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="rounded-lg border bg-card p-3">
+    <section className="border bg-card p-3">
       <form
         action="/links"
         role="search"
@@ -405,7 +407,7 @@ function ActiveLinkSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -446,7 +448,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
 
 function StatTile({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg border bg-card px-4 py-3">
+    <div className="border bg-card px-4 py-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
     </div>
@@ -459,12 +461,12 @@ function FriendLinkCard({ item }: { item: FriendLink }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="group rounded-lg border border-border/60 bg-card p-4 transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group border border-border/70 bg-card p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h2 className="truncate text-base font-medium transition-colors group-hover:text-primary">
+            <h2 className="truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
               {item.name}
             </h2>
             <Badge
@@ -520,9 +522,11 @@ function InfoPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-lg border bg-card">
+    <section className="border bg-card">
       <div className="border-b px-4 py-3">
-        <h2 className="text-sm font-medium">{title}</h2>
+        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
           {description}
         </p>

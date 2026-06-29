@@ -149,13 +149,15 @@ export function CommentForm({
       onSubmit={handleSubmit}
       noValidate
       className={cn(
-        "space-y-4 rounded-lg border border-border/60 bg-card p-4",
+        "space-y-4 border border-border/60 bg-card p-4",
         compact && "rounded-none border-0 bg-transparent p-0"
       )}
     >
       {!isReply ? (
         <div className="space-y-1">
-          <h3 className="text-base font-medium">发表评论</h3>
+          <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            发表评论
+          </h3>
           <p className="text-sm text-muted-foreground">
             评论提交后会进入审核队列，通过后展示在页面中。
           </p>

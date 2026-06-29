@@ -356,7 +356,7 @@ function ArchiveFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="rounded-lg border bg-card p-3">
+    <section className="border bg-card p-3">
       <form
         action="/archive"
         role="search"
@@ -416,7 +416,7 @@ function ActiveArchiveSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -463,7 +463,7 @@ function ArchiveStat({
   value: number | string;
 }) {
   return (
-    <div className="rounded-lg border bg-card px-4 py-3">
+    <div className="border bg-card px-4 py-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
     </div>
@@ -480,7 +480,7 @@ function ArchiveTimeline({
   return (
     <section aria-labelledby="archive-timeline-title" className="min-w-0 space-y-6">
       <div className="border-b border-border/50 pb-3">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Timeline
         </p>
         <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -527,7 +527,7 @@ function ArchiveTimeline({
 
 function MonthArchiveGroup({ group }: { group: MonthGroup }) {
   return (
-    <section className="overflow-hidden rounded-lg border bg-card">
+    <section className="overflow-hidden border bg-card">
       <div className="flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3">
         <div className="inline-flex items-center gap-2">
           <Clock3 className="h-4 w-4 text-muted-foreground" suppressHydrationWarning />
@@ -614,8 +614,10 @@ function ArchivePostRow({ post }: { post: ArchivePost }) {
 
 function YearIndex({ yearGroups }: { yearGroups: YearGroup[] }) {
   return (
-    <section className="rounded-lg border bg-card p-4">
-      <p className="text-sm font-medium">年份索引</p>
+    <section className="border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+        年份索引
+      </p>
       <div className="mt-3 grid gap-1">
         {yearGroups.map((yearGroup) => (
           <Link
@@ -640,8 +642,10 @@ function CategoryDistribution({
   if (items.length === 0) return null;
 
   return (
-    <section className="rounded-lg border bg-card p-4">
-      <p className="text-sm font-medium">主题分布</p>
+    <section className="border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+        主题分布
+      </p>
       <div className="mt-3 grid gap-1">
         {items.map((item) => (
           <Link
@@ -660,8 +664,10 @@ function CategoryDistribution({
 
 function BrowsePanel() {
   return (
-    <section className="rounded-lg border bg-card p-4">
-      <p className="text-sm font-medium">继续浏览</p>
+    <section className="border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+        继续浏览
+      </p>
       <p className="mt-1 text-sm leading-6 text-muted-foreground">
         也可以按内容类型、主题或订阅源继续发现内容。
       </p>

@@ -350,7 +350,7 @@ export default async function SearchPage({
           countLabel={resultLabel}
         />
 
-        <section className="rounded-lg border bg-card p-3">
+        <section className="border bg-card p-3">
           <form
             className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_150px_150px_auto_auto]"
             role="search"
@@ -527,8 +527,10 @@ export default async function SearchPage({
               icon="tag"
               limit={16}
             />
-            <section className="rounded-lg border bg-card p-4">
-              <p className="text-sm font-medium">继续浏览</p>
+            <section className="border bg-card p-4">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                继续浏览
+              </p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
                 不确定关键词时，可以直接进入文章流按时间和主题浏览。
               </p>
@@ -558,7 +560,7 @@ export default async function SearchPage({
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="border-b border-border/50 pb-3">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
         {eyebrow}
       </p>
       <h2 className="mt-1 text-base font-medium">{title}</h2>
@@ -591,7 +593,7 @@ function ActiveSearchSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -717,7 +719,7 @@ function SearchResultSummary({
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-lg border border-border/60 bg-card px-3 py-2.5"
+          className="border border-border/70 bg-card px-3 py-2.5"
         >
           <p className="text-xs text-muted-foreground">{item.label}</p>
           <p className="mt-1 truncate text-sm font-medium">{item.value}</p>
@@ -781,9 +783,11 @@ function SearchStarterPanel({
 
   return (
     <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.76fr)]">
-      <div className="rounded-lg border bg-card">
+      <div className="border bg-card">
         <div className="border-b px-4 py-3">
-          <h2 className="text-sm font-medium">快速进入</h2>
+          <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            快速进入
+          </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
             按内容类型或排序方式直接浏览。
           </p>
@@ -810,9 +814,11 @@ function SearchStarterPanel({
         </div>
       </div>
 
-      <div className="rounded-lg border bg-card">
+      <div className="border bg-card">
         <div className="border-b px-4 py-3">
-          <h2 className="text-sm font-medium">高频主题</h2>
+          <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            高频主题
+          </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
             选一个分类或标签继续探索。
           </p>
@@ -885,7 +891,7 @@ function SearchMatchPanel({
   tags: Tag[];
 }) {
   return (
-    <section className="mt-4 rounded-lg border bg-card p-4">
+    <section className="mt-4 border bg-card p-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <p className="text-sm font-medium">主题命中</p>
@@ -953,9 +959,11 @@ function DiscoveryPanel<T extends { id: string; name: string; postCount: number 
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="rounded-lg border bg-card">
+    <section className="border bg-card">
       <div className="border-b px-4 py-3">
-        <h2 className="text-sm font-medium">{title}</h2>
+        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
           {description}
         </p>

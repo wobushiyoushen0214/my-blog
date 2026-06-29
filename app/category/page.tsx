@@ -179,8 +179,10 @@ export default async function CategoriesPage({
             </div>
 
             <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <section className="rounded-lg border bg-card p-4">
-                <p className="text-sm font-medium">继续浏览</p>
+              <section className="border bg-card p-4">
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                  继续浏览
+                </p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                   不确定主题时，可以直接从文章流或搜索入口继续探索。
                 </p>
@@ -241,7 +243,7 @@ function CategorySearchBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="rounded-lg border bg-card p-3">
+    <section className="border bg-card p-3">
       <form
         className="flex flex-col gap-2 sm:flex-row"
         role="search"
@@ -328,7 +330,7 @@ function ActiveCategorySummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border border-border/70 bg-muted/20 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -369,7 +371,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
 
 function StatTile({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg border bg-card px-4 py-3">
+    <div className="border bg-card px-4 py-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
     </div>
@@ -390,7 +392,7 @@ function CategorySection({
   return (
     <section className="space-y-4">
       <div className="border-b border-border/50 pb-3">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Browse
         </p>
         <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -410,14 +412,14 @@ function CategorySection({
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="group rounded-lg border bg-card p-4 transition-colors hover:border-primary/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="group border bg-card p-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <Badge variant="outline" className="rounded-md font-normal">
                   {categoryTypeLabel(category.type)}
                 </Badge>
-                <h3 className="mt-3 truncate text-base font-medium transition-colors group-hover:text-primary">
+                <h3 className="mt-3 truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
                   {category.name}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">

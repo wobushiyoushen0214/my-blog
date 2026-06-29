@@ -70,11 +70,11 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex h-9 min-w-9 items-center justify-center border px-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const edgeLinkClassName =
-    "inline-flex h-9 items-center gap-1 rounded-md border border-border/60 px-3 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:bg-muted/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex h-9 items-center gap-1 border border-border/60 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const disabledClassName =
-    "inline-flex h-9 items-center gap-1 rounded-md border border-border/40 px-3 text-sm font-medium text-muted-foreground/40";
+    "inline-flex h-9 items-center gap-1 border border-border/40 px-3 text-sm font-medium text-muted-foreground/40";
 
   return (
     <nav
@@ -105,7 +105,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
           item === "ellipsis" ? (
             <span
               key={`ellipsis-${index}`}
-              className="inline-flex h-9 min-w-9 items-center justify-center rounded-md px-2 text-sm text-muted-foreground/60"
+              className="inline-flex h-9 min-w-9 items-center justify-center px-2 text-sm text-muted-foreground/60"
               aria-hidden="true"
             >
               ...
@@ -118,7 +118,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
                 pageLinkClassName,
                 item === safeCurrentPage
                   ? "border-primary/30 bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "border-border/60 text-muted-foreground hover:border-primary/30 hover:bg-muted/40 hover:text-primary"
+                  : "border-border/60 text-muted-foreground hover:bg-muted/40 hover:text-foreground"
               )}
               aria-label={`第 ${item} 页`}
               aria-current={item === safeCurrentPage ? "page" : undefined}
@@ -129,7 +129,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
         )}
       </div>
 
-      <span className="inline-flex h-9 min-w-20 items-center justify-center rounded-md border border-border/50 px-3 text-sm text-muted-foreground sm:hidden">
+      <span className="inline-flex h-9 min-w-20 items-center justify-center border border-border/50 px-3 text-sm text-muted-foreground sm:hidden">
         {safeCurrentPage} / {totalPages}
       </span>
 

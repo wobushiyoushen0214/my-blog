@@ -176,7 +176,7 @@ export function SearchBar() {
 
         <div className="space-y-3 p-3 sm:p-4">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
               Explore
             </p>
             <Button variant="ghost" size="xs" asChild>
@@ -196,13 +196,13 @@ export function SearchBar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="group flex min-w-0 items-start gap-3 rounded-md border border-border/60 bg-card px-3 py-2.5 transition-colors hover:border-primary/30 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="group flex min-w-0 items-start gap-3 border border-border/70 bg-card px-3 py-2.5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 >
-                  <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground transition-colors group-hover:text-primary">
+                  <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center border bg-background text-muted-foreground transition-colors group-hover:text-foreground">
                     <Icon className="h-4 w-4" suppressHydrationWarning />
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-medium transition-colors group-hover:text-primary">
+                    <span className="block truncate text-sm font-medium transition-colors group-hover:text-foreground">
                       {item.label}
                     </span>
                     <span className="mt-0.5 block truncate text-xs text-muted-foreground">
