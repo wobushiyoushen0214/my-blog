@@ -501,7 +501,7 @@ function TagFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border-y border-border/70 py-3">
+    <section className="py-1">
       <form
         action={`/tag/${encodeURIComponent(slug)}`}
         role="search"
@@ -586,7 +586,7 @@ function ActiveTagFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-y border-border/70 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {searchQuery ? (
@@ -610,7 +610,7 @@ function ActiveTagFilterSummary({
       </div>
       <Link
         href={buildTagPath({ slug })}
-        className="inline-flex h-8 shrink-0 items-center justify-center border-y border-border/60 px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center px-0 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -622,7 +622,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -639,12 +639,12 @@ function SummaryLedger({
   return (
     <section
       aria-label="标签内容概览"
-      className="divide-y divide-border/70 border-y border-border/70"
+      className="grid gap-1"
     >
       {items.map((item, index) => (
         <div
           key={item.label}
-          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_120px_minmax(0,1fr)]"
+          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_120px_minmax(0,1fr)]"
         >
           <span className="text-muted-foreground">
             {String(index + 1).padStart(2, "0")}
@@ -664,7 +664,7 @@ function SummaryLedger({
 
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
-    <div className="border-b border-border/50 pb-3">
+    <div className="pb-1">
       <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
         {eyebrow}
       </p>
@@ -700,8 +700,8 @@ function TaxonomyPanel<
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="border-y border-border/70">
-      <div className="border-b border-border/60 py-3">
+    <section className="space-y-2 py-1">
+      <div className="py-2">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -709,7 +709,7 @@ function TaxonomyPanel<
           {description}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 py-3">
+      <div className="flex flex-wrap gap-2 py-1">
         {visibleItems.map((item) => (
           <Link
             key={item.id}

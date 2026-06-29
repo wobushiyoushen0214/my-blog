@@ -274,7 +274,7 @@ function HomeIndex({
   return (
     <section
       aria-labelledby="home-index-title"
-      className="border-t border-border/45 pt-6"
+      className="pt-4"
     >
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
@@ -502,7 +502,7 @@ function InventoryRow({
 
 function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
   return (
-    <section className="mt-8 border-t border-border/45 pt-6">
+    <section className="mt-8 pt-4">
       <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)_auto] sm:items-end">
         <span className="font-mono text-xs text-muted-foreground">01</span>
         <div className="min-w-0">

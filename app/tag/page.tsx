@@ -171,7 +171,7 @@ export default async function TagsPage({
         {filteredTags.length > 0 ? (
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
             <section className="min-w-0 space-y-4">
-              <div className="border-b border-border/50 pb-3">
+              <div className="pb-1">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   Browse
                 </p>
@@ -190,7 +190,7 @@ export default async function TagsPage({
                 </div>
               </div>
 
-              <div className="divide-y divide-border/70 border-y border-border/70">
+              <div className="grid gap-1">
                 {filteredTags.map((tag, index) => (
                   <TagResultRow key={tag.id} tag={tag} index={index} />
                 ))}
@@ -199,8 +199,8 @@ export default async function TagsPage({
 
             <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
               {topTags.length > 0 ? (
-                <section className="border-y border-border/70">
-                  <div className="border-b border-border/60 py-3">
+                <section className="space-y-2 py-1">
+                  <div className="py-2">
                     <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                       高频标签
                     </h2>
@@ -208,7 +208,7 @@ export default async function TagsPage({
                       从内容关联最多的关键词继续浏览。
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-2 py-3">
+                  <div className="flex flex-wrap gap-2 py-1">
                     {topTags.map((tag) => (
                       <Link
                         key={tag.id}
@@ -290,7 +290,7 @@ function TagSearchBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border-y border-border/70 py-3">
+    <section className="py-1">
       <form
         className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_88px_auto]"
         role="search"
@@ -352,7 +352,7 @@ function TagStatusSwitch({
   return (
     <nav
       aria-label="标签使用状态"
-      className="-mx-4 mt-4 flex gap-2 overflow-x-auto border-y border-border/60 px-4 py-3 md:mx-0 md:px-0"
+      className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 py-1 md:mx-0 md:px-0"
     >
       {items.map((item) => (
         <Link
@@ -383,7 +383,7 @@ function ActiveTagSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-y border-border/70 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -401,7 +401,7 @@ function ActiveTagSummary({
       </div>
       <Link
         href="/tag"
-        className="inline-flex h-8 shrink-0 items-center justify-center border-y border-border/60 px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center px-0 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -413,7 +413,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -430,12 +430,12 @@ function SummaryLedger({
   return (
     <section
       aria-label="标签概览"
-      className="mt-6 divide-y divide-border/70 border-y border-border/70"
+      className="mt-6 grid gap-1"
     >
       {items.map((item, index) => (
         <div
           key={item.label}
-          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
+          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
         >
           <span className="text-muted-foreground">
             {String(index + 1).padStart(2, "0")}
@@ -457,7 +457,7 @@ function TagResultRow({ tag, index }: { tag: TagWithCount; index: number }) {
   return (
     <Link
       href={`/tag/${tag.slug}`}
-      className="group grid min-w-0 gap-3 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_120px_24px]"
+      className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_120px_24px]"
     >
       <span className="text-sm text-muted-foreground">
         {String(index + 1).padStart(2, "0")}

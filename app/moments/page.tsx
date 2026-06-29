@@ -435,7 +435,7 @@ function CategoryNav({
   return (
     <nav
       aria-label="见闻分类"
-      className="-mx-4 flex gap-2 overflow-x-auto border-b border-border/50 px-4 pb-4 md:mx-0 md:px-0"
+      className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0"
     >
       <CategoryLink
         href={buildMomentsPath({ searchQuery, sort })}
@@ -502,7 +502,7 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-5 border-y border-border/70 py-3">
+    <section className="mt-5 py-1">
       <form
         action="/moments"
         role="search"
@@ -581,7 +581,7 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-y border-border/70 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {categoryName ? (
@@ -605,7 +605,7 @@ function ActiveFilterSummary({
       </div>
       <Link
         href="/moments"
-        className="inline-flex h-8 shrink-0 items-center justify-center border-y border-border/60 px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center px-0 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -617,7 +617,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/70 bg-background px-2 text-xs text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -662,12 +662,12 @@ function MomentOverview({
   return (
     <section
       aria-label="见闻概览"
-      className="mt-4 divide-y divide-border/70 border-y border-border/70"
+      className="mt-4 grid gap-1"
     >
       {items.map((item, index) => (
         <div
           key={item.label}
-          className="grid gap-2 py-3 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
+          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
         >
           <span className="text-muted-foreground">
             {String(index + 1).padStart(2, "0")}
@@ -690,7 +690,7 @@ function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
 
   return (
     <section aria-labelledby="featured-moment-title" className="space-y-3">
-      <div className="border-b border-border/50 pb-3">
+      <div className="pb-1">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Featured
         </p>
@@ -700,7 +700,7 @@ function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
       </div>
       <Link
         href={`/blog/${post.slug}`}
-        className="group block border-y border-border/70 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:py-5"
+        className="group -mx-2 block px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:py-5"
       >
         <div className="grid gap-3 text-sm sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:items-start">
           <time
@@ -712,7 +712,7 @@ function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
               {post.category ? (
-                <span className="border border-border/70 bg-background px-1.5 py-0.5 font-medium text-foreground">
+                <span className="bg-muted/25 px-1.5 py-0.5 font-medium text-foreground">
                   {post.category.name}
                 </span>
               ) : null}
@@ -771,7 +771,7 @@ function MomentStream({
 
   return (
     <section aria-labelledby="latest-moments-title" className="space-y-4">
-      <div className="flex flex-col gap-1 border-b border-border/50 pb-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-1 pb-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
             Stream
@@ -791,21 +791,21 @@ function MomentStream({
         ) : null}
       </div>
 
-      <ol className="overflow-hidden border-y border-border/70">
+      <ol className="grid gap-1">
         {posts.map((post) => {
           const excerpt = getMomentExcerpt(post);
           const updated =
             post.updated_at.slice(0, 10) !== post.created_at.slice(0, 10);
 
           return (
-            <li key={post.id} className="border-b border-border/60 last:border-b-0">
+            <li key={post.id}>
               <Link
                 href={`/blog/${post.slug}`}
-                className="group grid min-w-0 gap-3 px-4 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50 sm:grid-cols-[88px_minmax(0,1fr)]"
+                className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50 sm:grid-cols-[88px_minmax(0,1fr)]"
               >
                 <time
                   dateTime={post.created_at}
-                  className="flex w-fit flex-row items-baseline gap-2 border border-border/70 bg-background px-2.5 py-1.5 text-xs text-muted-foreground sm:w-full sm:flex-col sm:gap-0"
+                  className="flex w-fit flex-row items-baseline gap-2 bg-muted/20 px-2.5 py-1.5 text-xs text-muted-foreground sm:w-full sm:flex-col sm:gap-0"
                 >
                   <span className="font-medium text-foreground">
                     {formatMonthDay(post.created_at)}
@@ -816,7 +816,7 @@ function MomentStream({
                 <span className="min-w-0">
                   <span className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
                     {post.category ? (
-                      <span className="border border-border/70 bg-background px-1.5 py-0.5 font-medium text-foreground">
+                      <span className="bg-muted/25 px-1.5 py-0.5 font-medium text-foreground">
                         {post.category.name}
                       </span>
                     ) : null}
@@ -878,8 +878,8 @@ function TopicPanel({
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="border-y border-border/70">
-      <div className="border-b border-border/60 py-3">
+    <section className="space-y-2 py-1">
+      <div className="py-2">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -887,7 +887,7 @@ function TopicPanel({
           {description}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 py-3">
+      <div className="flex flex-wrap gap-2 py-1">
         {visibleItems.map((item) => {
           const href =
             icon === "category"

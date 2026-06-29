@@ -134,7 +134,7 @@ export function PublicEmptyState({
       <div className="grid gap-4 sm:grid-cols-[2.5rem_minmax(0,1fr)]">
         <div className="text-xs tabular-nums text-muted-foreground">
           {Icon ? (
-            <span className="flex size-9 items-center justify-center border border-border/70 bg-background text-muted-foreground">
+            <span className="flex size-9 items-center justify-center bg-muted/25 text-muted-foreground">
               <Icon className="h-4 w-4" suppressHydrationWarning />
             </span>
           ) : (

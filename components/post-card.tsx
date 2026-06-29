@@ -65,11 +65,11 @@ export function PostCard({
 
         <div className="min-w-0">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <span className="border border-border/70 bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <span className="bg-muted/25 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="max-w-36 truncate border border-border/70 bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+              <span className="max-w-36 truncate bg-muted/25 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                 {post.category.name}
               </span>
             ) : null}
@@ -136,8 +136,8 @@ export function PostCard({
             />
           ) : (
             <div className="flex h-full min-h-[220px] items-end bg-muted/20 p-5">
-              <div className="max-w-xs border-t border-border/70 pt-3">
-                <span className="inline-flex border bg-background px-2 py-1 text-xs text-muted-foreground">
+              <div className="max-w-xs pt-1">
+                <span className="inline-flex bg-background/80 px-2 py-1 text-xs text-muted-foreground">
                   {post.category?.name || contentTypeLabel}
                 </span>
                 <p className="mt-3 line-clamp-3 font-serif text-lg leading-snug text-foreground/80">
@@ -171,16 +171,16 @@ export function PostCard({
             </span>
             <span
               className={cn(
-                "border px-1.5 py-0.5 font-medium",
+                "px-1.5 py-0.5 font-medium",
                 post.category?.type === "moment"
-                  ? "border-border/70 bg-muted/50 text-foreground"
-                  : "border-border/70 bg-background text-foreground"
+                  ? "bg-muted/50 text-foreground"
+                  : "bg-muted/25 text-foreground"
               )}
             >
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="min-w-0 truncate border bg-background px-1.5 py-0.5 font-medium text-foreground">
+              <span className="min-w-0 truncate bg-muted/25 px-1.5 py-0.5 font-medium text-foreground">
                 {post.category.name}
               </span>
             ) : null}
