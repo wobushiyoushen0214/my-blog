@@ -136,7 +136,7 @@ export function HeaderClient({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
-      <div className="mx-auto grid h-14 w-full max-w-[1320px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
+      <div className="mx-auto grid h-14 w-full max-w-[1120px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
         <div className="flex items-center">
           <Link
             href="/"
@@ -166,7 +166,7 @@ export function HeaderClient({
         </div>
       </div>
       <nav className="bg-muted/10 md:hidden" aria-label="移动端导航">
-        <div className="mx-auto flex w-full max-w-[1320px] gap-4 overflow-x-auto px-4 py-2">
+        <div className="mx-auto flex w-full max-w-[1120px] gap-4 overflow-x-auto px-4 py-2">
           <NavLink href="/" label="首页" active={isHome} />
           <NavLink href="/posts" label="文章" active={isPosts} />
           <NavLink href="/moments" label="见闻" active={isMoments} />

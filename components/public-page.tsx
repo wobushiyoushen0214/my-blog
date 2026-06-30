@@ -13,7 +13,7 @@ export function PublicPageShell({ children, className }: PublicPageShellProps) {
   return (
     <main
       className={cn(
-        "mx-auto w-full max-w-[1320px] flex-1 px-4 py-8 md:px-6 md:py-10",
+        "mx-auto w-full max-w-[1120px] flex-1 px-4 py-8 md:px-6 md:py-10",
         className
       )}
     >

@@ -14,7 +14,7 @@ const footerLinks = [
 export function Footer() {
   return (
     <footer className="bg-muted/10">
-      <div className="mx-auto w-full max-w-[1320px] px-4 py-7 md:px-6">
+      <div className="mx-auto w-full max-w-[1120px] px-4 py-7 md:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <div className="min-w-0">
