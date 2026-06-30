@@ -417,7 +417,7 @@ function HomeSearch() {
       </select>
       <button
         type="submit"
-        className="inline-flex h-10 items-center justify-center gap-2 border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex h-10 items-center justify-center gap-2 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
       >
         <Search className="h-4 w-4" suppressHydrationWarning />
         搜索

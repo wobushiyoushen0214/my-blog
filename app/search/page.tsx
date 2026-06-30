@@ -403,7 +403,7 @@ export default async function SearchPage({
             </select>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center gap-2 border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-10 items-center justify-center gap-2 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <Search className="h-4 w-4" suppressHydrationWarning />
               搜索
@@ -411,7 +411,7 @@ export default async function SearchPage({
             {query || hasFilters ? (
               <Link
                 href="/search"
-                className="inline-flex h-10 items-center justify-center border border-border/70 bg-background px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="inline-flex h-10 items-center justify-center bg-muted/20 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               >
                 清除
               </Link>

@@ -493,14 +493,14 @@ function CategoryFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center border border-border/70 bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           筛选
         </button>
         {hasFilters ? (
           <Link
             href={buildCategoryPath({ slug })}
-            className="inline-flex h-10 items-center justify-center border border-border/70 bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-10 items-center justify-center bg-muted/20 px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>

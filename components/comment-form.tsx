@@ -287,7 +287,7 @@ export function CommentForm({
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex h-8 items-center justify-center gap-2 border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+            className="inline-flex h-8 items-center justify-center gap-2 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
           >
             <Send className="h-4 w-4" suppressHydrationWarning />
             {loading ? "提交中..." : isReply ? "提交回复" : "提交评论"}
