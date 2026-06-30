@@ -278,11 +278,10 @@ function HomeIndex({
     >
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
-          <div className="grid gap-4 md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-start">
-            <span className="font-mono text-xs text-muted-foreground">00</span>
+          <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
             <div className="min-w-0">
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                Personal Archive
+                个人档案
               </p>
               <h1
                 id="home-index-title"
@@ -308,21 +307,18 @@ function HomeIndex({
 
         <aside className="pt-1">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-            Ledger
+            概览
           </p>
           <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4">
-            {stats.map((item, index) => (
+            {stats.map((item) => (
               <div
                 key={item.label}
-                className="grid grid-cols-[32px_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm"
+                className="grid gap-y-1 text-sm"
               >
-                <span className="font-mono text-xs text-muted-foreground">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
                 <span className="min-w-0 truncate text-muted-foreground">
                   {item.label}
                 </span>
-                <span className="col-start-2 font-serif text-xl leading-none">
+                <span className="font-serif text-xl leading-none">
                   {item.value}
                 </span>
               </div>
@@ -332,25 +328,21 @@ function HomeIndex({
           <div className="mt-7 grid gap-2">
             <InventoryRow
               href="/posts"
-              code="P"
               title="文章"
               meta={`${articleCount} 篇长文`}
             />
             <InventoryRow
               href="/moments"
-              code="M"
               title="见闻"
               meta={`${momentCount} 条短记录`}
             />
             <InventoryRow
               href="/archive"
-              code="A"
               title="归档"
               meta={`${totalCount} 条记录`}
             />
             <InventoryRow
               href="/category"
-              code="T"
               title="主题"
               meta={`${topicCount} 个入口`}
             />
@@ -450,12 +442,12 @@ function FeaturedDispatch({ post }: { post: PostWithTaxonomy | null }) {
         </span>
       ) : (
         <span className="flex items-start text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          Latest
+          最新
         </span>
       )}
       <span className="min-w-0">
         <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          Selected Dispatch
+          最近更新
         </span>
         <span className="mt-2 block font-serif text-xl leading-tight md:text-2xl">
           {post?.title || "暂无公开内容"}
@@ -467,7 +459,7 @@ function FeaturedDispatch({ post }: { post: PostWithTaxonomy | null }) {
       <span className="text-xs text-muted-foreground md:text-right">
         {post
           ? `${formatShortDate(post.created_at)} / ${contentTypeLabel(post)}`
-          : "00 / Empty"}
+          : "暂无内容"}
       </span>
     </Link>
   );
@@ -475,21 +467,18 @@ function FeaturedDispatch({ post }: { post: PostWithTaxonomy | null }) {
 
 function InventoryRow({
   href,
-  code,
   title,
   meta,
 }: {
   href: string;
-  code: string;
   title: string;
   meta: string;
 }) {
   return (
     <Link
       href={href}
-      className="grid grid-cols-[32px_minmax(0,1fr)] gap-4 py-2 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[32px_minmax(0,1fr)_120px]"
+      className="grid grid-cols-[minmax(0,1fr)] gap-3 py-2 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[minmax(0,1fr)_120px]"
     >
-      <span className="text-muted-foreground">{code}</span>
       <span className="min-w-0 truncate font-serif text-lg italic leading-none">
         {title}
       </span>
@@ -503,11 +492,10 @@ function InventoryRow({
 function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
   return (
     <section className="mt-8 pt-4">
-      <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)_auto] sm:items-end">
-        <span className="font-mono text-xs text-muted-foreground">01</span>
+      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
         <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-            Recent Ledger
+            最近更新
           </p>
           <h2 className="mt-2 font-serif text-2xl leading-none md:text-3xl">
             最近入档
@@ -523,14 +511,13 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
 
       {posts.length > 0 ? (
         <div className="mt-6 grid gap-4">
-          {posts.map((post, index) => (
+          {posts.map((post) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
               className="group grid gap-3 py-1 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[76px_minmax(0,1fr)_132px]"
             >
               <span className="text-sm text-muted-foreground">
-                {String(index + 1).padStart(2, "0")}.
                 {formatShortDate(post.created_at)}
               </span>
               <span className="min-w-0">
@@ -548,8 +535,7 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
           ))}
         </div>
       ) : (
-        <div className="mt-8 grid gap-3 py-3 text-sm sm:grid-cols-[3rem_minmax(0,1fr)]">
-          <span className="text-xs tabular-nums text-muted-foreground">00</span>
+        <div className="mt-8 py-3 text-sm">
           <span className="leading-7 text-muted-foreground">
             发布更多文章或见闻后，这里会形成一条最近更新目录。
           </span>
@@ -571,14 +557,12 @@ function SideArchive({
   return (
     <aside className="space-y-7">
       <TopicList
-        code="CA"
         title="主题"
         items={categories}
         limit={8}
         hrefFor={(item) => categoryHref(item as CategorySummary)}
       />
       <TopicList
-        code="TG"
         title="标签"
         items={tags}
         limit={12}
@@ -590,13 +574,11 @@ function SideArchive({
 }
 
 function TopicList({
-  code,
   title,
   items,
   limit,
   hrefFor,
 }: {
-  code: string;
   title: string;
   items: Array<CategorySummary | TagSummary>;
   limit: number;
@@ -608,23 +590,17 @@ function TopicList({
 
   return (
     <section>
-      <div className="grid grid-cols-[36px_minmax(0,1fr)] gap-3">
-        <span className="font-mono text-xs text-muted-foreground">{code}</span>
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          {title}
-        </p>
-      </div>
+      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        {title}
+      </p>
       {visibleItems.length > 0 ? (
         <div className="mt-4 grid gap-2">
-          {visibleItems.map((item, index) => (
+          {visibleItems.map((item) => (
             <Link
               key={item.id}
               href={hrefFor(item)}
-              className="grid grid-cols-[36px_minmax(0,1fr)_42px] gap-3 py-1.5 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="grid grid-cols-[minmax(0,1fr)_42px] gap-3 py-1.5 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
-              <span className="text-muted-foreground">
-                {String(index + 1).padStart(2, "0")}
-              </span>
               <span className="min-w-0 truncate font-serif text-lg leading-none">
                 {item.name}
               </span>
@@ -644,12 +620,9 @@ function TopicList({
 function DiscussionList({ items }: { items: RecentDiscussion[] }) {
   return (
     <section>
-      <div className="grid grid-cols-[36px_minmax(0,1fr)] gap-3">
-        <span className="font-mono text-xs text-muted-foreground">CM</span>
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          近期讨论
-        </p>
-      </div>
+      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        近期讨论
+      </p>
       {items.length > 0 ? (
         <div className="mt-4 grid gap-3">
           {items.map((item) => (

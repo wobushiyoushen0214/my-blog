@@ -53,8 +53,7 @@ export function PublicPageHeader({
         </Link>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-end">
-        <span className="font-mono text-xs text-muted-foreground">00</span>
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0 space-y-3">
           <div className="space-y-2">
             {eyebrow ? (
@@ -131,16 +130,12 @@ export function PublicEmptyState({
         className
       )}
     >
-      <div className="grid gap-4 sm:grid-cols-[2.5rem_minmax(0,1fr)]">
-        <div className="text-xs tabular-nums text-muted-foreground">
-          {Icon ? (
-            <span className="flex size-9 items-center justify-center bg-muted/25 text-muted-foreground">
-              <Icon className="h-4 w-4" suppressHydrationWarning />
-            </span>
-          ) : (
-            "00"
-          )}
-        </div>
+      <div className="grid gap-3">
+        {Icon ? (
+          <span className="flex size-9 items-center justify-center bg-muted/25 text-muted-foreground">
+            <Icon className="h-4 w-4" suppressHydrationWarning />
+          </span>
+        ) : null}
         <div className="min-w-0">
           <h2 className="font-serif text-2xl leading-tight">{title}</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
@@ -206,25 +201,24 @@ export function PublicIndexLinks({
 
   return (
     <nav aria-label={ariaLabel} className={cn("grid gap-1", className)}>
-      {items.map((item, index) => {
+      {items.map((item) => {
         const Icon = item.icon;
 
         return (
           <Link
             key={`${item.href}-${item.label}`}
             href={item.href}
-            className="group -mx-2 grid gap-2 px-2 py-2.5 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[2rem_minmax(0,1fr)_auto] sm:items-center"
+            className="group -mx-2 grid gap-2 px-2 py-2.5 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
           >
-            <span className="text-xs tabular-nums text-muted-foreground">
-              {Icon ? (
-                <Icon className="h-4 w-4" suppressHydrationWarning />
-              ) : (
-                String(index + 1).padStart(2, "0")
-              )}
-            </span>
             <span className="min-w-0">
-              <span className="block truncate font-medium text-foreground">
-                {item.label}
+              <span className="flex min-w-0 items-center gap-2 font-medium text-foreground">
+                {Icon ? (
+                  <Icon
+                    className="h-4 w-4 shrink-0 text-muted-foreground"
+                    suppressHydrationWarning
+                  />
+                ) : null}
+                <span className="truncate">{item.label}</span>
               </span>
               {item.description ? (
                 <span className="mt-1 block line-clamp-2 text-xs leading-5 text-muted-foreground">
