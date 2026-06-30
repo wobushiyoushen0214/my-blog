@@ -313,7 +313,7 @@ function TagSearchBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索标签名称或 slug..."
-            className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
+            className="h-10 rounded-none border-border/35 bg-muted/10 pl-10 shadow-none"
           />
         </div>
         <button

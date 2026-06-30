@@ -372,7 +372,7 @@ export default async function SearchPage({
                 name="q"
                 defaultValue={rawQuery}
                 placeholder="搜索标题、正文、分类或标签..."
-                className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
+                className="h-10 rounded-none border-border/35 bg-muted/10 pl-10 shadow-none"
               />
             </div>
             <label htmlFor="search-type" className="sr-only">
@@ -382,7 +382,7 @@ export default async function SearchPage({
               id="search-type"
               name="type"
               defaultValue={contentType}
-              className="h-10 rounded-none border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="h-10 rounded-none border border-border/35 bg-muted/10 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <option value="all">全部内容</option>
               <option value="post">只看文章</option>
@@ -395,7 +395,7 @@ export default async function SearchPage({
               id="search-sort"
               name="sort"
               defaultValue={sort}
-              className="h-10 rounded-none border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="h-10 rounded-none border border-border/35 bg-muted/10 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <option value="newest">最新发布</option>
               <option value="updated">最近更新</option>

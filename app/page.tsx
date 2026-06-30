@@ -399,7 +399,7 @@ function HomeSearch() {
           name="q"
           type="search"
           placeholder="搜索标题、正文、分类或标签..."
-          className="h-10 rounded-none border-border/70 bg-background/70 pl-9 shadow-none"
+          className="h-10 rounded-none border-border/35 bg-muted/10 pl-9 shadow-none"
         />
       </div>
       <label htmlFor="home-search-type" className="sr-only">
@@ -409,7 +409,7 @@ function HomeSearch() {
         id="home-search-type"
         name="type"
         defaultValue="all"
-        className="h-10 rounded-none border border-border/70 bg-background/70 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="h-10 rounded-none border border-border/35 bg-muted/10 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <option value="all">全部</option>
         <option value="post">文章</option>

@@ -389,7 +389,7 @@ function ArchiveFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索标题、摘要、分类或标签..."
-            className="h-10 rounded-none border-border/60 bg-background pl-10 shadow-none"
+            className="h-10 rounded-none border-border/35 bg-muted/10 pl-10 shadow-none"
           />
         </div>
         <label htmlFor="archive-type" className="sr-only">
@@ -399,7 +399,7 @@ function ArchiveFilterBar({
           id="archive-type"
           name="type"
           defaultValue={contentType}
-          className="h-10 rounded-none border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-border/35 bg-muted/10 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部内容</option>
           <option value="post">只看文章</option>

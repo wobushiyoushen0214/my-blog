@@ -185,7 +185,7 @@ export function CommentForm({
             value={form.author_name}
             onChange={(e) => updateField("author_name", e.target.value)}
             placeholder="你的昵称"
-            className="h-10 rounded-none border-border/70 bg-background shadow-none"
+            className="h-10 rounded-none border-border/35 bg-muted/10 shadow-none"
             autoFocus={autoFocus}
             disabled={loading}
             maxLength={NAME_MAX_LENGTH}
@@ -212,7 +212,7 @@ export function CommentForm({
             value={form.author_email}
             onChange={(e) => updateField("author_email", e.target.value)}
             placeholder="you@example.com"
-            className="h-10 rounded-none border-border/70 bg-background shadow-none"
+            className="h-10 rounded-none border-border/35 bg-muted/10 shadow-none"
             disabled={loading}
             maxLength={EMAIL_MAX_LENGTH}
             aria-invalid={Boolean(errors.author_email)}
@@ -238,7 +238,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none rounded-none border-border/70 bg-background shadow-none"
+          className="resize-none rounded-none border-border/35 bg-muted/10 shadow-none"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}
