@@ -546,10 +546,10 @@ function CategoryLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center gap-2 border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-9 shrink-0 items-center gap-2 px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "border-border/70 bg-muted/30 text-foreground"
-          : "border-border/60 bg-background text-muted-foreground hover:bg-muted/20 hover:text-foreground"
+          ? "bg-muted/30 text-foreground"
+          : "bg-muted/10 text-muted-foreground hover:bg-muted/20 hover:text-foreground"
       )}
     >
       {children}
@@ -735,11 +735,11 @@ function TopicPanel({
               className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <Badge
-                variant="outline"
+                variant="secondary"
                 className={cn(
                   "h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal",
                   activeSlug === item.slug &&
-                    "border-border/70 bg-muted/30 text-foreground"
+                    "bg-muted/30 text-foreground"
                 )}
               >
                 {icon === "tag" ? (

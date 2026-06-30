@@ -509,7 +509,7 @@ function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
             {item.name}
           </span>
           <Badge
-            variant="outline"
+            variant="secondary"
             className="rounded-none font-normal"
           >
             {item.status === "new" ? "新收录" : "已收录"}
@@ -525,7 +525,7 @@ function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
           {item.tags?.slice(0, 3).map((tag) => (
             <Badge
               key={tag}
-              variant="outline"
+              variant="secondary"
               className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
             >
               {tag}
@@ -533,7 +533,7 @@ function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
           ))}
           {item.rss ? (
             <Badge
-              variant="outline"
+              variant="secondary"
               className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
             >
               <Rss className="h-3 w-3" suppressHydrationWarning />

@@ -87,7 +87,7 @@ export function PostCard({
               {post.tags.slice(0, 3).map((tag) => (
                 <Badge
                   key={tag.id}
-                  variant="outline"
+                  variant="secondary"
                   className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
                 >
                   {tag.name}
@@ -212,7 +212,7 @@ export function PostCard({
             {post.tags.slice(0, 3).map((tag) => (
               <Badge
                 key={tag.id}
-                variant="outline"
+                variant="secondary"
                 className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
               >
                 {tag.name}

@@ -591,7 +591,7 @@ function ArchivePostRow({ post }: { post: ArchivePost }) {
 
       <div className="min-w-0 space-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <Badge variant="outline" className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal">
+          <Badge variant="secondary" className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal">
             {getContentTypeLabel(post.category)}
           </Badge>
           {post.category ? (
@@ -625,7 +625,7 @@ function ArchivePostRow({ post }: { post: ArchivePost }) {
             {post.tags.slice(0, 4).map((tag) => (
               <Badge
                 key={tag.id}
-                variant="outline"
+                variant="secondary"
                 asChild
                 className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
               >

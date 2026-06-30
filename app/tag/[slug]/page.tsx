@@ -717,10 +717,10 @@ function TaxonomyPanel<
             className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <Badge
-              variant="outline"
+              variant="secondary"
               className={`h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal ${
                 activeSlug === item.slug
-                  ? "border-border/70 bg-muted/30 text-foreground"
+                  ? "bg-muted/30 text-foreground"
                   : ""
               }`}
             >

@@ -133,7 +133,7 @@ export function SearchBar() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="gap-0 overflow-hidden border-border/80 bg-background p-0 shadow-none sm:max-w-xl"
+        className="gap-0 overflow-hidden border-0 bg-background p-0 shadow-none sm:max-w-xl"
         showCloseButton={false}
       >
         <DialogHeader className="sr-only">
@@ -145,7 +145,7 @@ export function SearchBar() {
 
         <form
           onSubmit={handleSearch}
-          className="border-b border-border/60 px-3 py-3 sm:px-4 sm:py-4"
+          className="px-3 py-3 sm:px-4 sm:py-4"
         >
           <label htmlFor="header-search" className="sr-only">
             搜索关键词
@@ -168,13 +168,13 @@ export function SearchBar() {
             </div>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center border border-border/70 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-10 items-center justify-center bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               搜索
             </button>
             <button
               type="button"
-              className="inline-flex size-10 items-center justify-center border border-border/70 bg-background text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex size-10 items-center justify-center bg-muted/20 text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               aria-label="关闭搜索"
               onClick={() => setOpen(false)}
             >

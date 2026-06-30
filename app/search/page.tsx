@@ -667,10 +667,10 @@ function TypeSwitch({
             sort,
           })}
           aria-current={activeType === item.value ? "page" : undefined}
-          className={`inline-flex h-9 shrink-0 items-center border px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          className={`inline-flex h-9 shrink-0 items-center px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeType === item.value
-              ? "border-border/70 bg-muted/30 text-foreground"
-              : "border-border/60 bg-background text-muted-foreground hover:bg-muted/20 hover:text-foreground"
+              ? "bg-muted/30 text-foreground"
+              : "bg-muted/10 text-muted-foreground hover:bg-muted/20 hover:text-foreground"
           }`}
         >
           {item.label}
@@ -847,7 +847,7 @@ function SearchStarterPanel({
                     className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     <Badge
-                      variant="outline"
+                      variant="secondary"
                       className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
                     >
                       <FolderOpen
@@ -872,7 +872,7 @@ function SearchStarterPanel({
                     className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     <Badge
-                      variant="outline"
+                      variant="secondary"
                       className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
                     >
                       <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
@@ -971,7 +971,7 @@ function DiscoveryPanel<T extends { id: string; name: string; postCount: number 
             className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <Badge
-              variant="outline"
+              variant="secondary"
               className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
             >
               {icon === "tag" ? (
