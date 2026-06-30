@@ -376,7 +376,7 @@ function LinkFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索站点名称、简介、分类或标签..."
-            className="h-10 rounded-none border-border/35 bg-muted/10 pl-10 shadow-none"
+            className="h-10 rounded-none border-transparent bg-muted/20 pl-10 shadow-none hover:bg-muted/25 focus-visible:bg-background"
           />
         </div>
         <label htmlFor="links-status" className="sr-only">
@@ -386,7 +386,7 @@ function LinkFilterBar({
           id="links-status"
           name="status"
           defaultValue={status}
-          className="h-10 rounded-none border border-border/35 bg-muted/10 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-transparent bg-muted/20 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/25 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部状态</option>
           <option value="active">已收录</option>

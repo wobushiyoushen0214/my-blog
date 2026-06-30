@@ -521,7 +521,7 @@ function TagFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="在当前标签中搜索标题、摘要或正文..."
-            className="h-10 rounded-none border-border/35 bg-muted/10 pl-10 shadow-none"
+            className="h-10 rounded-none border-transparent bg-muted/20 pl-10 shadow-none hover:bg-muted/25 focus-visible:bg-background"
           />
         </div>
         <label htmlFor="tag-detail-type" className="sr-only">
@@ -531,7 +531,7 @@ function TagFilterBar({
           id="tag-detail-type"
           name="type"
           defaultValue={contentType}
-          className="h-10 rounded-none border border-border/35 bg-muted/10 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-transparent bg-muted/20 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/25 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部内容</option>
           <option value="post">只看文章</option>
@@ -544,7 +544,7 @@ function TagFilterBar({
           id="tag-detail-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-none border border-border/35 bg-muted/10 px-3 text-sm text-foreground outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-none border border-transparent bg-muted/20 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/25 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>

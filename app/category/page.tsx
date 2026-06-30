@@ -271,7 +271,7 @@ function CategorySearchBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索分类名称或 slug..."
-            className="h-10 rounded-none border-border/35 bg-muted/10 pl-10 shadow-none"
+            className="h-10 rounded-none border-transparent bg-muted/20 pl-10 shadow-none hover:bg-muted/25 focus-visible:bg-background"
           />
         </div>
         <button
