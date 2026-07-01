@@ -292,10 +292,7 @@ export default async function MomentsPage({
 
         {postsWithTags.length > 0 ? (
           <div className="mt-8 space-y-8">
-            <MomentStream
-              posts={postsWithTags}
-              sort={sort}
-            />
+            <MomentStream posts={postsWithTags} />
 
             <Pagination
               currentPage={page}
@@ -586,27 +583,11 @@ function FilterPill({ label, href }: { label: string; href: string }) {
 
 function MomentStream({
   posts,
-  sort,
 }: {
   posts: PostWithTaxonomy[];
-  sort: SortOption;
 }) {
-  const title =
-    sort === "popular" ? "热门记录" : sort === "updated" ? "最近更新" : "最新记录";
-
   return (
-    <section aria-labelledby="latest-moments-title" className="space-y-4">
-      <div className="border-b border-border/30 pb-4">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            Stream
-          </p>
-          <h2 id="latest-moments-title" className="mt-1 text-lg font-semibold">
-            {title}
-          </h2>
-        </div>
-      </div>
-
+    <section aria-label="见闻列表" className="border-t border-border/60">
       <ol className="grid">
         {posts.map((post) => {
           const updated =

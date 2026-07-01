@@ -405,22 +405,13 @@ export default async function SearchPage({
           />
         ) : null}
 
-        <section className="mt-8">
+        <div className="mt-8">
           {shownPosts.length > 0 ? (
-            <>
-              <SectionTitle
-                eyebrow={query ? "Results" : "Recent"}
-                title={
-                  query
-                    ? "搜索结果"
-                    : sort === "popular"
-                      ? "热门内容"
-                      : sort === "updated"
-                        ? "最近更新"
-                        : "最近发布"
-                }
-              />
-              <div className="mt-3 grid">
+            <section
+              aria-label={query ? "搜索结果列表" : "最近内容列表"}
+              className="border-t border-border/60"
+            >
+              <div className="grid">
                 {shownPosts.map((post) => (
                   <ContentRow
                     key={post.id}
@@ -429,7 +420,7 @@ export default async function SearchPage({
                   />
                 ))}
               </div>
-            </>
+            </section>
           ) : query ? (
             <PublicEmptyState
               icon={Search}
@@ -446,20 +437,9 @@ export default async function SearchPage({
               description="可以搜索技术主题、标签、文章标题、摘要或正文中的关键词。"
             />
           )}
-        </section>
+        </div>
       </PublicPageShell>
       <Footer />
-    </div>
-  );
-}
-
-function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
-  return (
-    <div className="pb-1">
-      <p className="text-sm text-muted-foreground">
-        {eyebrow}
-      </p>
-      <h2 className="mt-1 text-base font-medium">{title}</h2>
     </div>
   );
 }

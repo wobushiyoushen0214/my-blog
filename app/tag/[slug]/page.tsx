@@ -301,17 +301,10 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
 
         {postsWithTags.length > 0 ? (
           <div className="mt-8 space-y-8">
-            <section className="space-y-4">
-              <SectionTitle
-                eyebrow={getSearchTypeLabel(contentType)}
-                title={
-                  sort === "popular"
-                    ? "热门内容"
-                    : sort === "updated"
-                      ? "最近更新"
-                      : "最新内容"
-                }
-              />
+            <section
+              aria-label={`${getSearchTypeLabel(contentType)}列表`}
+              className="border-t border-border/60"
+            >
               <div className="grid">
                 {postsWithTags.map((post) => (
                   <ContentRow
@@ -549,16 +542,5 @@ function FilterPill({ label, href }: { label: string; href: string }) {
       <span className="truncate">{label}</span>
       <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
     </Link>
-  );
-}
-
-function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
-  return (
-    <div className="border-b border-border/60 pb-3">
-      <p className="text-sm text-muted-foreground">
-        {eyebrow}
-      </p>
-      <h2 className="mt-1 text-lg font-semibold">{title}</h2>
-    </div>
   );
 }

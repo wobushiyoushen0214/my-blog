@@ -272,21 +272,7 @@ export default async function PostsPage({
 
         {postsWithTags.length > 0 ? (
           <div className="mt-8 space-y-8">
-            <section aria-labelledby="latest-posts-title">
-              <div className="border-b border-border/60 pb-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    Journal Index
-                  </p>
-                  <h2 id="latest-posts-title" className="mt-1 text-lg font-semibold">
-                    {sort === "popular"
-                      ? "热门内容"
-                      : sort === "updated"
-                        ? "最近更新"
-                        : "最新内容"}
-                  </h2>
-                </div>
-              </div>
+            <section aria-label="文章列表" className="border-t border-border/60">
               <div className="grid">
                 {postsWithTags.map((post) => (
                   <ContentRow key={post.id} post={post} typeLabel="文章" />
