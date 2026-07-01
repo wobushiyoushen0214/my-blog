@@ -4,21 +4,14 @@ import { Footer } from "@/components/footer";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicIndexLinks,
-  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
-  PublicSummaryStats,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-  ArrowRight,
-  CheckCircle2,
   ExternalLink,
   Link2,
-  MessageSquareText,
-  Rss,
   Search,
   X,
 } from "lucide-react";
@@ -130,7 +123,6 @@ export default async function LinksPage({
     {}
   );
   const categories = Object.keys(groupedLinks);
-  const rssCount = filteredLinks.filter((item) => item.rss).length;
   const hasFilters = Boolean(query || status !== DEFAULT_STATUS);
   const countLabel = hasFilters
     ? `${filteredLinks.length} / ${friendLinks.length} 个站点`
@@ -145,18 +137,6 @@ export default async function LinksPage({
           title="友链"
           description="收录长期阅读和互相连接的站点，也作为发现独立写作者的入口。"
           countLabel={countLabel}
-          action={
-            <Link
-              href="/posts"
-              className="inline-flex h-9 items-center gap-2 rounded-md px-0 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            >
-              <MessageSquareText
-                className="h-4 w-4"
-                suppressHydrationWarning
-              />
-              申请互链
-            </Link>
-          }
         />
 
         {friendLinks.length > 0 ? (
@@ -168,28 +148,6 @@ export default async function LinksPage({
             />
             <ActiveLinkSummary query={query} status={status} />
           </>
-        ) : null}
-
-        {friendLinks.length > 0 ? (
-          <SummaryLedger
-            items={[
-              {
-                label: hasFilters ? "匹配站点" : "收录站点",
-                value: filteredLinks.length,
-                detail: getStatusLabel(status),
-              },
-              {
-                label: "主题分组",
-                value: categories.length,
-                detail: "目录分栏",
-              },
-              {
-                label: "RSS 可订阅",
-                value: rssCount,
-                detail: "可持续阅读",
-              },
-            ]}
-          />
         ) : null}
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
@@ -238,16 +196,7 @@ export default async function LinksPage({
               <PublicEmptyState
                 icon={Link2}
                 title="暂无公开友链"
-                description="友链目录还没有公开收录。可以先参考右侧的本站信息，通过文章评论区留下站点资料。"
-                action={
-                  <PublicActionLink href="/posts">
-                    去文章区留言
-                    <ArrowRight
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                  </PublicActionLink>
-                }
+                description="友链目录还没有公开收录。可以先参考右侧的互链信息，通过文章评论区留下站点资料。"
                 className="max-w-none"
               />
             )}
@@ -255,8 +204,8 @@ export default async function LinksPage({
 
           <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
             <InfoPanel
-              title="本站信息"
-              description="申请互链时可直接引用这些资料。"
+              title="互链信息"
+              description="本站资料和留言所需信息集中在这里。"
             >
               <div className="grid gap-1">
                 {siteProfile.map((item) => (
@@ -282,23 +231,18 @@ export default async function LinksPage({
                   </div>
                 ))}
               </div>
-            </InfoPanel>
-
-            <InfoPanel
-              title="申请互链"
-              description="留言时带上这些信息，后续整理时可以直接录入。"
-            >
-              <ul className="grid gap-2">
-                {applicationFields.map((field) => (
-                  <li key={field} className="flex gap-2 text-sm leading-6">
-                    <CheckCircle2
-                      className="mt-1 h-4 w-4 shrink-0 text-muted-foreground"
-                      suppressHydrationWarning
-                    />
-                    <span className="text-muted-foreground">{field}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-4 border-t border-border/60 pt-4">
+                <h3 className="text-xs font-medium text-foreground">
+                  留言时附上
+                </h3>
+                <ul className="mt-2 grid gap-2">
+                  {applicationFields.map((field) => (
+                    <li key={field} className="text-sm leading-6 text-muted-foreground">
+                      {field}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </InfoPanel>
 
             <InfoPanel title="收录规则" description="保持目录可读、可维护。">
@@ -311,34 +255,6 @@ export default async function LinksPage({
               </ul>
             </InfoPanel>
 
-            <PublicInfoPanel
-              title="继续浏览"
-              description="如果只是想发现内容，可以从文章流或搜索入口继续。"
-              contentClassName="py-1"
-            >
-              <PublicIndexLinks
-                ariaLabel="友链页继续浏览"
-                items={[
-                  {
-                    href: "/posts",
-                    label: "文章列表",
-                    description: "进入按时间整理的长文流",
-                  },
-                  {
-                    href: "/search",
-                    label: "搜索内容",
-                    description: "按关键词查找站内内容",
-                    icon: Search,
-                  },
-                  {
-                    href: "/rss.xml",
-                    label: "RSS 订阅",
-                    description: "订阅最新发布",
-                    icon: Rss,
-                  },
-                ]}
-              />
-            </PublicInfoPanel>
           </aside>
         </div>
       </PublicPageShell>
@@ -462,14 +378,6 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function SummaryLedger({
-  items,
-}: {
-  items: { label: string; value: number; detail: string }[];
-}) {
-  return <PublicSummaryStats ariaLabel="友链概览" items={items} className="mt-6" />;
-}
-
 function FriendLinkRow({ item }: { item: FriendLink }) {
   return (
     <Link
@@ -511,7 +419,6 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
               variant="secondary"
               className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
             >
-              <Rss className="h-3 w-3" suppressHydrationWarning />
               RSS
             </Badge>
           ) : null}

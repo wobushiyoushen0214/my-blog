@@ -9,10 +9,8 @@ import { CommentList } from "@/components/comment-list";
 import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
-  MessageSquare,
 } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, PostTag, Tag as TagType } from "@/lib/types";
@@ -535,18 +533,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               dangerouslySetInnerHTML={{ __html: articleContent }}
             />
 
-            <ArticleFinishPanel
-              category={post.category}
-              tags={tags}
-              commentCount={commentCount}
-              contentType={contentType}
-            />
-
             <ArticlePager previousPost={previousPost} nextPost={nextPost} />
 
             <RelatedSection
               posts={relatedPosts}
-              contentListHref={contentListHref}
               contentTypeLabel={contentTypeLabel}
             />
 
@@ -578,74 +568,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </main>
       <Footer />
     </div>
-  );
-}
-
-function ArticleFinishPanel({
-  category,
-  tags,
-  commentCount,
-  contentType,
-}: {
-  category?: Category | null;
-  tags: TagType[];
-  commentCount: number;
-  contentType: ContentType;
-}) {
-  const contentTypeLabel = getContentTypeLabel(contentType);
-  return (
-    <section className="mt-12 border-t border-border/60 pt-8">
-      <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_220px]">
-        <div>
-          <div className="min-w-0">
-            <p className="text-sm text-muted-foreground">
-              继续浏览
-            </p>
-            <h2 className="mt-1 text-lg font-semibold">读完之后</h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              可以继续查看同主题{contentTypeLabel}，也可以在评论区补充你的想法。
-            </p>
-          </div>
-          {tags.length > 0 ? (
-            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
-              {tags.slice(0, 4).map((tag) => (
-                <Link
-                  key={tag.id}
-                  href={`/tag/${tag.slug}`}
-                  className="inline-flex h-8 items-center text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                >
-                  #{tag.name}
-                </Link>
-              ))}
-            </div>
-          ) : null}
-        </div>
-        <div className="grid gap-1">
-          <a
-            href="#comments"
-            className="group flex min-h-11 items-center justify-between gap-3 border-b border-border/60 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            <span className="inline-flex items-center gap-2 text-muted-foreground group-hover:text-foreground">
-              <MessageSquare className="h-4 w-4" suppressHydrationWarning />
-              评论区
-            </span>
-            <span className="text-xs text-muted-foreground">{commentCount}</span>
-          </a>
-          <Link
-            href={category ? getCategoryBrowseHref(category) : getContentListHref(contentType)}
-            className="group flex min-h-11 items-center justify-between gap-3 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            <span className="text-muted-foreground group-hover:text-foreground">
-              {category ? "同类内容" : `更多${contentTypeLabel}`}
-            </span>
-            <ArrowRight
-              className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground"
-              suppressHydrationWarning
-            />
-          </Link>
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -755,16 +677,14 @@ function NavigationPostCard({
 
 function RelatedSection({
   posts,
-  contentListHref,
   contentTypeLabel,
 }: {
   posts: RelatedPost[];
-  contentListHref: string;
   contentTypeLabel: string;
 }) {
   return (
     <section className="mt-12 border-t border-border/60 pt-8">
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-4">
         <div>
           <p className="text-sm text-muted-foreground">
             Related
@@ -773,18 +693,12 @@ function RelatedSection({
             相关内容
           </h2>
         </div>
-        <Link
-          href={contentListHref}
-          className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          全部{contentTypeLabel}
-        </Link>
       </div>
       {posts.length > 0 ? (
         <RelatedContentList posts={posts} />
       ) : (
         <p className="text-sm leading-6 text-muted-foreground">
-          暂无同类内容，可以回到{contentTypeLabel}列表继续浏览。
+          暂无同类{contentTypeLabel}。
         </p>
       )}
     </section>

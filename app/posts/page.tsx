@@ -11,7 +11,7 @@ import {
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ArrowRight, FileText, Search, X } from "lucide-react";
+import { FileText, Search, X } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -21,7 +21,6 @@ const DEFAULT_SORT = "newest";
 type SortOption = "newest" | "updated" | "popular";
 
 type CategorySummary = Category & { postCount: number };
-type TagSummary = Tag & { postCount: number };
 type PostWithTaxonomy = Post & {
   category?: Pick<Category, "name" | "slug" | "type"> | null;
   tags?: Tag[];
@@ -205,13 +204,6 @@ export default async function PostsPage({
           .in("post_id", allArticlePostIds)
       : { data: [] };
 
-  const tagCounts = (articlePostTags || []).reduce<Map<string, number>>(
-    (counts, postTag) => {
-      counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
-      return counts;
-    },
-    new Map()
-  );
   const tagById = new Map((tags || []).map((tag) => [tag.id, tag as Tag]));
   const tagsByPostId = (articlePostTags || []).reduce<Map<string, Tag[]>>(
     (groups, postTag) => {
@@ -223,14 +215,6 @@ export default async function PostsPage({
     },
     new Map()
   );
-  const tagSummaries: TagSummary[] = (tags || [])
-    .map((tag) => ({
-      ...tag,
-      postCount: tagCounts.get(tag.id) || 0,
-    }))
-    .filter((tag) => tag.postCount > 0)
-    .sort((a, b) => b.postCount - a.postCount);
-
   const postsWithTags = attachTagsFromMap(
     (posts || []) as unknown as PostWithTaxonomy[],
     tagsByPostId
@@ -289,7 +273,7 @@ export default async function PostsPage({
         {postsWithTags.length > 0 ? (
           <div className="mt-8 space-y-8">
             <section aria-labelledby="latest-posts-title">
-              <div className="flex flex-col gap-2 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="border-b border-border/60 pb-3">
                 <div>
                   <p className="text-sm text-muted-foreground">
                     Journal Index
@@ -302,18 +286,6 @@ export default async function PostsPage({
                         : "最新内容"}
                   </h2>
                 </div>
-                {categoryName || searchQuery || sort !== DEFAULT_SORT ? (
-                  <Link
-                    href="/posts"
-                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    全部文章
-                    <ArrowRight
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                  </Link>
-                ) : null}
               </div>
               <div className="grid">
                 {postsWithTags.map((post) => (
@@ -328,11 +300,6 @@ export default async function PostsPage({
               basePath={basePath}
             />
 
-            <TopicDirectory
-              categories={categorySummaries}
-              tags={tagSummaries.slice(0, 12)}
-              activeSlug={activeCategorySlug}
-            />
           </div>
         ) : (
           <PublicEmptyState
@@ -611,71 +578,5 @@ function FilterPill({ label, href }: { label: string; href: string }) {
       <span className="truncate">{label}</span>
       <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
     </Link>
-  );
-}
-
-function TopicDirectory({
-  categories,
-  tags,
-  activeSlug,
-}: {
-  categories: CategorySummary[];
-  tags: TagSummary[];
-  activeSlug?: string;
-}) {
-  return (
-    <section className="grid gap-8 border-t border-border/60 pt-8 sm:grid-cols-2">
-      <TopicLinks
-        title="分类"
-        items={categories}
-        hrefFor={(item) => `/posts?category=${encodeURIComponent(item.slug)}`}
-        activeSlug={activeSlug}
-      />
-      <TopicLinks
-        title="标签"
-        items={tags}
-        hrefFor={(item) => `/tag/${item.slug}`}
-      />
-    </section>
-  );
-}
-
-function TopicLinks({
-  title,
-  items,
-  hrefFor,
-  activeSlug,
-}: {
-  title: string;
-  items: Array<CategorySummary | TagSummary>;
-  hrefFor: (item: CategorySummary | TagSummary) => string;
-  activeSlug?: string;
-}) {
-  const visibleItems = items.filter((item) => item.postCount > 0);
-  if (visibleItems.length === 0) return null;
-
-  return (
-    <section>
-      <h2 className="text-sm font-medium text-foreground">
-        {title}
-      </h2>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {visibleItems.map((item) => (
-          <Link
-            key={item.id}
-            href={hrefFor(item)}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-              activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
-            )}
-          >
-            <span className="max-w-36 truncate">{item.name}</span>
-            <span className="text-xs tabular-nums text-muted-foreground">
-              {item.postCount}
-            </span>
-          </Link>
-        ))}
-      </div>
-    </section>
   );
 }

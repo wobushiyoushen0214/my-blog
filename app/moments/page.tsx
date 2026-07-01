@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
-  ArrowRight,
   NotebookText,
   Search,
   X,
@@ -26,7 +25,6 @@ const DEFAULT_SORT = "newest";
 type SortOption = "newest" | "updated" | "popular";
 
 type CategorySummary = Category & { postCount: number };
-type TagSummary = Tag & { postCount: number };
 type PostWithTaxonomy = Post & {
   category?: Category | null;
   tags?: Tag[];
@@ -244,21 +242,6 @@ export default async function MomentsPage({
     tagsByPostId
   );
 
-  const tagCounts = (momentPostTags || []).reduce<Map<string, number>>(
-    (counts, postTag) => {
-      counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
-      return counts;
-    },
-    new Map()
-  );
-  const tagSummaries: TagSummary[] = (tags || [])
-    .map((tag) => ({
-      ...tag,
-      postCount: tagCounts.get(tag.id) || 0,
-    }))
-    .filter((tag) => tag.postCount > 0)
-    .sort((a, b) => b.postCount - a.postCount);
-
   const basePath = buildMomentsPath({
     categorySlug: activeCategorySlug,
     searchQuery,
@@ -312,9 +295,6 @@ export default async function MomentsPage({
             <MomentStream
               posts={postsWithTags}
               sort={sort}
-              showAllLink={Boolean(
-                activeCategory || searchQuery || sort !== DEFAULT_SORT
-              )}
             />
 
             <Pagination
@@ -323,11 +303,6 @@ export default async function MomentsPage({
               basePath={basePath}
             />
 
-            <TopicDirectory
-              categories={categorySummaries}
-              tags={tagSummaries.slice(0, 12)}
-              activeSlug={activeCategorySlug}
-            />
           </div>
         ) : (
           <PublicEmptyState
@@ -612,18 +587,16 @@ function FilterPill({ label, href }: { label: string; href: string }) {
 function MomentStream({
   posts,
   sort,
-  showAllLink,
 }: {
   posts: PostWithTaxonomy[];
   sort: SortOption;
-  showAllLink: boolean;
 }) {
   const title =
     sort === "popular" ? "热门记录" : sort === "updated" ? "最近更新" : "最新记录";
 
   return (
     <section aria-labelledby="latest-moments-title" className="space-y-4">
-      <div className="flex flex-col gap-2 border-b border-border/30 pb-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="border-b border-border/30 pb-4">
         <div>
           <p className="text-sm text-muted-foreground">
             Stream
@@ -632,15 +605,6 @@ function MomentStream({
             {title}
           </h2>
         </div>
-        {showAllLink ? (
-          <Link
-            href="/moments"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            全部见闻
-            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-          </Link>
-        ) : null}
       </div>
 
       <ol className="grid">
@@ -665,72 +629,6 @@ function MomentStream({
           );
         })}
       </ol>
-    </section>
-  );
-}
-
-function TopicDirectory({
-  categories,
-  tags,
-  activeSlug,
-}: {
-  categories: CategorySummary[];
-  tags: TagSummary[];
-  activeSlug?: string;
-}) {
-  return (
-    <section className="grid gap-8 border-t border-border/60 pt-8 sm:grid-cols-2">
-      <TopicLinks
-        title="见闻分类"
-        items={categories}
-        hrefFor={(item) => `/moments?category=${encodeURIComponent(item.slug)}`}
-        activeSlug={activeSlug}
-      />
-      <TopicLinks
-        title="相关标签"
-        items={tags}
-        hrefFor={(item) => `/tag/${item.slug}`}
-      />
-    </section>
-  );
-}
-
-function TopicLinks({
-  title,
-  items,
-  hrefFor,
-  activeSlug,
-}: {
-  title: string;
-  items: Array<CategorySummary | TagSummary>;
-  hrefFor: (item: CategorySummary | TagSummary) => string;
-  activeSlug?: string;
-}) {
-  const visibleItems = items.filter((item) => item.postCount > 0);
-  if (visibleItems.length === 0) return null;
-
-  return (
-    <section>
-      <h2 className="text-sm font-medium text-foreground">
-        {title}
-      </h2>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {visibleItems.map((item) => (
-          <Link
-            key={item.id}
-            href={hrefFor(item)}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-              activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
-            )}
-          >
-            <span className="max-w-36 truncate">{item.name}</span>
-            <span className="text-xs tabular-nums text-muted-foreground">
-              {item.postCount}
-            </span>
-          </Link>
-        ))}
-      </div>
     </section>
   );
 }
