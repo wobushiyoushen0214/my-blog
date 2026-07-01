@@ -449,76 +449,59 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <article className="mx-auto w-full max-w-[1080px] px-5 py-10 md:px-6 md:py-14">
+        <article className="mx-auto w-full max-w-[1240px] px-5 py-12 md:px-8 md:py-16 lg:px-12">
           <Link
             href={contentListHref}
-            className="mb-8 inline-flex h-9 items-center gap-1.5 px-0 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="mb-10 inline-flex h-9 items-center gap-2 px-0 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
             返回{contentTypeLabel}
           </Link>
 
-          <header>
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
-              <div className="min-w-0 py-2 md:py-4 lg:pr-8">
-                <div className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 font-medium text-foreground">
-                      {contentType === "moment" ? (
-                        <NotebookText className="h-3.5 w-3.5" suppressHydrationWarning />
-                      ) : (
-                        <FileText className="h-3.5 w-3.5" suppressHydrationWarning />
-                      )}
-                      {contentTypeLabel}
-                    </span>
-                    {post.category ? (
-                      <Link
-                        href={getCategoryBrowseHref(post.category)}
-                        className="rounded-full bg-muted px-2.5 py-1 font-medium text-foreground transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
-                        {post.category.name}
-                      </Link>
-                    ) : null}
-                    <span className="inline-flex items-center gap-1.5">
-                      <CalendarDays
-                        className="h-3.5 w-3.5"
-                        suppressHydrationWarning
-                      />
-                      <time dateTime={post.created_at}>
-                        {formatDate(post.created_at)}
-                      </time>
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
-                      {readingMinutes} 分钟阅读
-                  </span>
+          <header className="border-b border-border/35 pb-10 md:pb-14">
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+              <div className="min-w-0">
+                <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                  <span>{contentTypeLabel}</span>
+                  <span className="h-px w-8 bg-border/60" aria-hidden="true" />
+                  {post.category ? (
+                    <Link
+                      href={getCategoryBrowseHref(post.category)}
+                      className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    >
+                      {post.category.name}
+                    </Link>
+                  ) : null}
+                  <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
                 </div>
 
-                <div className="min-w-0 space-y-5 py-6">
-                  <h1 className="max-w-4xl font-serif text-4xl leading-[1.08] tracking-tight md:text-5xl lg:text-6xl">
+                <div className="min-w-0 space-y-6 py-8">
+                  <h1 className="max-w-5xl font-serif text-5xl leading-[1.04] md:text-6xl lg:text-7xl">
                     {post.title}
                   </h1>
                   {post.excerpt ? (
-                    <p className="max-w-3xl font-serif text-lg leading-9 text-muted-foreground/80 italic">
+                    <p className="max-w-3xl font-serif text-xl italic leading-9 text-muted-foreground md:text-2xl md:leading-10">
                       {post.excerpt}
                     </p>
                   ) : null}
                 </div>
 
                 {tags.length > 0 ? (
-                  <div className="flex min-w-0 flex-wrap gap-2 pt-2">
+                  <nav
+                    aria-label="文章标签"
+                    className="flex min-w-0 flex-wrap gap-x-4 gap-y-2 pt-1 text-xs uppercase tracking-[0.16em] text-muted-foreground"
+                  >
                     {tags.map((tag) => (
                       <Link
                         key={tag.id}
                         href={`/tag/${tag.slug}`}
-                        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                        className="inline-flex h-8 items-center gap-1.5 border-b border-border/60 transition-colors hover:border-primary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                       >
-                        <Badge variant="secondary" className="rounded-full px-2.5 font-normal">
-                          <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
-                          {tag.name}
-                        </Badge>
+                        <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
+                        {tag.name}
                       </Link>
                     ))}
-                  </div>
+                  </nav>
                 ) : null}
               </div>
 
@@ -527,36 +510,40 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 comments={commentCount}
                 updatedAt={post.updated_at || post.created_at}
                 contentTypeLabel={contentTypeLabel}
+                readingMinutes={readingMinutes}
               />
             </div>
           </header>
 
           {post.cover_image ? (
-            <div className="mt-8">
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-muted md:aspect-[21/9]">
+            <figure className="mt-10">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[21/9]">
                 <Image
                   src={post.cover_image}
                   alt={post.title}
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 1280px"
-                  className="object-cover rounded-xl"
+                  className="object-cover grayscale"
                 />
               </div>
-            </div>
+              <figcaption className="mt-3 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                Figure 01 / {post.title}
+              </figcaption>
+            </figure>
           ) : null}
 
-          <div className="grid gap-10 py-10 lg:grid-cols-[minmax(0,720px)_280px] lg:items-start lg:justify-center">
+          <div className="grid gap-12 py-12 lg:grid-cols-[minmax(0,720px)_280px] lg:items-start lg:justify-center lg:py-16">
             <div className="min-w-0">
               <div
                 className="prose prose-neutral dark:prose-invert dropcap max-w-none
-                  prose-headings:scroll-mt-24 prose-headings:font-serif prose-headings:font-normal prose-headings:tracking-tight
+                  prose-headings:scroll-mt-24 prose-headings:font-serif prose-headings:font-normal
                   prose-p:leading-[1.85] prose-p:text-foreground/90
                   prose-a:text-primary prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-4 hover:prose-a:decoration-primary
-                  prose-img:rounded-xl
+                  prose-img:rounded-none
                   prose-blockquote:border-l-primary prose-blockquote:font-serif prose-blockquote:italic prose-blockquote:text-muted-foreground
                   prose-hr:border-border/30
-                  prose-pre:rounded-xl prose-pre:bg-muted/60
+                  prose-pre:rounded-md prose-pre:bg-muted/60
                   prose-code:before:content-none prose-code:after:content-none
                   prose-code:rounded-md prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm"
                 dangerouslySetInnerHTML={{ __html: articleContent }}
@@ -574,15 +561,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <section
                 id="comments"
                 aria-labelledby="comments-title"
-                className="mt-16 pt-10"
+                className="mt-16 border-t border-border/35 pt-10"
               >
                 <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                      <span className="text-primary/50" aria-hidden="true">❖</span>
+                    <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                      <span className="h-px w-8 bg-border/70" aria-hidden="true" />
                       Discussion
                     </p>
-                    <h2 id="comments-title" className="mt-1 font-serif text-2xl tracking-tight">
+                    <h2 id="comments-title" className="mt-2 font-serif text-2xl">
                       评论
                     </h2>
                   </div>
@@ -681,31 +668,29 @@ function ArticleFinishPanel({
 }) {
   const contentTypeLabel = getContentTypeLabel(contentType);
   return (
-    <section className="mt-14 rounded-2xl border border-border/60 bg-card p-6">
+    <section className="mt-14 border-y border-border/35 py-8">
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_280px]">
         <div className="py-4 md:pr-5">
           <div className="min-w-0">
-            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              <span className="text-primary/50" aria-hidden="true">❖</span>
+            <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="h-px w-8 bg-border/70" aria-hidden="true" />
               继续浏览
             </p>
-            <h2 className="mt-2 font-serif text-xl tracking-tight">读完之后</h2>
+            <h2 className="mt-2 font-serif text-xl">读完之后</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               可以继续查看同主题{contentTypeLabel}，或在评论区补充你的想法。
             </p>
           </div>
           {tags.length > 0 ? (
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
               {tags.slice(0, 4).map((tag) => (
                 <Link
                   key={tag.id}
                   href={`/tag/${tag.slug}`}
-                  className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="inline-flex h-8 items-center gap-1.5 border-b border-border/60 text-xs uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-primary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 >
-                  <Badge variant="secondary" className="rounded-full font-normal">
-                    <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
-                    {tag.name}
-                  </Badge>
+                  <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
+                  {tag.name}
                 </Link>
               ))}
             </div>
@@ -714,7 +699,7 @@ function ArticleFinishPanel({
         <div className="grid gap-1">
           <a
             href="#comments"
-            className="group flex items-center justify-between gap-3 px-0 py-3 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-4"
+            className="group flex min-h-11 items-center justify-between gap-3 border-b border-border/25 px-0 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-4"
           >
             <span className="inline-flex items-center gap-2 text-muted-foreground group-hover:text-foreground">
               <MessageSquare className="h-4 w-4" suppressHydrationWarning />
@@ -724,7 +709,7 @@ function ArticleFinishPanel({
           </a>
           <Link
             href={category ? getCategoryBrowseHref(category) : getContentListHref(contentType)}
-            className="group flex items-center justify-between gap-3 px-0 py-3 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-4"
+            className="group flex min-h-11 items-center justify-between gap-3 px-0 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-4"
           >
             <span className="text-muted-foreground group-hover:text-foreground">
               {category ? "同类内容" : `更多${contentTypeLabel}`}
@@ -745,13 +730,13 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
 
   return (
     <InfoPanel title="目录">
-      <nav aria-label="文章目录" className="grid gap-1">
+      <nav aria-label="文章目录" className="grid gap-1 border-l border-border/35 pl-3">
         {headings.map((heading) => (
           <a
             key={heading.id}
             href={`#${heading.id}`}
             className={cn(
-              "line-clamp-2 px-2 py-1.5 text-sm leading-5 text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+              "line-clamp-2 min-h-8 px-2 py-1.5 text-sm leading-5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
               heading.level === 3 && "pl-5 text-xs"
             )}
           >
@@ -775,7 +760,7 @@ function ArticlePager({
   return (
     <nav
       aria-label="相邻文章"
-      className="mt-8 grid gap-3 md:grid-cols-2"
+      className="mt-10 grid gap-px border-y border-border/35 bg-border/25 md:grid-cols-2"
     >
       <NavigationPostCard
         post={previousPost}
@@ -798,7 +783,7 @@ function NavigationPostCard({
 }) {
   if (!post) {
     return (
-      <div className="p-4">
+      <div className="bg-background p-5">
         <p className="text-xs text-muted-foreground">{label}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           暂无更多相邻文章
@@ -810,7 +795,7 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group -mx-2 rounded-lg px-3 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group bg-background p-5 transition-colors hover:bg-muted/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
@@ -846,22 +831,33 @@ function ArticleMetaPanel({
   comments,
   updatedAt,
   contentTypeLabel,
+  readingMinutes,
 }: {
   views: number;
   comments: number;
   updatedAt: string;
   contentTypeLabel: string;
+  readingMinutes: number;
 }) {
   return (
-    <div className="grid h-full gap-1 rounded-xl border border-border/60 bg-card p-4">
+    <aside className="border-l border-border/35 pl-6">
+      <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+        Article Index
+      </p>
+      <dl className="grid gap-1">
       <MetaItem
         icon={contentTypeLabel === "见闻" ? NotebookText : FileText}
         label="类型"
         value={contentTypeLabel}
       />
       <MetaItem
-        icon={Eye}
+        icon={Clock}
         label="阅读"
+        value={`${readingMinutes} 分钟`}
+      />
+      <MetaItem
+        icon={Eye}
+        label="浏览"
         value={numberFormatter.format(views)}
       />
       <MetaItem
@@ -874,7 +870,8 @@ function ArticleMetaPanel({
         label="更新"
         value={formatDate(updatedAt)}
       />
-    </div>
+      </dl>
+    </aside>
   );
 }
 
@@ -890,7 +887,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
             className="group -mx-2 block px-2 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-              <span className="rounded-full bg-muted px-2 py-0.5 text-foreground">
+              <span className="bg-muted/25 px-2 py-0.5 text-foreground">
                 {getContentTypeLabel(contentType)}
               </span>
               {post.relationLabel ? (
@@ -913,7 +910,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                   <Badge
                     key={tag.id}
                     variant="secondary"
-                    className="h-5 rounded-full px-2 py-0 text-[10px] font-normal text-muted-foreground"
+                    className="h-5 rounded-none px-2 py-0 text-[10px] font-normal text-muted-foreground"
                   >
                     {tag.name}
                   </Badge>
@@ -937,10 +934,14 @@ function MetaItem({
   value: string;
 }) {
   return (
-    <div className="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-center gap-3 py-2.5 lg:px-2">
-      <Icon className="h-4 w-4 text-muted-foreground" suppressHydrationWarning />
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <span className="text-sm font-medium tabular-nums">{value}</span>
+    <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 border-t border-border/25 py-3 first:border-t-0">
+      <Icon className="mt-0.5 h-4 w-4 text-muted-foreground" suppressHydrationWarning />
+      <div className="min-w-0">
+        <dt className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+          {label}
+        </dt>
+        <dd className="mt-1 text-sm font-medium tabular-nums">{value}</dd>
+      </div>
     </div>
   );
 }
@@ -955,8 +956,8 @@ function InfoPanel({
   return (
     <section className="space-y-2 py-1">
       <div className="py-2">
-        <h2 className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          <span className="text-primary/50" aria-hidden="true">❖</span>
+        <h2 className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <span className="h-px w-6 bg-border/70" aria-hidden="true" />
           {title}
         </h2>
       </div>

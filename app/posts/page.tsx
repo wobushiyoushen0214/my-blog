@@ -7,11 +7,8 @@ import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicPageHeader,
   PublicPageShell,
-  PublicSummaryStats,
 } from "@/components/public-page";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ArrowRight, FileText, Hash, Search, X } from "lucide-react";
@@ -267,9 +264,8 @@ export default async function PostsPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell>
-        <PublicPageHeader
-          eyebrow="Posts"
+      <PublicPageShell className="max-w-[1240px] py-14 md:py-20">
+        <JournalHero
           title={
             categoryName
               ? `文章 · ${categoryName}`
@@ -278,7 +274,11 @@ export default async function PostsPage({
                 : "文章"
           }
           description="系统整理的技术笔记、项目复盘与长期主题，可按分类、关键词和排序继续收窄。"
-          countLabel={`${totalCount} 篇`}
+          totalCount={totalCount}
+          allCount={allArticleCount}
+          categoryName={categoryName}
+          searchQuery={searchQuery}
+          sort={sort}
           action={
             <PublicActionLink href="/search">
               <Search className="h-4 w-4" suppressHydrationWarning />
@@ -324,11 +324,13 @@ export default async function PostsPage({
           <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
             <div className="min-w-0 space-y-8">
               {featuredPost ? (
-                <section aria-labelledby="featured-post-title" className="space-y-3">
-                  <div className="flex items-center justify-between gap-3">
+                <section aria-labelledby="featured-post-title" className="space-y-4">
+                  <div className="flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-sm text-muted-foreground">推荐阅读</p>
-                      <h2 id="featured-post-title" className="text-base font-medium">
+                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                        Featured
+                      </p>
+                      <h2 id="featured-post-title" className="mt-1 font-serif text-2xl">
                         精选文章
                       </h2>
                     </div>
@@ -339,10 +341,12 @@ export default async function PostsPage({
 
               {listPosts.length > 0 ? (
                 <section aria-labelledby="latest-posts-title" className="space-y-4">
-                  <div className="flex flex-col gap-1 pb-1 sm:flex-row sm:items-end sm:justify-between">
+                  <div className="flex flex-col gap-2 border-b border-border/30 pb-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">文章列表</p>
-                      <h2 id="latest-posts-title" className="text-base font-medium">
+                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                        Journal Index
+                      </p>
+                      <h2 id="latest-posts-title" className="mt-1 font-serif text-2xl">
                         {sort === "popular"
                           ? "热门内容"
                           : sort === "updated"
@@ -363,7 +367,7 @@ export default async function PostsPage({
                       </Link>
                     ) : null}
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid">
                     {listPosts.map((post) => (
                       <PostCard key={post.id} post={post} variant="compact" />
                     ))}
@@ -424,6 +428,76 @@ export default async function PostsPage({
   );
 }
 
+function JournalHero({
+  title,
+  description,
+  totalCount,
+  allCount,
+  categoryName,
+  searchQuery,
+  sort,
+  action,
+}: {
+  title: string;
+  description: string;
+  totalCount: number;
+  allCount: number;
+  categoryName: string | null;
+  searchQuery: string;
+  sort: SortOption;
+  action: ReactNode;
+}) {
+  const context = categoryName
+    ? `分类 / ${categoryName}`
+    : searchQuery
+      ? `关键词 / ${searchQuery}`
+      : "Volume / Articles";
+
+  return (
+    <header className="mb-10 border-b border-border/35 pb-10 md:mb-12 md:pb-14">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+        <div className="min-w-0">
+          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
+            <span className="h-px w-8 bg-border/70" aria-hidden="true" />
+            Journal
+          </p>
+          <h1 className="mt-5 font-serif text-5xl italic leading-[1.04] md:text-6xl lg:text-7xl">
+            {title}
+          </h1>
+          <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
+            {description}
+          </p>
+        </div>
+
+        <div className="border-l border-border/35 pl-6">
+          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            {context}
+          </p>
+          <dl className="mt-5 grid gap-3 border-y border-border/25 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-xs text-muted-foreground">当前视图</dt>
+              <dd className="font-serif text-2xl leading-none tabular-nums">
+                {totalCount}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-xs text-muted-foreground">文章池</dt>
+              <dd className="text-sm tabular-nums text-foreground/90">
+                {allCount}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-xs text-muted-foreground">排序</dt>
+              <dd className="text-sm text-foreground/90">{getSortLabel(sort)}</dd>
+            </div>
+          </dl>
+          <div className="mt-5">{action}</div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
 function PostsOverview({
   totalCount,
   allCount,
@@ -457,7 +531,28 @@ function PostsOverview({
     },
   ];
 
-  return <PublicSummaryStats ariaLabel="文章概览" items={items} />;
+  return (
+    <section
+      aria-label="文章概览"
+      className="mt-6 grid gap-px border-y border-border/35 bg-border/25 sm:grid-cols-3"
+    >
+      {items.map((item) => (
+        <div key={item.label} className="bg-background px-4 py-4">
+          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            {item.label}
+          </p>
+          <p className="mt-2 font-serif text-2xl leading-none text-foreground">
+            {item.value}
+          </p>
+          {item.detail ? (
+            <p className="mt-2 truncate text-xs text-muted-foreground">
+              {item.detail}
+            </p>
+          ) : null}
+        </div>
+      ))}
+    </section>
+  );
 }
 
 function CategoryNav({
@@ -478,7 +573,7 @@ function CategoryNav({
   return (
     <nav
       aria-label="文章分类"
-      className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0"
+      className="-mx-5 flex gap-6 overflow-x-auto border-b border-border/30 px-5 md:mx-0 md:px-0"
     >
       <CategoryLink
         href={buildPostsPath({ searchQuery, sort })}
@@ -520,10 +615,10 @@ function CategoryLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center gap-2 px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-11 shrink-0 items-center gap-2 border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "bg-muted/30 text-foreground"
-          : "bg-muted/10 text-muted-foreground hover:bg-muted/20 hover:text-foreground"
+          ? "border-primary text-foreground"
+          : "text-muted-foreground hover:border-border hover:text-foreground"
       )}
     >
       {children}
@@ -545,7 +640,7 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-5 py-1">
+    <section className="mt-6 border-b border-border/30 pb-6">
       <form
         action="/posts"
         role="search"
@@ -568,7 +663,7 @@ function ListFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="在文章中搜索标题、摘要或正文..."
-            className="h-10 rounded-none border-transparent bg-muted/20 pl-10 shadow-none hover:bg-muted/25 focus-visible:bg-background"
+            className="h-11 rounded-none border-border/40 bg-transparent pl-10 shadow-none hover:border-border focus-visible:bg-background"
           />
         </div>
         <label htmlFor="posts-sort" className="sr-only">
@@ -578,7 +673,7 @@ function ListFilterBar({
           id="posts-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-none border border-transparent bg-muted/20 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/25 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-11 rounded-none border border-border/40 bg-transparent px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:border-border focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
@@ -586,14 +681,14 @@ function ListFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-11 items-center justify-center bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           筛选
         </button>
         {hasFilters ? (
           <Link
             href={buildPostsPath({ categorySlug })}
-            className="inline-flex h-10 items-center justify-center bg-muted/20 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-11 items-center justify-center border border-border/40 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -624,7 +719,7 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-4 flex flex-col gap-2 border-l border-border/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {categoryName ? (
@@ -660,7 +755,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/35 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -687,8 +782,8 @@ function TopicPanel({
   if (items.length === 0) return null;
 
   return (
-    <section className="space-y-2 py-1">
-      <div className="py-2">
+    <section className="py-1">
+      <div className="border-b border-border/30 py-3">
         <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           {title}
         </h2>
@@ -696,7 +791,7 @@ function TopicPanel({
           {description}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 py-1">
+      <div className="grid">
         {items.map((item) => {
           const href =
             icon === "category"
@@ -706,22 +801,20 @@ function TopicPanel({
             <Link
               key={item.id}
               href={href}
-              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className={cn(
+                "group grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/20 py-2 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
+              )}
             >
-              <Badge
-                variant="secondary"
-                className={cn(
-                  "h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal",
-                  activeSlug === item.slug &&
-                    "bg-muted/30 text-foreground"
-                )}
-              >
+              <span className="flex min-w-0 items-center gap-2">
                 {icon === "tag" ? (
                   <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
                 ) : null}
-                {item.name}
-                <span className="text-[11px] opacity-70">{item.postCount}</span>
-              </Badge>
+                <span className="truncate">{item.name}</span>
+              </span>
+              <span className="text-xs tabular-nums text-muted-foreground transition-colors group-hover:text-foreground">
+                {item.postCount}
+              </span>
             </Link>
           );
         })}
