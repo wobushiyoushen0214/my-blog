@@ -33,10 +33,10 @@ function estimateReadingMinutes(post: Pick<Post, "title" | "content" | "excerpt"
     .replace(/&[a-zA-Z0-9#]+;/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  const cjkCount = text.match(/[\u4e00-\u9fff]/g)?.length || 0;
+  const cjkCount = text.match(/[一-鿿]/g)?.length || 0;
   const latinWordCount =
     text
-      .replace(/[\u4e00-\u9fff]/g, " ")
+      .replace(/[一-鿿]/g, " ")
       .match(/[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*/g)?.length || 0;
 
   return Math.max(1, Math.ceil(cjkCount / 450 + latinWordCount / 220));
@@ -57,7 +57,7 @@ export function PostCard({
     return (
       <Link
         href={`/blog/${post.slug}`}
-        className="group grid min-w-0 gap-3 py-3 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem]"
+        className="group grid min-w-0 gap-3 py-3 transition-all duration-500 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem] -mx-2 px-2"
       >
         <div className="text-xs tabular-nums text-muted-foreground">
           <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
@@ -65,16 +65,16 @@ export function PostCard({
 
         <div className="min-w-0">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <span className="bg-muted/25 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <span className="bg-muted/30 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="max-w-36 truncate bg-muted/25 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+              <span className="max-w-36 truncate bg-muted/30 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
                 {post.category.name}
               </span>
             ) : null}
           </div>
-          <h2 className="mt-2 line-clamp-2 font-serif text-xl leading-tight tracking-normal transition-opacity group-hover:opacity-70">
+          <h2 className="mt-2 line-clamp-2 font-serif text-xl leading-tight tracking-tight transition-all duration-500 group-hover:italic group-hover:text-primary">
             {post.title}
           </h2>
           {post.excerpt ? (
@@ -88,7 +88,7 @@ export function PostCard({
                 <Badge
                   key={tag.id}
                   variant="secondary"
-                  className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
+                  className="h-5 px-2 py-0 text-[10px] font-normal text-muted-foreground rounded-none"
                 >
                   {tag.name}
                 </Badge>
@@ -109,16 +109,17 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex min-w-0 overflow-hidden transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden transition-all duration-700 ease-out hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured
           ? "flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]"
-          : "flex-col",
+          : "flex-col bg-card",
+        "glass-card rounded-lg"
       )}
     >
       {showMedia ? (
         <div
           className={cn(
-            "relative w-full overflow-hidden bg-muted",
+            "relative w-full overflow-hidden bg-surface-container-high",
             isFeatured ? "min-h-[260px] lg:min-h-full" : "aspect-[16/10]"
           )}
         >
@@ -132,12 +133,12 @@ export function PostCard({
                   ? "(max-width: 1024px) 100vw, 58vw"
                   : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               }
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              className="object-cover grayscale transition-transform duration-[2000ms] ease-out group-hover:scale-110"
             />
           ) : (
-            <div className="flex h-full min-h-[220px] items-end bg-muted/20 p-5">
+            <div className="flex h-full min-h-[220px] items-end bg-surface-container-high p-5">
               <div className="max-w-xs pt-1">
-                <span className="inline-flex bg-background/80 px-2 py-1 text-xs text-muted-foreground">
+                <span className="inline-flex uppercase tracking-[0.14em] bg-background/80 px-2.5 py-1 text-xs text-muted-foreground backdrop-blur">
                   {post.category?.name || contentTypeLabel}
                 </span>
                 <p className="mt-3 line-clamp-3 font-serif text-lg leading-snug text-foreground/80">
@@ -152,12 +153,12 @@ export function PostCard({
       <div
         className={cn(
           "flex flex-1 flex-col",
-          isFeatured ? "py-5 md:py-6 lg:pl-6" : isCompact ? "p-0" : "py-5"
+          isFeatured ? "p-6 md:p-7" : "p-5"
         )}
       >
         <div className="flex-1 space-y-3">
           <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1.5 uppercase tracking-[0.14em]">
               <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
               <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
             </span>
@@ -171,23 +172,23 @@ export function PostCard({
             </span>
             <span
               className={cn(
-                "px-1.5 py-0.5 font-medium",
+                "px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em]",
                 post.category?.type === "moment"
-                  ? "bg-muted/50 text-foreground"
-                  : "bg-muted/25 text-foreground"
+                  ? "bg-primary/10 text-primary"
+                  : "bg-muted/30 text-foreground"
               )}
             >
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="min-w-0 truncate bg-muted/25 px-1.5 py-0.5 font-medium text-foreground">
+              <span className="min-w-0 truncate bg-muted/30 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-foreground">
                 {post.category.name}
               </span>
             ) : null}
           </div>
           <h2
             className={cn(
-              "line-clamp-2 font-serif leading-tight tracking-normal transition-opacity group-hover:opacity-70",
+              "line-clamp-2 font-serif leading-tight tracking-tight transition-all duration-500 group-hover:italic group-hover:text-primary",
               isFeatured
                 ? "text-2xl md:text-3xl"
                 : "text-lg md:text-xl"
@@ -213,7 +214,7 @@ export function PostCard({
               <Badge
                 key={tag.id}
                 variant="secondary"
-                className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
+                className="h-5 px-2 py-0 text-[10px] font-normal rounded-none"
               >
                 {tag.name}
               </Badge>
@@ -222,9 +223,9 @@ export function PostCard({
         ) : null}
 
         {isFeatured ? (
-          <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
+          <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium uppercase tracking-[0.14em] text-foreground transition-all group-hover:gap-2.5">
             {ctaLabel}
-            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" suppressHydrationWarning />
           </span>
         ) : null}
       </div>

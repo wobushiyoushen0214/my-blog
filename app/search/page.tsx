@@ -10,6 +10,7 @@ import {
   PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
+  PublicSummaryStats,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -344,7 +345,7 @@ export default async function SearchPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1280px]">
+      <PublicPageShell>
         <PublicPageHeader
           eyebrow="Search"
           title={query ? `搜索 · ${query}` : "搜索与发现"}
@@ -711,30 +712,7 @@ function SearchResultSummary({
     },
   ];
 
-  return (
-    <section
-      aria-label="搜索结果摘要"
-      className="mt-4 grid gap-1"
-    >
-      {items.map((item, index) => (
-        <div
-          key={item.label}
-          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_120px_minmax(0,1fr)]"
-        >
-          <span className="text-muted-foreground">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="min-w-0 truncate text-muted-foreground">
-            {item.label}
-          </span>
-          <span className="font-serif text-xl leading-none">{item.value}</span>
-          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
-            {item.detail}
-          </span>
-        </div>
-      ))}
-    </section>
-  );
+  return <PublicSummaryStats ariaLabel="搜索结果摘要" items={items} />;
 }
 
 function SearchStarterPanel({
@@ -790,37 +768,27 @@ function SearchStarterPanel({
     <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.76fr)]">
       <div>
         <div className="pb-1">
-          <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <h2 className="text-sm font-medium text-foreground">
             快速进入
           </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
             按内容类型或排序方式直接浏览。
           </p>
         </div>
-        <div className="grid gap-1">
-          {shortcuts.map((item, index) => (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {shortcuts.map((item) => (
             <Link
               key={`${item.label}-${item.href}`}
               href={item.href}
-              className={`group -mx-2 grid min-w-0 gap-2 px-2 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_90px] ${
+              className={`inline-flex min-h-9 items-center gap-2 px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                 item.active
                   ? "bg-muted/30 text-foreground"
-                  : "hover:bg-muted/20"
+                  : "bg-muted/12 text-muted-foreground hover:bg-muted/22 hover:text-foreground"
               }`}
             >
-              <span className="text-muted-foreground">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
-                  {item.label}
-                </span>
-                <span className="mt-1 block truncate text-xs text-muted-foreground">
-                  {item.description}
-                </span>
-              </span>
-              <span className="text-xs text-muted-foreground sm:text-right">
-                {item.active ? "当前" : "打开"}
+              <span>{item.label}</span>
+              <span className="text-xs text-muted-foreground">
+                {item.active ? "当前" : item.description}
               </span>
             </Link>
           ))}
@@ -829,7 +797,7 @@ function SearchStarterPanel({
 
       <div className="space-y-2 py-1">
         <div className="py-2">
-          <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <h2 className="text-sm font-medium text-foreground">
             高频主题
           </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">

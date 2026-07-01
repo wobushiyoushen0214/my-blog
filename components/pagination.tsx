@@ -70,11 +70,11 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex min-h-10 min-w-10 items-center justify-center px-3 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex min-h-10 min-w-10 items-center justify-center px-3 text-xs font-medium uppercase tracking-[0.14em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const edgeLinkClassName =
-    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-all duration-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const disabledClassName =
-    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground/35";
+    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground/25";
 
   return (
     <nav
@@ -90,8 +90,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
           >
             <ChevronLeft className="h-4 w-4" suppressHydrationWarning />
             <span>上一页</span>
-            <span className="hidden font-mono text-[11px] text-muted-foreground/70 sm:inline">
-              {String(safeCurrentPage - 1).padStart(2, "0")}
+            <span className="hidden text-xs text-muted-foreground/50 sm:inline">
+              {safeCurrentPage - 1}
             </span>
           </Link>
         ) : (
@@ -106,7 +106,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
             item === "ellipsis" ? (
               <span
                 key={`ellipsis-${index}`}
-                className="inline-flex min-h-12 min-w-10 items-center justify-center px-3 font-mono text-xs text-muted-foreground/60"
+                className="inline-flex min-h-12 min-w-10 items-center justify-center px-3 text-sm text-muted-foreground/40"
                 aria-hidden="true"
               >
                 ...
@@ -118,21 +118,20 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
                 className={cn(
                   pageLinkClassName,
                   item === safeCurrentPage
-                    ? "bg-muted/30 text-foreground"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted/20 hover:text-foreground"
                 )}
                 aria-label={`第 ${item} 页`}
                 aria-current={item === safeCurrentPage ? "page" : undefined}
               >
-                {String(item).padStart(2, "0")}
+                {item}
               </Link>
             )
           )}
         </div>
 
-        <span className="inline-flex min-h-12 min-w-20 items-center justify-center px-3 font-mono text-xs text-muted-foreground sm:hidden">
-          {String(safeCurrentPage).padStart(2, "0")} /{" "}
-          {String(totalPages).padStart(2, "0")}
+        <span className="inline-flex min-h-12 min-w-20 items-center justify-center px-3 text-sm text-muted-foreground sm:hidden">
+          {safeCurrentPage} / {totalPages}
         </span>
 
         {safeCurrentPage < totalPages ? (
@@ -141,8 +140,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
             className={cn(edgeLinkClassName, "justify-end")}
             aria-label={`下一页，第 ${safeCurrentPage + 1} 页`}
           >
-            <span className="hidden font-mono text-[11px] text-muted-foreground/70 sm:inline">
-              {String(safeCurrentPage + 1).padStart(2, "0")}
+            <span className="hidden text-xs text-muted-foreground/50 sm:inline">
+              {safeCurrentPage + 1}
             </span>
             <span>下一页</span>
             <ChevronRight className="h-4 w-4" suppressHydrationWarning />

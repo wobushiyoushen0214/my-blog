@@ -12,6 +12,7 @@ import {
   PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
+  PublicSummaryStats,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -268,7 +269,7 @@ export default async function CategoryPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1280px]">
+      <PublicPageShell>
         <PublicPageHeader
           eyebrow="Category"
           title={typedCategory.name}
@@ -325,7 +326,7 @@ export default async function CategoryPage({
 
               {featuredPost ? (
                 <section className="space-y-3">
-                  <SectionTitle eyebrow="Featured" title="分类精选" />
+                  <SectionTitle eyebrow="推荐阅读" title="分类精选" />
                   <PostCard post={featuredPost} variant="featured" />
                 </section>
               ) : null}
@@ -333,7 +334,7 @@ export default async function CategoryPage({
               {listPosts.length > 0 ? (
                 <section className="space-y-4">
                   <SectionTitle
-                    eyebrow="Latest"
+                    eyebrow="内容列表"
                     title={
                       sort === "popular"
                         ? "热门内容"
@@ -567,36 +568,13 @@ function SummaryLedger({
 }: {
   items: { label: string; value: number | string; detail: string }[];
 }) {
-  return (
-    <section
-      aria-label="分类内容概览"
-      className="grid gap-1"
-    >
-      {items.map((item, index) => (
-        <div
-          key={item.label}
-          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_120px_minmax(0,1fr)]"
-        >
-          <span className="text-muted-foreground">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="min-w-0 truncate text-muted-foreground">
-            {item.label}
-          </span>
-          <span className="font-serif text-xl leading-none">{item.value}</span>
-          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
-            {item.detail}
-          </span>
-        </div>
-      ))}
-    </section>
-  );
+  return <PublicSummaryStats ariaLabel="分类内容概览" items={items} className="mt-0" />;
 }
 
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="pb-1">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {eyebrow}
       </p>
       <h2 className="mt-1 text-base font-medium">{title}</h2>

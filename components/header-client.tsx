@@ -20,13 +20,16 @@ function NavLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`inline-flex h-8 items-center px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
+      className={`relative inline-flex h-8 items-center px-1 text-xs font-medium uppercase tracking-[0.2em] transition-all duration-500 md:px-2 ${
         active
-          ? "bg-muted/20 text-foreground"
-          : "text-muted-foreground hover:bg-muted/15 hover:text-foreground"
+          ? "text-foreground"
+          : "text-muted-foreground/60 hover:text-foreground"
       }`}
     >
       {label}
+      {active ? (
+        <span className="absolute -bottom-0.5 left-1 right-1 h-[0.5px] bg-primary md:left-2 md:right-2" />
+      ) : null}
     </Link>
   );
 }
@@ -47,44 +50,44 @@ function HoverNav({
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={`inline-flex h-8 items-center px-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-2 ${
+        className={`relative inline-flex h-8 items-center px-1 text-xs font-medium uppercase tracking-[0.2em] transition-all duration-500 md:px-2 ${
           active
-            ? "bg-muted/20 text-foreground"
-            : "text-muted-foreground hover:bg-muted/15 hover:text-foreground"
+            ? "text-foreground"
+            : "text-muted-foreground/60 hover:text-foreground"
         }`}
       >
         {label}
+        {active ? (
+          <span className="absolute -bottom-0.5 left-1 right-1 h-[0.5px] bg-primary md:left-2 md:right-2" />
+        ) : null}
       </Link>
 
-      <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 opacity-0 transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-        <div className="h-2" />
-        <div className="w-80 bg-background/95 p-2 backdrop-blur">
-          <div className="px-1 pb-2">
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 opacity-0 transition-all duration-500 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+        <div className="h-2.5" />
+        <div className="w-80 overflow-hidden border-[0.5px] border-border/20 bg-popover/95 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl">
+          <div className="px-1.5 pb-2 pt-1">
+            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="text-primary/60" aria-hidden="true">
+                ❖
+              </span>
               {label}目录
             </p>
           </div>
-          <div className="grid gap-1">
-            {items.map((item, index) =>
+          <div className="grid gap-0.5">
+            {items.map((item) =>
               item.disabled ? (
                 <div
                   key={item.label}
-                  className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 px-1 py-1.5 text-sm text-muted-foreground/70"
+                  className="px-2 py-1.5 text-xs text-muted-foreground/50"
                 >
-                  <span className="text-xs tabular-nums">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
                   <span>{item.label}</span>
                 </div>
               ) : (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 px-1 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/20 hover:text-foreground focus:bg-muted/20 focus:text-foreground"
+                  className="block px-2 py-1.5 text-xs text-muted-foreground outline-none transition-all duration-300 hover:bg-muted/30 hover:text-foreground focus:bg-muted/30 focus:text-foreground"
                 >
-                  <span className="text-xs tabular-nums">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
                   <span className="min-w-0 truncate">{item.label}</span>
                 </Link>
               )
@@ -135,17 +138,19 @@ export function HeaderClient({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
-      <div className="mx-auto grid h-14 w-full max-w-[1120px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 md:px-6">
+    <header className="sticky top-0 z-50 w-full border-b-[0.5px] border-border/20 bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75">
+      <div className="mx-auto grid h-16 w-full max-w-[1080px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 md:px-6">
         <div className="flex items-center">
           <Link
             href="/"
-            className="group flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <span className="flex size-6 items-center justify-center bg-foreground text-[13px] font-bold text-background">
+            <span className="flex size-8 items-center justify-center border-[0.5px] border-foreground/30 font-serif text-sm font-semibold text-foreground transition-all duration-700 group-hover:border-primary group-hover:text-primary">
               L
             </span>
-            <span className="font-serif text-lg leading-none">Lee</span>
+            <span className="font-serif text-xl leading-none italic transition-transform duration-700 group-hover:-translate-x-0.5">
+              Lee
+            </span>
           </Link>
         </div>
 
@@ -165,8 +170,8 @@ export function HeaderClient({
           <ThemeToggle />
         </div>
       </div>
-      <nav className="bg-muted/10 md:hidden" aria-label="移动端导航">
-        <div className="mx-auto flex w-full max-w-[1120px] gap-4 overflow-x-auto px-4 py-2">
+      <nav className="border-t-[0.5px] border-border/20 bg-background/80 backdrop-blur md:hidden" aria-label="移动端导航">
+        <div className="mx-auto flex w-full max-w-[1080px] gap-5 overflow-x-auto px-5 py-2">
           <NavLink href="/" label="首页" active={isHome} />
           <NavLink href="/posts" label="文章" active={isPosts} />
           <NavLink href="/moments" label="见闻" active={isMoments} />

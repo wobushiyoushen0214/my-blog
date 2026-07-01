@@ -8,6 +8,7 @@ import {
   PublicEmptyState,
   PublicPageHeader,
   PublicPageShell,
+  PublicSummaryStats,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -294,7 +295,7 @@ export default async function MomentsPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1280px]">
+      <PublicPageShell>
         <PublicPageHeader
           eyebrow="Moments"
           title={
@@ -659,30 +660,7 @@ function MomentOverview({
     },
   ];
 
-  return (
-    <section
-      aria-label="见闻概览"
-      className="mt-4 grid gap-1"
-    >
-      {items.map((item, index) => (
-        <div
-          key={item.label}
-          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
-        >
-          <span className="text-muted-foreground">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="min-w-0 truncate text-muted-foreground">
-            {item.label}
-          </span>
-          <span className="font-serif text-xl leading-none">{item.value}</span>
-          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
-            {item.detail}
-          </span>
-        </div>
-      ))}
-    </section>
-  );
+  return <PublicSummaryStats ariaLabel="见闻概览" items={items} />;
 }
 
 function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
@@ -691,9 +669,7 @@ function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
   return (
     <section aria-labelledby="featured-moment-title" className="space-y-3">
       <div className="pb-1">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          Featured
-        </p>
+        <p className="text-sm text-muted-foreground">推荐见闻</p>
         <h2 id="featured-moment-title" className="mt-1 text-base font-medium">
           近期见闻
         </h2>

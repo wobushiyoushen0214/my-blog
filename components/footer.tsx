@@ -13,21 +13,21 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-muted/10">
-      <div className="mx-auto w-full max-w-[1120px] px-4 py-7 md:px-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+    <footer className="border-t-[0.5px] border-border/20 bg-muted/20">
+      <div className="mx-auto w-full max-w-[1080px] px-5 py-10 md:px-6">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <div className="min-w-0">
-              <p className="font-serif text-sm uppercase tracking-[0.18em] text-foreground">
+              <p className="font-serif text-base tracking-tight text-foreground italic">
                 Lee / Notes
               </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
+              <p className="mt-1 text-xs text-muted-foreground uppercase tracking-[0.16em]">
                 &copy; {new Date().getFullYear()} · 想法、代码与日常见闻
               </p>
             </div>
             <Link
               href="/rss.xml"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-all duration-500 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               title="RSS Feed"
             >
               <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
@@ -35,21 +35,21 @@ export function Footer() {
             </Link>
           </div>
           <nav
-            className="flex flex-wrap items-center gap-x-4 gap-y-2"
+            className="flex flex-wrap items-center gap-x-5 gap-y-2"
             aria-label="页脚导航"
           >
             {footerLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-all duration-500 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               >
                 {item.label}
               </Link>
             ))}
             <Link
               href="/admin"
-              className="text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/40 transition-all duration-500 hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               管理
             </Link>

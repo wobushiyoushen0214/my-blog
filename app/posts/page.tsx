@@ -9,6 +9,7 @@ import {
   PublicEmptyState,
   PublicPageHeader,
   PublicPageShell,
+  PublicSummaryStats,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -266,7 +267,7 @@ export default async function PostsPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1280px]">
+      <PublicPageShell>
         <PublicPageHeader
           eyebrow="Posts"
           title={
@@ -326,9 +327,7 @@ export default async function PostsPage({
                 <section aria-labelledby="featured-post-title" className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                        Featured
-                      </p>
+                      <p className="text-sm text-muted-foreground">推荐阅读</p>
                       <h2 id="featured-post-title" className="text-base font-medium">
                         精选文章
                       </h2>
@@ -342,9 +341,7 @@ export default async function PostsPage({
                 <section aria-labelledby="latest-posts-title" className="space-y-4">
                   <div className="flex flex-col gap-1 pb-1 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                        Latest
-                      </p>
+                      <p className="text-sm text-muted-foreground">文章列表</p>
                       <h2 id="latest-posts-title" className="text-base font-medium">
                         {sort === "popular"
                           ? "热门内容"
@@ -460,30 +457,7 @@ function PostsOverview({
     },
   ];
 
-  return (
-    <section
-      aria-label="文章概览"
-      className="mt-4 grid gap-1"
-    >
-      {items.map((item, index) => (
-        <div
-          key={item.label}
-          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
-        >
-          <span className="text-muted-foreground">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="min-w-0 truncate text-muted-foreground">
-            {item.label}
-          </span>
-          <span className="font-serif text-xl leading-none">{item.value}</span>
-          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
-            {item.detail}
-          </span>
-        </div>
-      ))}
-    </section>
-  );
+  return <PublicSummaryStats ariaLabel="文章概览" items={items} />;
 }
 
 function CategoryNav({

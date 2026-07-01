@@ -8,6 +8,7 @@ import {
   PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
+  PublicSummaryStats,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -138,7 +139,7 @@ export default async function LinksPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1280px]">
+      <PublicPageShell>
         <PublicPageHeader
           eyebrow="Links"
           title="友链"
@@ -213,8 +214,8 @@ export default async function LinksPage({
                     </div>
                   </div>
                   <div className="grid gap-1">
-                    {groupedLinks[category].map((item, index) => (
-                      <FriendLinkRow key={item.href} item={item} index={index} />
+                    {groupedLinks[category].map((item) => (
+                      <FriendLinkRow key={item.href} item={item} />
                     ))}
                   </div>
                 </section>
@@ -466,43 +467,17 @@ function SummaryLedger({
 }: {
   items: { label: string; value: number; detail: string }[];
 }) {
-  return (
-    <section
-      aria-label="友链概览"
-      className="mt-6 grid gap-1"
-    >
-      {items.map((item, index) => (
-        <div
-          key={item.label}
-          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
-        >
-          <span className="text-muted-foreground">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="min-w-0 truncate text-muted-foreground">
-            {item.label}
-          </span>
-          <span className="font-serif text-xl leading-none">{item.value}</span>
-          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
-            {item.detail}
-          </span>
-        </div>
-      ))}
-    </section>
-  );
+  return <PublicSummaryStats ariaLabel="友链概览" items={items} className="mt-6" />;
 }
 
-function FriendLinkRow({ item, index }: { item: FriendLink; index: number }) {
+function FriendLinkRow({ item }: { item: FriendLink }) {
   return (
     <Link
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_120px_24px]"
+      className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
     >
-      <span className="text-sm text-muted-foreground">
-        {String(index + 1).padStart(2, "0")}
-      </span>
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-2">
           <span className="truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">

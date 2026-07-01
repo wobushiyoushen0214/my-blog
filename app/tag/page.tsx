@@ -9,6 +9,7 @@ import {
   PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
+  PublicSummaryStats,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -125,7 +126,7 @@ export default async function TagsPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1280px]">
+      <PublicPageShell>
         <PublicPageHeader
           eyebrow="Tags"
           title={status === DEFAULT_STATUS ? "所有标签" : statusLabel(status)}
@@ -191,8 +192,8 @@ export default async function TagsPage({
               </div>
 
               <div className="grid gap-1">
-                {filteredTags.map((tag, index) => (
-                  <TagResultRow key={tag.id} tag={tag} index={index} />
+                {filteredTags.map((tag) => (
+                  <TagResultRow key={tag.id} tag={tag} />
                 ))}
               </div>
             </section>
@@ -427,41 +428,15 @@ function SummaryLedger({
 }: {
   items: { label: string; value: number; detail: string }[];
 }) {
-  return (
-    <section
-      aria-label="标签概览"
-      className="mt-6 grid gap-1"
-    >
-      {items.map((item, index) => (
-        <div
-          key={item.label}
-          className="-mx-2 grid gap-2 px-2 py-2.5 text-sm sm:grid-cols-[44px_minmax(0,1fr)_90px_minmax(0,1fr)]"
-        >
-          <span className="text-muted-foreground">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="min-w-0 truncate text-muted-foreground">
-            {item.label}
-          </span>
-          <span className="font-serif text-xl leading-none">{item.value}</span>
-          <span className="min-w-0 truncate text-muted-foreground sm:text-right">
-            {item.detail}
-          </span>
-        </div>
-      ))}
-    </section>
-  );
+  return <PublicSummaryStats ariaLabel="标签概览" items={items} className="mt-6" />;
 }
 
-function TagResultRow({ tag, index }: { tag: TagWithCount; index: number }) {
+function TagResultRow({ tag }: { tag: TagWithCount }) {
   return (
     <Link
       href={`/tag/${tag.slug}`}
-      className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[44px_minmax(0,1fr)_120px_24px]"
+      className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
     >
-      <span className="text-sm text-muted-foreground">
-        {String(index + 1).padStart(2, "0")}
-      </span>
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-2">
           <Badge variant="secondary" className="rounded-none font-normal">
