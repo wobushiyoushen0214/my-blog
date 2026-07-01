@@ -293,7 +293,7 @@ export default async function ArchivePage({
           {yearGroups.length > 0 ? (
             <div className="space-y-8">
               <YearJumpNav groups={yearGroups} />
-              <ArchiveTimeline groups={yearGroups} totalViews={totalViews} />
+              <ArchiveTimeline groups={yearGroups} />
             </div>
           ) : allPosts.length > 0 ? (
             <PublicEmptyState
@@ -515,27 +515,11 @@ function FilterPill({ label, href }: { label: string; href: string }) {
 
 function ArchiveTimeline({
   groups,
-  totalViews,
 }: {
   groups: YearGroup[];
-  totalViews: number;
 }) {
   return (
-    <section aria-labelledby="archive-timeline-title" className="space-y-8">
-      <div className="flex flex-col gap-1 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground">
-            Timeline
-          </p>
-          <h2 id="archive-timeline-title" className="mt-1 text-lg font-semibold">
-            完整时间线
-          </h2>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          {formatNumber(totalViews)} 次累计阅读
-        </p>
-      </div>
-
+    <section aria-label="归档时间线" className="space-y-8">
       <div className="space-y-8">
         {groups.map((group) => (
           <YearSection key={group.year} group={group} />

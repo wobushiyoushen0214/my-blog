@@ -1,18 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
-  Archive,
-  ArrowRight,
-  FileText,
-  FolderOpen,
-  Hash,
-  Link2,
-  NotebookText,
-  Rss,
   Search,
   X,
 } from "lucide-react";
@@ -25,59 +16,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { LucideIcon } from "lucide-react";
-
-type QuickLink = {
-  href: string;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-};
-
-const quickLinks: QuickLink[] = [
-  {
-    href: "/posts",
-    label: "文章",
-    description: "长期笔记与项目复盘",
-    icon: FileText,
-  },
-  {
-    href: "/moments",
-    label: "见闻",
-    description: "短记录、观察和摘录",
-    icon: NotebookText,
-  },
-  {
-    href: "/archive",
-    label: "归档",
-    description: "按年份和月份回看",
-    icon: Archive,
-  },
-  {
-    href: "/tag",
-    label: "标签",
-    description: "按关键词继续探索",
-    icon: Hash,
-  },
-  {
-    href: "/category",
-    label: "分类",
-    description: "按主题浏览内容",
-    icon: FolderOpen,
-  },
-  {
-    href: "/links",
-    label: "友链",
-    description: "站点和朋友链接",
-    icon: Link2,
-  },
-  {
-    href: "/rss.xml",
-    label: "RSS",
-    description: "订阅站点更新",
-    icon: Rss,
-  },
-];
 
 export function SearchBar() {
   const router = useRouter();
@@ -133,14 +71,12 @@ export function SearchBar() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="gap-0 overflow-hidden border border-border/60 bg-background p-0 shadow-lg sm:max-w-xl"
+        className="gap-0 overflow-hidden border border-border/60 bg-background p-0 shadow-lg sm:max-w-lg"
         showCloseButton={false}
       >
         <DialogHeader className="sr-only">
           <DialogTitle>搜索站内内容</DialogTitle>
-          <DialogDescription>
-            搜索文章、见闻、分类和标签，或打开常用浏览入口。
-          </DialogDescription>
+          <DialogDescription>搜索文章、见闻、分类和标签。</DialogDescription>
         </DialogHeader>
 
         <form
@@ -182,45 +118,6 @@ export function SearchBar() {
             </button>
           </div>
         </form>
-
-        <div className="px-3 py-3 sm:px-4 sm:py-4">
-          <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="text-sm font-medium text-foreground">
-              探索
-            </p>
-          </div>
-
-          <div className="grid gap-1">
-            {quickLinks.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="group grid min-w-0 gap-3 rounded-md px-2.5 py-2.5 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[1.25rem_minmax(0,1fr)_auto] sm:items-center"
-                >
-                  <span className="flex items-center text-muted-foreground">
-                    <Icon className="h-4 w-4" suppressHydrationWarning />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-medium transition-colors group-hover:text-foreground">
-                      {item.label}
-                    </span>
-                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
-                      {item.description}
-                    </span>
-                  </span>
-                  <ArrowRight
-                    className="hidden h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground sm:block"
-                    suppressHydrationWarning
-                  />
-                </Link>
-              );
-            })}
-          </div>
-        </div>
       </DialogContent>
     </Dialog>
   );

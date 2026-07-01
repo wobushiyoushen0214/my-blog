@@ -155,21 +155,11 @@ export default async function LinksPage({
             {filteredLinks.length > 0 ? (
               categories.map((category) => (
                 <section key={category} className="space-y-4">
-                  <div className="pb-1">
-                    <p className="text-sm text-muted-foreground">
-                      Directory
-                    </p>
-                    <div className="mt-1 flex items-end justify-between gap-3">
-                      <div>
-                        <h2 className="text-base font-medium">{category}</h2>
-                        <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                          按主题整理的站点，点击会在新窗口打开。
-                        </p>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {groupedLinks[category].length} 个
-                      </span>
-                    </div>
+                  <div className="flex items-end justify-between gap-3 border-b border-border/60 pb-3">
+                    <h2 className="text-base font-medium">{category}</h2>
+                    <span className="text-sm text-muted-foreground">
+                      {groupedLinks[category].length} 个
+                    </span>
                   </div>
                   <div className="grid gap-1">
                     {groupedLinks[category].map((item) => (
