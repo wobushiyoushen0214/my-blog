@@ -62,10 +62,10 @@ export default function LoginPage() {
               </Link>
 
               <div className="mt-10">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Admin
                 </p>
-                <h1 className="mt-2 font-serif text-4xl leading-none">
+                <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-tight">
                   后台登录
                 </h1>
                 <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">

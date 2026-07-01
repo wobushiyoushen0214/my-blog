@@ -380,7 +380,7 @@ function DashboardPanel({
     <section className="overflow-hidden border bg-card">
       <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 space-y-1">
-          <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <h2 className="text-sm font-medium text-foreground">
             {title}
           </h2>
           <p className="text-xs leading-5 text-muted-foreground">{description}</p>

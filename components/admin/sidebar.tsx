@@ -43,7 +43,9 @@ export function AdminSidebar() {
           <span className="flex size-6 items-center justify-center border bg-foreground text-[13px] font-bold text-background">
             L
           </span>
-          <span className="font-serif text-base leading-none">Blog Admin</span>
+          <span className="text-base font-semibold leading-none tracking-tight">
+            Blog Admin
+          </span>
         </Link>
         <ThemeToggle />
       </div>

@@ -20,7 +20,7 @@ export function AdminPageHeader({
     <header className="mb-6 flex flex-col gap-4 border-b border-border/70 pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0 space-y-1.5">
         {eyebrow ? (
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {eyebrow}
           </p>
         ) : null}
