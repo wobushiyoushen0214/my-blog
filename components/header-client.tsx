@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SearchBar } from "@/components/search-bar";
 
 type NavItem = { id: string; name: string; slug: string; type?: "post" | "moment" };
+type MenuId = "posts" | "moments";
 
 function NavLink({
   href,
@@ -23,7 +25,7 @@ function NavLink({
       className={`inline-flex h-9 items-center border-b border-transparent px-1.5 text-sm transition-colors ${
         active
           ? "border-foreground text-foreground"
-          : "text-muted-foreground hover:border-border hover:text-foreground"
+          : "text-muted-foreground hover:text-foreground"
       }`}
     >
       {label}
@@ -35,30 +37,56 @@ function HoverNav({
   href,
   label,
   active,
+  open,
+  onOpen,
+  onClose,
   items,
 }: {
   href: string;
   label: string;
   active: boolean;
+  open: boolean;
+  onOpen: () => void;
+  onClose: () => void;
   items: { href: string; label: string; disabled?: boolean }[];
 }) {
   return (
-    <div className="relative group">
+    <div
+      className="relative"
+      onBlur={(event) => {
+        const nextTarget = event.relatedTarget as Node | null;
+        if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
+          onClose();
+        }
+      }}
+      onFocusCapture={onOpen}
+      onMouseEnter={onOpen}
+      onMouseLeave={onClose}
+    >
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={onClose}
         className={`inline-flex h-9 items-center border-b border-transparent px-1.5 text-sm transition-colors ${
           active
             ? "border-foreground text-foreground"
-            : "text-muted-foreground hover:border-border hover:text-foreground"
+            : "text-muted-foreground hover:text-foreground"
         }`}
       >
         {label}
       </Link>
 
-      <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+      <div
+        className={`absolute left-1/2 top-full z-50 -translate-x-1/2 transition ${
+          open
+            ? "visible translate-y-0 opacity-100"
+            : "invisible pointer-events-none -translate-y-1 opacity-0"
+        }`}
+      >
         <div className="h-2" />
-        <div className="w-72 overflow-hidden rounded-lg border border-border/70 bg-popover/95 p-2 shadow-none backdrop-blur-xl">
+        <div className="w-64 overflow-hidden rounded-lg border border-border/70 bg-popover/95 p-2 shadow-none backdrop-blur-xl">
           <div className="px-2 pb-2 pt-1">
             <p className="text-xs text-muted-foreground">
               {label}目录
@@ -77,6 +105,7 @@ function HoverNav({
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={onClose}
                   className="block rounded-md px-2 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/50 hover:text-foreground focus:bg-muted/50 focus:text-foreground"
                 >
                   <span className="min-w-0 truncate">{item.label}</span>
@@ -96,6 +125,7 @@ export function HeaderClient({
   categories: NavItem[];
 }) {
   const pathname = usePathname();
+  const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
   const isHome = pathname === "/";
   const isPosts =
     pathname === "/posts" || pathname.startsWith("/blog") || pathname.startsWith("/category");
@@ -144,8 +174,28 @@ export function HeaderClient({
         <nav className="hidden md:flex items-center justify-center">
           <div className="flex items-center gap-1">
             <NavLink href="/" label="首页" active={isHome} />
-            <HoverNav href="/posts" label="文章" active={isPosts} items={postItems} />
-            <HoverNav href="/moments" label="见闻" active={isMoments} items={momentItems} />
+            <HoverNav
+              href="/posts"
+              label="文章"
+              active={isPosts}
+              open={openMenu === "posts"}
+              onOpen={() => setOpenMenu("posts")}
+              onClose={() =>
+                setOpenMenu((current) => (current === "posts" ? null : current))
+              }
+              items={postItems}
+            />
+            <HoverNav
+              href="/moments"
+              label="见闻"
+              active={isMoments}
+              open={openMenu === "moments"}
+              onOpen={() => setOpenMenu("moments")}
+              onClose={() =>
+                setOpenMenu((current) => (current === "moments" ? null : current))
+              }
+              items={momentItems}
+            />
             <NavLink href="/tag" label="标签" active={isTags} />
             <NavLink href="/archive" label="归档" active={isArchive} />
             <NavLink href="/links" label="友链" active={isLinks} />
