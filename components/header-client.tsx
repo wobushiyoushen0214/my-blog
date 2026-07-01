@@ -2,12 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SearchBar } from "@/components/search-bar";
-
-type NavItem = { id: string; name: string; slug: string; type?: "post" | "moment" };
-type MenuId = "posts" | "moments";
 
 function NavLink({
   href,
@@ -33,99 +29,8 @@ function NavLink({
   );
 }
 
-function HoverNav({
-  href,
-  label,
-  active,
-  open,
-  onOpen,
-  onClose,
-  items,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-  open: boolean;
-  onOpen: () => void;
-  onClose: () => void;
-  items: { href: string; label: string; disabled?: boolean }[];
-}) {
-  return (
-    <div
-      className="relative"
-      onBlur={(event) => {
-        const nextTarget = event.relatedTarget as Node | null;
-        if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
-          onClose();
-        }
-      }}
-      onFocusCapture={onOpen}
-      onMouseEnter={onOpen}
-      onMouseLeave={onClose}
-    >
-      <Link
-        href={href}
-        aria-current={active ? "page" : undefined}
-        aria-expanded={open}
-        aria-haspopup="menu"
-        onClick={onClose}
-        className={`inline-flex h-9 items-center border-b border-transparent px-1.5 text-sm transition-colors ${
-          active
-            ? "border-foreground text-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-      >
-        {label}
-      </Link>
-
-      <div
-        className={`absolute left-1/2 top-full z-50 -translate-x-1/2 transition ${
-          open
-            ? "visible translate-y-0 opacity-100"
-            : "invisible pointer-events-none -translate-y-1 opacity-0"
-        }`}
-      >
-        <div className="h-2" />
-        <div className="w-64 overflow-hidden rounded-lg border border-border/70 bg-popover/95 p-2 shadow-none backdrop-blur-xl">
-          <div className="px-2 pb-2 pt-1">
-            <p className="text-xs text-muted-foreground">
-              {label}目录
-            </p>
-          </div>
-          <div className="grid gap-0.5">
-            {items.map((item) =>
-              item.disabled ? (
-                <div
-                  key={item.label}
-                  className="px-2 py-1.5 text-xs text-muted-foreground/50"
-                >
-                  <span>{item.label}</span>
-                </div>
-              ) : (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={onClose}
-                  className="block rounded-md px-2 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/50 hover:text-foreground focus:bg-muted/50 focus:text-foreground"
-                >
-                  <span className="min-w-0 truncate">{item.label}</span>
-                </Link>
-              )
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function HeaderClient({
-  categories,
-}: {
-  categories: NavItem[];
-}) {
+export function HeaderClient() {
   const pathname = usePathname();
-  const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
   const isHome = pathname === "/";
   const isPosts =
     pathname === "/posts" || pathname.startsWith("/blog") || pathname.startsWith("/category");
@@ -133,30 +38,6 @@ export function HeaderClient({
   const isTags = pathname.startsWith("/tag");
   const isArchive = pathname === "/archive";
   const isLinks = pathname === "/links";
-
-  const postCategories = categories.filter((c) => !c.type || c.type === "post");
-  const momentCategories = categories.filter((c) => c.type === "moment");
-
-  const postItems = [
-    { href: "/posts", label: "全部文章" },
-    { href: "/category", label: "所有分类" },
-    ...(postCategories.length > 0
-      ? postCategories.slice(0, 12).map((c) => ({
-          href: `/posts?category=${encodeURIComponent(c.slug)}`,
-          label: c.name,
-        }))
-      : [{ href: "#", label: "暂无分类", disabled: true }]),
-  ];
-
-  const momentItems = [
-    { href: "/moments", label: "全部见闻" },
-    ...(momentCategories.length > 0
-      ? momentCategories.slice(0, 12).map((c) => ({
-          href: `/moments?category=${encodeURIComponent(c.slug)}`,
-          label: c.name,
-        }))
-      : [{ href: "#", label: "暂无分类", disabled: true }]),
-  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -174,28 +55,8 @@ export function HeaderClient({
         <nav className="hidden md:flex items-center justify-center">
           <div className="flex items-center gap-1">
             <NavLink href="/" label="首页" active={isHome} />
-            <HoverNav
-              href="/posts"
-              label="文章"
-              active={isPosts}
-              open={openMenu === "posts"}
-              onOpen={() => setOpenMenu("posts")}
-              onClose={() =>
-                setOpenMenu((current) => (current === "posts" ? null : current))
-              }
-              items={postItems}
-            />
-            <HoverNav
-              href="/moments"
-              label="见闻"
-              active={isMoments}
-              open={openMenu === "moments"}
-              onOpen={() => setOpenMenu("moments")}
-              onClose={() =>
-                setOpenMenu((current) => (current === "moments" ? null : current))
-              }
-              items={momentItems}
-            />
+            <NavLink href="/posts" label="文章" active={isPosts} />
+            <NavLink href="/moments" label="见闻" active={isMoments} />
             <NavLink href="/tag" label="标签" active={isTags} />
             <NavLink href="/archive" label="归档" active={isArchive} />
             <NavLink href="/links" label="友链" active={isLinks} />
