@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+import { ContentRow } from "@/components/content-row";
 import { cn } from "@/lib/utils";
 import { ArrowRight, CalendarDays, Clock3, Eye } from "lucide-react";
 import type { Category, Post, Tag } from "@/lib/types";
@@ -54,55 +54,7 @@ export function PostCard({
   const readingMinutes = estimateReadingMinutes(post);
 
   if (isCompact) {
-    return (
-      <Link
-        href={`/blog/${post.slug}`}
-        className="group grid min-w-0 gap-3 border-b border-border/60 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6rem_minmax(0,1fr)_7rem]"
-      >
-        <div className="text-xs tabular-nums text-muted-foreground">
-          <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
-        </div>
-
-        <div className="min-w-0">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <span className="text-xs text-muted-foreground">
-              {contentTypeLabel}
-            </span>
-            {post.category ? (
-              <span className="max-w-36 truncate border-l border-border/60 pl-2 text-xs text-muted-foreground">
-                {post.category.name}
-              </span>
-            ) : null}
-          </div>
-          <h2 className="mt-1.5 line-clamp-2 text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary md:text-lg">
-            {post.title}
-          </h2>
-          {post.excerpt ? (
-            <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-muted-foreground">
-              {post.excerpt}
-            </p>
-          ) : null}
-          {post.tags && post.tags.length > 0 ? (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {post.tags.slice(0, 3).map((tag) => (
-                <Badge
-                  key={tag.id}
-                  variant="secondary"
-                  className="h-5 rounded-md px-2 py-0 text-[10px] font-normal text-muted-foreground"
-                >
-                  {tag.name}
-                </Badge>
-              ))}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="flex flex-wrap items-start gap-x-3 gap-y-1 text-xs text-muted-foreground sm:block sm:text-right">
-          <span className="block">{formatViews(post.view_count)} 阅读</span>
-          <span className="block sm:mt-1">约 {readingMinutes} 分钟</span>
-        </div>
-      </Link>
-    );
+    return <ContentRow post={post} />;
   }
 
   return (
@@ -188,15 +140,14 @@ export function PostCard({
         </div>
 
         {post.tags && post.tags.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-1.5">
+          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
             {post.tags.slice(0, 3).map((tag) => (
-              <Badge
+              <span
                 key={tag.id}
-                variant="secondary"
-                className="h-5 rounded-md px-2 py-0 text-[10px] font-normal"
+                className="max-w-36 truncate"
               >
-                {tag.name}
-              </Badge>
+                #{tag.name}
+              </span>
             ))}
           </div>
         ) : null}

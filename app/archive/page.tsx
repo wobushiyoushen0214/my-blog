@@ -3,22 +3,16 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { ContentRow } from "@/components/content-row";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicIndexLinks,
-  PublicInfoPanel,
   PublicPageShell,
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import {
   ArrowRight,
   CalendarDays,
-  Eye,
-  FileText,
-  Hash,
-  NotebookText,
   Rss,
   Search,
   X,
@@ -32,7 +26,14 @@ export const metadata: Metadata = {
 type ArchiveType = "all" | "post" | "moment";
 type ArchivePostBase = Pick<
   Post,
-  "id" | "title" | "slug" | "excerpt" | "created_at" | "updated_at" | "view_count"
+  | "id"
+  | "title"
+  | "slug"
+  | "excerpt"
+  | "content"
+  | "created_at"
+  | "updated_at"
+  | "view_count"
 > & {
   category?: Category | null;
 };
@@ -226,7 +227,7 @@ export default async function ArchivePage({
     supabase
       .from("posts")
       .select(
-        "id,title,slug,excerpt,created_at,updated_at,view_count,category:categories(*)"
+        "id,title,slug,excerpt,content,created_at,updated_at,view_count,category:categories(*)"
       )
       .eq("published", true)
       .order("created_at", { ascending: false }),
@@ -288,75 +289,43 @@ export default async function ArchivePage({
 
         <ActiveArchiveSummary query={query} type={type} />
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_240px]">
-          <div className="min-w-0">
-            {yearGroups.length > 0 ? (
+        <div className="mt-8">
+          {yearGroups.length > 0 ? (
+            <div className="space-y-8">
+              <YearJumpNav groups={yearGroups} />
               <ArchiveTimeline groups={yearGroups} totalViews={totalViews} />
-            ) : allPosts.length > 0 ? (
-              <PublicEmptyState
-                icon={Search}
-                title="没有匹配的归档内容"
-                description={
-                  query
-                    ? `没有找到包含「${query}」的内容，可以换个关键词或清除筛选。`
-                    : "当前类型下暂无归档内容，可以切换到全部内容查看。"
-                }
-                action={
-                  <PublicActionLink href="/archive">清除筛选</PublicActionLink>
-                }
-                className="max-w-none"
-              />
-            ) : (
-              <PublicEmptyState
-                icon={CalendarDays}
-                title="暂无归档内容"
-                description="发布文章或见闻后，这里会按年份和月份自动整理。"
-                action={
-                  <PublicActionLink href="/posts">
-                    查看文章列表
-                    <ArrowRight
-                      className="h-4 w-4"
-                      suppressHydrationWarning
-                    />
-                  </PublicActionLink>
-                }
-                className="max-w-none"
-              />
-            )}
-          </div>
-
-          <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-            <YearIndex groups={yearGroups} />
-            <PublicInfoPanel
-              title="继续浏览"
-              description="也可以按内容类型、关键词或订阅源继续发现内容。"
-              contentClassName="py-1"
-            >
-              <PublicIndexLinks
-                ariaLabel="归档页继续浏览"
-                items={[
-                  {
-                    href: "/posts",
-                    label: "文章列表",
-                    description: "按分类和排序浏览长文",
-                    icon: FileText,
-                  },
-                  {
-                    href: "/moments",
-                    label: "见闻列表",
-                    description: "查看更轻量的记录",
-                    icon: NotebookText,
-                  },
-                  {
-                    href: "/search",
-                    label: "搜索内容",
-                    description: "按关键词检索全站",
-                    icon: Search,
-                  },
-                ]}
-              />
-            </PublicInfoPanel>
-          </aside>
+            </div>
+          ) : allPosts.length > 0 ? (
+            <PublicEmptyState
+              icon={Search}
+              title="没有匹配的归档内容"
+              description={
+                query
+                  ? `没有找到包含「${query}」的内容，可以换个关键词或清除筛选。`
+                  : "当前类型下暂无归档内容，可以切换到全部内容查看。"
+              }
+              action={
+                <PublicActionLink href="/archive">清除筛选</PublicActionLink>
+              }
+              className="max-w-none"
+            />
+          ) : (
+            <PublicEmptyState
+              icon={CalendarDays}
+              title="暂无归档内容"
+              description="发布文章或见闻后，这里会按年份和月份自动整理。"
+              action={
+                <PublicActionLink href="/posts">
+                  查看文章列表
+                  <ArrowRight
+                    className="h-4 w-4"
+                    suppressHydrationWarning
+                  />
+                </PublicActionLink>
+              }
+              className="max-w-none"
+            />
+          )}
         </div>
       </PublicPageShell>
       <Footer />
@@ -618,79 +587,29 @@ function MonthSection({ month }: { month: MonthGroup }) {
 
 function ArchiveRow({ post }: { post: ArchivePost }) {
   return (
-    <Link
-      href={`/blog/${post.slug}`}
-      className="group grid min-w-0 gap-3 border-b border-border/60 py-4 transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[4rem_minmax(0,1fr)_5.5rem]"
-    >
-      <time
-        dateTime={post.created_at}
-        className="text-sm tabular-nums text-muted-foreground"
-      >
-        {formatDate(post.created_at)}
-      </time>
-
-      <span className="min-w-0">
-        <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
-          <span className="text-xs text-muted-foreground">
-            {getContentTypeLabel(post)}
-          </span>
-          {post.category ? (
-            <span className="text-xs text-muted-foreground">
-              {post.category.name}
-            </span>
-          ) : null}
-        </span>
-
-        <span className="mt-1.5 block line-clamp-2 text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
-          {post.title}
-        </span>
-
-        {post.excerpt ? (
-          <span className="mt-2 block line-clamp-2 text-sm leading-6 text-muted-foreground">
-            {post.excerpt}
-          </span>
-        ) : null}
-
-        {post.tags.length > 0 ? (
-          <span className="mt-3 flex min-w-0 flex-wrap gap-1.5">
-            {post.tags.slice(0, 4).map((tag) => (
-              <span
-                key={tag.id}
-                className="inline-flex h-5 items-center gap-1 rounded-md border border-border/60 px-1.5 text-[10px] text-muted-foreground"
-              >
-                <Hash className="h-3 w-3" suppressHydrationWarning />
-                {tag.name}
-              </span>
-            ))}
-          </span>
-        ) : null}
-      </span>
-
-      <span className="flex items-start gap-1.5 text-xs text-muted-foreground sm:justify-end sm:text-right">
-        <Eye className="mt-0.5 h-3.5 w-3.5" suppressHydrationWarning />
-        <span>{formatNumber(post.view_count)}</span>
-      </span>
-    </Link>
+    <ContentRow
+      post={post}
+      dateLabel={formatDate(post.created_at)}
+      typeLabel={getContentTypeLabel(post)}
+      rightMeta={[`${formatNumber(post.view_count)} 阅读`]}
+      className="sm:grid-cols-[4rem_minmax(0,1fr)_5.5rem]"
+    />
   );
 }
 
-function YearIndex({ groups }: { groups: YearGroup[] }) {
+function YearJumpNav({ groups }: { groups: YearGroup[] }) {
   if (groups.length === 0) return null;
 
   return (
-    <PublicInfoPanel
-      title="年份索引"
-      description="直接跳到某一年份的归档记录。"
-      contentClassName="py-1"
+    <nav
+      aria-label="归档年份索引"
+      className="flex flex-wrap gap-x-4 gap-y-2 border-y border-border/60 py-3"
     >
-      <nav aria-label="归档年份索引" className="grid gap-1">
         {groups.map((group) => (
           <Link
             key={group.year}
             href={`#archive-${group.year}`}
-            className={cn(
-              "flex items-center justify-between gap-3 rounded-md px-2 py-2.5 text-sm transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            )}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <span className="font-medium">{group.year}</span>
             <span className="text-xs text-muted-foreground">
@@ -698,7 +617,6 @@ function YearIndex({ groups }: { groups: YearGroup[] }) {
             </span>
           </Link>
         ))}
-      </nav>
-    </PublicInfoPanel>
+    </nav>
   );
 }

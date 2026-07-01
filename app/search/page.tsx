@@ -2,19 +2,15 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PostCard } from "@/components/post-card";
+import { ContentRow } from "@/components/content-row";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicIndexLinks,
-  PublicInfoPanel,
   PublicPageHeader,
   PublicPageShell,
-  PublicSummaryStats,
 } from "@/components/public-page";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { FolderOpen, Hash, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
@@ -323,8 +319,6 @@ export default async function SearchPage({
         typedTags
       );
   const shownPosts = query ? results : recentPosts;
-  const featuredPost = shownPosts[0] || null;
-  const listPosts = shownPosts.slice(1);
   const hasFilters = Boolean(contentType !== DEFAULT_TYPE || sort !== DEFAULT_SORT);
   const resultLabel = query
     ? `${results.length} 条结果`
@@ -456,102 +450,48 @@ export default async function SearchPage({
           />
         ) : null}
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
-          <div className="min-w-0 space-y-8">
-            {shownPosts.length > 0 ? (
-              <>
-                {featuredPost ? (
-                  <section className="space-y-3">
-                    <SectionTitle
-                      eyebrow={query ? "Best Match" : "Recent"}
-                      title={
-                        query
-                          ? sort === "popular"
-                            ? "热门匹配"
-                            : sort === "updated"
-                              ? "最近更新"
-                              : "最新匹配"
-                          : sort === "popular"
-                            ? "热门内容"
-                            : sort === "updated"
-                              ? "最近更新"
-                              : "最近发布"
-                      }
-                    />
-                    <PostCard
-                      post={featuredPost}
-                      variant={query ? "compact" : "featured"}
-                    />
-                  </section>
-                ) : null}
-
-                {listPosts.length > 0 ? (
-                  <section className="space-y-4">
-                    <SectionTitle
-                      eyebrow={query ? "Results" : "More"}
-                      title={query ? "更多结果" : "更多内容"}
-                    />
-                    <div className="grid gap-2">
-                      {listPosts.map((post) => (
-                        <PostCard key={post.id} post={post} variant="compact" />
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
-              </>
-            ) : query ? (
-              <PublicEmptyState
-                icon={Search}
-                title="没有找到匹配内容"
-                description={`没有匹配「${query}」的${contentType === "post" ? "文章" : contentType === "moment" ? "见闻" : "内容"}，可以换个关键词或清除筛选。`}
-                action={
-                  <PublicActionLink href="/search">清除筛选</PublicActionLink>
+        <section className="mt-8">
+          {shownPosts.length > 0 ? (
+            <>
+              <SectionTitle
+                eyebrow={query ? "Results" : "Recent"}
+                title={
+                  query
+                    ? "搜索结果"
+                    : sort === "popular"
+                      ? "热门内容"
+                      : sort === "updated"
+                        ? "最近更新"
+                        : "最近发布"
                 }
               />
-            ) : (
-              <PublicEmptyState
-                icon={Search}
-                title="输入关键词开始搜索"
-                description="可以搜索技术主题、标签、文章标题、摘要或正文中的关键词。"
-              />
-            )}
-          </div>
-
-          <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-            <DiscoveryPanel
-              title="分类"
-              description="按长期主题浏览。"
-              items={categorySummaries}
-              hrefFor={(item) => `/category/${item.slug}`}
-              icon="category"
-              limit={8}
+              <div className="mt-3 grid">
+                {shownPosts.map((post) => (
+                  <ContentRow
+                    key={post.id}
+                    post={post}
+                    typeLabel={getSearchTypeLabel(getPostType(post))}
+                  />
+                ))}
+              </div>
+            </>
+          ) : query ? (
+            <PublicEmptyState
+              icon={Search}
+              title="没有找到匹配内容"
+              description={`没有匹配「${query}」的${contentType === "post" ? "文章" : contentType === "moment" ? "见闻" : "内容"}，可以换个关键词或清除筛选。`}
+              action={
+                <PublicActionLink href="/search">清除筛选</PublicActionLink>
+              }
             />
-            <DiscoveryPanel
-              title="标签"
-              description="通过关键词交叉发现内容。"
-              items={tagSummaries}
-              hrefFor={(item) => `/tag/${item.slug}`}
-              icon="tag"
-              limit={16}
+          ) : (
+            <PublicEmptyState
+              icon={Search}
+              title="输入关键词开始搜索"
+              description="可以搜索技术主题、标签、文章标题、摘要或正文中的关键词。"
             />
-            <PublicInfoPanel
-              title="继续浏览"
-              description="不确定关键词时，可以直接进入内容流按时间和主题浏览。"
-              contentClassName="py-1"
-            >
-              <PublicIndexLinks
-                ariaLabel="搜索页继续浏览"
-                items={[
-                  {
-                    href: contentType === "moment" ? "/moments" : "/posts",
-                    label: contentType === "moment" ? "见闻列表" : "文章列表",
-                    description: "回到时间索引继续筛选",
-                  },
-                ]}
-              />
-            </PublicInfoPanel>
-          </aside>
-        </div>
+          )}
+        </section>
       </PublicPageShell>
       <Footer />
     </div>
@@ -694,25 +634,12 @@ function SearchResultSummary({
   activeType: SearchType;
   sort: SortOption;
 }) {
-  const items = [
-    {
-      label: "结果",
-      value: `${resultCount}`,
-      detail: getSearchTypeLabel(activeType),
-    },
-    {
-      label: "主题",
-      value: `${matchedCategoryCount + matchedTagCount}`,
-      detail: `${matchedCategoryCount} 分类 / ${matchedTagCount} 标签`,
-    },
-    {
-      label: "排序",
-      value: getSortLabel(sort),
-      detail: "当前结果顺序",
-    },
-  ];
-
-  return <PublicSummaryStats ariaLabel="搜索结果摘要" items={items} />;
+  return (
+    <p className="mt-4 text-sm text-muted-foreground">
+      {resultCount} 条结果 · {getSearchTypeLabel(activeType)} · {getSortLabel(sort)} ·{" "}
+      {matchedCategoryCount} 个分类命中 · {matchedTagCount} 个标签命中
+    </p>
+  );
 }
 
 function SearchStarterPanel({
@@ -765,7 +692,7 @@ function SearchStarterPanel({
   ];
 
   return (
-    <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.76fr)]">
+    <section className="mt-5 grid gap-6 border-y border-border/60 py-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.76fr)]">
       <div>
         <div className="pb-1">
           <h2 className="text-sm font-medium text-foreground">
@@ -780,10 +707,10 @@ function SearchStarterPanel({
             <Link
               key={`${item.label}-${item.href}`}
               href={item.href}
-              className={`inline-flex min-h-9 items-center gap-2 px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+              className={`inline-flex min-h-8 items-center gap-2 text-sm underline-offset-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                 item.active
-                  ? "rounded-md bg-muted text-foreground"
-                  : "rounded-md border border-border/60 text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:underline"
               }`}
             >
               <span>{item.label}</span>
@@ -807,48 +734,33 @@ function SearchStarterPanel({
         {categories.length > 0 || tags.length > 0 ? (
           <div className="space-y-3 py-3">
             {categories.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-x-4 gap-y-2">
                 {categories.map((category) => (
                   <Link
                     key={category.id}
                     href={`/category/${category.slug}`}
-                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
-                    <Badge
-                      variant="secondary"
-                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
-                    >
-                      <FolderOpen
-                        className="h-3.5 w-3.5"
-                        suppressHydrationWarning
-                      />
-                      {category.name}
-                      <span className="text-[11px] opacity-70">
-                        {category.postCount}
-                      </span>
-                    </Badge>
+                    {category.name}
+                    <span className="ml-1 text-xs text-muted-foreground">
+                      {category.postCount}
+                    </span>
                   </Link>
                 ))}
               </div>
             ) : null}
             {tags.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-x-4 gap-y-2">
                 {tags.map((tag) => (
                   <Link
                     key={tag.id}
                     href={`/tag/${tag.slug}`}
-                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
-                    <Badge
-                      variant="secondary"
-                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
-                    >
-                      <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-                      {tag.name}
-                      <span className="text-[11px] opacity-70">
-                        {tag.postCount}
-                      </span>
-                    </Badge>
+                    #{tag.name}
+                    <span className="ml-1 text-xs text-muted-foreground">
+                      {tag.postCount}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -872,84 +784,34 @@ function SearchMatchPanel({
   tags: Tag[];
 }) {
   return (
-    <PublicInfoPanel
-      title="主题命中"
-      description={`匹配到 ${categories.length} 个分类、${tags.length} 个标签。`}
-      className="mt-4"
-      contentClassName="py-1"
-    >
-      <PublicIndexLinks
-        ariaLabel="搜索匹配主题"
-        items={[
-          ...categories.slice(0, 6).map((category) => ({
-            href: `/category/${category.slug}`,
-            label: category.name,
-            meta: "分类",
-            icon: FolderOpen,
-          })),
-          ...tags.slice(0, 8).map((tag) => ({
-            href: `/tag/${tag.slug}`,
-            label: tag.name,
-            meta: "标签",
-            icon: Hash,
-          })),
-        ]}
-      />
-    </PublicInfoPanel>
-  );
-}
-
-function DiscoveryPanel<T extends { id: string; name: string; postCount: number }>({
-  title,
-  description,
-  items,
-  hrefFor,
-  icon,
-  limit,
-}: {
-  title: string;
-  description: string;
-  items: T[];
-  hrefFor: (item: T) => string;
-  icon: "category" | "tag";
-  limit: number;
-}) {
-  const visibleItems = items
-    .filter((item) => item.postCount > 0)
-    .sort((a, b) => b.postCount - a.postCount)
-    .slice(0, limit);
-
-  if (visibleItems.length === 0) return null;
-
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="pb-2">
+    <section className="mt-5 border-y border-border/60 py-4">
+      <div>
         <h2 className="text-sm font-medium text-foreground">
-          {title}
+          主题命中
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
+          匹配到 {categories.length} 个分类、{tags.length} 个标签。
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 pt-1">
-        {visibleItems.map((item) => (
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+        {categories.slice(0, 6).map((category) => (
           <Link
-            key={item.id}
-            href={hrefFor(item)}
-            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            key={category.id}
+            href={`/category/${category.slug}`}
+            className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <Badge
-              variant="secondary"
-              className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
-            >
-              {icon === "tag" ? (
-                <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-              ) : (
-                <FolderOpen className="h-3.5 w-3.5" suppressHydrationWarning />
-              )}
-              {item.name}
-              <span className="text-[11px] opacity-70">{item.postCount}</span>
-            </Badge>
+            {category.name}
+            <span className="ml-1 text-xs">分类</span>
+          </Link>
+        ))}
+        {tags.slice(0, 8).map((tag) => (
+          <Link
+            key={tag.id}
+            href={`/tag/${tag.slug}`}
+            className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            #{tag.name}
+            <span className="ml-1 text-xs">标签</span>
           </Link>
         ))}
       </div>

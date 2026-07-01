@@ -155,16 +155,25 @@
 
 /* Prose (article) enhancements */
 .prose {
-  --tw-prose-body: var(--foreground);
+  --tw-prose-body: color-mix(in oklab, var(--foreground) 84%, var(--background));
   --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--foreground);
   --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  --tw-prose-hr: color-mix(in oklab, var(--border) 70%, transparent);
   --tw-prose-quotes: var(--muted-foreground);
+  --tw-prose-quote-borders: color-mix(in oklab, var(--border) 80%, transparent);
+  --tw-prose-captions: var(--muted-foreground);
   --tw-prose-code: var(--foreground);
 }
 
 .prose blockquote {
-  border-inline-start-color: var(--border);
-  border-inline-start-width: 2px;
+  border-inline-start-color: color-mix(in oklab, var(--border) 80%, transparent);
+  border-inline-start-width: 1px;
+  font-style: normal;
+  padding-inline-start: 1rem;
 }
 
 .prose blockquote p {
@@ -191,4 +200,15 @@
 .prose h2,
 .prose h3 {
   position: relative;
+  letter-spacing: -0.01em;
+}
+
+.prose p,
+.prose li {
+  text-wrap: pretty;
+}
+
+.prose pre {
+  border: 1px solid color-mix(in oklab, var(--border) 65%, transparent);
+  box-shadow: none;
 }

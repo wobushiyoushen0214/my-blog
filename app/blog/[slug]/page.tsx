@@ -6,7 +6,6 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
@@ -14,7 +13,6 @@ import {
   ChevronLeft,
   ChevronRight,
   MessageSquare,
-  Tag,
 } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, PostTag, Tag as TagType } from "@/lib/types";
@@ -493,10 +491,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <Link
                     key={tag.id}
                     href={`/tag/${tag.slug}`}
-                    className="inline-flex h-8 items-center gap-1.5 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="inline-flex h-8 items-center underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
-                    <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
-                    {tag.name}
+                    #{tag.name}
                   </Link>
                 ))}
               </nav>
@@ -527,14 +524,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div
               className="prose prose-neutral dark:prose-invert max-w-none
                 prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight
-                prose-p:leading-8 prose-p:text-foreground/90
+                prose-p:my-5 prose-p:leading-8 prose-p:text-foreground/85
                 prose-a:text-primary prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-4 hover:prose-a:decoration-primary
-                prose-img:rounded-lg
+                prose-img:rounded-md
                 prose-blockquote:border-l-border prose-blockquote:text-muted-foreground
                 prose-hr:border-border/60
-                prose-pre:rounded-md prose-pre:bg-muted/60
+                prose-pre:rounded-md prose-pre:border prose-pre:border-border/60 prose-pre:bg-muted/45 prose-pre:shadow-none
                 prose-code:before:content-none prose-code:after:content-none
-                prose-code:rounded-md prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm"
+                prose-code:rounded-sm prose-code:bg-muted/70 prose-code:px-1 prose-code:py-0.5 prose-code:text-sm prose-code:font-medium"
               dangerouslySetInnerHTML={{ __html: articleContent }}
             />
 
@@ -615,10 +612,9 @@ function ArticleFinishPanel({
                 <Link
                   key={tag.id}
                   href={`/tag/${tag.slug}`}
-                  className="inline-flex h-8 items-center gap-1.5 text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="inline-flex h-8 items-center text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 >
-                  <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
-                  {tag.name}
+                  #{tag.name}
                 </Link>
               ))}
             </div>
@@ -825,15 +821,14 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
               </p>
             ) : null}
             {post.tags && post.tags.length > 0 ? (
-              <div className="mt-2 flex flex-wrap gap-1.5">
+              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 {post.tags.slice(0, 3).map((tag) => (
-                  <Badge
+                  <span
                     key={tag.id}
-                    variant="secondary"
-                    className="h-5 rounded-md px-2 py-0 text-[10px] font-normal text-muted-foreground"
+                    className="max-w-36 truncate"
                   >
-                    {tag.name}
-                  </Badge>
+                    #{tag.name}
+                  </span>
                 ))}
               </div>
             ) : null}

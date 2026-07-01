@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PostCard } from "@/components/post-card";
+import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
@@ -23,7 +23,7 @@ type SortOption = "newest" | "updated" | "popular";
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
 type PostWithTaxonomy = Post & {
-  category?: { name: string; slug: string } | null;
+  category?: Pick<Category, "name" | "slug" | "type"> | null;
   tags?: Tag[];
 };
 
@@ -323,7 +323,7 @@ export default async function PostsPage({
               </div>
               <div className="grid">
                 {postsWithTags.map((post) => (
-                  <PostCard key={post.id} post={post} variant="compact" />
+                  <ContentRow key={post.id} post={post} typeLabel="文章" />
                 ))}
               </div>
             </section>

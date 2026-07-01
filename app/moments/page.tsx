@@ -2,18 +2,17 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
   PublicEmptyState,
   PublicPageShell,
 } from "@/components/public-page";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
-  Eye,
   NotebookText,
   Search,
   X,
@@ -89,15 +88,6 @@ function formatYear(date: string) {
 
 function formatViews(value: number) {
   return new Intl.NumberFormat("zh-CN").format(value || 0);
-}
-
-function getMomentExcerpt(post: Pick<Post, "content" | "excerpt" | "title">) {
-  const source = post.excerpt || post.content || post.title;
-  return source
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&[a-zA-Z0-9#]+;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 function attachTagsFromMap(
@@ -666,64 +656,22 @@ function MomentStream({
 
       <ol className="grid">
         {posts.map((post) => {
-          const excerpt = getMomentExcerpt(post);
           const updated =
             post.updated_at.slice(0, 10) !== post.created_at.slice(0, 10);
 
           return (
             <li key={post.id}>
-              <Link
-                href={`/blog/${post.slug}`}
-                className="group grid min-w-0 gap-3 border-b border-border/60 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50 sm:grid-cols-[80px_minmax(0,1fr)]"
-              >
-                <time
-                  dateTime={post.created_at}
-                  className="flex w-fit flex-row items-baseline gap-2 text-xs text-muted-foreground sm:w-full sm:flex-col sm:gap-0"
-                >
-                  <span className="font-medium text-foreground">
-                    {formatMonthDay(post.created_at)}
-                  </span>
-                  <span>{formatYear(post.created_at)}</span>
-                </time>
-
-                <span className="min-w-0">
-                  <span className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
-                    {post.category ? (
-                      <span className="font-medium text-foreground">
-                        {post.category.name}
-                      </span>
-                    ) : null}
-                    <span className="inline-flex items-center gap-1.5">
-                      <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
-                      {formatViews(post.view_count)} 阅读
-                    </span>
-                    {updated ? (
-                      <span>更新于 {formatDate(post.updated_at)}</span>
-                    ) : null}
-                  </span>
-                  <span className="mt-1.5 block truncate text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
-                    {post.title}
-                  </span>
-                  {excerpt ? (
-                    <span className="mt-1.5 block line-clamp-2 text-sm leading-6 text-muted-foreground">
-                      {excerpt}
-                    </span>
-                  ) : null}
-                  {post.tags && post.tags.length > 0 ? (
-                    <span className="mt-3 flex flex-wrap gap-1.5">
-                      {post.tags.slice(0, 4).map((tag) => (
-                        <Badge
-                          key={tag.id}
-                          variant="secondary"
-                          className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
-                        >
-                          {tag.name}
-                        </Badge>
-                      ))}
-                    </span>
-                  ) : null}
-                </span>
-              </Link>
+              <ContentRow
+                post={post}
+                dateLabel={`${formatMonthDay(post.created_at)} ${formatYear(post.created_at)}`}
+                typeLabel="见闻"
+                meta={[
+                  "见闻",
+                  ...(post.category?.name ? [post.category.name] : []),
+                  ...(updated ? [`更新于 ${formatDate(post.updated_at)}`] : []),
+                ]}
+                rightMeta={[`${formatViews(post.view_count)} 阅读`]}
+              />
             </li>
           );
         })}
