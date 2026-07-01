@@ -125,7 +125,7 @@ export function SearchBar() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-9 items-center justify-center gap-2 px-2 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground/60 transition-all duration-500 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-28 sm:justify-start"
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-md px-2 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start"
           aria-keyshortcuts="/"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
@@ -133,7 +133,7 @@ export function SearchBar() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="gap-0 overflow-hidden border-[0.5px] border-border/20 bg-background p-0 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl sm:max-w-xl"
+        className="gap-0 overflow-hidden border border-border/60 bg-background p-0 shadow-lg sm:max-w-xl"
         showCloseButton={false}
       >
         <DialogHeader className="sr-only">
@@ -163,18 +163,18 @@ export function SearchBar() {
                 placeholder="搜索标题、正文、分类或标签..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="h-11 border-transparent bg-muted/30 pl-10 shadow-none transition-all duration-300 hover:bg-muted/40 focus-visible:bg-background rounded-none"
+                className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none transition-colors hover:bg-muted/30 focus-visible:bg-background"
               />
             </div>
             <button
               type="submit"
-              className="inline-flex h-11 items-center justify-center bg-foreground px-4 text-xs font-medium uppercase tracking-[0.14em] text-background transition-all duration-500 hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               搜索
             </button>
             <button
               type="button"
-              className="inline-flex size-11 items-center justify-center bg-muted/30 text-muted-foreground transition-all duration-300 hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex size-10 items-center justify-center rounded-md bg-muted/40 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               aria-label="关闭搜索"
               onClick={() => setOpen(false)}
             >
@@ -185,8 +185,7 @@ export function SearchBar() {
 
         <div className="px-3 py-3 sm:px-4 sm:py-4">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              <span className="text-primary/60" aria-hidden="true">❖</span>{" "}
+            <p className="text-sm font-medium text-foreground">
               探索
             </p>
           </div>
@@ -200,7 +199,7 @@ export function SearchBar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="group grid min-w-0 gap-3 px-2.5 py-2.5 transition-all duration-300 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[1.25rem_minmax(0,1fr)_auto] sm:items-center"
+                  className="group grid min-w-0 gap-3 rounded-md px-2.5 py-2.5 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[1.25rem_minmax(0,1fr)_auto] sm:items-center"
                 >
                   <span className="flex items-center text-muted-foreground">
                     <Icon className="h-4 w-4" suppressHydrationWarning />
@@ -214,7 +213,7 @@ export function SearchBar() {
                     </span>
                   </span>
                   <ArrowRight
-                    className="hidden h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:translate-x-1 group-hover:text-foreground sm:block"
+                    className="hidden h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground sm:block"
                     suppressHydrationWarning
                   />
                 </Link>

@@ -148,7 +148,7 @@ export default async function LinksPage({
           action={
             <Link
               href="/posts"
-              className="inline-flex h-9 items-center gap-2 px-0 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-9 items-center gap-2 rounded-md px-0 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <MessageSquareText
                 className="h-4 w-4"
@@ -192,13 +192,13 @@ export default async function LinksPage({
           />
         ) : null}
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
           <div className="min-w-0 space-y-8">
             {filteredLinks.length > 0 ? (
               categories.map((category) => (
                 <section key={category} className="space-y-4">
                   <div className="pb-1">
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       Directory
                     </p>
                     <div className="mt-1 flex items-end justify-between gap-3">
@@ -377,7 +377,7 @@ function LinkFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索站点名称、简介、分类或标签..."
-            className="h-10 rounded-none border-transparent bg-muted/20 pl-10 shadow-none hover:bg-muted/25 focus-visible:bg-background"
+            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
           />
         </div>
         <label htmlFor="links-status" className="sr-only">
@@ -387,7 +387,7 @@ function LinkFilterBar({
           id="links-status"
           name="status"
           defaultValue={status}
-          className="h-10 rounded-none border border-transparent bg-muted/20 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/25 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部状态</option>
           <option value="active">已收录</option>
@@ -395,14 +395,14 @@ function LinkFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           筛选
         </button>
         {hasFilters ? (
           <Link
             href="/links"
-            className="inline-flex h-10 items-center justify-center bg-muted/20 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -423,7 +423,7 @@ function ActiveLinkSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -453,7 +453,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -476,16 +476,16 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+      className="group grid min-w-0 gap-3 rounded-lg border border-border/60 bg-card px-4 py-4 transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-2">
-          <span className="truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
+          <span className="truncate text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
             {item.name}
           </span>
           <Badge
             variant="secondary"
-            className="rounded-none font-normal"
+            className="rounded-md font-normal"
           >
             {item.status === "new" ? "新收录" : "已收录"}
           </Badge>
@@ -501,7 +501,7 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
             <Badge
               key={tag}
               variant="secondary"
-              className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
+              className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
             >
               {tag}
             </Badge>
@@ -509,7 +509,7 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
           {item.rss ? (
             <Badge
               variant="secondary"
-              className="h-5 rounded-none px-1.5 py-0 text-[10px] font-normal"
+              className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
             >
               <Rss className="h-3 w-3" suppressHydrationWarning />
               RSS
@@ -539,16 +539,16 @@ function InfoPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="space-y-2 py-1">
-      <div className="py-2">
-        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
+      <div className="pb-2">
+        <h2 className="text-sm font-medium text-foreground">
           {title}
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
           {description}
         </p>
       </div>
-      <div className="py-3">{children}</div>
+      <div className="pt-2">{children}</div>
     </section>
   );
 }

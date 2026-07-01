@@ -373,7 +373,7 @@ export default async function SearchPage({
                 name="q"
                 defaultValue={rawQuery}
                 placeholder="搜索标题、正文、分类或标签..."
-                className="h-10 rounded-none border-transparent bg-muted/20 pl-10 shadow-none hover:bg-muted/25 focus-visible:bg-background"
+                className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
               />
             </div>
             <label htmlFor="search-type" className="sr-only">
@@ -383,7 +383,7 @@ export default async function SearchPage({
               id="search-type"
               name="type"
               defaultValue={contentType}
-              className="h-10 rounded-none border border-transparent bg-muted/20 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/25 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <option value="all">全部内容</option>
               <option value="post">只看文章</option>
@@ -396,7 +396,7 @@ export default async function SearchPage({
               id="search-sort"
               name="sort"
               defaultValue={sort}
-              className="h-10 rounded-none border border-transparent bg-muted/20 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/25 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <option value="newest">最新发布</option>
               <option value="updated">最近更新</option>
@@ -404,7 +404,7 @@ export default async function SearchPage({
             </select>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center gap-2 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <Search className="h-4 w-4" suppressHydrationWarning />
               搜索
@@ -412,7 +412,7 @@ export default async function SearchPage({
             {query || hasFilters ? (
               <Link
                 href="/search"
-                className="inline-flex h-10 items-center justify-center bg-muted/20 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               >
                 清除
               </Link>
@@ -456,7 +456,7 @@ export default async function SearchPage({
           />
         ) : null}
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
           <div className="min-w-0 space-y-8">
             {shownPosts.length > 0 ? (
               <>
@@ -561,7 +561,7 @@ export default async function SearchPage({
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="pb-1">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {eyebrow}
       </p>
       <h2 className="mt-1 text-base font-medium">{title}</h2>
@@ -594,7 +594,7 @@ function ActiveSearchSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -630,7 +630,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -670,8 +670,8 @@ function TypeSwitch({
           aria-current={activeType === item.value ? "page" : undefined}
           className={`inline-flex h-9 shrink-0 items-center px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeType === item.value
-              ? "bg-muted/30 text-foreground"
-              : "bg-muted/10 text-muted-foreground hover:bg-muted/20 hover:text-foreground"
+              ? "rounded-md bg-muted text-foreground"
+              : "rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           }`}
         >
           {item.label}
@@ -782,8 +782,8 @@ function SearchStarterPanel({
               href={item.href}
               className={`inline-flex min-h-9 items-center gap-2 px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                 item.active
-                  ? "bg-muted/30 text-foreground"
-                  : "bg-muted/12 text-muted-foreground hover:bg-muted/22 hover:text-foreground"
+                  ? "rounded-md bg-muted text-foreground"
+                  : "rounded-md border border-border/60 text-muted-foreground hover:bg-muted/40 hover:text-foreground"
               }`}
             >
               <span>{item.label}</span>
@@ -816,7 +816,7 @@ function SearchStarterPanel({
                   >
                     <Badge
                       variant="secondary"
-                      className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
+                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
                     >
                       <FolderOpen
                         className="h-3.5 w-3.5"
@@ -841,7 +841,7 @@ function SearchStarterPanel({
                   >
                     <Badge
                       variant="secondary"
-                      className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
+                      className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
                     >
                       <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
                       {tag.name}
@@ -922,16 +922,16 @@ function DiscoveryPanel<T extends { id: string; name: string; postCount: number 
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="space-y-2 py-1">
-      <div className="py-2">
-        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
+      <div className="pb-2">
+        <h2 className="text-sm font-medium text-foreground">
           {title}
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
           {description}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 py-1">
+      <div className="flex flex-wrap gap-2 pt-1">
         {visibleItems.map((item) => (
           <Link
             key={item.id}
@@ -940,7 +940,7 @@ function DiscoveryPanel<T extends { id: string; name: string; postCount: number 
           >
             <Badge
               variant="secondary"
-              className="h-8 gap-1.5 rounded-none px-2.5 text-xs font-normal"
+              className="h-8 gap-1.5 rounded-md px-2.5 text-xs font-normal"
             >
               {icon === "tag" ? (
                 <Hash className="h-3.5 w-3.5" suppressHydrationWarning />

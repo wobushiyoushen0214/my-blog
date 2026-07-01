@@ -70,11 +70,11 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex min-h-10 min-w-10 items-center justify-center px-3 text-xs font-medium uppercase tracking-[0.14em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex min-h-10 min-w-10 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const edgeLinkClassName =
-    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground transition-all duration-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "flex min-h-10 items-center gap-1 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const disabledClassName =
-    "flex min-h-10 items-center gap-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground/25";
+    "flex min-h-10 items-center gap-1 rounded-md text-sm font-medium text-muted-foreground/25";
 
   return (
     <nav
@@ -119,7 +119,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
                   pageLinkClassName,
                   item === safeCurrentPage
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted/20 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                 )}
                 aria-label={`第 ${item} 页`}
                 aria-current={item === safeCurrentPage ? "page" : undefined}

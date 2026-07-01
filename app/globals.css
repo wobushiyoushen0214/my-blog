@@ -137,54 +137,6 @@
   color: var(--foreground);
 }
 
-/* —— Glassmorphism utilities —— */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);
-}
-
-/* —— Scroll reveal —— */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.scroll-reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* —— Gallery parallax items —— */
-.gallery-item {
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.gallery-item img {
-  transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1), filter 1.2s ease;
-}
-.gallery-item:hover img {
-  transform: scale(1.05);
-  filter: grayscale(0.5);
-}
-.gallery-caption {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.gallery-item:hover .gallery-caption {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* —— Tiptap editor styles —— */
 .tiptap p.is-editor-empty:first-child::before {
   color: var(--muted-foreground);
@@ -212,14 +164,12 @@
 }
 
 .prose blockquote {
-  border-inline-start-color: var(--primary);
+  border-inline-start-color: var(--border);
   border-inline-start-width: 2px;
-  font-style: italic;
-  font-family: var(--font-serif);
 }
 
 .prose blockquote p {
-  font-size: 1.1em;
+  font-size: 1em;
 }
 
 .prose :not(pre) > code {
@@ -236,30 +186,10 @@
 }
 
 .prose hr {
-  border: 0;
-  text-align: center;
-}
-
-.prose hr::after {
-  content: "✦";
-  display: inline-block;
-  color: var(--muted-foreground);
-  font-size: 1rem;
-  letter-spacing: 0.5em;
+  border-color: var(--border);
 }
 
 .prose h2,
 .prose h3 {
   position: relative;
-}
-
-/* Decorative drop cap on the first paragraph of article bodies */
-.prose.dropcap > p:first-of-type::first-letter {
-  font-family: var(--font-serif);
-  font-size: 3.2em;
-  font-weight: 600;
-  line-height: 0.78;
-  float: left;
-  margin: 0.08em 0.12em 0 0;
-  color: var(--primary);
 }

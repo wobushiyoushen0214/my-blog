@@ -269,7 +269,7 @@ export default async function ArchivePage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="py-10 md:py-14">
+      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
         <ArchiveHero
           title={pageTitle}
           countLabel={countLabel}
@@ -288,7 +288,7 @@ export default async function ArchivePage({
 
         <ActiveArchiveSummary query={query} type={type} />
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px]">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_240px]">
           <div className="min-w-0">
             {yearGroups.length > 0 ? (
               <ArchiveTimeline groups={yearGroups} totalViews={totalViews} />
@@ -391,25 +391,24 @@ function ArchiveHero({
     : ["等待第一篇记录", "按年份自动整理"];
 
   return (
-    <header className="mb-8 border-b-[0.5px] border-border/25 pb-8 md:mb-9 md:pb-10">
-      <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+    <header className="mb-8 border-b border-border/60 pb-6">
+      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="h-px w-7 bg-primary/50" aria-hidden="true" />
+          <p className="text-sm text-muted-foreground">
             Archive
           </p>
-          <div className="mt-4 flex min-w-0 flex-wrap items-end gap-x-4 gap-y-2">
-            <h1 className="min-w-0 font-serif text-5xl leading-[0.95] tracking-tight italic md:text-6xl">
+          <div className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
+            <h1 className="min-w-0 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
               {title}
             </h1>
-            <span className="pb-1.5 text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               {countLabel}
             </span>
           </div>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
             按发布时间回看文章和见闻。这里更像一份索引：先看时间，再顺手按关键词、类型或年份缩小范围。
           </p>
-          <dl className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
+          <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
             {metaItems.map((item) => (
               <div
                 key={item}
@@ -460,7 +459,7 @@ function ArchiveFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索标题、摘要、分类或标签..."
-            className="h-11 rounded-none border-transparent bg-muted/25 pl-10 shadow-none hover:bg-muted/35 focus-visible:bg-background"
+            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
           />
         </div>
         <label htmlFor="archive-type" className="sr-only">
@@ -470,7 +469,7 @@ function ArchiveFilterBar({
           id="archive-type"
           name="type"
           defaultValue={type}
-          className="h-11 rounded-none border border-transparent bg-muted/25 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/35 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="all">全部内容</option>
           <option value="post">只看文章</option>
@@ -478,14 +477,14 @@ function ArchiveFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-11 items-center justify-center bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           筛选
         </button>
         {hasFilters ? (
           <Link
             href="/archive"
-            className="inline-flex h-11 items-center justify-center bg-muted/25 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/35 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -506,7 +505,7 @@ function ActiveArchiveSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -536,7 +535,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -554,12 +553,12 @@ function ArchiveTimeline({
 }) {
   return (
     <section aria-labelledby="archive-timeline-title" className="space-y-8">
-      <div className="flex flex-col gap-1 border-b-[0.5px] border-border/25 pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-1 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Timeline
           </p>
-          <h2 id="archive-timeline-title" className="mt-1 font-serif text-2xl leading-tight italic">
+          <h2 id="archive-timeline-title" className="mt-1 text-lg font-semibold">
             完整时间线
           </h2>
         </div>
@@ -568,7 +567,7 @@ function ArchiveTimeline({
         </p>
       </div>
 
-      <div className="space-y-12">
+      <div className="space-y-8">
         {groups.map((group) => (
           <YearSection key={group.year} group={group} />
         ))}
@@ -581,11 +580,11 @@ function YearSection({ group }: { group: YearGroup }) {
   return (
     <section
       id={`archive-${group.year}`}
-      className="scroll-mt-28 space-y-6"
+      className="scroll-mt-28 space-y-5"
     >
-      <div className="grid gap-4 sm:grid-cols-[6rem_minmax(0,1fr)]">
+      <div className="grid gap-4 sm:grid-cols-[5rem_minmax(0,1fr)]">
         <div className="sm:pt-1">
-          <h3 className="font-serif text-4xl leading-none tracking-tight">
+          <h3 className="text-2xl font-semibold leading-none tracking-tight">
             {group.year}
           </h3>
           <p className="mt-2 text-xs text-muted-foreground">{group.count} 篇</p>
@@ -603,10 +602,10 @@ function YearSection({ group }: { group: YearGroup }) {
 function MonthSection({ month }: { month: MonthGroup }) {
   return (
     <section className="grid gap-3 sm:grid-cols-[5rem_minmax(0,1fr)]">
-      <h4 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground sm:pt-4">
+      <h4 className="text-sm text-muted-foreground sm:pt-4">
         {month.label.replace(/^\d+ 年 /, "")}
       </h4>
-      <div className="min-w-0 border-l-[0.5px] border-border/30 pl-4 sm:pl-5">
+      <div className="min-w-0 border-l border-border/60 pl-4 sm:pl-5">
         <div className="grid gap-1">
           {month.posts.map((post) => (
             <ArchiveRow key={post.id} post={post} />
@@ -621,7 +620,7 @@ function ArchiveRow({ post }: { post: ArchivePost }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group grid min-w-0 gap-3 border-b-[0.5px] border-border/15 py-4 transition-colors last:border-b-0 hover:bg-muted/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[4rem_minmax(0,1fr)_5.5rem]"
+      className="group grid min-w-0 gap-3 border-b border-border/60 py-4 transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[4rem_minmax(0,1fr)_5.5rem]"
     >
       <time
         dateTime={post.created_at}
@@ -632,17 +631,17 @@ function ArchiveRow({ post }: { post: ArchivePost }) {
 
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
-          <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             {getContentTypeLabel(post)}
           </span>
           {post.category ? (
-            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               {post.category.name}
             </span>
           ) : null}
         </span>
 
-        <span className="mt-2 block line-clamp-2 font-serif text-xl leading-tight tracking-tight transition-opacity group-hover:opacity-70">
+        <span className="mt-1.5 block line-clamp-2 text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
           {post.title}
         </span>
 
@@ -657,7 +656,7 @@ function ArchiveRow({ post }: { post: ArchivePost }) {
             {post.tags.slice(0, 4).map((tag) => (
               <span
                 key={tag.id}
-                className="inline-flex h-5 items-center gap-1 border-[0.5px] border-border/35 px-1.5 text-[10px] text-muted-foreground"
+                className="inline-flex h-5 items-center gap-1 rounded-md border border-border/60 px-1.5 text-[10px] text-muted-foreground"
               >
                 <Hash className="h-3 w-3" suppressHydrationWarning />
                 {tag.name}
@@ -690,7 +689,7 @@ function YearIndex({ groups }: { groups: YearGroup[] }) {
             key={group.year}
             href={`#archive-${group.year}`}
             className={cn(
-              "flex items-center justify-between gap-3 px-2 py-2.5 text-sm transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              "flex items-center justify-between gap-3 rounded-md px-2 py-2.5 text-sm transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             )}
           >
             <span className="font-medium">{group.year}</span>

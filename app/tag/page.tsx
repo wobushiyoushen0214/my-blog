@@ -122,7 +122,7 @@ export default async function TagsPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1240px] py-14 md:py-20">
+      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
         <TagIndexHero
           title={status === DEFAULT_STATUS ? "所有标签" : statusLabel(status)}
           filteredCount={filteredTags.length}
@@ -169,15 +169,15 @@ export default async function TagsPage({
         />
 
         {filteredTags.length > 0 ? (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
             <section className="min-w-0 space-y-4">
-              <div className="border-b border-border/30 pb-4">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="border-b border-border/60 pb-3">
+                <p className="text-sm text-muted-foreground">
                   Browse
                 </p>
                 <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <h2 className="font-serif text-2xl">
+                    <h2 className="text-lg font-semibold">
                       {query ? "匹配标签" : "标签索引"}
                     </h2>
                     <p className="mt-1 text-sm leading-6 text-muted-foreground">
@@ -200,8 +200,8 @@ export default async function TagsPage({
             <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
               {topTags.length > 0 ? (
                 <section className="py-1">
-                  <div className="border-b border-border/30 py-3">
-                    <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                  <div className="border-b border-border/60 pb-3">
+                    <h2 className="text-sm font-medium text-foreground">
                       高频标签
                     </h2>
                     <p className="mt-1 text-xs leading-5 text-muted-foreground">
@@ -294,41 +294,40 @@ function TagIndexHero({
   hasFilters: boolean;
 }) {
   return (
-    <header className="mb-10 border-b border-border/35 pb-10 md:mb-12 md:pb-14">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+    <header className="mb-8 border-b border-border/60 pb-6">
+      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
         <div className="min-w-0">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="h-px w-8 bg-border/70" aria-hidden="true" />
+          <p className="text-sm text-muted-foreground">
             Tags
           </p>
-          <h1 className="mt-5 font-serif text-5xl italic leading-[1.04] md:text-6xl lg:text-7xl">
+          <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
             {title}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
             通过关键词聚合相关内容，适合快速交叉浏览。
           </p>
         </div>
 
-        <div className="border-l border-border/35 pl-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
+          <p className="text-xs text-muted-foreground">
             Tag Index / {filteredCount} / {totalCount}
           </p>
-          <dl className="mt-5 grid gap-3 border-y border-border/25 py-4">
+          <dl className="mt-3 grid gap-2 text-sm">
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-xs text-muted-foreground">当前视图</dt>
-              <dd className="font-serif text-2xl leading-none tabular-nums">
+              <dt className="text-muted-foreground">当前视图</dt>
+              <dd className="font-semibold tabular-nums">
                 {filteredCount}
               </dd>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-xs text-muted-foreground">已使用</dt>
-              <dd className="text-sm tabular-nums text-foreground/90">
+              <dt className="text-muted-foreground">已使用</dt>
+              <dd className="tabular-nums text-foreground">
                 {usedCount}
               </dd>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-xs text-muted-foreground">未使用</dt>
-              <dd className="text-sm tabular-nums text-foreground/90">
+              <dt className="text-muted-foreground">未使用</dt>
+              <dd className="tabular-nums text-foreground">
                 {unusedCount}
               </dd>
             </div>
@@ -352,7 +351,7 @@ function TagSearchBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border-b border-border/30 pb-6">
+    <section className="border-b border-border/60 pb-5">
       <form
         className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_96px_auto]"
         role="search"
@@ -375,12 +374,12 @@ function TagSearchBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索标签名称或 slug..."
-            className="h-11 rounded-none border-border/40 bg-transparent pl-10 shadow-none hover:border-border focus-visible:bg-background"
+            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
           />
         </div>
         <button
           type="submit"
-          className="inline-flex h-11 items-center justify-center gap-2 bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
           搜索
@@ -388,7 +387,7 @@ function TagSearchBar({
         {hasFilters ? (
           <Link
             href="/tag"
-            className="inline-flex h-11 items-center justify-center border border-border/40 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -414,7 +413,7 @@ function TagStatusSwitch({
   return (
     <nav
       aria-label="标签使用状态"
-      className="-mx-5 mt-6 flex gap-6 overflow-x-auto border-b border-border/30 px-5 md:mx-0 md:px-0"
+      className="-mx-5 mt-5 flex gap-4 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
     >
       {items.map((item) => (
         <Link
@@ -475,7 +474,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/35 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -492,14 +491,14 @@ function SummaryLedger({
   return (
     <section
       aria-label="标签概览"
-      className="mt-6 grid gap-px border-y border-border/35 bg-border/25 sm:grid-cols-2 lg:grid-cols-4"
+      className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
     >
       {items.map((item) => (
-        <div key={item.label} className="bg-background px-4 py-4">
-          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
+          <p className="text-xs text-muted-foreground">
             {item.label}
           </p>
-          <p className="mt-2 font-serif text-2xl leading-none text-foreground">
+          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
             {item.value}
           </p>
           <p className="mt-2 truncate text-xs text-muted-foreground">
@@ -527,7 +526,7 @@ function TagResultRow({ tag }: { tag: TagWithCount }) {
             {tag.slug || "未设置 slug"}
           </span>
         </span>
-        <span className="mt-2 block truncate font-serif text-xl leading-tight transition-all duration-300 group-hover:italic group-hover:text-primary">
+        <span className="mt-2 block truncate text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
           {tag.name}
         </span>
       </span>
@@ -552,9 +551,9 @@ function ContinuePanel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="py-1">
-      <div className="border-b border-border/30 py-3">
-        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
+      <div className="border-b border-border/60 pb-3">
+        <h2 className="text-sm font-medium text-foreground">
           {title}
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">

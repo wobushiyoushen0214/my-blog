@@ -49,7 +49,7 @@ export function PostCard({
 }: PostCardProps) {
   const isFeatured = variant === "featured";
   const isCompact = variant === "compact";
-  const showMedia = !isCompact;
+  const showMedia = !isCompact && Boolean(post.cover_image);
   const contentTypeLabel = post.category?.type === "moment" ? "见闻" : "文章";
   const readingMinutes = estimateReadingMinutes(post);
 
@@ -57,7 +57,7 @@ export function PostCard({
     return (
       <Link
         href={`/blog/${post.slug}`}
-        className="group grid min-w-0 gap-3 border-b border-border/25 py-5 transition-colors duration-300 hover:bg-muted/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6.5rem_minmax(0,1fr)_7rem]"
+        className="group grid min-w-0 gap-3 border-b border-border/60 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6rem_minmax(0,1fr)_7rem]"
       >
         <div className="text-xs tabular-nums text-muted-foreground">
           <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
@@ -65,20 +65,20 @@ export function PostCard({
 
         <div className="min-w-0">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="max-w-36 truncate border-l border-border/50 pl-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="max-w-36 truncate border-l border-border/60 pl-2 text-xs text-muted-foreground">
                 {post.category.name}
               </span>
             ) : null}
           </div>
-          <h2 className="mt-2 line-clamp-2 font-serif text-xl leading-tight transition-all duration-300 group-hover:italic group-hover:text-primary">
+          <h2 className="mt-1.5 line-clamp-2 text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary md:text-lg">
             {post.title}
           </h2>
           {post.excerpt ? (
-            <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
+            <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-muted-foreground">
               {post.excerpt}
             </p>
           ) : null}
@@ -88,7 +88,7 @@ export function PostCard({
                 <Badge
                   key={tag.id}
                   variant="secondary"
-                  className="h-5 px-2 py-0 text-[10px] font-normal text-muted-foreground rounded-none"
+                  className="h-5 rounded-md px-2 py-0 text-[10px] font-normal text-muted-foreground"
                 >
                   {tag.name}
                 </Badge>
@@ -109,9 +109,9 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex min-w-0 overflow-hidden border-y border-border/35 transition-colors duration-300 hover:bg-muted/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-        isFeatured
-          ? "flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.72fr)]"
+        "group flex min-w-0 overflow-hidden rounded-lg border border-border/60 bg-card transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        isFeatured && showMedia
+          ? "flex-col sm:grid sm:grid-cols-[minmax(0,1fr)_12rem]"
           : "flex-col"
       )}
     >
@@ -119,45 +119,32 @@ export function PostCard({
         <div
           className={cn(
             "relative w-full overflow-hidden bg-muted/30",
-            isFeatured ? "min-h-[260px] lg:min-h-full" : "aspect-[16/10]"
+            isFeatured ? "order-last min-h-40 sm:order-none sm:min-h-full" : "aspect-[16/10]"
           )}
         >
-          {post.cover_image ? (
-            <Image
-              src={post.cover_image}
-              alt={post.title}
-              fill
-              sizes={
-                isFeatured
-                  ? "(max-width: 1024px) 100vw, 58vw"
-                  : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              }
-              className="object-cover grayscale transition-transform duration-[2000ms] ease-out group-hover:scale-110"
-            />
-          ) : (
-            <div className="flex h-full min-h-[220px] items-end bg-muted/30 p-5">
-              <div className="max-w-xs pt-1">
-                <span className="inline-flex border-b border-border/50 pb-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                  {post.category?.name || contentTypeLabel}
-                </span>
-                <p className="mt-3 line-clamp-3 font-serif text-lg leading-snug text-foreground/80">
-                  {post.title}
-                </p>
-              </div>
-            </div>
-          )}
+          <Image
+            src={post.cover_image as string}
+            alt={post.title}
+            fill
+            sizes={
+              isFeatured
+                ? "(max-width: 640px) 100vw, 192px"
+                : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            }
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          />
         </div>
       ) : null}
 
       <div
         className={cn(
           "flex flex-1 flex-col",
-          isFeatured ? "p-6 md:p-8" : "p-5"
+          isFeatured ? "p-5 md:p-6" : "p-5"
         )}
       >
-        <div className="flex-1 space-y-3">
-          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5 uppercase tracking-[0.14em]">
+        <div className="flex-1 space-y-2.5">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
               <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
               <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
             </span>
@@ -169,20 +156,20 @@ export function PostCard({
               <Clock3 className="h-3.5 w-3.5" suppressHydrationWarning />
               约 {readingMinutes} 分钟
             </span>
-            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-foreground">
+            <span className="text-xs text-foreground">
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="min-w-0 truncate border-l border-border/50 pl-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="min-w-0 truncate border-l border-border/60 pl-2 text-xs text-muted-foreground">
                 {post.category.name}
               </span>
             ) : null}
           </div>
           <h2
             className={cn(
-              "line-clamp-2 font-serif leading-tight transition-all duration-300 group-hover:italic group-hover:text-primary",
+              "line-clamp-2 font-semibold leading-tight tracking-tight transition-colors group-hover:text-primary",
               isFeatured
-                ? "text-2xl md:text-3xl"
+                ? "text-xl md:text-2xl"
                 : "text-lg md:text-xl"
             )}
           >
@@ -206,7 +193,7 @@ export function PostCard({
               <Badge
                 key={tag.id}
                 variant="secondary"
-                className="h-5 px-2 py-0 text-[10px] font-normal rounded-none"
+                className="h-5 rounded-md px-2 py-0 text-[10px] font-normal"
               >
                 {tag.name}
               </Badge>
@@ -215,9 +202,9 @@ export function PostCard({
         ) : null}
 
         {isFeatured ? (
-          <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium uppercase tracking-[0.14em] text-foreground transition-all group-hover:gap-2.5">
+          <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
             {ctaLabel}
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" suppressHydrationWarning />
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" suppressHydrationWarning />
           </span>
         ) : null}
       </div>

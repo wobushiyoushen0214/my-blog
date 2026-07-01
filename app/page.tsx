@@ -222,7 +222,7 @@ export default async function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
-      <main className="mx-auto w-full max-w-[1080px] flex-1 px-5 py-14 md:px-6 md:py-20">
+      <main className="mx-auto w-full max-w-[960px] flex-1 px-5 py-10 md:px-6 md:py-12">
         <HomeIndex
           featuredPost={featuredPost}
           indexPosts={indexPosts}
@@ -233,7 +233,7 @@ export default async function HomePage() {
           totalViews={totalViews}
         />
 
-        <section className="mt-16 grid gap-12 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <section className="mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
           <RecentLedger posts={ledgerPosts} />
           <SideArchive
             categories={categorySummaries}
@@ -272,33 +272,30 @@ function HomeIndex({
   ];
 
   return (
-    <section aria-labelledby="home-index-title" className="pt-4 md:pt-8">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+    <section aria-labelledby="home-index-title">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
         <div className="min-w-0">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="h-px w-8 bg-primary/50" aria-hidden="true" />
+          <p className="text-sm text-muted-foreground">
             个人博客 · 技术、项目与日常观察
           </p>
           <h1
             id="home-index-title"
-            className="mt-6 max-w-3xl font-serif text-5xl leading-[1.08] tracking-tight md:text-7xl"
+            className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl"
           >
-            Lee
-            <span className="mx-3 text-primary/50">/</span>
-            Notes
+            Lee Notes
           </h1>
-          <p className="mt-7 max-w-2xl text-lg leading-9 text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
             这里记录工程实践、产品想法和生活见闻。内容按文章、见闻、主题与时间归档，便于回看，也便于搜索。
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-2.5">
+          <div className="mt-6 flex flex-wrap gap-2">
             {stats.map((item) => (
               <span
                 key={item.label}
-                className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-3.5 py-1.5 text-sm text-muted-foreground"
+                className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-card px-3 py-1.5 text-sm text-muted-foreground"
               >
                 <span>{item.label}</span>
-                <span className="font-serif font-medium text-foreground">{item.value}</span>
+                <span className="font-medium text-foreground">{item.value}</span>
               </span>
             ))}
           </div>
@@ -307,7 +304,7 @@ function HomeIndex({
 
           <nav
             aria-label="首页快捷入口"
-            className="mt-5 flex flex-wrap gap-2.5"
+            className="mt-4 flex flex-wrap gap-2"
           >
             <HomeNavLink href="/posts" label="读文章" />
             <HomeNavLink href="/moments" label="看见闻" />
@@ -320,17 +317,17 @@ function HomeIndex({
       </div>
 
       {indexPosts.length > 0 ? (
-        <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
+        <div className="mt-8 grid overflow-hidden rounded-lg border border-border/60 md:grid-cols-3">
           {indexPosts.map((post) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group grid gap-2 bg-card px-5 py-5 text-sm transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="group grid gap-2 border-b border-border/60 bg-card px-4 py-4 text-sm transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:border-b-0 md:border-r md:last:border-r-0"
             >
               <p className="text-xs text-muted-foreground">
                 {formatShortDate(post.created_at)} · {contentTypeLabel(post)}
               </p>
-              <h2 className="line-clamp-2 font-serif text-lg leading-snug transition-colors group-hover:text-primary">
+              <h2 className="line-clamp-2 text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
                 {post.title}
               </h2>
             </Link>
@@ -346,7 +343,7 @@ function HomeSearch() {
     <form
       action="/search"
       role="search"
-      className="mt-8 grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px_96px]"
+      className="mt-6 grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px_88px]"
     >
       <div className="relative min-w-0">
         <label htmlFor="home-search" className="sr-only">
@@ -361,7 +358,7 @@ function HomeSearch() {
           name="q"
           type="search"
           placeholder="搜索标题、正文、分类或标签..."
-          className="h-12 rounded-lg border-border/70 bg-muted/40 pl-11 shadow-none hover:bg-muted/60 focus-visible:bg-background"
+          className="h-10 rounded-md border-border/70 bg-background pl-10 shadow-none hover:bg-muted/40 focus-visible:bg-background"
         />
       </div>
       <label htmlFor="home-search-type" className="sr-only">
@@ -371,7 +368,7 @@ function HomeSearch() {
         id="home-search-type"
         name="type"
         defaultValue="all"
-        className="h-12 rounded-lg border border-border/70 bg-muted/40 px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/60 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="h-10 rounded-md border border-border/70 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/40 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <option value="all">全部</option>
         <option value="post">文章</option>
@@ -379,7 +376,7 @@ function HomeSearch() {
       </select>
       <button
         type="submit"
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
       >
         <Search className="h-4 w-4" suppressHydrationWarning />
         搜索
@@ -392,7 +389,7 @@ function HomeNavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-9 items-center rounded-full border border-border/70 px-4 text-sm text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-9 items-center rounded-md border border-border/60 px-3 text-sm text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       {label}
     </Link>
@@ -408,41 +405,38 @@ function FeaturedDispatch({ post }: { post: PostWithTaxonomy | null }) {
   return (
     <Link
       href={href}
-      className="group grid gap-5 overflow-hidden rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-border hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group grid gap-4 overflow-hidden rounded-lg border border-border/60 bg-card p-4 transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       {post?.cover_image ? (
-        <span className="relative block aspect-[16/10] overflow-hidden rounded-xl bg-muted">
+        <span className="relative block aspect-[16/10] overflow-hidden rounded-md bg-muted">
           <Image
             src={post.cover_image}
             alt={post.title}
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 360px"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />
         </span>
       ) : (
-        <span className="flex aspect-[16/10] items-end rounded-xl bg-muted/30 p-4">
+        <span className="flex aspect-[16/10] items-end rounded-md bg-muted/30 p-4">
           <span className="text-sm text-muted-foreground">
             最新内容会显示在这里
           </span>
         </span>
       )}
       <span className="min-w-0">
-        <span className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary">
-          <span className="text-primary/50" aria-hidden="true">
-            ❖
-          </span>
+        <span className="text-xs text-muted-foreground">
           最新发布
         </span>
-        <span className="mt-3 block font-serif text-2xl leading-tight transition-colors group-hover:text-primary">
+        <span className="mt-2 block text-lg font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
           {post?.title || "暂无公开内容"}
         </span>
-        <span className="mt-3 line-clamp-3 block text-sm leading-7 text-muted-foreground">
+        <span className="mt-2 line-clamp-3 block text-sm leading-6 text-muted-foreground">
           {excerpt}
         </span>
       </span>
-      <span className="flex items-center justify-between gap-3 border-t border-border/60 pt-4 text-sm text-muted-foreground">
+      <span className="flex items-center justify-between gap-3 border-t border-border/60 pt-3 text-sm text-muted-foreground">
         <span className="inline-flex items-center gap-1.5 transition-colors group-hover:text-foreground">
           继续阅读
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" suppressHydrationWarning />
@@ -460,11 +454,10 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
     <section>
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
         <div className="min-w-0">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="h-px w-6 bg-primary/50" aria-hidden="true" />
+          <p className="text-sm text-muted-foreground">
             按时间
           </p>
-          <h2 className="mt-2 font-serif text-3xl leading-tight tracking-tight">
+          <h2 className="mt-1 text-xl font-semibold leading-tight tracking-tight">
             最近入档
           </h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -480,18 +473,18 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
       </div>
 
       {posts.length > 0 ? (
-        <div className="mt-6 grid gap-px overflow-hidden rounded-xl border border-border bg-border">
+        <div className="mt-5 grid overflow-hidden rounded-lg border border-border/60">
           {posts.map((post) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group grid gap-3 bg-background px-5 py-4 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[88px_minmax(0,1fr)_120px]"
+              className="group grid gap-3 border-b border-border/60 bg-background px-4 py-4 transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[80px_minmax(0,1fr)_112px]"
             >
               <span className="text-sm tabular-nums text-muted-foreground">
                 {formatShortDate(post.created_at)}
               </span>
               <span className="min-w-0">
-                <span className="block font-serif text-lg leading-tight tracking-tight transition-colors group-hover:text-primary md:text-xl">
+                <span className="block text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
                   {post.title}
                 </span>
                 <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
@@ -525,7 +518,7 @@ function SideArchive({
   discussions: RecentDiscussion[];
 }) {
   return (
-    <aside className="space-y-10 rounded-2xl bg-muted/20 p-6">
+    <aside className="space-y-8 rounded-lg border border-border/60 bg-muted/20 p-5">
       <TopicList
         title="主题"
         items={categories}
@@ -560,10 +553,8 @@ function TopicList({
 
   return (
     <section>
-      <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-        <span className="text-primary/50" aria-hidden="true">
-          ❖
-        </span>        {title}
+      <p className="text-sm font-medium text-foreground">
+        {title}
       </p>
       {visibleItems.length > 0 ? (
         <div className="mt-4 flex flex-wrap gap-2">
@@ -571,7 +562,7 @@ function TopicList({
             <Link
               key={item.id}
               href={hrefFor(item)}
-              className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground weblog-hover:bgBootstrap/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <span className="max-w-32 truncate">
                 {item.name}
@@ -592,10 +583,7 @@ function TopicList({
 function DiscussionList({ items }: { items: RecentDiscussion[] }) {
   return (
     <section>
-      <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-        <span className="text-primary/50" aria-hidden="true">
-          ❖
-        </span>
+      <p className="text-sm font-medium text-foreground">
         近期讨论
       </p>
       {items.length > 0 ? (
@@ -604,7 +592,7 @@ function DiscussionList({ items }: { items: RecentDiscussion[] }) {
             <Link
               key={item.id}
               href={`/blog/${item.postSlug}#comments`}
-              className="block rounded-lg p-3 transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="block rounded-md p-3 transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                 <span className="truncate font-medium">{item.author_name}</span>
@@ -615,7 +603,7 @@ function DiscussionList({ items }: { items: RecentDiscussion[] }) {
               <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
                 {item.content}
               </p>
-              <p className="mt-2 truncate font-serif text-sm italic text-foreground">
+              <p className="mt-2 truncate text-sm font-medium text-foreground">
                 {item.postTitle}
               </p>
             </Link>

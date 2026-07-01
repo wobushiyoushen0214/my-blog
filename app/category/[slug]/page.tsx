@@ -265,7 +265,7 @@ export default async function CategoryPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[1240px] py-14 md:py-20">
+      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
         <CategoryHero
           category={typedCategory}
           categoryTypeLabel={categoryTypeLabel}
@@ -299,7 +299,7 @@ export default async function CategoryPage({
         ) : null}
 
         {(postsWithTags || []).length > 0 ? (
-          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
             <div className="min-w-0 space-y-8">
               <SummaryLedger
                 items={[
@@ -460,54 +460,53 @@ function CategoryHero({
   action: React.ReactNode;
 }) {
   return (
-    <header className="mb-10 border-b border-border/35 pb-10 md:mb-12 md:pb-14">
+    <header className="mb-8 border-b border-border/60 pb-6">
       <Link
         href="/category"
-        className="mb-10 inline-flex h-9 items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="mb-5 inline-flex h-9 items-center gap-2 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
         所有分类
       </Link>
 
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
         <div className="min-w-0">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            <span className="h-px w-8 bg-border/70" aria-hidden="true" />
+          <p className="text-sm text-muted-foreground">
             Category
           </p>
-          <h1 className="mt-5 font-serif text-5xl italic leading-[1.04] md:text-6xl lg:text-7xl">
+          <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
             {category.name}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
             该{categoryTypeLabel}下的已发布内容，可在当前主题内继续搜索和排序。
           </p>
         </div>
 
-        <div className="border-l border-border/35 pl-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
+          <p className="text-xs text-muted-foreground">
             {category.type === "moment" ? "Moments" : "Articles"} / {countLabel}
           </p>
-          <dl className="mt-5 grid gap-3 border-y border-border/25 py-4">
+          <dl className="mt-3 grid gap-2 text-sm">
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-xs text-muted-foreground">当前视图</dt>
-              <dd className="font-serif text-2xl leading-none tabular-nums">
+              <dt className="text-muted-foreground">当前视图</dt>
+              <dd className="font-semibold tabular-nums">
                 {totalCount}
               </dd>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-xs text-muted-foreground">分类总量</dt>
-              <dd className="text-sm tabular-nums text-foreground/90">
+              <dt className="text-muted-foreground">分类总量</dt>
+              <dd className="tabular-nums text-foreground">
                 {totalCategoryCount}
               </dd>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-xs text-muted-foreground">状态</dt>
-              <dd className="text-sm text-foreground/90">
+              <dt className="text-muted-foreground">状态</dt>
+              <dd className="text-foreground">
                 {hasFilters ? "已筛选" : getSortLabel(sort)}
               </dd>
             </div>
           </dl>
-          <div className="mt-5">{action}</div>
+          <div className="mt-3">{action}</div>
         </div>
       </div>
     </header>
@@ -526,7 +525,7 @@ function CategoryFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border-b border-border/30 pb-6">
+    <section className="border-b border-border/60 pb-5">
       <form
         action={`/category/${encodeURIComponent(slug)}`}
         role="search"
@@ -546,7 +545,7 @@ function CategoryFilterBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="在当前分类中搜索标题、摘要或正文..."
-            className="h-11 rounded-none border-border/40 bg-transparent pl-10 shadow-none hover:border-border focus-visible:bg-background"
+            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
           />
         </div>
         <label htmlFor="category-detail-sort" className="sr-only">
@@ -556,7 +555,7 @@ function CategoryFilterBar({
           id="category-detail-sort"
           name="sort"
           defaultValue={sort}
-          className="h-11 rounded-none border border-border/40 bg-transparent px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:border-border focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
@@ -564,14 +563,14 @@ function CategoryFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-11 items-center justify-center bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           筛选
         </button>
         {hasFilters ? (
           <Link
             href={buildCategoryPath({ slug })}
-            className="inline-flex h-11 items-center justify-center border border-border/40 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -624,7 +623,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/35 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -641,14 +640,14 @@ function SummaryLedger({
   return (
     <section
       aria-label="分类内容概览"
-      className="grid gap-px border-y border-border/35 bg-border/25 sm:grid-cols-3"
+      className="grid gap-3 sm:grid-cols-3"
     >
       {items.map((item) => (
-        <div key={item.label} className="bg-background px-4 py-4">
-          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
+          <p className="text-xs text-muted-foreground">
             {item.label}
           </p>
-          <p className="mt-2 font-serif text-2xl leading-none text-foreground">
+          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
             {item.value}
           </p>
           <p className="mt-2 truncate text-xs text-muted-foreground">
@@ -662,11 +661,11 @@ function SummaryLedger({
 
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
-    <div className="border-b border-border/30 pb-4">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <div className="border-b border-border/60 pb-3">
+      <p className="text-sm text-muted-foreground">
         {eyebrow}
       </p>
-      <h2 className="mt-1 font-serif text-2xl">{title}</h2>
+      <h2 className="mt-1 text-lg font-semibold">{title}</h2>
     </div>
   );
 }
@@ -696,9 +695,9 @@ function TaxonomyPanel<T extends { id: string; slug: string; name: string; postC
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="py-1">
-      <div className="border-b border-border/30 py-3">
-        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
+      <div className="border-b border-border/60 pb-3">
+        <h2 className="text-sm font-medium text-foreground">
           {title}
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
@@ -711,7 +710,7 @@ function TaxonomyPanel<T extends { id: string; slug: string; name: string; postC
             key={item.id}
             href={hrefFor(item)}
             className={cn(
-              "group grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/20 py-2 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+              "group grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/40 py-2 text-sm transition-colors last:border-b-0 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
               activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
             )}
           >
@@ -743,9 +742,9 @@ function ContinuePanel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="py-1">
-      <div className="border-b border-border/30 py-3">
-        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
+      <div className="border-b border-border/60 pb-3">
+        <h2 className="text-sm font-medium text-foreground">
           {title}
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
