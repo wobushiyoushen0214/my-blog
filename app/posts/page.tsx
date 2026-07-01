@@ -11,12 +11,11 @@ import {
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ArrowRight, FileText, Hash, Search, X } from "lucide-react";
+import { ArrowRight, FileText, Search, X } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Category, Post, Tag } from "@/lib/types";
 
 const PAGE_SIZE = 10;
-const FEATURED_MIN_PAGE = 1;
 const DEFAULT_SORT = "newest";
 
 type SortOption = "newest" | "updated" | "popular";
@@ -237,14 +236,6 @@ export default async function PostsPage({
     tagsByPostId
   );
 
-  const shouldFeature =
-    page === FEATURED_MIN_PAGE &&
-    !categoryName &&
-    !searchQuery &&
-    sort === DEFAULT_SORT &&
-    postsWithTags.length > 0;
-  const featuredPost = shouldFeature ? postsWithTags[0] : null;
-  const listPosts = shouldFeature ? postsWithTags.slice(1) : postsWithTags;
   const basePath = buildPostsPath({
     categorySlug: activeCategorySlug,
     searchQuery,
@@ -252,14 +243,6 @@ export default async function PostsPage({
   });
   const totalCount = count || 0;
   const allArticleCount = allArticlePosts?.length || 0;
-  const activeFilterCount = [
-    activeCategorySlug,
-    searchQuery,
-    sort !== DEFAULT_SORT ? sort : "",
-  ].filter(Boolean).length;
-  const visibleCategoryCount = categorySummaries.filter(
-    (category) => category.postCount > 0
-  ).length;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -309,96 +292,53 @@ export default async function PostsPage({
           sort={sort}
         />
 
-        {allArticleCount > 0 ? (
-          <PostsOverview
-            totalCount={totalCount}
-            allCount={allArticleCount}
-            categoryCount={visibleCategoryCount}
-            tagCount={tagSummaries.length}
-            activeFilterCount={activeFilterCount}
-            sort={sort}
-          />
-        ) : null}
-
         {postsWithTags.length > 0 ? (
-          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
-            <div className="min-w-0 space-y-8">
-              {featuredPost ? (
-                <section aria-labelledby="featured-post-title" className="space-y-4">
-                  <div className="flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        Featured
-                      </p>
-                      <h2 id="featured-post-title" className="mt-1 text-lg font-semibold">
-                        精选文章
-                      </h2>
-                    </div>
-                  </div>
-                  <PostCard post={featuredPost} variant="featured" />
-                </section>
-              ) : null}
+          <div className="mt-8 space-y-8">
+            <section aria-labelledby="latest-posts-title">
+              <div className="flex flex-col gap-2 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Journal Index
+                  </p>
+                  <h2 id="latest-posts-title" className="mt-1 text-lg font-semibold">
+                    {sort === "popular"
+                      ? "热门内容"
+                      : sort === "updated"
+                        ? "最近更新"
+                        : "最新内容"}
+                  </h2>
+                </div>
+                {categoryName || searchQuery || sort !== DEFAULT_SORT ? (
+                  <Link
+                    href="/posts"
+                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    全部文章
+                    <ArrowRight
+                      className="h-4 w-4"
+                      suppressHydrationWarning
+                    />
+                  </Link>
+                ) : null}
+              </div>
+              <div className="grid">
+                {postsWithTags.map((post) => (
+                  <PostCard key={post.id} post={post} variant="compact" />
+                ))}
+              </div>
+            </section>
 
-              {listPosts.length > 0 ? (
-                <section aria-labelledby="latest-posts-title" className="space-y-4">
-                  <div className="flex flex-col gap-2 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        Journal Index
-                      </p>
-                      <h2 id="latest-posts-title" className="mt-1 text-lg font-semibold">
-                        {sort === "popular"
-                          ? "热门内容"
-                          : sort === "updated"
-                            ? "最近更新"
-                            : "最新内容"}
-                      </h2>
-                    </div>
-                    {categoryName || searchQuery || sort !== DEFAULT_SORT ? (
-                      <Link
-                        href="/posts"
-                        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
-                        全部文章
-                        <ArrowRight
-                          className="h-4 w-4"
-                          suppressHydrationWarning
-                        />
-                      </Link>
-                    ) : null}
-                  </div>
-                  <div className="grid">
-                    {listPosts.map((post) => (
-                      <PostCard key={post.id} post={post} variant="compact" />
-                    ))}
-                  </div>
-                </section>
-              ) : null}
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              basePath={basePath}
+            />
 
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                basePath={basePath}
-              />
-            </div>
-
-            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <TopicPanel
-                title="分类"
-                description="按主题浏览长期内容。"
-                items={categorySummaries}
-                activeSlug={activeCategorySlug}
-                hrefPrefix="/posts?category="
-                icon="category"
-              />
-              <TopicPanel
-                title="标签"
-                description="通过关键词交叉浏览。"
-                items={tagSummaries.slice(0, 12)}
-                hrefPrefix="/tag/"
-                icon="tag"
-              />
-            </aside>
+            <TopicDirectory
+              categories={categorySummaries}
+              tags={tagSummaries.slice(0, 12)}
+              activeSlug={activeCategorySlug}
+            />
           </div>
         ) : (
           <PublicEmptyState
@@ -455,7 +395,7 @@ function JournalHero({
 
   return (
     <header className="mb-8 border-b border-border/60 pb-6">
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <p className="text-sm text-muted-foreground">
             Journal
@@ -467,90 +407,12 @@ function JournalHero({
             {description}
           </p>
         </div>
-
-        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-          <p className="text-xs text-muted-foreground">
-            {context}
-          </p>
-          <dl className="mt-3 grid gap-2 text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">当前视图</dt>
-              <dd className="font-semibold tabular-nums">
-                {totalCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">文章池</dt>
-              <dd className="tabular-nums text-foreground">
-                {allCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">排序</dt>
-              <dd className="text-foreground">{getSortLabel(sort)}</dd>
-            </div>
-          </dl>
-          <div className="mt-3">{action}</div>
-        </div>
+        <div className="shrink-0">{action}</div>
       </div>
+      <p className="mt-4 text-sm text-muted-foreground">
+        {context} · 当前 {totalCount} · 共 {allCount} · {getSortLabel(sort)}
+      </p>
     </header>
-  );
-}
-
-function PostsOverview({
-  totalCount,
-  allCount,
-  categoryCount,
-  tagCount,
-  activeFilterCount,
-  sort,
-}: {
-  totalCount: number;
-  allCount: number;
-  categoryCount: number;
-  tagCount: number;
-  activeFilterCount: number;
-  sort: SortOption;
-}) {
-  const items = [
-    {
-      label: "当前视图",
-      value: `${totalCount}`,
-      detail: activeFilterCount > 0 ? `${activeFilterCount} 个筛选` : "全部文章",
-    },
-    {
-      label: "文章池",
-      value: `${allCount}`,
-      detail: `${categoryCount} 个分类`,
-    },
-    {
-      label: "关联标签",
-      value: `${tagCount}`,
-      detail: getSortLabel(sort),
-    },
-  ];
-
-  return (
-    <section
-      aria-label="文章概览"
-      className="mt-5 grid gap-3 sm:grid-cols-3"
-    >
-      {items.map((item) => (
-        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
-          <p className="text-xs text-muted-foreground">
-            {item.label}
-          </p>
-          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
-            {item.value}
-          </p>
-          {item.detail ? (
-            <p className="mt-2 truncate text-xs text-muted-foreground">
-              {item.detail}
-            </p>
-          ) : null}
-        </div>
-      ))}
-    </section>
   );
 }
 
@@ -763,60 +625,67 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function TopicPanel({
-  title,
-  description,
-  items,
+function TopicDirectory({
+  categories,
+  tags,
   activeSlug,
-  hrefPrefix,
-  icon,
+}: {
+  categories: CategorySummary[];
+  tags: TagSummary[];
+  activeSlug?: string;
+}) {
+  return (
+    <section className="grid gap-8 border-t border-border/60 pt-8 sm:grid-cols-2">
+      <TopicLinks
+        title="分类"
+        items={categories}
+        hrefFor={(item) => `/posts?category=${encodeURIComponent(item.slug)}`}
+        activeSlug={activeSlug}
+      />
+      <TopicLinks
+        title="标签"
+        items={tags}
+        hrefFor={(item) => `/tag/${item.slug}`}
+      />
+    </section>
+  );
+}
+
+function TopicLinks({
+  title,
+  items,
+  hrefFor,
+  activeSlug,
 }: {
   title: string;
-  description: string;
   items: Array<CategorySummary | TagSummary>;
+  hrefFor: (item: CategorySummary | TagSummary) => string;
   activeSlug?: string;
-  hrefPrefix: string;
-  icon: "category" | "tag";
 }) {
-  if (items.length === 0) return null;
+  const visibleItems = items.filter((item) => item.postCount > 0);
+  if (visibleItems.length === 0) return null;
 
   return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="grid">
-        {items.map((item) => {
-          const href =
-            icon === "category"
-              ? `${hrefPrefix}${encodeURIComponent(item.slug)}`
-              : `${hrefPrefix}${item.slug}`;
-          return (
-            <Link
-              key={item.id}
-              href={href}
-              className={cn(
-                "group grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/40 py-2 text-sm transition-colors last:border-b-0 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              <span className="flex min-w-0 items-center gap-2">
-                {icon === "tag" ? (
-                  <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-                ) : null}
-                <span className="truncate">{item.name}</span>
-              </span>
-              <span className="text-xs tabular-nums text-muted-foreground transition-colors group-hover:text-foreground">
-                {item.postCount}
-              </span>
-            </Link>
-          );
-        })}
+    <section>
+      <h2 className="text-sm font-medium text-foreground">
+        {title}
+      </h2>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {visibleItems.map((item) => (
+          <Link
+            key={item.id}
+            href={hrefFor(item)}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+              activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
+            )}
+          >
+            <span className="max-w-36 truncate">{item.name}</span>
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {item.postCount}
+            </span>
+          </Link>
+        ))}
       </div>
     </section>
   );

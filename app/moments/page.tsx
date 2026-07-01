@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -15,8 +14,6 @@ import { cn } from "@/lib/utils";
 import {
   ArrowRight,
   Eye,
-  FolderOpen,
-  Hash,
   NotebookText,
   Search,
   X,
@@ -272,24 +269,11 @@ export default async function MomentsPage({
     .filter((tag) => tag.postCount > 0)
     .sort((a, b) => b.postCount - a.postCount);
 
-  const featuredMoment =
-    page === 1 && !activeCategorySlug && !searchQuery && sort === DEFAULT_SORT
-      ? postsWithTags[0] || null
-      : null;
-  const listMoments = featuredMoment ? postsWithTags.slice(1) : postsWithTags;
   const basePath = buildMomentsPath({
     categorySlug: activeCategorySlug,
     searchQuery,
     sort,
   });
-  const activeFilterCount = [
-    activeCategorySlug,
-    searchQuery,
-    sort !== DEFAULT_SORT ? sort : "",
-  ].filter(Boolean).length;
-  const visibleCategoryCount = categorySummaries.filter(
-    (category) => category.postCount > 0
-  ).length;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -339,58 +323,27 @@ export default async function MomentsPage({
           sort={sort}
         />
 
-        {totalMomentCount > 0 ? (
-          <MomentOverview
-            totalCount={totalCount}
-            allCount={totalMomentCount}
-            categoryCount={visibleCategoryCount}
-            tagCount={tagSummaries.length}
-            activeFilterCount={activeFilterCount}
-            sort={sort}
-          />
-        ) : null}
-
         {postsWithTags.length > 0 ? (
-          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
-            <div className="min-w-0 space-y-8">
-              {featuredMoment ? (
-                <MomentHighlight post={featuredMoment} />
-              ) : null}
+          <div className="mt-8 space-y-8">
+            <MomentStream
+              posts={postsWithTags}
+              sort={sort}
+              showAllLink={Boolean(
+                activeCategory || searchQuery || sort !== DEFAULT_SORT
+              )}
+            />
 
-              {listMoments.length > 0 ? (
-                <MomentStream
-                  posts={listMoments}
-                  sort={sort}
-                  showAllLink={Boolean(
-                    activeCategory || searchQuery || sort !== DEFAULT_SORT
-                  )}
-                />
-              ) : null}
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              basePath={basePath}
+            />
 
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                basePath={basePath}
-              />
-            </div>
-
-            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <TopicPanel
-                title="见闻分类"
-                description="按短内容主题继续浏览。"
-                items={categorySummaries}
-                activeSlug={activeCategorySlug}
-                hrefPrefix="/moments?category="
-                icon="category"
-              />
-              <TopicPanel
-                title="相关标签"
-                description="通过关键词查看关联内容。"
-                items={tagSummaries.slice(0, 12)}
-                hrefPrefix="/tag/"
-                icon="tag"
-              />
-            </aside>
+            <TopicDirectory
+              categories={categorySummaries}
+              tags={tagSummaries.slice(0, 12)}
+              activeSlug={activeCategorySlug}
+            />
           </div>
         ) : (
           <PublicEmptyState
@@ -447,7 +400,7 @@ function MomentHero({
 
   return (
     <header className="mb-8 border-b border-border/60 pb-6">
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <p className="text-sm text-muted-foreground">
             Gallery
@@ -459,32 +412,11 @@ function MomentHero({
             {description}
           </p>
         </div>
-
-        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-          <p className="text-xs text-muted-foreground">
-            {context}
-          </p>
-          <dl className="mt-3 grid gap-2 text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">当前视图</dt>
-              <dd className="font-semibold tabular-nums">
-                {totalCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">记录池</dt>
-              <dd className="tabular-nums text-foreground">
-                {allCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">排序</dt>
-              <dd className="text-foreground">{getSortLabel(sort)}</dd>
-            </div>
-          </dl>
-          <div className="mt-3">{action}</div>
-        </div>
+        <div className="shrink-0">{action}</div>
       </div>
+      <p className="mt-4 text-sm text-muted-foreground">
+        {context} · 当前 {totalCount} · 共 {allCount} · {getSortLabel(sort)}
+      </p>
     </header>
   );
 }
@@ -698,154 +630,6 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function MomentOverview({
-  totalCount,
-  allCount,
-  categoryCount,
-  tagCount,
-  activeFilterCount,
-  sort,
-}: {
-  totalCount: number;
-  allCount: number;
-  categoryCount: number;
-  tagCount: number;
-  activeFilterCount: number;
-  sort: SortOption;
-}) {
-  const items = [
-    {
-      label: "当前视图",
-      value: `${totalCount}`,
-      detail: activeFilterCount > 0 ? `${activeFilterCount} 个筛选` : "全部见闻",
-    },
-    {
-      label: "内容池",
-      value: `${allCount}`,
-      detail: `${categoryCount} 个分类`,
-    },
-    {
-      label: "关联标签",
-      value: `${tagCount}`,
-      detail: getSortLabel(sort),
-    },
-  ];
-
-  return (
-    <section
-      aria-label="见闻概览"
-      className="mt-5 grid gap-3 sm:grid-cols-3"
-    >
-      {items.map((item) => (
-        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
-          <p className="text-xs text-muted-foreground">
-            {item.label}
-          </p>
-          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
-            {item.value}
-          </p>
-          {item.detail ? (
-            <p className="mt-2 truncate text-xs text-muted-foreground">
-              {item.detail}
-            </p>
-          ) : null}
-        </div>
-      ))}
-    </section>
-  );
-}
-
-function MomentHighlight({ post }: { post: PostWithTaxonomy }) {
-  const excerpt = getMomentExcerpt(post);
-
-  return (
-    <section aria-labelledby="featured-moment-title" className="space-y-4">
-      <div className="pb-1">
-        <p className="text-sm text-muted-foreground">
-          Featured Frame
-        </p>
-        <h2 id="featured-moment-title" className="mt-1 text-lg font-semibold">
-          近期见闻
-        </h2>
-      </div>
-      <Link
-        href={`/blog/${post.slug}`}
-        className="group grid overflow-hidden rounded-lg border border-border/60 bg-card transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[12rem_minmax(0,1fr)]"
-      >
-        <div className="relative min-h-40 bg-muted/30">
-          {post.cover_image ? (
-            <Image
-              src={post.cover_image}
-              alt={post.title}
-              fill
-              sizes="(max-width: 1024px) 100vw, 46vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-            />
-          ) : (
-            <div className="flex h-full items-end p-4">
-              <p className="max-w-sm text-base font-semibold leading-6 text-foreground/80">
-                {post.title}
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="grid gap-3 p-5 text-sm">
-          <time
-            dateTime={post.created_at}
-            className="text-xs tabular-nums text-muted-foreground"
-          >
-            {formatDate(post.created_at)}
-          </time>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
-              {post.category ? (
-                <span className="font-medium text-foreground">
-                  {post.category.name}
-                </span>
-              ) : null}
-              <span className="inline-flex items-center gap-1.5">
-                <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
-                {formatViews(post.view_count)} 阅读
-              </span>
-            </div>
-            <h3 className="mt-2 text-xl font-semibold leading-7 tracking-tight transition-colors group-hover:text-primary">
-              {post.title}
-            </h3>
-            {excerpt ? (
-              <p className="mt-3 line-clamp-3 text-sm leading-7 text-muted-foreground">
-                {excerpt}
-              </p>
-            ) : null}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-          {post.tags && post.tags.length > 0 ? (
-            <span className="flex min-w-0 flex-wrap gap-1.5">
-              {post.tags.slice(0, 4).map((tag) => (
-                <Badge
-                  key={tag.id}
-                  variant="secondary"
-                  className="h-5 rounded-md px-2 text-[10px] font-normal"
-                >
-                  {tag.name}
-                </Badge>
-              ))}
-            </span>
-          ) : (
-            <span />
-          )}
-            <span className="ml-auto inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors group-hover:text-foreground">
-              查看
-              <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-            </span>
-          </div>
-        </div>
-      </Link>
-    </section>
-  );
-}
-
 function MomentStream({
   posts,
   sort,
@@ -948,67 +732,67 @@ function MomentStream({
   );
 }
 
-function TopicPanel({
-  title,
-  description,
-  items,
+function TopicDirectory({
+  categories,
+  tags,
   activeSlug,
-  hrefPrefix,
-  icon,
+}: {
+  categories: CategorySummary[];
+  tags: TagSummary[];
+  activeSlug?: string;
+}) {
+  return (
+    <section className="grid gap-8 border-t border-border/60 pt-8 sm:grid-cols-2">
+      <TopicLinks
+        title="见闻分类"
+        items={categories}
+        hrefFor={(item) => `/moments?category=${encodeURIComponent(item.slug)}`}
+        activeSlug={activeSlug}
+      />
+      <TopicLinks
+        title="相关标签"
+        items={tags}
+        hrefFor={(item) => `/tag/${item.slug}`}
+      />
+    </section>
+  );
+}
+
+function TopicLinks({
+  title,
+  items,
+  hrefFor,
+  activeSlug,
 }: {
   title: string;
-  description: string;
   items: Array<CategorySummary | TagSummary>;
+  hrefFor: (item: CategorySummary | TagSummary) => string;
   activeSlug?: string;
-  hrefPrefix: string;
-  icon: "category" | "tag";
 }) {
   const visibleItems = items.filter((item) => item.postCount > 0);
   if (visibleItems.length === 0) return null;
 
   return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="grid">
-        {visibleItems.map((item) => {
-          const href =
-            icon === "category"
-              ? `${hrefPrefix}${encodeURIComponent(item.slug)}`
-              : `${hrefPrefix}${item.slug}`;
-
-          return (
-            <Link
-              key={item.id}
-              href={href}
-              className={cn(
-                "group grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/40 py-2 text-sm transition-colors last:border-b-0 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              <span className="flex min-w-0 items-center gap-2">
-                {icon === "tag" ? (
-                  <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-                ) : (
-                  <FolderOpen
-                    className="h-3.5 w-3.5"
-                    suppressHydrationWarning
-                  />
-                )}
-                <span className="truncate">{item.name}</span>
-              </span>
-              <span className="text-xs tabular-nums text-muted-foreground transition-colors group-hover:text-foreground">
-                {item.postCount}
-              </span>
-            </Link>
-          );
-        })}
+    <section>
+      <h2 className="text-sm font-medium text-foreground">
+        {title}
+      </h2>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {visibleItems.map((item) => (
+          <Link
+            key={item.id}
+            href={hrefFor(item)}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+              activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
+            )}
+          >
+            <span className="max-w-36 truncate">{item.name}</span>
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {item.postCount}
+            </span>
+          </Link>
+        ))}
       </div>
     </section>
   );

@@ -1,11 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Search } from "lucide-react";
-import type { Category, Comment, Post, PostTag, Tag } from "@/lib/types";
+import { Search } from "lucide-react";
+import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
 type PostWithTaxonomy = Post & {
   category?: Category | null;
@@ -13,20 +12,6 @@ type PostWithTaxonomy = Post & {
 };
 type CategorySummary = Category & { postCount: number };
 type TagSummary = Tag & { postCount: number };
-type Relation<T> = T | T[] | null | undefined;
-type RecentDiscussionRow = Pick<
-  Comment,
-  "id" | "author_name" | "content" | "created_at"
-> & {
-  post?: Relation<Pick<Post, "title" | "slug" | "published">>;
-};
-type RecentDiscussion = Pick<
-  Comment,
-  "id" | "author_name" | "content" | "created_at"
-> & {
-  postTitle: string;
-  postSlug: string;
-};
 
 function attachTagsFromRows(
   posts: PostWithTaxonomy[],
@@ -61,21 +46,8 @@ function categoryHref(category: CategorySummary) {
     : `/posts?category=${encodeURIComponent(category.slug)}`;
 }
 
-function firstRelation<T>(relation: Relation<T>) {
-  if (Array.isArray(relation)) return relation[0] || null;
-  return relation || null;
-}
-
 function formatShortDate(date: string) {
   return new Date(date).toLocaleDateString("zh-CN", {
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
-
-function formatLongDate(date: string) {
-  return new Date(date).toLocaleDateString("zh-CN", {
-    year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
@@ -105,7 +77,6 @@ export default async function HomePage() {
     { data: publishedRows },
     { data: categories },
     { data: tags },
-    { data: recentCommentsData },
   ] = await Promise.all([
     supabase
       .from("posts")
@@ -119,12 +90,6 @@ export default async function HomePage() {
       .eq("published", true),
     supabase.from("categories").select("*").order("name"),
     supabase.from("tags").select("*").order("name"),
-    supabase
-      .from("comments")
-      .select("id,author_name,content,created_at,post:posts(title,slug,published)")
-      .eq("approved", true)
-      .order("created_at", { ascending: false })
-      .limit(6),
   ]);
 
   const categoryById = new Map(
@@ -193,39 +158,17 @@ export default async function HomePage() {
     (sum, post) => sum + (post.view_count || 0),
     0
   );
-  const featuredPost = postsWithTags[0] || null;
-  const indexPosts = postsWithTags.slice(1, 4);
-  const ledgerPosts = postsWithTags.slice(1, 8);
+  const ledgerPosts = postsWithTags;
   const usedCategoryCount = categorySummaries.filter(
     (category) => category.postCount > 0
   ).length;
   const usedTagCount = tagSummaries.length;
-  const recentDiscussions: RecentDiscussion[] = (
-    (recentCommentsData || []) as unknown as RecentDiscussionRow[]
-  )
-    .map((comment) => {
-      const post = firstRelation(comment.post);
-      if (!post?.published || !post.slug || !post.title) return null;
-
-      return {
-        id: comment.id,
-        author_name: comment.author_name,
-        content: comment.content,
-        created_at: comment.created_at,
-        postTitle: post.title,
-        postSlug: post.slug,
-      };
-    })
-    .filter((comment): comment is RecentDiscussion => Boolean(comment))
-    .slice(0, 4);
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
-      <main className="mx-auto w-full max-w-[960px] flex-1 px-5 py-10 md:px-6 md:py-12">
+      <main className="mx-auto w-full max-w-[840px] flex-1 px-5 py-10 md:px-6 md:py-12">
         <HomeIndex
-          featuredPost={featuredPost}
-          indexPosts={indexPosts}
           articleCount={articleCount}
           momentCount={momentCount}
           totalCount={publishedRows?.length || 0}
@@ -233,13 +176,9 @@ export default async function HomePage() {
           totalViews={totalViews}
         />
 
-        <section className="mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <section className="mt-12">
           <RecentLedger posts={ledgerPosts} />
-          <SideArchive
-            categories={categorySummaries}
-            tags={tagSummaries}
-            discussions={recentDiscussions}
-          />
+          <TopicDirectory categories={categorySummaries} tags={tagSummaries} />
         </section>
       </main>
       <Footer />
@@ -248,92 +187,48 @@ export default async function HomePage() {
 }
 
 function HomeIndex({
-  featuredPost,
-  indexPosts,
   articleCount,
   momentCount,
   totalCount,
   topicCount,
   totalViews,
 }: {
-  featuredPost: PostWithTaxonomy | null;
-  indexPosts: PostWithTaxonomy[];
   articleCount: number;
   momentCount: number;
   totalCount: number;
   topicCount: number;
   totalViews: number;
 }) {
-  const stats = [
-    { label: "文章", value: `${articleCount} 篇` },
-    { label: "见闻", value: `${momentCount} 条` },
-    { label: "归档", value: `${totalCount} 份` },
-    { label: "阅读", value: formatNumber(totalViews) },
-  ];
-
   return (
-    <section aria-labelledby="home-index-title">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            个人博客 · 技术、项目与日常观察
-          </p>
-          <h1
-            id="home-index-title"
-            className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl"
-          >
-            Lee Notes
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
-            这里记录工程实践、产品想法和生活见闻。内容按文章、见闻、主题与时间归档，便于回看，也便于搜索。
-          </p>
+    <section aria-labelledby="home-index-title" className="border-b border-border/60 pb-8">
+      <p className="text-sm text-muted-foreground">
+        个人博客 · 技术、项目与日常观察
+      </p>
+      <h1
+        id="home-index-title"
+        className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl"
+      >
+        Lee Notes
+      </h1>
+      <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
+        这里记录工程实践、产品想法和生活见闻。内容按文章、见闻、主题与时间归档，便于回看，也便于搜索。
+      </p>
+      <p className="mt-4 text-sm leading-6 text-muted-foreground">
+        {articleCount} 篇文章 · {momentCount} 条见闻 · {totalCount} 份归档 ·{" "}
+        {topicCount} 个主题 · {formatNumber(totalViews)} 次阅读
+      </p>
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {stats.map((item) => (
-              <span
-                key={item.label}
-                className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-card px-3 py-1.5 text-sm text-muted-foreground"
-              >
-                <span>{item.label}</span>
-                <span className="font-medium text-foreground">{item.value}</span>
-              </span>
-            ))}
-          </div>
+      <HomeSearch />
 
-          <HomeSearch />
-
-          <nav
-            aria-label="首页快捷入口"
-            className="mt-4 flex flex-wrap gap-2"
-          >
-            <HomeNavLink href="/posts" label="读文章" />
-            <HomeNavLink href="/moments" label="看见闻" />
-            <HomeNavLink href="/archive" label="按时间浏览" />
-            <HomeNavLink href="/category" label={`${topicCount} 个主题入口`} />
-          </nav>
-        </div>
-
-        <FeaturedDispatch post={featuredPost} />
-      </div>
-
-      {indexPosts.length > 0 ? (
-        <div className="mt-8 grid overflow-hidden rounded-lg border border-border/60 md:grid-cols-3">
-          {indexPosts.map((post) => (
-            <Link
-              key={post.id}
-              href={`/blog/${post.slug}`}
-              className="group grid gap-2 border-b border-border/60 bg-card px-4 py-4 text-sm transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:border-b-0 md:border-r md:last:border-r-0"
-            >
-              <p className="text-xs text-muted-foreground">
-                {formatShortDate(post.created_at)} · {contentTypeLabel(post)}
-              </p>
-              <h2 className="line-clamp-2 text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
-                {post.title}
-              </h2>
-            </Link>
-          ))}
-        </div>
-      ) : null}
+      <nav
+        aria-label="首页快捷入口"
+        className="mt-4 flex flex-wrap gap-x-4 gap-y-2"
+      >
+        <HomeNavLink href="/posts" label="文章" />
+        <HomeNavLink href="/moments" label="见闻" />
+        <HomeNavLink href="/archive" label="归档" />
+        <HomeNavLink href="/category" label="主题" />
+      </nav>
     </section>
   );
 }
@@ -389,62 +284,9 @@ function HomeNavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-9 items-center rounded-md border border-border/60 px-3 text-sm text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-8 items-center text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       {label}
-    </Link>
-  );
-}
-
-function FeaturedDispatch({ post }: { post: PostWithTaxonomy | null }) {
-  const href = post ? `/blog/${post.slug}` : "/posts";
-  const excerpt = post
-    ? stripHtml(post.excerpt || post.content || post.title)
-    : "发布内容后，最新文章或见闻会显示在这里。";
-
-  return (
-    <Link
-      href={href}
-      className="group grid gap-4 overflow-hidden rounded-lg border border-border/60 bg-card p-4 transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-    >
-      {post?.cover_image ? (
-        <span className="relative block aspect-[16/10] overflow-hidden rounded-md bg-muted">
-          <Image
-            src={post.cover_image}
-            alt={post.title}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 360px"
-            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-          />
-        </span>
-      ) : (
-        <span className="flex aspect-[16/10] items-end rounded-md bg-muted/30 p-4">
-          <span className="text-sm text-muted-foreground">
-            最新内容会显示在这里
-          </span>
-        </span>
-      )}
-      <span className="min-w-0">
-        <span className="text-xs text-muted-foreground">
-          最新发布
-        </span>
-        <span className="mt-2 block text-lg font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
-          {post?.title || "暂无公开内容"}
-        </span>
-        <span className="mt-2 line-clamp-3 block text-sm leading-6 text-muted-foreground">
-          {excerpt}
-        </span>
-      </span>
-      <span className="flex items-center justify-between gap-3 border-t border-border/60 pt-3 text-sm text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5 transition-colors group-hover:text-foreground">
-          继续阅读
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" suppressHydrationWarning />
-        </span>
-        {post
-          ? <span>{formatShortDate(post.created_at)} · {contentTypeLabel(post)}</span>
-          : <span>暂无内容</span>}
-      </span>
     </Link>
   );
 }
@@ -473,12 +315,12 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
       </div>
 
       {posts.length > 0 ? (
-        <div className="mt-5 grid overflow-hidden rounded-lg border border-border/60">
+        <div className="mt-5 border-y border-border/60">
           {posts.map((post) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group grid gap-3 border-b border-border/60 bg-background px-4 py-4 transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[80px_minmax(0,1fr)_112px]"
+              className="group grid gap-3 border-b border-border/60 py-4 transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[80px_minmax(0,1fr)_112px]"
             >
               <span className="text-sm tabular-nums text-muted-foreground">
                 {formatShortDate(post.created_at)}
@@ -508,17 +350,15 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
   );
 }
 
-function SideArchive({
+function TopicDirectory({
   categories,
   tags,
-  discussions,
 }: {
   categories: CategorySummary[];
   tags: TagSummary[];
-  discussions: RecentDiscussion[];
 }) {
   return (
-    <aside className="space-y-8 rounded-lg border border-border/60 bg-muted/20 p-5">
+    <section className="mt-10 grid gap-8 border-t border-border/60 pt-8 sm:grid-cols-2">
       <TopicList
         title="主题"
         items={categories}
@@ -531,8 +371,7 @@ function SideArchive({
         limit={12}
         hrefFor={(item) => `/tag/${item.slug}`}
       />
-      <DiscussionList items={discussions} />
-    </aside>
+    </section>
   );
 }
 
@@ -562,7 +401,7 @@ function TopicList({
             <Link
               key={item.id}
               href={hrefFor(item)}
-              className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-background px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <span className="max-w-32 truncate">
                 {item.name}
@@ -575,44 +414,6 @@ function TopicList({
         </div>
       ) : (
         <p className="mt-4 text-sm text-muted-foreground">暂无条目。</p>
-      )}
-    </section>
-  );
-}
-
-function DiscussionList({ items }: { items: RecentDiscussion[] }) {
-  return (
-    <section>
-      <p className="text-sm font-medium text-foreground">
-        近期讨论
-      </p>
-      {items.length > 0 ? (
-        <div className="mt-4 grid gap-3">
-          {items.map((item) => (
-            <Link
-              key={item.id}
-              href={`/blog/${item.postSlug}#comments`}
-              className="block rounded-md p-3 transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            >
-              <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-                <span className="truncate font-medium">{item.author_name}</span>
-                <time dateTime={item.created_at}>
-                  {formatLongDate(item.created_at)}
-                </time>
-              </div>
-              <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
-                {item.content}
-              </p>
-              <p className="mt-2 truncate text-sm font-medium text-foreground">
-                {item.postTitle}
-              </p>
-            </Link>
-          ))}
-        </div>
-      ) : (
-        <p className="mt-4 text-sm leading-6 text-muted-foreground">
-          评论通过审核后，会展示在这里。
-        </p>
       )}
     </section>
   );
