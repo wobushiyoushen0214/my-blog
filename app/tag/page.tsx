@@ -5,11 +5,10 @@ import { Footer } from "@/components/footer";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicIndexLinks,
   PublicPageShell,
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
+import { ArrowRight, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Tag } from "@/lib/types";
 
@@ -105,15 +104,6 @@ export default async function TagsPage({
       .includes(query.toLowerCase());
   });
   const usedTags = tagsWithCount.filter((tag) => tag.postCount > 0);
-  const totalTaggedPosts = tagsWithCount.reduce(
-    (sum, tag) => sum + tag.postCount,
-    0
-  );
-  const filteredTaggedPosts = filteredTags.reduce(
-    (sum, tag) => sum + tag.postCount,
-    0
-  );
-  const topTags = usedTags.slice(0, 12);
   const hasFilters = Boolean(query || status !== DEFAULT_STATUS);
   const emptyFilteredDescription = query
     ? `没有匹配「${query}」的标签，可以换个关键词或查看全部标签。`
@@ -143,117 +133,33 @@ export default async function TagsPage({
 
         <ActiveTagSummary query={query} status={status} />
 
-        <SummaryLedger
-          items={[
-            {
-              label: hasFilters ? "匹配标签" : "全部标签",
-              value: hasFilters ? filteredTags.length : tagsWithCount.length,
-              detail: statusLabel(status),
-            },
-            {
-              label: "已使用标签",
-              value: usedTags.length,
-              detail: "已有内容关联",
-            },
-            {
-              label: hasFilters ? "匹配关联" : "内容关联",
-              value: hasFilters ? filteredTaggedPosts : totalTaggedPosts,
-              detail: "发布内容引用",
-            },
-            {
-              label: "未使用标签",
-              value: tagsWithCount.length - usedTags.length,
-              detail: "等待整理",
-            },
-          ]}
-        />
-
         {filteredTags.length > 0 ? (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
-            <section className="min-w-0 space-y-4">
-              <div className="border-b border-border/60 pb-3">
-                <p className="text-sm text-muted-foreground">
-                  Browse
-                </p>
-                <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <h2 className="text-lg font-semibold">
-                      {query ? "匹配标签" : "标签索引"}
-                    </h2>
-                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                      按已发布内容数量排序，低频标签仍可直接进入归档页。
-                    </p>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {filteredTags.length} 个
-                  </span>
+          <section className="mt-8 min-w-0">
+            <div className="border-b border-border/60 pb-3">
+              <p className="text-sm text-muted-foreground">
+                Browse
+              </p>
+              <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold">
+                    {query ? "匹配标签" : "标签索引"}
+                  </h2>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    按已发布内容数量排序，低频标签仍可直接进入归档页。
+                  </p>
                 </div>
+                <span className="text-sm text-muted-foreground">
+                  {filteredTags.length} 个
+                </span>
               </div>
+            </div>
 
-              <div className="grid">
-                {filteredTags.map((tag) => (
-                  <TagResultRow key={tag.id} tag={tag} />
-                ))}
-              </div>
-            </section>
-
-            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              {topTags.length > 0 ? (
-                <section className="py-1">
-                  <div className="border-b border-border/60 pb-3">
-                    <h2 className="text-sm font-medium text-foreground">
-                      高频标签
-                    </h2>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                      从内容关联最多的关键词继续浏览。
-                    </p>
-                  </div>
-                  <div className="grid">
-                    {topTags.map((tag) => (
-                      <Link
-                        key={tag.id}
-                        href={`/tag/${tag.slug}`}
-                        className="group grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/20 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
-                        <span className="flex min-w-0 items-center gap-2">
-                          <Hash
-                            className="h-3.5 w-3.5"
-                            suppressHydrationWarning
-                          />
-                          <span className="truncate">{tag.name}</span>
-                        </span>
-                        <span className="text-xs tabular-nums text-muted-foreground transition-colors group-hover:text-foreground">
-                          {tag.postCount}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              <ContinuePanel
-                title="继续浏览"
-                description="标签适合交叉检索；如果想按时间或主题浏览，可以切换入口。"
-              >
-                <PublicIndexLinks
-                  ariaLabel="标签页继续浏览"
-                  items={[
-                    {
-                      href: "/posts",
-                      label: "文章列表",
-                      description: "回到按时间排序的长文流",
-                    },
-                    {
-                      href: "/category",
-                      label: "所有分类",
-                      description: "按一级主题浏览内容",
-                      icon: FolderOpen,
-                    },
-                  ]}
-                />
-              </ContinuePanel>
-            </aside>
-          </div>
+            <div className="grid">
+              {filteredTags.map((tag) => (
+                <TagResultRow key={tag.id} tag={tag} />
+              ))}
+            </div>
+          </section>
         ) : tagsWithCount.length > 0 ? (
           <PublicEmptyState
             icon={Hash}
@@ -295,48 +201,21 @@ function TagIndexHero({
 }) {
   return (
     <header className="mb-8 border-b border-border/60 pb-6">
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            Tags
-          </p>
-          <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-            {title}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            通过关键词聚合相关内容，适合快速交叉浏览。
-          </p>
-        </div>
-
-        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-          <p className="text-xs text-muted-foreground">
-            Tag Index / {filteredCount} / {totalCount}
-          </p>
-          <dl className="mt-3 grid gap-2 text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">当前视图</dt>
-              <dd className="font-semibold tabular-nums">
-                {filteredCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">已使用</dt>
-              <dd className="tabular-nums text-foreground">
-                {usedCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">未使用</dt>
-              <dd className="tabular-nums text-foreground">
-                {unusedCount}
-              </dd>
-            </div>
-          </dl>
-          <p className="mt-5 text-xs leading-5 text-muted-foreground">
-            {hasFilters ? "当前处于筛选视图。" : statusLabel(status)}
-          </p>
-        </div>
+      <div className="min-w-0">
+        <p className="text-sm text-muted-foreground">
+          Tags
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+          {title}
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          通过关键词聚合相关内容，适合快速交叉浏览。
+        </p>
       </div>
+      <p className="mt-4 text-sm text-muted-foreground">
+        {hasFilters ? "筛选视图" : statusLabel(status)} · 当前 {filteredCount} · 共 {totalCount} ·{" "}
+        已使用 {usedCount} · 未使用 {unusedCount}
+      </p>
     </header>
   );
 }
@@ -483,33 +362,6 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function SummaryLedger({
-  items,
-}: {
-  items: { label: string; value: number; detail: string }[];
-}) {
-  return (
-    <section
-      aria-label="标签概览"
-      className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-    >
-      {items.map((item) => (
-        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
-          <p className="text-xs text-muted-foreground">
-            {item.label}
-          </p>
-          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
-            {item.value}
-          </p>
-          <p className="mt-2 truncate text-xs text-muted-foreground">
-            {item.detail}
-          </p>
-        </div>
-      ))}
-    </section>
-  );
-}
-
 function TagResultRow({ tag }: { tag: TagWithCount }) {
   return (
     <Link
@@ -538,29 +390,5 @@ function TagResultRow({ tag }: { tag: TagWithCount }) {
         suppressHydrationWarning
       />
     </Link>
-  );
-}
-
-function ContinuePanel({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="py-3">{children}</div>
-    </section>
   );
 }

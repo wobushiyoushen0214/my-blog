@@ -5,7 +5,6 @@ import { Footer } from "@/components/footer";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicIndexLinks,
   PublicPageShell,
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
@@ -115,14 +114,6 @@ export default async function CategoriesPage({
   const allMomentCategoryCount = categoriesWithCount.filter(
     (category) => category.type === "moment"
   ).length;
-  const totalPosts = categoriesWithCount.reduce(
-    (sum, category) => sum + category.postCount,
-    0
-  );
-  const filteredPostCount = filteredCategories.reduce(
-    (sum, category) => sum + category.postCount,
-    0
-  );
   const hasFilters = Boolean(query || contentType !== DEFAULT_TYPE);
   const emptyFilteredDescription = query
     ? `没有匹配「${query}」的分类，可以换个关键词或查看全部分类。`
@@ -152,68 +143,18 @@ export default async function CategoriesPage({
 
         <ActiveCategorySummary query={query} contentType={contentType} />
 
-        <SummaryLedger
-          items={[
-            {
-              label: query ? "匹配分类" : "全部分类",
-              value: query ? filteredCategories.length : categoriesWithCount.length,
-              detail: filterTypeLabel(contentType),
-            },
-            {
-              label: "文章分类",
-              value: allPostCategoryCount,
-              detail: "长文与项目复盘",
-            },
-            {
-              label: "见闻分类",
-              value: allMomentCategoryCount,
-              detail: "短记录与观察",
-            },
-            {
-              label: hasFilters ? "匹配内容" : "已发布内容",
-              value: hasFilters ? filteredPostCount : totalPosts,
-              detail: "已归档条目",
-            },
-          ]}
-        />
-
         {filteredCategories.length > 0 ? (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
-            <div className="min-w-0 space-y-8">
-              <CategorySection
-                title="文章分类"
-                description="用于长文、技术笔记和项目复盘。"
-                categories={postCategories}
-              />
-              <CategorySection
-                title="见闻分类"
-                description="用于短内容、片段记录和轻量观察。"
-                categories={momentCategories}
-              />
-            </div>
-
-            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <ContinuePanel
-                title="继续浏览"
-                description="不确定主题时，可以直接从文章流或搜索入口继续探索。"
-              >
-                <PublicIndexLinks
-                  ariaLabel="分类页继续浏览"
-                  items={[
-                    {
-                      href: "/posts",
-                      label: "文章列表",
-                      description: "按时间、分类和阅读量筛选长文",
-                    },
-                    {
-                      href: "/search",
-                      label: "搜索内容",
-                      description: "用关键词跨文章和见闻检索",
-                    },
-                  ]}
-                />
-              </ContinuePanel>
-            </aside>
+          <div className="mt-8 space-y-8">
+            <CategorySection
+              title="文章分类"
+              description="用于长文、技术笔记和项目复盘。"
+              categories={postCategories}
+            />
+            <CategorySection
+              title="见闻分类"
+              description="用于短内容、片段记录和轻量观察。"
+              categories={momentCategories}
+            />
           </div>
         ) : categoriesWithCount.length > 0 ? (
           <PublicEmptyState
@@ -256,48 +197,21 @@ function CategoryIndexHero({
 }) {
   return (
     <header className="mb-8 border-b border-border/60 pb-6">
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            Categories
-          </p>
-          <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-            {title}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            按主题浏览文章和见闻，快速进入相关内容。
-          </p>
-        </div>
-
-        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-          <p className="text-xs text-muted-foreground">
-            Taxonomy / {filteredCount} / {totalCount}
-          </p>
-          <dl className="mt-3 grid gap-2 text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">当前视图</dt>
-              <dd className="font-semibold tabular-nums">
-                {filteredCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">文章分类</dt>
-              <dd className="tabular-nums text-foreground">
-                {postCategoryCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">见闻分类</dt>
-              <dd className="tabular-nums text-foreground">
-                {momentCategoryCount}
-              </dd>
-            </div>
-          </dl>
-          <p className="mt-5 text-xs leading-5 text-muted-foreground">
-            {hasFilters ? "当前处于筛选视图。" : filterTypeLabel(contentType)}
-          </p>
-        </div>
+      <div className="min-w-0">
+        <p className="text-sm text-muted-foreground">
+          Categories
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+          {title}
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          按主题浏览文章和见闻，快速进入相关内容。
+        </p>
       </div>
+      <p className="mt-4 text-sm text-muted-foreground">
+        {hasFilters ? "筛选视图" : filterTypeLabel(contentType)} · 当前 {filteredCount} · 共 {totalCount} ·{" "}
+        文章分类 {postCategoryCount} · 见闻分类 {momentCategoryCount}
+      </p>
     </header>
   );
 }
@@ -444,33 +358,6 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function SummaryLedger({
-  items,
-}: {
-  items: { label: string; value: number; detail: string }[];
-}) {
-  return (
-    <section
-      aria-label="分类概览"
-      className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-    >
-      {items.map((item) => (
-        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
-          <p className="text-xs text-muted-foreground">
-            {item.label}
-          </p>
-          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
-            {item.value}
-          </p>
-          <p className="mt-2 truncate text-xs text-muted-foreground">
-            {item.detail}
-          </p>
-        </div>
-      ))}
-    </section>
-  );
-}
-
 function CategorySection({
   title,
   description,
@@ -530,30 +417,6 @@ function CategorySection({
           </Link>
         ))}
       </div>
-    </section>
-  );
-}
-
-function ContinuePanel({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="py-3">{children}</div>
     </section>
   );
 }

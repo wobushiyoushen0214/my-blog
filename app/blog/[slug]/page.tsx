@@ -6,24 +6,16 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
-import { PublicIndexLinks } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
   ArrowRight,
-  BookOpen,
-  CalendarDays,
   ChevronLeft,
   ChevronRight,
-  Clock,
-  Eye,
-  FileText,
   MessageSquare,
-  NotebookText,
   Tag,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, PostTag, Tag as TagType } from "@/lib/types";
 
@@ -449,7 +441,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <article className="mx-auto w-full max-w-[960px] px-5 py-10 md:px-6 md:py-12">
+        <article className="mx-auto w-full max-w-[840px] px-5 py-10 md:px-6 md:py-12">
           <Link
             href={contentListHref}
             className="mb-6 inline-flex h-9 items-center gap-2 rounded-md px-0 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
@@ -459,71 +451,67 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </Link>
 
           <header className="border-b border-border/60 pb-6">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-end">
-              <div className="min-w-0">
-                <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
-                  <span>{contentTypeLabel}</span>
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
+              <span>{contentTypeLabel}</span>
+              {post.category ? (
+                <>
                   <span aria-hidden="true">/</span>
-                  {post.category ? (
-                    <Link
-                      href={getCategoryBrowseHref(post.category)}
-                      className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                    >
-                      {post.category.name}
-                    </Link>
-                  ) : null}
-                  <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
-                </div>
-
-                <div className="min-w-0 space-y-3 py-5">
-                  <h1 className="max-w-4xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
-                    {post.title}
-                  </h1>
-                  {post.excerpt ? (
-                    <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-                      {post.excerpt}
-                    </p>
-                  ) : null}
-                </div>
-
-                {tags.length > 0 ? (
-                  <nav
-                    aria-label="文章标签"
-                    className="flex min-w-0 flex-wrap gap-2 pt-1 text-sm text-muted-foreground"
+                  <Link
+                    href={getCategoryBrowseHref(post.category)}
+                    className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
-                    {tags.map((tag) => (
-                      <Link
-                        key={tag.id}
-                        href={`/tag/${tag.slug}`}
-                        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border/60 px-2.5 transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
-                        <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
-                        {tag.name}
-                      </Link>
-                    ))}
-                  </nav>
-                ) : null}
-              </div>
-
-              <ArticleMetaPanel
-                views={post.view_count + 1}
-                comments={commentCount}
-                updatedAt={post.updated_at || post.created_at}
-                contentTypeLabel={contentTypeLabel}
-                readingMinutes={readingMinutes}
-              />
+                    {post.category.name}
+                  </Link>
+                </>
+              ) : null}
+              <span aria-hidden="true">/</span>
+              <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
             </div>
+
+            <div className="min-w-0 space-y-3 py-5">
+              <h1 className="max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
+                {post.title}
+              </h1>
+              {post.excerpt ? (
+                <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+                  {post.excerpt}
+                </p>
+              ) : null}
+            </div>
+
+            <p className="text-sm leading-6 text-muted-foreground">
+              约 {readingMinutes} 分钟 · {numberFormatter.format(post.view_count + 1)} 次阅读 ·{" "}
+              {commentCount} 条评论 · 更新于 {formatDate(post.updated_at || post.created_at)}
+            </p>
+
+            {tags.length > 0 ? (
+              <nav
+                aria-label="文章标签"
+                className="mt-4 flex min-w-0 flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground"
+              >
+                {tags.map((tag) => (
+                  <Link
+                    key={tag.id}
+                    href={`/tag/${tag.slug}`}
+                    className="inline-flex h-8 items-center gap-1.5 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
+                    {tag.name}
+                  </Link>
+                ))}
+              </nav>
+            ) : null}
           </header>
 
           {post.cover_image ? (
-            <figure className="mt-8">
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
+            <figure className="mt-6 max-w-[680px]">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
                 <Image
                   src={post.cover_image}
                   alt={post.title}
                   fill
                   priority
-                  sizes="(max-width: 768px) 100vw, 1280px"
+                  sizes="(max-width: 768px) 100vw, 680px"
                   className="object-cover"
                 />
               </div>
@@ -533,119 +521,61 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </figure>
           ) : null}
 
-          <div className="grid gap-10 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:items-start lg:justify-between lg:py-12">
-            <div className="min-w-0">
-              <div
-                className="prose prose-neutral dark:prose-invert max-w-none
-                  prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight
-                  prose-p:leading-8 prose-p:text-foreground/90
-                  prose-a:text-primary prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-4 hover:prose-a:decoration-primary
-                  prose-img:rounded-lg
-                  prose-blockquote:border-l-border prose-blockquote:text-muted-foreground
-                  prose-hr:border-border/60
-                  prose-pre:rounded-md prose-pre:bg-muted/60
-                  prose-code:before:content-none prose-code:after:content-none
-                  prose-code:rounded-md prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm"
-                dangerouslySetInnerHTML={{ __html: articleContent }}
-              />
+          <div className="max-w-[680px] py-10 md:py-12">
+            <TableOfContents headings={headings} />
 
-              <ArticleFinishPanel
-                category={post.category}
-                tags={tags}
-                commentCount={commentCount}
-                contentType={contentType}
-              />
+            <div
+              className="prose prose-neutral dark:prose-invert max-w-none
+                prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight
+                prose-p:leading-8 prose-p:text-foreground/90
+                prose-a:text-primary prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-4 hover:prose-a:decoration-primary
+                prose-img:rounded-lg
+                prose-blockquote:border-l-border prose-blockquote:text-muted-foreground
+                prose-hr:border-border/60
+                prose-pre:rounded-md prose-pre:bg-muted/60
+                prose-code:before:content-none prose-code:after:content-none
+                prose-code:rounded-md prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm"
+              dangerouslySetInnerHTML={{ __html: articleContent }}
+            />
 
-              <ArticlePager previousPost={previousPost} nextPost={nextPost} />
+            <ArticleFinishPanel
+              category={post.category}
+              tags={tags}
+              commentCount={commentCount}
+              contentType={contentType}
+            />
 
-              <section
-                id="comments"
-                aria-labelledby="comments-title"
-                className="mt-12 border-t border-border/60 pt-8"
-              >
-                <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Discussion
-                    </p>
-                    <h2 id="comments-title" className="mt-1 text-lg font-semibold">
-                      评论
-                    </h2>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {commentCount} 条已审核评论
-                  </span>
-                </div>
-                <div className="space-y-8">
-                  <CommentList comments={comments || []} />
-                  <CommentForm postId={post.id} />
-                </div>
-              </section>
-            </div>
+            <ArticlePager previousPost={previousPost} nextPost={nextPost} />
 
-            <aside className="space-y-4 lg:sticky lg:top-20">
-              <TableOfContents headings={headings} />
+            <RelatedSection
+              posts={relatedPosts}
+              contentListHref={contentListHref}
+              contentTypeLabel={contentTypeLabel}
+            />
 
-              <InfoPanel title="内容信息">
-                <InfoRow label="类型" value={contentTypeLabel} />
-                <InfoRow label="阅读量" value={numberFormatter.format(post.view_count + 1)} />
-                <InfoRow label="评论" value={`${commentCount} 条`} />
-                <InfoRow label="更新" value={formatDate(post.updated_at || post.created_at)} />
-              </InfoPanel>
-
-              <InfoPanel title="阅读路径">
-                <PublicIndexLinks
-                  ariaLabel="文章阅读路径"
-                  items={[
-                    {
-                      href: "#comments",
-                      label: "参与讨论",
-                      description: `${commentCount} 条已审核评论`,
-                      icon: MessageSquare,
-                    },
-                    {
-                      href: contentListHref,
-                      label: `${contentTypeLabel}列表`,
-                      description: "返回同类内容索引",
-                      icon: BookOpen,
-                    },
-                    ...(post.category
-                      ? [
-                          {
-                            href: getCategoryBrowseHref(post.category),
-                            label: post.category.name,
-                            description: "浏览同一分类下的内容",
-                            icon: ArrowRight,
-                          },
-                        ]
-                      : []),
-                  ]}
-                />
-              </InfoPanel>
-
-              {relatedPosts.length > 0 ? (
-                <InfoPanel title="相关内容">
-                  <RelatedContentList posts={relatedPosts} />
-                </InfoPanel>
-              ) : (
-                <InfoPanel title="继续阅读">
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    暂无同类内容，可以返回{contentTypeLabel}列表浏览更多记录。
+            <section
+              id="comments"
+              aria-labelledby="comments-title"
+              className="mt-12 border-t border-border/60 pt-8"
+            >
+              <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Discussion
                   </p>
-                  <PublicIndexLinks
-                    ariaLabel="继续阅读"
-                    className="mt-3"
-                    items={[
-                      {
-                        href: contentListHref,
-                        label: `查看全部${contentTypeLabel}`,
-                        description: "回到列表继续浏览",
-                      },
-                    ]}
-                  />
-                </InfoPanel>
-              )}
-            </aside>
+                  <h2 id="comments-title" className="mt-1 text-lg font-semibold">
+                    评论
+                  </h2>
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {commentCount} 条已审核评论
+                </span>
+              </div>
+              <div className="space-y-8">
+                <CommentList comments={comments || []} />
+                <CommentForm postId={post.id} />
+              </div>
+            </section>
           </div>
         </article>
       </main>
@@ -667,16 +597,16 @@ function ArticleFinishPanel({
 }) {
   const contentTypeLabel = getContentTypeLabel(contentType);
   return (
-    <section className="mt-12 rounded-lg border border-border/60 bg-muted/15 p-5">
-      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_280px]">
-        <div className="py-4 md:pr-5">
+    <section className="mt-12 border-t border-border/60 pt-8">
+      <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div>
           <div className="min-w-0">
             <p className="text-sm text-muted-foreground">
               继续浏览
             </p>
             <h2 className="mt-1 text-lg font-semibold">读完之后</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              可以继续查看同主题{contentTypeLabel}，或在评论区补充你的想法。
+              可以继续查看同主题{contentTypeLabel}，也可以在评论区补充你的想法。
             </p>
           </div>
           {tags.length > 0 ? (
@@ -685,7 +615,7 @@ function ArticleFinishPanel({
                 <Link
                   key={tag.id}
                   href={`/tag/${tag.slug}`}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border/60 px-2.5 text-sm text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="inline-flex h-8 items-center gap-1.5 text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 >
                   <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
                   {tag.name}
@@ -697,7 +627,7 @@ function ArticleFinishPanel({
         <div className="grid gap-1">
           <a
             href="#comments"
-            className="group flex min-h-11 items-center justify-between gap-3 border-b border-border/60 px-0 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-3"
+            className="group flex min-h-11 items-center justify-between gap-3 border-b border-border/60 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <span className="inline-flex items-center gap-2 text-muted-foreground group-hover:text-foreground">
               <MessageSquare className="h-4 w-4" suppressHydrationWarning />
@@ -707,7 +637,7 @@ function ArticleFinishPanel({
           </a>
           <Link
             href={category ? getCategoryBrowseHref(category) : getContentListHref(contentType)}
-            className="group flex min-h-11 items-center justify-between gap-3 px-0 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:px-3"
+            className="group flex min-h-11 items-center justify-between gap-3 py-3 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <span className="text-muted-foreground group-hover:text-foreground">
               {category ? "同类内容" : `更多${contentTypeLabel}`}
@@ -727,8 +657,11 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
   if (headings.length === 0) return null;
 
   return (
-    <InfoPanel title="目录">
-      <nav aria-label="文章目录" className="grid gap-1 border-l border-border/60 pl-3">
+    <section className="mb-8 border-y border-border/60 py-4">
+      <h2 className="text-sm font-medium text-foreground">
+        目录
+      </h2>
+      <nav aria-label="文章目录" className="mt-3 grid gap-1">
         {headings.map((heading) => (
           <a
             key={heading.id}
@@ -742,7 +675,7 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
           </a>
         ))}
       </nav>
-    </InfoPanel>
+    </section>
   );
 }
 
@@ -824,52 +757,41 @@ function NavigationPostCard({
   );
 }
 
-function ArticleMetaPanel({
-  views,
-  comments,
-  updatedAt,
+function RelatedSection({
+  posts,
+  contentListHref,
   contentTypeLabel,
-  readingMinutes,
 }: {
-  views: number;
-  comments: number;
-  updatedAt: string;
+  posts: RelatedPost[];
+  contentListHref: string;
   contentTypeLabel: string;
-  readingMinutes: number;
 }) {
   return (
-    <aside className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <p className="mb-3 text-sm font-medium text-foreground">
-        内容信息
-      </p>
-      <dl className="grid gap-1">
-      <MetaItem
-        icon={contentTypeLabel === "见闻" ? NotebookText : FileText}
-        label="类型"
-        value={contentTypeLabel}
-      />
-      <MetaItem
-        icon={Clock}
-        label="阅读"
-        value={`${readingMinutes} 分钟`}
-      />
-      <MetaItem
-        icon={Eye}
-        label="浏览"
-        value={numberFormatter.format(views)}
-      />
-      <MetaItem
-        icon={MessageSquare}
-        label="评论"
-        value={`${comments} 条`}
-      />
-      <MetaItem
-        icon={CalendarDays}
-        label="更新"
-        value={formatDate(updatedAt)}
-      />
-      </dl>
-    </aside>
+    <section className="mt-12 border-t border-border/60 pt-8">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm text-muted-foreground">
+            Related
+          </p>
+          <h2 className="mt-1 text-lg font-semibold">
+            相关内容
+          </h2>
+        </div>
+        <Link
+          href={contentListHref}
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          全部{contentTypeLabel}
+        </Link>
+      </div>
+      {posts.length > 0 ? (
+        <RelatedContentList posts={posts} />
+      ) : (
+        <p className="text-sm leading-6 text-muted-foreground">
+          暂无同类内容，可以回到{contentTypeLabel}列表继续浏览。
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -918,56 +840,6 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
           </Link>
         );
       })}
-    </div>
-  );
-}
-
-function MetaItem({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 border-t border-border/25 py-3 first:border-t-0">
-      <Icon className="mt-0.5 h-4 w-4 text-muted-foreground" suppressHydrationWarning />
-      <div className="min-w-0">
-        <dt className="text-xs text-muted-foreground">
-          {label}
-        </dt>
-        <dd className="mt-1 text-sm font-medium tabular-nums">{value}</dd>
-      </div>
-    </div>
-  );
-}
-
-function InfoPanel({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="pb-2">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-      </div>
-      <div className="pt-1">{children}</div>
-    </section>
-  );
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-3 py-2 text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="font-medium">{value}</span>
     </div>
   );
 }
