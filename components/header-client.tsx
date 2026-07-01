@@ -20,10 +20,10 @@ function NavLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`inline-flex h-9 items-center rounded-md px-2.5 text-sm transition-colors ${
+      className={`inline-flex h-9 items-center border-b border-transparent px-1.5 text-sm transition-colors ${
         active
-          ? "bg-muted text-foreground"
-          : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+          ? "border-foreground text-foreground"
+          : "text-muted-foreground hover:border-border hover:text-foreground"
       }`}
     >
       {label}
@@ -47,10 +47,10 @@ function HoverNav({
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={`inline-flex h-9 items-center rounded-md px-2.5 text-sm transition-colors ${
+        className={`inline-flex h-9 items-center border-b border-transparent px-1.5 text-sm transition-colors ${
           active
-            ? "bg-muted text-foreground"
-            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+            ? "border-foreground text-foreground"
+            : "text-muted-foreground hover:border-border hover:text-foreground"
         }`}
       >
         {label}
@@ -58,7 +58,7 @@ function HoverNav({
 
       <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
         <div className="h-2" />
-        <div className="w-72 overflow-hidden rounded-lg border border-border/70 bg-popover p-2 shadow-lg">
+        <div className="w-72 overflow-hidden rounded-lg border border-border/70 bg-popover/95 p-2 shadow-none backdrop-blur-xl">
           <div className="px-2 pb-2 pt-1">
             <p className="text-xs text-muted-foreground">
               {label}目录
@@ -77,7 +77,7 @@ function HoverNav({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="block rounded-md px-2 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground"
+                  className="block rounded-md px-2 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/50 hover:text-foreground focus:bg-muted/50 focus:text-foreground"
                 >
                   <span className="min-w-0 truncate">{item.label}</span>
                 </Link>
@@ -129,7 +129,7 @@ export function HeaderClient({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="mx-auto grid h-14 w-full max-w-[960px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 md:px-6">
         <div className="flex items-center">
           <Link
@@ -157,7 +157,7 @@ export function HeaderClient({
           <ThemeToggle />
         </div>
       </div>
-      <nav className="border-t border-border/60 bg-background md:hidden" aria-label="移动端导航">
+      <nav className="border-t border-border/60 bg-background/95 md:hidden" aria-label="移动端导航">
         <div className="mx-auto flex w-full max-w-[960px] gap-1 overflow-x-auto px-5 py-2">
           <NavLink href="/" label="首页" active={isHome} />
           <NavLink href="/posts" label="文章" active={isPosts} />
