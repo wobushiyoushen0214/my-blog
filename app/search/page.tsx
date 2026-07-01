@@ -20,8 +20,6 @@ export const metadata: Metadata = {
 
 type PostRow = Post & { category?: Category | null; tags?: Tag[] };
 type PublishedPostRow = Pick<Post, "id" | "category_id">;
-type CategorySummary = Category & { postCount: number };
-type TagSummary = Tag & { postCount: number };
 type SearchType = "all" | "post" | "moment";
 type SortOption = "newest" | "updated" | "popular";
 
@@ -203,28 +201,6 @@ export default async function SearchPage({
   ]);
   const postTagRows = (postTags || []) as PostTag[];
 
-  const categoryCounts = typedPublishedRows.reduce<Map<string, number>>(
-    (counts, post) => {
-      if (!post.category_id) return counts;
-      counts.set(post.category_id, (counts.get(post.category_id) || 0) + 1);
-      return counts;
-    },
-    new Map()
-  );
-  const tagCounts = postTagRows.reduce<Map<string, number>>((counts, postTag) => {
-    counts.set(postTag.tag_id, (counts.get(postTag.tag_id) || 0) + 1);
-    return counts;
-  }, new Map());
-
-  const categorySummaries: CategorySummary[] = typedCategories.map((category) => ({
-    ...category,
-    postCount: categoryCounts.get(category.id) || 0,
-  }));
-  const tagSummaries: TagSummary[] = typedTags.map((tag) => ({
-    ...tag,
-    postCount: tagCounts.get(tag.id) || 0,
-  }));
-
   let results: PostRow[] = [];
   let matchedCategories: Category[] = [];
   let matchedTags: Tag[] = [];
@@ -327,14 +303,6 @@ export default async function SearchPage({
       : contentType === "moment"
         ? `${recentPosts.length} 条见闻`
         : undefined;
-  const topCategories = categorySummaries
-    .filter((category) => category.postCount > 0)
-    .sort((a, b) => b.postCount - a.postCount)
-    .slice(0, 5);
-  const topTags = tagSummaries
-    .filter((tag) => tag.postCount > 0)
-    .sort((a, b) => b.postCount - a.postCount)
-    .slice(0, 10);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -414,12 +382,6 @@ export default async function SearchPage({
           </form>
         </section>
 
-        <TypeSwitch
-          query={query}
-          activeType={contentType}
-          sort={sort}
-        />
-
         <ActiveSearchSummary
           query={query}
           activeType={contentType}
@@ -434,14 +396,7 @@ export default async function SearchPage({
             activeType={contentType}
             sort={sort}
           />
-        ) : (
-          <SearchStarterPanel
-            categories={topCategories}
-            tags={topTags}
-            activeType={contentType}
-            sort={sort}
-          />
-        )}
+        ) : null}
 
         {query && (matchedCategories.length > 0 || matchedTags.length > 0) ? (
           <SearchMatchPanel
@@ -579,48 +534,6 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function TypeSwitch({
-  query,
-  activeType,
-  sort,
-}: {
-  query: string;
-  activeType: SearchType;
-  sort: SortOption;
-}) {
-  const items: Array<{ value: SearchType; label: string }> = [
-    { value: "all", label: "全部" },
-    { value: "post", label: "文章" },
-    { value: "moment", label: "见闻" },
-  ];
-
-  return (
-    <nav
-      aria-label="搜索内容类型"
-      className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 py-1 md:mx-0 md:px-0"
-    >
-      {items.map((item) => (
-        <Link
-          key={item.value}
-          href={buildSearchPath({
-            query,
-            type: item.value,
-            sort,
-          })}
-          aria-current={activeType === item.value ? "page" : undefined}
-          className={`inline-flex h-9 shrink-0 items-center px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
-            activeType === item.value
-              ? "rounded-md bg-muted text-foreground"
-              : "rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-          }`}
-        >
-          {item.label}
-        </Link>
-      ))}
-    </nav>
-  );
-}
-
 function SearchResultSummary({
   resultCount,
   matchedCategoryCount,
@@ -639,140 +552,6 @@ function SearchResultSummary({
       {resultCount} 条结果 · {getSearchTypeLabel(activeType)} · {getSortLabel(sort)} ·{" "}
       {matchedCategoryCount} 个分类命中 · {matchedTagCount} 个标签命中
     </p>
-  );
-}
-
-function SearchStarterPanel({
-  categories,
-  tags,
-  activeType,
-  sort,
-}: {
-  categories: CategorySummary[];
-  tags: TagSummary[];
-  activeType: SearchType;
-  sort: SortOption;
-}) {
-  const shortcuts: Array<{
-    label: string;
-    description: string;
-    href: string;
-    active?: boolean;
-  }> = [
-    {
-      label: "最新内容",
-      description: "按发布时间浏览",
-      href: buildSearchPath({ type: activeType, sort: "newest" }),
-      active: sort === "newest",
-    },
-    {
-      label: "最近更新",
-      description: "查看近期改动",
-      href: buildSearchPath({ type: activeType, sort: "updated" }),
-      active: sort === "updated",
-    },
-    {
-      label: "阅读最多",
-      description: "按阅读量排序",
-      href: buildSearchPath({ type: activeType, sort: "popular" }),
-      active: sort === "popular",
-    },
-    {
-      label: "只看文章",
-      description: "长期笔记与复盘",
-      href: buildSearchPath({ type: "post", sort }),
-      active: activeType === "post",
-    },
-    {
-      label: "只看见闻",
-      description: "短记录与观察",
-      href: buildSearchPath({ type: "moment", sort }),
-      active: activeType === "moment",
-    },
-  ];
-
-  return (
-    <section className="mt-5 grid gap-6 border-y border-border/60 py-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.76fr)]">
-      <div>
-        <div className="pb-1">
-          <h2 className="text-sm font-medium text-foreground">
-            快速进入
-          </h2>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            按内容类型或排序方式直接浏览。
-          </p>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {shortcuts.map((item) => (
-            <Link
-              key={`${item.label}-${item.href}`}
-              href={item.href}
-              className={`inline-flex min-h-8 items-center gap-2 text-sm underline-offset-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
-                item.active
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:underline"
-              }`}
-            >
-              <span>{item.label}</span>
-              <span className="text-xs text-muted-foreground">
-                {item.active ? "当前" : item.description}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-2 py-1">
-        <div className="py-2">
-          <h2 className="text-sm font-medium text-foreground">
-            高频主题
-          </h2>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            选一个分类或标签继续探索。
-          </p>
-        </div>
-        {categories.length > 0 || tags.length > 0 ? (
-          <div className="space-y-3 py-3">
-            {categories.length > 0 ? (
-              <div className="flex flex-wrap gap-x-4 gap-y-2">
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/category/${category.slug}`}
-                    className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    {category.name}
-                    <span className="ml-1 text-xs text-muted-foreground">
-                      {category.postCount}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            ) : null}
-            {tags.length > 0 ? (
-              <div className="flex flex-wrap gap-x-4 gap-y-2">
-                {tags.map((tag) => (
-                  <Link
-                    key={tag.id}
-                    href={`/tag/${tag.slug}`}
-                    className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    #{tag.name}
-                    <span className="ml-1 text-xs text-muted-foreground">
-                      {tag.postCount}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <div className="py-5 text-sm text-muted-foreground">
-            暂无可浏览的主题。
-          </div>
-        )}
-      </div>
-    </section>
   );
 }
 

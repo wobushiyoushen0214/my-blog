@@ -3,17 +3,15 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PostCard } from "@/components/post-card";
+import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicIndexLinks,
   PublicPageShell,
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { ArrowLeft, FolderOpen, Hash, Search, X } from "lucide-react";
+import { ArrowLeft, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -40,8 +38,6 @@ type PostWithTaxonomy = Post & {
   tags?: Tag[];
 };
 
-type CategorySummary = Category & { postCount: number };
-type TagSummary = Tag & { postCount: number };
 type PostTagRow = { post_id: string; tag_id: string };
 
 function normalizeQuery(query: string) {
@@ -97,16 +93,6 @@ function getSortLabel(sort: SortOption) {
   if (sort === "popular") return "阅读最多";
   if (sort === "updated") return "最近更新";
   return "最新发布";
-}
-
-function getContentListHref(type: SearchType) {
-  if (type === "moment") return "/moments";
-  return "/posts";
-}
-
-function getContentListLabel(type: SearchType) {
-  if (type === "moment") return "见闻列表";
-  return "文章列表";
 }
 
 function attachTagsFromRows(
@@ -204,33 +190,6 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     publishedPostIds.has(postId)
   ).length;
 
-  const categoryPostCounts = (publishedPosts || []).reduce<Map<string, number>>(
-    (counts, post) => {
-      if (!post.category_id) return counts;
-      counts.set(post.category_id, (counts.get(post.category_id) || 0) + 1);
-      return counts;
-    },
-    new Map()
-  );
-  const tagPostCounts = postTagRows.reduce<Map<string, Set<string>>>(
-    (counts, postTag) => {
-      if (!publishedPostIds.has(postTag.post_id)) return counts;
-      const current = counts.get(postTag.tag_id) || new Set<string>();
-      current.add(postTag.post_id);
-      counts.set(postTag.tag_id, current);
-      return counts;
-    },
-    new Map()
-  );
-  const categorySummaries: CategorySummary[] = categoryRows.map((category) => ({
-    ...category,
-    postCount: categoryPostCounts.get(category.id) || 0,
-  }));
-  const tagSummaries: TagSummary[] = tagRows.map((item) => ({
-    ...item,
-    postCount: tagPostCounts.get(item.id)?.size || 0,
-  }));
-
   let postsWithTags: PostWithTaxonomy[] = [];
   let count = 0;
   const canQueryPosts =
@@ -303,14 +262,6 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
   const hasFilters = Boolean(
     searchQuery || contentType !== DEFAULT_TYPE || sort !== DEFAULT_SORT
   );
-  const featuredPost =
-    page === 1 &&
-    !searchQuery &&
-    contentType === DEFAULT_TYPE &&
-    sort === DEFAULT_SORT
-      ? postsWithTags[0] || null
-      : null;
-  const listPosts = featuredPost ? postsWithTags.slice(1) : postsWithTags;
   const basePath = buildTagPath({ slug, searchQuery, type: contentType, sort });
   const countLabel = hasFilters
     ? `${count} / ${totalTaggedCount} 篇`
@@ -328,12 +279,6 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
           contentType={contentType}
           sort={sort}
           hasFilters={hasFilters}
-          action={
-            <PublicActionLink href="/search">
-              <Search className="h-4 w-4" suppressHydrationWarning />
-              搜索
-            </PublicActionLink>
-          }
         />
 
         {totalTaggedCount > 0 ? (
@@ -355,104 +300,36 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
         ) : null}
 
         {postsWithTags.length > 0 ? (
-          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
-            <div className="min-w-0 space-y-8">
-              <SummaryLedger
-                items={[
-                  {
-                    label: "当前结果",
-                    value: count,
-                    detail: hasFilters ? "筛选后内容" : "当前标签",
-                  },
-                  {
-                    label: "全部关联",
-                    value: totalTaggedCount,
-                    detail: tag.name,
-                  },
-                  {
-                    label: "排序",
-                    value: getSortLabel(sort),
-                    detail: "当前视图",
-                  },
-                ]}
+          <div className="mt-8 space-y-8">
+            <section className="space-y-4">
+              <SectionTitle
+                eyebrow={getSearchTypeLabel(contentType)}
+                title={
+                  sort === "popular"
+                    ? "热门内容"
+                    : sort === "updated"
+                      ? "最近更新"
+                      : "最新内容"
+                }
               />
-
-              {featuredPost ? (
-                <section className="space-y-4">
-                  <SectionTitle eyebrow="推荐阅读" title="标签精选" />
-                  <PostCard post={featuredPost} variant="featured" />
-                </section>
-              ) : null}
-
-              {listPosts.length > 0 ? (
-                <section className="space-y-4">
-                  <SectionTitle
-                    eyebrow="内容列表"
-                    title={
-                      sort === "popular"
-                        ? "热门内容"
-                        : sort === "updated"
-                          ? "最近更新"
-                          : featuredPost
-                            ? "更多内容"
-                            : "最新内容"
-                    }
+              <div className="grid">
+                {postsWithTags.map((post) => (
+                  <ContentRow
+                    key={post.id}
+                    post={post}
+                    typeLabel={getSearchTypeLabel(
+                      post.category?.type === "moment" ? "moment" : "post"
+                    )}
                   />
-                  <div className="grid">
-                    {listPosts.map((post) => (
-                      <PostCard key={post.id} post={post} variant="compact" />
-                    ))}
-                  </div>
-                </section>
-              ) : null}
+                ))}
+              </div>
+            </section>
 
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                basePath={basePath}
-              />
-            </div>
-
-            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <TaxonomyPanel
-                title="相关标签"
-                description="继续切换到相邻关键词。"
-                items={tagSummaries.filter((item) => item.id !== tag.id)}
-                hrefFor={(item) => `/tag/${item.slug}`}
-                activeSlug={tag.slug}
-                icon="tag"
-                limit={16}
-              />
-              <TaxonomyPanel
-                title="分类"
-                description="按长期主题浏览。"
-                items={categorySummaries}
-                hrefFor={(item) => `/category/${item.slug}`}
-                icon="category"
-                limit={10}
-              />
-              <ContinuePanel
-                title="继续浏览"
-                description="可以切换到内容流，或进入搜索页扩大范围。"
-              >
-                <PublicIndexLinks
-                  ariaLabel="标签详情继续浏览"
-                  items={[
-                    {
-                      href: getContentListHref(contentType),
-                      label: getContentListLabel(contentType),
-                      description: "回到对应内容流",
-                    },
-                    {
-                      href: "/search",
-                      label: "搜索内容",
-                      description: "跨标签和分类扩大范围",
-                      icon: Search,
-                    },
-                  ]}
-                />
-              </ContinuePanel>
-            </aside>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              basePath={basePath}
+            />
           </div>
         ) : totalTaggedCount > 0 ? (
           <PublicEmptyState
@@ -493,7 +370,6 @@ function TagHero({
   contentType,
   sort,
   hasFilters,
-  action,
 }: {
   tagName: string;
   countLabel: string;
@@ -502,7 +378,6 @@ function TagHero({
   contentType: SearchType;
   sort: SortOption;
   hasFilters: boolean;
-  action: React.ReactNode;
 }) {
   return (
     <header className="mb-8 border-b border-border/60 pb-6">
@@ -514,46 +389,21 @@ function TagHero({
         所有标签
       </Link>
 
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            Tag
-          </p>
-          <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-            {tagName}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            该标签关联的已发布内容，可按类型、关键词和排序继续交叉浏览。
-          </p>
-        </div>
-
-        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-          <p className="text-xs text-muted-foreground">
-            Tag Index / {countLabel}
-          </p>
-          <dl className="mt-3 grid gap-2 text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">当前视图</dt>
-              <dd className="font-semibold tabular-nums">
-                {count}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">全部关联</dt>
-              <dd className="tabular-nums text-foreground">
-                {totalTaggedCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">视图</dt>
-              <dd className="text-foreground">
-                {hasFilters ? getSearchTypeLabel(contentType) : getSortLabel(sort)}
-              </dd>
-            </div>
-          </dl>
-          <div className="mt-3">{action}</div>
-        </div>
+      <div className="min-w-0">
+        <p className="text-sm text-muted-foreground">
+          Tag
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+          #{tagName}
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          该标签关联的已发布内容，可按类型、关键词和排序继续交叉浏览。
+        </p>
       </div>
+      <p className="mt-4 text-sm text-muted-foreground">
+        {countLabel} · 当前 {count} · 共 {totalTaggedCount} ·{" "}
+        {hasFilters ? getSearchTypeLabel(contentType) : getSortLabel(sort)}
+      </p>
     </header>
   );
 }
@@ -702,33 +552,6 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function SummaryLedger({
-  items,
-}: {
-  items: { label: string; value: number | string; detail: string }[];
-}) {
-  return (
-    <section
-      aria-label="标签内容概览"
-      className="grid gap-3 sm:grid-cols-3"
-    >
-      {items.map((item) => (
-        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
-          <p className="text-xs text-muted-foreground">
-            {item.label}
-          </p>
-          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
-            {item.value}
-          </p>
-          <p className="mt-2 truncate text-xs text-muted-foreground">
-            {item.detail}
-          </p>
-        </div>
-      ))}
-    </section>
-  );
-}
-
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="border-b border-border/60 pb-3">
@@ -737,93 +560,5 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
       </p>
       <h2 className="mt-1 text-lg font-semibold">{title}</h2>
     </div>
-  );
-}
-
-function TaxonomyPanel<
-  T extends { id: string; slug: string; name: string; postCount: number },
->({
-  title,
-  description,
-  items,
-  hrefFor,
-  activeSlug,
-  icon,
-  limit,
-}: {
-  title: string;
-  description: string;
-  items: T[];
-  hrefFor: (item: T) => string;
-  activeSlug?: string;
-  icon: "category" | "tag";
-  limit: number;
-}) {
-  const visibleItems = items
-    .filter((item) => item.postCount > 0)
-    .sort((a, b) => b.postCount - a.postCount)
-    .slice(0, limit);
-
-  if (visibleItems.length === 0) return null;
-
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="grid">
-        {visibleItems.map((item) => (
-          <Link
-            key={item.id}
-            href={hrefFor(item)}
-            className={cn(
-              "group grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/40 py-2 text-sm transition-colors last:border-b-0 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-              activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
-            )}
-          >
-            <span className="flex min-w-0 items-center gap-2">
-              {icon === "tag" ? (
-                <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-              ) : (
-                <FolderOpen className="h-3.5 w-3.5" suppressHydrationWarning />
-              )}
-              <span className="truncate">{item.name}</span>
-            </span>
-            <span className="text-xs tabular-nums text-muted-foreground transition-colors group-hover:text-foreground">
-              {item.postCount}
-            </span>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ContinuePanel({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="pt-3">{children}</div>
-    </section>
   );
 }

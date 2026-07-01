@@ -262,12 +262,6 @@ export default async function PostsPage({
           categoryName={categoryName}
           searchQuery={searchQuery}
           sort={sort}
-          action={
-            <PublicActionLink href="/search">
-              <Search className="h-4 w-4" suppressHydrationWarning />
-              搜索
-            </PublicActionLink>
-          }
         />
 
         <CategoryNav
@@ -376,7 +370,6 @@ function JournalHero({
   categoryName,
   searchQuery,
   sort,
-  action,
 }: {
   title: string;
   description: string;
@@ -385,7 +378,6 @@ function JournalHero({
   categoryName: string | null;
   searchQuery: string;
   sort: SortOption;
-  action: ReactNode;
 }) {
   const context = categoryName
     ? `分类 / ${categoryName}`
@@ -395,19 +387,16 @@ function JournalHero({
 
   return (
     <header className="mb-8 border-b border-border/60 pb-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            Journal
-          </p>
-          <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-            {title}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            {description}
-          </p>
-        </div>
-        <div className="shrink-0">{action}</div>
+      <div className="min-w-0">
+        <p className="text-sm text-muted-foreground">
+          Journal
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+          {title}
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          {description}
+        </p>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">
         {context} · 当前 {totalCount} · 共 {allCount} · {getSortLabel(sort)}

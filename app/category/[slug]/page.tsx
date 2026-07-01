@@ -3,17 +3,15 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PostCard } from "@/components/post-card";
+import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
   PublicEmptyState,
-  PublicIndexLinks,
   PublicPageShell,
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight, FolderOpen, Hash, Search, X } from "lucide-react";
+import { ArrowLeft, FolderOpen, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -32,10 +30,7 @@ type PostWithTaxonomy = Post & {
   tags?: Tag[];
 };
 
-type CategorySummary = Category & { postCount: number };
-type TagSummary = Tag & { postCount: number };
 type PostTagRow = { post_id: string; tag_id: string };
-type PublishedPostRow = Pick<Post, "id" | "category_id">;
 
 function normalizeQuery(query: string) {
   return query.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim();
@@ -81,12 +76,6 @@ function getSortLabel(sort: SortOption) {
 
 function getCategoryTypeLabel(type: Category["type"]) {
   return type === "moment" ? "见闻分类" : "文章分类";
-}
-
-function getCategoryListHref(category: Pick<Category, "slug" | "type">) {
-  return category.type === "moment"
-    ? `/moments?category=${encodeURIComponent(category.slug)}`
-    : `/posts?category=${encodeURIComponent(category.slug)}`;
 }
 
 function getContentListHref(type: Category["type"]) {
@@ -154,9 +143,7 @@ export default async function CategoryPage({
 
   const [
     { count: totalCategoryCount },
-    { data: categories },
     { data: tags },
-    { data: publishedPosts },
     { data: allPostTags },
   ] = await Promise.all([
     supabase
@@ -164,9 +151,7 @@ export default async function CategoryPage({
       .select("id", { count: "exact", head: true })
       .eq("published", true)
       .eq("category_id", typedCategory.id),
-    supabase.from("categories").select("*").order("name"),
     supabase.from("tags").select("*").order("name"),
-    supabase.from("posts").select("id, category_id").eq("published", true),
     supabase.from("post_tags").select("post_id, tag_id"),
   ]);
 
@@ -211,56 +196,18 @@ export default async function CategoryPage({
     page * PAGE_SIZE - 1
   );
 
-  const publishedRows = (publishedPosts || []) as PublishedPostRow[];
   const postTagRows = (allPostTags || []) as PostTagRow[];
   const tagRows = (tags || []) as Tag[];
-  const publishedPostIds = new Set(publishedRows.map((post) => post.id));
-  const categoryPostCounts = publishedRows.reduce<Map<string, number>>(
-    (counts, post) => {
-      if (!post.category_id) return counts;
-      counts.set(post.category_id, (counts.get(post.category_id) || 0) + 1);
-      return counts;
-    },
-    new Map()
-  );
-  const tagPostCounts = postTagRows.reduce<Map<string, Set<string>>>(
-    (counts, postTag) => {
-      if (!publishedPostIds.has(postTag.post_id)) return counts;
-      const current = counts.get(postTag.tag_id) || new Set<string>();
-      current.add(postTag.post_id);
-      counts.set(postTag.tag_id, current);
-      return counts;
-    },
-    new Map()
-  );
   const postsWithTags = attachTagsFromRows(
     (posts || []) as unknown as PostWithTaxonomy[],
     postTagRows,
     tagRows
   );
-  const categorySummaries: CategorySummary[] = ((categories || []) as Category[]).map(
-    (item) => ({
-      ...item,
-      postCount: categoryPostCounts.get(item.id) || 0,
-    })
-  );
-  const tagSummaries: TagSummary[] = tagRows.map((tag) => ({
-    ...tag,
-    postCount: tagPostCounts.get(tag.id)?.size || 0,
-  }));
 
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
-  const featuredPost =
-    page === 1 && !searchQuery && sort === DEFAULT_SORT
-      ? postsWithTags[0] || null
-      : null;
-  const listPosts = featuredPost ? postsWithTags.slice(1) : postsWithTags;
   const basePath = buildCategoryPath({ slug, searchQuery, sort });
   const categoryTypeLabel = getCategoryTypeLabel(typedCategory.type);
   const contentListHref = getContentListHref(typedCategory.type);
-  const countLabel = hasFilters
-    ? `${totalCount} / ${totalCategoryCount || 0} 篇`
-    : `${totalCategoryCount || 0} 篇`;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -269,17 +216,10 @@ export default async function CategoryPage({
         <CategoryHero
           category={typedCategory}
           categoryTypeLabel={categoryTypeLabel}
-          countLabel={countLabel}
           totalCount={totalCount}
           totalCategoryCount={totalCategoryCount || 0}
           sort={sort}
           hasFilters={hasFilters}
-          action={
-            <PublicActionLink href={getCategoryListHref(typedCategory)}>
-              <ArrowRight className="h-4 w-4" suppressHydrationWarning />
-              类型列表
-            </PublicActionLink>
-          }
         />
 
         {totalCategoryCount ? (
@@ -299,113 +239,30 @@ export default async function CategoryPage({
         ) : null}
 
         {(postsWithTags || []).length > 0 ? (
-          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
-            <div className="min-w-0 space-y-8">
-              <SummaryLedger
-                items={[
-                  {
-                    label: "当前结果",
-                    value: totalCount,
-                    detail: hasFilters ? "筛选后内容" : "当前分类",
-                  },
-                  {
-                    label: "全部内容",
-                    value: totalCategoryCount || 0,
-                    detail: typedCategory.name,
-                  },
-                  {
-                    label: "排序",
-                    value: getSortLabel(sort),
-                    detail: "当前视图",
-                  },
-                ]}
+          <div className="mt-8 space-y-8">
+            <section className="space-y-4">
+              <SectionTitle
+                eyebrow={categoryTypeLabel}
+                title={
+                  sort === "popular"
+                    ? "热门内容"
+                    : sort === "updated"
+                      ? "最近更新"
+                      : "最新内容"
+                }
               />
+              <div className="grid">
+                {postsWithTags.map((post) => (
+                  <ContentRow key={post.id} post={post} />
+                ))}
+              </div>
+            </section>
 
-              {featuredPost ? (
-                <section className="space-y-4">
-                  <SectionTitle eyebrow="推荐阅读" title="分类精选" />
-                  <PostCard post={featuredPost} variant="featured" />
-                </section>
-              ) : null}
-
-              {listPosts.length > 0 ? (
-                <section className="space-y-4">
-                  <SectionTitle
-                    eyebrow="内容列表"
-                    title={
-                      sort === "popular"
-                        ? "热门内容"
-                        : sort === "updated"
-                          ? "最近更新"
-                          : featuredPost
-                            ? "更多内容"
-                            : "最新内容"
-                      }
-                  />
-                  <div className="grid">
-                    {listPosts.map((post) => (
-                      <PostCard key={post.id} post={post} variant="compact" />
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                basePath={basePath}
-              />
-            </div>
-
-            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <TaxonomyPanel
-                title="同类型分类"
-                description="继续切换到相邻主题。"
-                items={(categorySummaries as CategorySummary[]).filter(
-                  (item) =>
-                    item.id !== typedCategory.id &&
-                    item.type === typedCategory.type
-                )}
-                hrefFor={(item) => `/category/${item.slug}`}
-                activeSlug={typedCategory.slug}
-                icon="category"
-                limit={10}
-              />
-              <TaxonomyPanel
-                title="热门标签"
-                description="通过关键词继续交叉浏览。"
-                items={tagSummaries as TagSummary[]}
-                hrefFor={(item) => `/tag/${item.slug}`}
-                icon="tag"
-                limit={16}
-              />
-              <ContinuePanel
-                title="继续浏览"
-                description={`可以回到${
-                  typedCategory.type === "moment" ? "见闻" : "文章"
-                }流，或进入全站搜索。`}
-              >
-                <PublicIndexLinks
-                  ariaLabel="分类详情继续浏览"
-                  items={[
-                    {
-                      href: contentListHref,
-                      label:
-                        typedCategory.type === "moment"
-                          ? "见闻列表"
-                          : "文章列表",
-                      description: "回到对应内容流",
-                    },
-                    {
-                      href: "/search",
-                      label: "搜索内容",
-                      description: "跨分类和标签扩大范围",
-                      icon: Search,
-                    },
-                  ]}
-                />
-              </ContinuePanel>
-            </aside>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              basePath={basePath}
+            />
           </div>
         ) : totalCategoryCount ? (
           <PublicEmptyState
@@ -443,21 +300,17 @@ export default async function CategoryPage({
 function CategoryHero({
   category,
   categoryTypeLabel,
-  countLabel,
   totalCount,
   totalCategoryCount,
   sort,
   hasFilters,
-  action,
 }: {
   category: Category;
   categoryTypeLabel: string;
-  countLabel: string;
   totalCount: number;
   totalCategoryCount: number;
   sort: SortOption;
   hasFilters: boolean;
-  action: React.ReactNode;
 }) {
   return (
     <header className="mb-8 border-b border-border/60 pb-6">
@@ -469,46 +322,21 @@ function CategoryHero({
         所有分类
       </Link>
 
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">
-            Category
-          </p>
-          <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-            {category.name}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            该{categoryTypeLabel}下的已发布内容，可在当前主题内继续搜索和排序。
-          </p>
-        </div>
-
-        <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-          <p className="text-xs text-muted-foreground">
-            {category.type === "moment" ? "Moments" : "Articles"} / {countLabel}
-          </p>
-          <dl className="mt-3 grid gap-2 text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">当前视图</dt>
-              <dd className="font-semibold tabular-nums">
-                {totalCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">分类总量</dt>
-              <dd className="tabular-nums text-foreground">
-                {totalCategoryCount}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-muted-foreground">状态</dt>
-              <dd className="text-foreground">
-                {hasFilters ? "已筛选" : getSortLabel(sort)}
-              </dd>
-            </div>
-          </dl>
-          <div className="mt-3">{action}</div>
-        </div>
+      <div className="min-w-0">
+        <p className="text-sm text-muted-foreground">
+          Category
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+          {category.name}
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          该{categoryTypeLabel}下的已发布内容，可在当前主题内搜索和排序。
+        </p>
       </div>
+      <p className="mt-4 text-sm text-muted-foreground">
+        当前 {totalCount} · 共 {totalCategoryCount} ·{" "}
+        {hasFilters ? "已筛选" : getSortLabel(sort)}
+      </p>
     </header>
   );
 }
@@ -632,33 +460,6 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   );
 }
 
-function SummaryLedger({
-  items,
-}: {
-  items: { label: string; value: number | string; detail: string }[];
-}) {
-  return (
-    <section
-      aria-label="分类内容概览"
-      className="grid gap-3 sm:grid-cols-3"
-    >
-      {items.map((item) => (
-        <div key={item.label} className="rounded-lg border border-border/60 bg-card px-4 py-3">
-          <p className="text-xs text-muted-foreground">
-            {item.label}
-          </p>
-          <p className="mt-1 text-lg font-semibold leading-none text-foreground">
-            {item.value}
-          </p>
-          <p className="mt-2 truncate text-xs text-muted-foreground">
-            {item.detail}
-          </p>
-        </div>
-      ))}
-    </section>
-  );
-}
-
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="border-b border-border/60 pb-3">
@@ -667,91 +468,5 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
       </p>
       <h2 className="mt-1 text-lg font-semibold">{title}</h2>
     </div>
-  );
-}
-
-function TaxonomyPanel<T extends { id: string; slug: string; name: string; postCount: number }>({
-  title,
-  description,
-  items,
-  hrefFor,
-  activeSlug,
-  icon,
-  limit,
-}: {
-  title: string;
-  description: string;
-  items: T[];
-  hrefFor: (item: T) => string;
-  activeSlug?: string;
-  icon: "category" | "tag";
-  limit: number;
-}) {
-  const visibleItems = items
-    .filter((item) => item.postCount > 0)
-    .sort((a, b) => b.postCount - a.postCount)
-    .slice(0, limit);
-
-  if (visibleItems.length === 0) return null;
-
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="grid">
-        {visibleItems.map((item) => (
-          <Link
-            key={item.id}
-            href={hrefFor(item)}
-            className={cn(
-              "group grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/40 py-2 text-sm transition-colors last:border-b-0 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-              activeSlug === item.slug ? "text-foreground" : "text-muted-foreground"
-            )}
-          >
-            <span className="flex min-w-0 items-center gap-2">
-              {icon === "tag" ? (
-                <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
-              ) : (
-                <FolderOpen className="h-3.5 w-3.5" suppressHydrationWarning />
-              )}
-              <span className="truncate">{item.name}</span>
-            </span>
-            <span className="text-xs tabular-nums text-muted-foreground transition-colors group-hover:text-foreground">
-              {item.postCount}
-            </span>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ContinuePanel({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
-      <div className="border-b border-border/60 pb-3">
-        <h2 className="text-sm font-medium text-foreground">
-          {title}
-        </h2>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      <div className="py-3">{children}</div>
-    </section>
   );
 }

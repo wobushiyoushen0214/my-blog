@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { ContentRow } from "@/components/content-row";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
 type PostWithTaxonomy = Post & {
@@ -55,14 +54,6 @@ function formatShortDate(date: string) {
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("zh-CN").format(value || 0);
-}
-
-function stripHtml(value: string) {
-  return value
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&[a-zA-Z0-9#]+;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 function contentTypeLabel(post?: PostWithTaxonomy | null) {
@@ -168,7 +159,7 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
       <main className="mx-auto w-full max-w-[840px] flex-1 px-5 py-10 md:px-6 md:py-12">
-        <HomeIndex
+        <HomeSummary
           articleCount={articleCount}
           momentCount={momentCount}
           totalCount={publishedRows?.length || 0}
@@ -176,7 +167,7 @@ export default async function HomePage() {
           totalViews={totalViews}
         />
 
-        <section className="mt-12">
+        <section className="mt-8">
           <RecentLedger posts={ledgerPosts} />
           <TopicDirectory categories={categorySummaries} tags={tagSummaries} />
         </section>
@@ -186,7 +177,7 @@ export default async function HomePage() {
   );
 }
 
-function HomeIndex({
+function HomeSummary({
   articleCount,
   momentCount,
   totalCount,
@@ -200,94 +191,24 @@ function HomeIndex({
   totalViews: number;
 }) {
   return (
-    <section aria-labelledby="home-index-title" className="border-b border-border/60 pb-8">
+    <section aria-labelledby="home-summary-title" className="border-b border-border/60 pb-6">
       <p className="text-sm text-muted-foreground">
-        个人博客 · 技术、项目与日常观察
+        Lee Notes
       </p>
       <h1
-        id="home-index-title"
-        className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl"
+        id="home-summary-title"
+        className="mt-2 max-w-3xl text-2xl font-semibold leading-tight tracking-tight md:text-3xl"
       >
-        Lee Notes
+        最近入档
       </h1>
-      <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
-        这里记录工程实践、产品想法和生活见闻。内容按文章、见闻、主题与时间归档，便于回看，也便于搜索。
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+        技术笔记、项目复盘和日常观察。全站入口放在顶部导航，这里只保留最近更新和主题索引。
       </p>
-      <p className="mt-4 text-sm leading-6 text-muted-foreground">
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">
         {articleCount} 篇文章 · {momentCount} 条见闻 · {totalCount} 份归档 ·{" "}
         {topicCount} 个主题 · {formatNumber(totalViews)} 次阅读
       </p>
-
-      <HomeSearch />
-
-      <nav
-        aria-label="首页快捷入口"
-        className="mt-4 flex flex-wrap gap-x-4 gap-y-2"
-      >
-        <HomeNavLink href="/posts" label="文章" />
-        <HomeNavLink href="/moments" label="见闻" />
-        <HomeNavLink href="/archive" label="归档" />
-        <HomeNavLink href="/category" label="主题" />
-      </nav>
     </section>
-  );
-}
-
-function HomeSearch() {
-  return (
-    <form
-      action="/search"
-      role="search"
-      className="mt-6 grid gap-2 sm:grid-cols-[minmax(0,1fr)_120px_88px]"
-    >
-      <div className="relative min-w-0">
-        <label htmlFor="home-search" className="sr-only">
-          搜索关键词
-        </label>
-        <Search
-          className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-          suppressHydrationWarning
-        />
-        <Input
-          id="home-search"
-          name="q"
-          type="search"
-          placeholder="搜索标题、正文、分类或标签..."
-          className="h-10 rounded-md border-border/70 bg-background pl-10 shadow-none hover:bg-muted/40 focus-visible:bg-background"
-        />
-      </div>
-      <label htmlFor="home-search-type" className="sr-only">
-        搜索类型
-      </label>
-      <select
-        id="home-search-type"
-        name="type"
-        defaultValue="all"
-        className="h-10 rounded-md border border-border/70 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/40 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
-      >
-        <option value="all">全部</option>
-        <option value="post">文章</option>
-        <option value="moment">见闻</option>
-      </select>
-      <button
-        type="submit"
-        className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
-      >
-        <Search className="h-4 w-4" suppressHydrationWarning />
-        搜索
-      </button>
-    </form>
-  );
-}
-
-function HomeNavLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-8 items-center text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-    >
-      {label}
-    </Link>
   );
 }
 
@@ -317,26 +238,14 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
       {posts.length > 0 ? (
         <div className="mt-5 border-y border-border/60">
           {posts.map((post) => (
-            <Link
+            <ContentRow
               key={post.id}
-              href={`/blog/${post.slug}`}
-              className="group grid gap-3 border-b border-border/60 py-4 transition-colors last:border-b-0 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:grid-cols-[80px_minmax(0,1fr)_112px]"
-            >
-              <span className="text-sm tabular-nums text-muted-foreground">
-                {formatShortDate(post.created_at)}
-              </span>
-              <span className="min-w-0">
-                <span className="block text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
-                  {post.title}
-                </span>
-                <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
-                  {stripHtml(post.excerpt || post.content)}
-                </span>
-              </span>
-              <span className="text-sm text-muted-foreground md:text-right">
-                {post.category?.name || contentTypeLabel(post)}
-              </span>
-            </Link>
+              post={post}
+              dateLabel={formatShortDate(post.created_at)}
+              typeLabel={contentTypeLabel(post)}
+              rightMeta={[`${formatNumber(post.view_count)} 阅读`]}
+              className="sm:grid-cols-[4.5rem_minmax(0,1fr)_6.5rem]"
+            />
           ))}
         </div>
       ) : (
