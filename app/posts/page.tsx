@@ -9,9 +9,8 @@ import {
   PublicEmptyState,
   PublicPageShell,
 } from "@/components/public-page";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { FileText, Search, X } from "lucide-react";
+import { FileText, X } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -240,7 +239,7 @@ export default async function PostsPage({
                 ? `文章 · ${searchQuery}`
                 : "文章"
           }
-          description="系统整理的技术笔记、项目复盘与长期主题，可按分类、关键词和排序继续收窄。"
+          description="系统整理的技术笔记、项目复盘与长期主题，可按分类和排序继续收窄。"
           totalCount={totalCount}
           allCount={allArticleCount}
           categoryName={categoryName}
@@ -259,7 +258,6 @@ export default async function PostsPage({
         <ListFilterBar
           categorySlug={activeCategorySlug}
           searchQuery={searchQuery}
-          rawQuery={rawQuery}
           sort={sort}
         />
 
@@ -432,12 +430,10 @@ function CategoryLink({
 function ListFilterBar({
   categorySlug,
   searchQuery,
-  rawQuery,
   sort,
 }: {
   categorySlug?: string;
   searchQuery: string;
-  rawQuery: string;
   sort: SortOption;
 }) {
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
@@ -446,29 +442,13 @@ function ListFilterBar({
     <section className="mt-5 border-b border-border/60 pb-5">
       <form
         action="/posts"
-        role="search"
-        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_160px_auto_auto]"
+        aria-label="文章筛选"
+        className="flex flex-col gap-2 sm:flex-row sm:items-center"
       >
         {categorySlug ? (
           <input type="hidden" name="category" value={categorySlug} />
         ) : null}
-        <label htmlFor="posts-filter-search" className="sr-only">
-          搜索文章
-        </label>
-        <div className="relative min-w-0">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            suppressHydrationWarning
-          />
-          <Input
-            id="posts-filter-search"
-            type="search"
-            name="q"
-            defaultValue={rawQuery}
-            placeholder="在文章中搜索标题、摘要或正文..."
-            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
-          />
-        </div>
+        {searchQuery ? <input type="hidden" name="q" value={searchQuery} /> : null}
         <label htmlFor="posts-sort" className="sr-only">
           文章排序
         </label>
@@ -476,7 +456,7 @@ function ListFilterBar({
           id="posts-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>

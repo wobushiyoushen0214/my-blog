@@ -10,7 +10,6 @@ import {
   PublicEmptyState,
   PublicPageShell,
 } from "@/components/public-page";
-import { Input } from "@/components/ui/input";
 import { ArrowLeft, Hash, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
@@ -390,7 +389,7 @@ function TagHero({
           #{tagName}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          该标签关联的已发布内容，可按类型、关键词和排序继续交叉浏览。
+          该标签关联的已发布内容，可按类型和排序继续交叉浏览。
         </p>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">
@@ -418,26 +417,10 @@ function TagFilterBar({
     <section className="border-b border-border/60 pb-5">
       <form
         action={`/tag/${encodeURIComponent(slug)}`}
-        role="search"
-        className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_150px_150px_auto_auto]"
+        aria-label="标签内容筛选"
+        className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
       >
-        <label htmlFor="tag-detail-search" className="sr-only">
-          搜索当前标签
-        </label>
-        <div className="relative min-w-0">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            suppressHydrationWarning
-          />
-          <Input
-            id="tag-detail-search"
-            type="search"
-            name="q"
-            defaultValue={rawQuery}
-            placeholder="在当前标签中搜索标题、摘要或正文..."
-            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
-          />
-        </div>
+        {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
         <label htmlFor="tag-detail-type" className="sr-only">
           标签内容类型
         </label>
@@ -445,7 +428,7 @@ function TagFilterBar({
           id="tag-detail-type"
           name="type"
           defaultValue={contentType}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="all">全部内容</option>
           <option value="post">只看文章</option>
@@ -458,7 +441,7 @@ function TagFilterBar({
           id="tag-detail-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>

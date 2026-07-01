@@ -7,8 +7,7 @@ import {
   PublicEmptyState,
   PublicPageShell,
 } from "@/components/public-page";
-import { Input } from "@/components/ui/input";
-import { ArrowRight, Hash, Search, X } from "lucide-react";
+import { ArrowRight, Hash, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Tag } from "@/lib/types";
 
@@ -123,12 +122,6 @@ export default async function TagsPage({
           hasFilters={hasFilters}
         />
 
-        <TagSearchBar
-          rawQuery={rawQuery}
-          status={status}
-          hasFilters={hasFilters}
-        />
-
         <TagStatusSwitch query={query} activeStatus={status} />
 
         <ActiveTagSummary query={query} status={status} />
@@ -217,62 +210,6 @@ function TagIndexHero({
         已使用 {usedCount} · 未使用 {unusedCount}
       </p>
     </header>
-  );
-}
-
-function TagSearchBar({
-  rawQuery,
-  status,
-  hasFilters,
-}: {
-  rawQuery: string;
-  status: TagStatus;
-  hasFilters: boolean;
-}) {
-  return (
-    <section className="border-b border-border/60 pb-5">
-      <form
-        className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_96px_auto]"
-        role="search"
-        action="/tag"
-      >
-        {status !== DEFAULT_STATUS ? (
-          <input type="hidden" name="status" value={status} />
-        ) : null}
-        <label htmlFor="tag-search" className="sr-only">
-          搜索标签
-        </label>
-        <div className="relative min-w-0 flex-1">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            suppressHydrationWarning
-          />
-          <Input
-            id="tag-search"
-            type="search"
-            name="q"
-            defaultValue={rawQuery}
-            placeholder="搜索标签名称或 slug..."
-            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
-          />
-        </div>
-        <button
-          type="submit"
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          <Search className="h-4 w-4" suppressHydrationWarning />
-          搜索
-        </button>
-        {hasFilters ? (
-          <Link
-            href="/tag"
-            className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            清除
-          </Link>
-        ) : null}
-      </form>
-    </section>
   );
 }
 

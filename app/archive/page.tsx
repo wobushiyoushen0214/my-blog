@@ -9,7 +9,6 @@ import {
   PublicEmptyState,
   PublicPageShell,
 } from "@/components/public-page";
-import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
   CalendarDays,
@@ -375,7 +374,7 @@ function ArchiveHero({
             </span>
           </div>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            按发布时间回看文章和见闻。这里更像一份索引：先看时间，再顺手按关键词、类型或年份缩小范围。
+            按发布时间回看文章和见闻。这里更像一份索引：先看时间，再顺手按类型或年份缩小范围。
           </p>
           <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
             {metaItems.map((item) => (
@@ -411,26 +410,10 @@ function ArchiveFilterBar({
     <section className="py-1">
       <form
         action="/archive"
-        role="search"
-        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_150px_auto_auto]"
+        aria-label="归档筛选"
+        className="flex flex-col gap-2 sm:flex-row sm:items-center"
       >
-        <label htmlFor="archive-search" className="sr-only">
-          搜索归档
-        </label>
-        <div className="relative min-w-0">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            suppressHydrationWarning
-          />
-          <Input
-            id="archive-search"
-            type="search"
-            name="q"
-            defaultValue={rawQuery}
-            placeholder="搜索标题、摘要、分类或标签..."
-            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
-          />
-        </div>
+        {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
         <label htmlFor="archive-type" className="sr-only">
           内容类型
         </label>
@@ -438,7 +421,7 @@ function ArchiveFilterBar({
           id="archive-type"
           name="type"
           defaultValue={type}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="all">全部内容</option>
           <option value="post">只看文章</option>

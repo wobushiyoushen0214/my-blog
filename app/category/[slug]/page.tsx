@@ -10,7 +10,6 @@ import {
   PublicEmptyState,
   PublicPageShell,
 } from "@/components/public-page";
-import { Input } from "@/components/ui/input";
 import { ArrowLeft, FolderOpen, Search, X } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
@@ -320,7 +319,7 @@ function CategoryHero({
           {category.name}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          该{categoryTypeLabel}下的已发布内容，可在当前主题内搜索和排序。
+          该{categoryTypeLabel}下的已发布内容，可在当前主题内按排序浏览。
         </p>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">
@@ -346,26 +345,10 @@ function CategoryFilterBar({
     <section className="border-b border-border/60 pb-5">
       <form
         action={`/category/${encodeURIComponent(slug)}`}
-        role="search"
-        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_160px_auto_auto]"
+        aria-label="分类内容筛选"
+        className="flex flex-col gap-2 sm:flex-row sm:items-center"
       >
-        <label htmlFor="category-detail-search" className="sr-only">
-          搜索当前分类
-        </label>
-        <div className="relative min-w-0">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            suppressHydrationWarning
-          />
-          <Input
-            id="category-detail-search"
-            type="search"
-            name="q"
-            defaultValue={rawQuery}
-            placeholder="在当前分类中搜索标题、摘要或正文..."
-            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
-          />
-        </div>
+        {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
         <label htmlFor="category-detail-sort" className="sr-only">
           分类内容排序
         </label>
@@ -373,7 +356,7 @@ function CategoryFilterBar({
           id="category-detail-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>

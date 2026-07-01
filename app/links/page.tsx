@@ -8,7 +8,6 @@ import {
   PublicPageShell,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import {
   ExternalLink,
   Link2,
@@ -266,26 +265,10 @@ function LinkFilterBar({
     <section className="py-1">
       <form
         action="/links"
-        role="search"
-        className="grid gap-2 md:grid-cols-[minmax(0,1fr)_150px_auto_auto]"
+        aria-label="友链筛选"
+        className="flex flex-col gap-2 sm:flex-row sm:items-center"
       >
-        <label htmlFor="links-search" className="sr-only">
-          搜索友链
-        </label>
-        <div className="relative min-w-0">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            suppressHydrationWarning
-          />
-          <Input
-            id="links-search"
-            type="search"
-            name="q"
-            defaultValue={rawQuery}
-            placeholder="搜索站点名称、简介、分类或标签..."
-            className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none hover:bg-muted/30 focus-visible:bg-background"
-          />
-        </div>
+        {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
         <label htmlFor="links-status" className="sr-only">
           友链状态
         </label>
@@ -293,7 +276,7 @@ function LinkFilterBar({
           id="links-status"
           name="status"
           defaultValue={status}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[background-color,color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="all">全部状态</option>
           <option value="active">已收录</option>
