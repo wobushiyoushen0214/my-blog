@@ -6,12 +6,8 @@ import {
   PublicActionLink,
   PublicEmptyState,
   PublicIndexLinks,
-  PublicInfoPanel,
-  PublicPageHeader,
   PublicPageShell,
-  PublicSummaryStats,
 } from "@/components/public-page";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, FolderOpen, Search, X } from "lucide-react";
 import type { Metadata } from "next";
@@ -135,12 +131,15 @@ export default async function CategoriesPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell>
-        <PublicPageHeader
-          eyebrow="Categories"
+      <PublicPageShell className="max-w-[1240px] py-14 md:py-20">
+        <CategoryIndexHero
           title={contentType === DEFAULT_TYPE ? "所有分类" : filterTypeLabel(contentType)}
-          description="按主题浏览文章和见闻，快速进入相关内容。"
-          countLabel={`${filteredCategories.length} / ${categoriesWithCount.length} 个分类`}
+          filteredCount={filteredCategories.length}
+          totalCount={categoriesWithCount.length}
+          postCategoryCount={allPostCategoryCount}
+          momentCategoryCount={allMomentCategoryCount}
+          contentType={contentType}
+          hasFilters={hasFilters}
         />
 
         <CategorySearchBar
@@ -194,10 +193,9 @@ export default async function CategoriesPage({
             </div>
 
             <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-              <PublicInfoPanel
+              <ContinuePanel
                 title="继续浏览"
                 description="不确定主题时，可以直接从文章流或搜索入口继续探索。"
-                contentClassName="py-1"
               >
                 <PublicIndexLinks
                   ariaLabel="分类页继续浏览"
@@ -214,7 +212,7 @@ export default async function CategoriesPage({
                     },
                   ]}
                 />
-              </PublicInfoPanel>
+              </ContinuePanel>
             </aside>
           </div>
         ) : categoriesWithCount.length > 0 ? (
@@ -239,6 +237,72 @@ export default async function CategoriesPage({
   );
 }
 
+function CategoryIndexHero({
+  title,
+  filteredCount,
+  totalCount,
+  postCategoryCount,
+  momentCategoryCount,
+  contentType,
+  hasFilters,
+}: {
+  title: string;
+  filteredCount: number;
+  totalCount: number;
+  postCategoryCount: number;
+  momentCategoryCount: number;
+  contentType: CategoryFilterType;
+  hasFilters: boolean;
+}) {
+  return (
+    <header className="mb-10 border-b border-border/35 pb-10 md:mb-12 md:pb-14">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+        <div className="min-w-0">
+          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
+            <span className="h-px w-8 bg-border/70" aria-hidden="true" />
+            Categories
+          </p>
+          <h1 className="mt-5 font-serif text-5xl italic leading-[1.04] md:text-6xl lg:text-7xl">
+            {title}
+          </h1>
+          <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground">
+            按主题浏览文章和见闻，快速进入相关内容。
+          </p>
+        </div>
+
+        <div className="border-l border-border/35 pl-6">
+          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            Taxonomy / {filteredCount} / {totalCount}
+          </p>
+          <dl className="mt-5 grid gap-3 border-y border-border/25 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-xs text-muted-foreground">当前视图</dt>
+              <dd className="font-serif text-2xl leading-none tabular-nums">
+                {filteredCount}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-xs text-muted-foreground">文章分类</dt>
+              <dd className="text-sm tabular-nums text-foreground/90">
+                {postCategoryCount}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="text-xs text-muted-foreground">见闻分类</dt>
+              <dd className="text-sm tabular-nums text-foreground/90">
+                {momentCategoryCount}
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-5 text-xs leading-5 text-muted-foreground">
+            {hasFilters ? "当前处于筛选视图。" : filterTypeLabel(contentType)}
+          </p>
+        </div>
+      </div>
+    </header>
+  );
+}
+
 function CategorySearchBar({
   rawQuery,
   contentType,
@@ -249,9 +313,9 @@ function CategorySearchBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="py-1">
+    <section className="border-b border-border/30 pb-6">
       <form
-        className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_88px_auto]"
+        className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_96px_auto]"
         role="search"
         action="/category"
       >
@@ -272,12 +336,12 @@ function CategorySearchBar({
             name="q"
             defaultValue={rawQuery}
             placeholder="搜索分类名称或 slug..."
-            className="h-10 rounded-none border-transparent bg-muted/20 pl-10 shadow-none hover:bg-muted/25 focus-visible:bg-background"
+            className="h-11 rounded-none border-border/40 bg-transparent pl-10 shadow-none hover:border-border focus-visible:bg-background"
           />
         </div>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center gap-2 bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-11 items-center justify-center gap-2 bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
           搜索
@@ -285,7 +349,7 @@ function CategorySearchBar({
         {hasFilters ? (
           <Link
             href="/category"
-            className="inline-flex h-10 items-center justify-center bg-muted/20 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-11 items-center justify-center border border-border/40 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -311,17 +375,17 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 py-1 md:mx-0 md:px-0"
+      className="-mx-5 mt-6 flex gap-6 overflow-x-auto border-b border-border/30 px-5 md:mx-0 md:px-0"
     >
       {items.map((item) => (
         <Link
           key={item.value}
           href={buildCategoryPath({ query, type: item.value })}
           aria-current={activeType === item.value ? "page" : undefined}
-          className={`inline-flex h-9 shrink-0 items-center px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          className={`inline-flex h-11 shrink-0 items-center border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeType === item.value
-              ? "bg-muted/30 text-foreground"
-              : "bg-muted/10 text-muted-foreground hover:bg-muted/20 hover:text-foreground"
+              ? "border-primary text-foreground"
+              : "text-muted-foreground hover:border-border hover:text-foreground"
           }`}
         >
           {item.label}
@@ -342,7 +406,7 @@ function ActiveCategorySummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-4 flex flex-col gap-2 border-l border-border/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -372,7 +436,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 bg-muted/25 px-2 text-xs text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border/35 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -386,7 +450,26 @@ function SummaryLedger({
 }: {
   items: { label: string; value: number; detail: string }[];
 }) {
-  return <PublicSummaryStats ariaLabel="分类概览" items={items} className="mt-6" />;
+  return (
+    <section
+      aria-label="分类概览"
+      className="mt-6 grid gap-px border-y border-border/35 bg-border/25 sm:grid-cols-2 lg:grid-cols-4"
+    >
+      {items.map((item) => (
+        <div key={item.label} className="bg-background px-4 py-4">
+          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            {item.label}
+          </p>
+          <p className="mt-2 font-serif text-2xl leading-none text-foreground">
+            {item.value}
+          </p>
+          <p className="mt-2 truncate text-xs text-muted-foreground">
+            {item.detail}
+          </p>
+        </div>
+      ))}
+    </section>
+  );
 }
 
 function CategorySection({
@@ -402,13 +485,13 @@ function CategorySection({
 
   return (
     <section className="space-y-4">
-      <div className="pb-1">
+      <div className="border-b border-border/30 pb-4">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Browse
         </p>
         <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-base font-medium">{title}</h2>
+            <h2 className="font-serif text-2xl">{title}</h2>
             <p className="mt-1 text-sm leading-6 text-muted-foreground">
               {description}
             </p>
@@ -418,21 +501,21 @@ function CategorySection({
           </span>
         </div>
       </div>
-      <div className="grid gap-1">
+      <div className="grid">
         {categories.map((category) => (
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="group -mx-2 grid min-w-0 gap-3 px-2 py-4 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+            className="group grid min-w-0 gap-3 border-b border-border/25 py-5 transition-colors hover:bg-muted/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
           >
             <span className="min-w-0">
-              <span className="block truncate font-serif text-xl leading-tight transition-opacity group-hover:opacity-70">
+              <span className="block truncate font-serif text-xl leading-tight transition-all duration-300 group-hover:italic group-hover:text-primary">
                 {category.name}
               </span>
-              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-2">
-                <Badge variant="secondary" className="rounded-none font-normal">
+              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">
                   {categoryTypeLabel(category.type)}
-                </Badge>
+                </span>
                 <span className="truncate text-sm text-muted-foreground">
                   {category.slug || "未设置 slug"}
                 </span>
@@ -448,6 +531,30 @@ function CategorySection({
           </Link>
         ))}
       </div>
+    </section>
+  );
+}
+
+function ContinuePanel({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="py-1">
+      <div className="border-b border-border/30 py-3">
+        <h2 className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          {title}
+        </h2>
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+          {description}
+        </p>
+      </div>
+      <div className="py-3">{children}</div>
     </section>
   );
 }
