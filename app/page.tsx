@@ -111,7 +111,7 @@ export default async function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
-      <main className="mx-auto w-full max-w-[840px] flex-1 px-5 py-10 md:px-6 md:py-12">
+      <main className="mx-auto w-full max-w-[980px] flex-1 px-5 py-9 md:px-6 md:py-12">
         <HomeSummary
           articleCount={articleCount}
           momentCount={momentCount}
@@ -138,18 +138,15 @@ function HomeSummary({
   totalViews: number;
 }) {
   return (
-    <section aria-labelledby="home-summary-title" className="border-b border-border/60 pb-6">
-      <p className="text-sm text-muted-foreground">
-        Lee Notes
-      </p>
+    <section aria-labelledby="home-summary-title" className="border-b border-border/60 pb-5">
       <h1
         id="home-summary-title"
-        className="mt-2 max-w-3xl text-2xl font-semibold leading-tight tracking-tight md:text-3xl"
+        className="max-w-3xl text-2xl font-semibold leading-tight md:text-3xl"
       >
-        最近入档
+        最近更新
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-        技术笔记、项目复盘和日常观察。全站入口放在顶部导航，这里只保留最近更新。
+        技术笔记、项目复盘和日常观察按时间归档，入口保持在顶部导航。
       </p>
       <p className="mt-3 text-sm leading-6 text-muted-foreground">
         {articleCount} 篇文章 · {momentCount} 条见闻 · {totalCount} 份归档 ·{" "}
@@ -161,9 +158,9 @@ function HomeSummary({
 
 function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
   return (
-    <section className="mt-8">
+    <section className="mt-7" aria-label="最近内容">
       {posts.length > 0 ? (
-        <div className="border-y border-border/60">
+        <div className="border-t border-border/60">
           {posts.map((post) => (
             <ContentRow
               key={post.id}

@@ -89,7 +89,7 @@ export function ContentRow({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group grid min-w-0 gap-3 border-b border-border/60 py-4 transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6rem_minmax(0,1fr)_7rem]",
+        "group grid min-w-0 gap-3 border-b border-border/50 py-5 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.25rem_minmax(0,1fr)_6.5rem]",
         className
       )}
     >
@@ -109,7 +109,7 @@ export function ContentRow({
           ))}
         </span>
 
-        <span className="mt-1.5 block line-clamp-2 text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary md:text-lg">
+        <span className="mt-1.5 block line-clamp-2 text-base font-medium leading-6 transition-colors group-hover:text-primary md:text-[17px]">
           {post.title}
         </span>
 

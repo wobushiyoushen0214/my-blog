@@ -13,7 +13,7 @@ export function PublicPageShell({ children, className }: PublicPageShellProps) {
   return (
     <main
       className={cn(
-        "mx-auto w-full max-w-[960px] flex-1 px-5 py-8 md:px-6 md:py-10",
+        "mx-auto w-full max-w-[980px] flex-1 px-5 py-9 md:px-6 md:py-12",
         className
       )}
     >
@@ -42,11 +42,11 @@ export function PublicPageHeader({
   action,
 }: PublicPageHeaderProps) {
   return (
-    <header className="mb-8 border-b border-border/60 pb-6">
+    <header className="mb-7 border-b border-border/60 pb-5">
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-5 inline-flex h-9 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mb-5 inline-flex h-10 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
           {backLabel}
@@ -62,7 +62,7 @@ export function PublicPageHeader({
               </p>
             ) : null}
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-              <h1 className="min-w-0 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+              <h1 className="min-w-0 text-2xl font-semibold leading-tight md:text-3xl">
                 {title}
               </h1>
               {countLabel ? (
@@ -99,7 +99,7 @@ export function PublicActionLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-9 items-center gap-2 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-10 items-center gap-2 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         className
       )}
     >
@@ -126,7 +126,7 @@ export function PublicEmptyState({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-2xl py-10 text-center",
+        "mx-auto w-full max-w-2xl py-12 text-center",
         className
       )}
     >

@@ -465,7 +465,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             <div className="min-w-0 space-y-3 py-5">
-              <h1 className="max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
+              <h1 className="max-w-3xl text-3xl font-semibold leading-tight md:text-4xl">
                 {post.title}
               </h1>
               {post.excerpt ? (
@@ -521,7 +521,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <div
               className="prose prose-neutral dark:prose-invert max-w-none
-                prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight
+                prose-headings:scroll-mt-24 prose-headings:font-semibold
                 prose-p:my-5 prose-p:leading-8 prose-p:text-foreground/85
                 prose-a:text-primary prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-4 hover:prose-a:decoration-primary
                 prose-img:rounded-md
@@ -607,10 +607,7 @@ function ArticlePager({
   if (!previousPost && !nextPost) return null;
 
   return (
-    <nav
-      aria-label="相邻文章"
-      className="mt-10 grid gap-3 md:grid-cols-2"
-    >
+    <nav aria-label="相邻文章" className="mt-10 grid border-t border-border/60 md:grid-cols-2">
       <NavigationPostCard
         post={previousPost}
         label="上一篇"
@@ -632,7 +629,12 @@ function NavigationPostCard({
 }) {
   if (!post) {
     return (
-      <div className="rounded-lg border border-border/60 bg-background p-4">
+      <div
+        className={cn(
+          "border-b border-border/60 py-4",
+          direction === "previous" ? "md:border-r md:pr-4" : "md:pl-4 md:text-right"
+        )}
+      >
         <p className="text-xs text-muted-foreground">{label}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           暂无更多相邻文章
@@ -644,7 +646,7 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group rounded-lg border border-border/60 bg-background p-4 transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group border-b border-border/60 py-4 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:border-r md:px-4 first:md:pl-0 last:md:border-r-0 last:md:pr-0"
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (

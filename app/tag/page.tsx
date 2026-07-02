@@ -111,7 +111,7 @@ export default async function TagsPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
+      <PublicPageShell className="py-9 md:py-12">
         <TagIndexHero
           title={status === DEFAULT_STATUS ? "所有标签" : statusLabel(status)}
           filteredCount={filteredTags.length}
@@ -127,26 +127,10 @@ export default async function TagsPage({
         <ActiveTagSummary query={query} status={status} />
 
         {filteredTags.length > 0 ? (
-          <section className="mt-8 min-w-0">
-            <div className="border-b border-border/60 pb-3">
-              <p className="text-sm text-muted-foreground">
-                Browse
-              </p>
-              <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold">
-                    {query ? "匹配标签" : "标签索引"}
-                  </h2>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    按已发布内容数量排序，低频标签仍可直接进入归档页。
-                  </p>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {filteredTags.length} 个
-                </span>
-              </div>
-            </div>
-
+          <section
+            className="mt-7 min-w-0 border-t border-border/60"
+            aria-label={query ? "匹配标签" : "标签索引"}
+          >
             <div className="grid">
               {filteredTags.map((tag) => (
                 <TagResultRow key={tag.id} tag={tag} />
@@ -193,19 +177,19 @@ function TagIndexHero({
   hasFilters: boolean;
 }) {
   return (
-    <header className="mb-8 border-b border-border/60 pb-6">
+    <header className="mb-7 border-b border-border/60 pb-5">
       <div className="min-w-0">
         <p className="text-sm text-muted-foreground">
           Tags
         </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
           {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           通过关键词聚合相关内容，适合快速交叉浏览。
         </p>
       </div>
-      <p className="mt-4 text-sm text-muted-foreground">
+      <p className="mt-4 text-xs text-muted-foreground">
         {hasFilters ? "筛选视图" : statusLabel(status)} · 当前 {filteredCount} · 共 {totalCount} ·{" "}
         已使用 {usedCount} · 未使用 {unusedCount}
       </p>
@@ -229,14 +213,14 @@ function TagStatusSwitch({
   return (
     <nav
       aria-label="标签使用状态"
-      className="-mx-5 mt-5 flex gap-4 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
+      className="-mx-5 mt-4 flex gap-3 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
     >
       {items.map((item) => (
         <Link
           key={item.value}
           href={buildTagPath({ query, status: item.value })}
           aria-current={activeStatus === item.value ? "page" : undefined}
-          className={`inline-flex h-11 shrink-0 items-center border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          className={`inline-flex h-10 shrink-0 items-center border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeStatus === item.value
               ? "border-primary text-foreground"
               : "text-muted-foreground hover:border-border hover:text-foreground"
@@ -260,7 +244,7 @@ function ActiveTagSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-4 flex flex-col gap-2 border-l border-border/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -303,7 +287,7 @@ function TagResultRow({ tag }: { tag: TagWithCount }) {
   return (
     <Link
       href={`/tag/${tag.slug}`}
-      className="group grid min-w-0 gap-3 border-b border-border/25 py-5 transition-colors hover:bg-muted/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+      className="group grid min-w-0 gap-3 border-b border-border/50 py-5 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -315,7 +299,7 @@ function TagResultRow({ tag }: { tag: TagWithCount }) {
             {tag.slug || "未设置 slug"}
           </span>
         </span>
-        <span className="mt-2 block truncate text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
+        <span className="mt-2 block truncate text-base font-medium leading-6 transition-colors group-hover:text-primary">
           {tag.name}
         </span>
       </span>

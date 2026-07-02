@@ -269,7 +269,7 @@ export default async function ArchivePage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
+      <PublicPageShell className="py-9 md:py-12">
         <ArchiveHero
           title={pageTitle}
           countLabel={countLabel}
@@ -359,14 +359,14 @@ function ArchiveHero({
     : ["等待第一篇记录", "按年份自动整理"];
 
   return (
-    <header className="mb-8 border-b border-border/60 pb-6">
+    <header className="mb-7 border-b border-border/60 pb-5">
       <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
           <p className="text-sm text-muted-foreground">
             Archive
           </p>
           <div className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-            <h1 className="min-w-0 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+            <h1 className="min-w-0 text-2xl font-semibold leading-tight md:text-3xl">
               {title}
             </h1>
             <span className="text-sm text-muted-foreground">
@@ -374,7 +374,7 @@ function ArchiveHero({
             </span>
           </div>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            按发布时间回看文章和见闻。这里更像一份索引：先看时间，再顺手按类型或年份缩小范围。
+            按发布时间回看文章和见闻。
           </p>
           <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
             {metaItems.map((item) => (
@@ -429,9 +429,9 @@ function ArchiveFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
-          筛选
+          应用
         </button>
         {hasFilters ? (
           <Link
@@ -457,7 +457,7 @@ function ActiveArchiveSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -520,7 +520,7 @@ function YearSection({ group }: { group: YearGroup }) {
     >
       <div className="grid gap-4 sm:grid-cols-[5rem_minmax(0,1fr)]">
         <div className="sm:pt-1">
-          <h3 className="text-2xl font-semibold leading-none tracking-tight">
+          <h3 className="text-2xl font-semibold leading-none">
             {group.year}
           </h3>
           <p className="mt-2 text-xs text-muted-foreground">{group.count} 篇</p>

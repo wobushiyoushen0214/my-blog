@@ -134,7 +134,7 @@ export default async function LinksPage({
         <PublicPageHeader
           eyebrow="Links"
           title="友链"
-          description="收录长期阅读和互相连接的站点，也作为发现独立写作者的入口。"
+          description="长期阅读和互相连接的站点。"
           countLabel={countLabel}
         />
 
@@ -284,9 +284,9 @@ function LinkFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
-          筛选
+          应用
         </button>
         {hasFilters ? (
           <Link
@@ -312,7 +312,7 @@ function ActiveLinkSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -357,11 +357,11 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="group grid min-w-0 gap-3 rounded-lg border border-border/60 bg-card px-4 py-4 transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+      className="group grid min-w-0 gap-3 border-b border-border/50 py-5 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-2">
-          <span className="truncate text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
+          <span className="truncate text-base font-medium leading-6 transition-colors group-hover:text-primary">
             {item.name}
           </span>
           <Badge
@@ -419,7 +419,7 @@ function InfoPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-border/60 bg-muted/15 p-4">
+    <section className="border-y border-border/60 py-4">
       <div className="pb-2">
         <h2 className="text-sm font-medium text-foreground">
           {title}

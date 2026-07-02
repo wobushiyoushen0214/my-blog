@@ -249,7 +249,7 @@ export default async function MomentsPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
+      <PublicPageShell className="py-9 md:py-12">
         <MomentHero
           title={
             activeCategory
@@ -258,7 +258,7 @@ export default async function MomentsPage({
                 ? `见闻 · ${searchQuery}`
                 : "见闻"
           }
-          description="更轻量的观察、摘录和阶段性记录，可按主题和排序快速收窄。"
+          description="轻量观察、摘录和阶段性记录。"
           totalCount={totalCount}
           allCount={totalMomentCount}
           categoryName={activeCategory?.name ?? null}
@@ -347,22 +347,22 @@ function MomentHero({
     ? `分类 / ${categoryName}`
     : searchQuery
       ? `关键词 / ${searchQuery}`
-      : "Gallery / Moments";
+      : "全部见闻";
 
   return (
-    <header className="mb-8 border-b border-border/60 pb-6">
+    <header className="mb-7 border-b border-border/60 pb-5">
       <div className="min-w-0">
         <p className="text-sm text-muted-foreground">
-          Gallery
+          Moments
         </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
           {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           {description}
         </p>
       </div>
-      <p className="mt-4 text-sm text-muted-foreground">
+      <p className="mt-4 text-xs text-muted-foreground">
         {context} · 当前 {totalCount} · 共 {allCount} · {getSortLabel(sort)}
       </p>
     </header>
@@ -387,7 +387,7 @@ function CategoryNav({
   return (
     <nav
       aria-label="见闻分类"
-      className="-mx-5 flex gap-4 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
+      className="-mx-5 flex gap-3 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
     >
       <CategoryLink
         href={buildMomentsPath({ searchQuery, sort })}
@@ -429,7 +429,7 @@ function CategoryLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-11 shrink-0 items-center gap-2 border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-10 shrink-0 items-center gap-2 border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
           ? "border-primary text-foreground"
           : "text-muted-foreground hover:border-border hover:text-foreground"
@@ -452,7 +452,7 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-5 border-b border-border/60 pb-5">
+    <section className="mt-4 border-b border-border/60 pb-4">
       <form
         action="/moments"
         aria-label="见闻筛选"
@@ -477,9 +477,9 @@ function ListFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
-          筛选
+          应用
         </button>
         {hasFilters ? (
           <Link
@@ -515,7 +515,7 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-4 flex flex-col gap-2 border-l border-border/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {categoryName ? (

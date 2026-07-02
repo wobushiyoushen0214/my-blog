@@ -310,7 +310,7 @@ export default async function SearchPage({
       <PublicPageShell>
         <PublicPageHeader
           eyebrow="Search"
-          title={query ? `搜索 · ${query}` : "搜索与发现"}
+          title={query ? `搜索 · ${query}` : "搜索"}
           description="按关键词检索标题、正文、分类和标签，也可以按内容类型和排序继续收窄。"
           countLabel={resultLabel}
         />
@@ -469,7 +469,7 @@ function ActiveSearchSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 rounded-lg border border-border/60 bg-muted/15 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (

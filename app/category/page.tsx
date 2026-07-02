@@ -121,7 +121,7 @@ export default async function CategoriesPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
+      <PublicPageShell className="py-9 md:py-12">
         <CategoryIndexHero
           title={contentType === DEFAULT_TYPE ? "所有分类" : filterTypeLabel(contentType)}
           filteredCount={filteredCategories.length}
@@ -189,19 +189,19 @@ function CategoryIndexHero({
   hasFilters: boolean;
 }) {
   return (
-    <header className="mb-8 border-b border-border/60 pb-6">
+    <header className="mb-7 border-b border-border/60 pb-5">
       <div className="min-w-0">
         <p className="text-sm text-muted-foreground">
           Categories
         </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
           {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           按主题浏览文章和见闻，快速进入相关内容。
         </p>
       </div>
-      <p className="mt-4 text-sm text-muted-foreground">
+      <p className="mt-4 text-xs text-muted-foreground">
         {hasFilters ? "筛选视图" : filterTypeLabel(contentType)} · 当前 {filteredCount} · 共 {totalCount} ·{" "}
         文章分类 {postCategoryCount} · 见闻分类 {momentCategoryCount}
       </p>
@@ -225,14 +225,14 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="-mx-5 mt-5 flex gap-4 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
+      className="-mx-5 mt-4 flex gap-3 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
     >
       {items.map((item) => (
         <Link
           key={item.value}
           href={buildCategoryPath({ query, type: item.value })}
           aria-current={activeType === item.value ? "page" : undefined}
-          className={`inline-flex h-11 shrink-0 items-center border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          className={`inline-flex h-10 shrink-0 items-center border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeType === item.value
               ? "border-primary text-foreground"
               : "text-muted-foreground hover:border-border hover:text-foreground"
@@ -256,7 +256,7 @@ function ActiveCategorySummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-4 flex flex-col gap-2 border-l border-border/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {query ? (
@@ -307,32 +307,27 @@ function CategorySection({
   if (categories.length === 0) return null;
 
   return (
-    <section className="space-y-4">
-      <div className="border-b border-border/60 pb-3">
-        <p className="text-sm text-muted-foreground">
-          Browse
-        </p>
-        <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold">{title}</h2>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">
-              {description}
-            </p>
-          </div>
-          <span className="text-sm text-muted-foreground">
-            {categories.length} 个
-          </span>
+    <section className="space-y-3">
+      <div className="flex flex-col gap-1 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-base font-semibold">{title}</h2>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            {description}
+          </p>
         </div>
+        <span className="text-sm text-muted-foreground">
+          {categories.length} 个
+        </span>
       </div>
       <div className="grid">
         {categories.map((category) => (
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="group grid min-w-0 gap-3 border-b border-border/60 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+            className="group grid min-w-0 gap-3 border-b border-border/50 py-5 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
           >
             <span className="min-w-0">
-              <span className="block truncate text-base font-semibold leading-6 tracking-tight transition-colors group-hover:text-primary">
+              <span className="block truncate text-base font-medium leading-6 transition-colors group-hover:text-primary">
                 {category.name}
               </span>
               <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">

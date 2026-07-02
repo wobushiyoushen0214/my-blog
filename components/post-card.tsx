@@ -61,7 +61,7 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex min-w-0 overflow-hidden rounded-lg border border-border/60 bg-card transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden border border-border/60 bg-background transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured && showMedia
           ? "flex-col sm:grid sm:grid-cols-[minmax(0,1fr)_12rem]"
           : "flex-col"
@@ -119,7 +119,7 @@ export function PostCard({
           </div>
           <h2
             className={cn(
-              "line-clamp-2 font-semibold leading-tight tracking-tight transition-colors group-hover:text-primary",
+              "line-clamp-2 font-semibold leading-tight transition-colors group-hover:text-primary",
               isFeatured
                 ? "text-xl md:text-2xl"
                 : "text-lg md:text-xl"

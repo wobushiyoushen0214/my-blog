@@ -211,7 +211,7 @@ export default async function CategoryPage({
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PublicPageShell className="max-w-[960px] py-10 md:py-12">
+      <PublicPageShell className="py-9 md:py-12">
         <CategoryHero
           category={typedCategory}
           categoryTypeLabel={categoryTypeLabel}
@@ -302,7 +302,7 @@ function CategoryHero({
   hasFilters: boolean;
 }) {
   return (
-    <header className="mb-8 border-b border-border/60 pb-6">
+    <header className="mb-7 border-b border-border/60 pb-5">
       <Link
         href="/category"
         className="mb-5 inline-flex h-9 items-center gap-2 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
@@ -315,14 +315,14 @@ function CategoryHero({
         <p className="text-sm text-muted-foreground">
           Category
         </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
           {category.name}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          该{categoryTypeLabel}下的已发布内容，可在当前主题内按排序浏览。
+          该{categoryTypeLabel}下的已发布内容。
         </p>
       </div>
-      <p className="mt-4 text-sm text-muted-foreground">
+      <p className="mt-4 text-xs text-muted-foreground">
         当前 {totalCount} · 共 {totalCategoryCount} ·{" "}
         {hasFilters ? "已筛选" : getSortLabel(sort)}
       </p>
@@ -364,9 +364,9 @@ function CategoryFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
-          筛选
+          应用
         </button>
         {hasFilters ? (
           <Link
@@ -394,7 +394,7 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-4 flex flex-col gap-2 border-l border-border/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">当前筛选</span>
         {searchQuery ? (
