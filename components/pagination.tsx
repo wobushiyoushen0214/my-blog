@@ -70,9 +70,9 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex min-h-10 min-w-10 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex min-h-10 min-w-10 items-center justify-center border-b border-transparent px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const edgeLinkClassName =
-    "flex min-h-10 items-center gap-1 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "flex min-h-10 items-center gap-1 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/25 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const disabledClassName =
     "flex min-h-10 items-center gap-1 rounded-md text-sm font-medium text-muted-foreground/25";
 
@@ -118,7 +118,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
                 className={cn(
                   pageLinkClassName,
                   item === safeCurrentPage
-                    ? "bg-primary text-primary-foreground"
+                    ? "border-foreground text-foreground"
                     : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                 )}
                 aria-label={`第 ${item} 页`}

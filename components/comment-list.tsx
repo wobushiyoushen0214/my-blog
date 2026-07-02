@@ -34,7 +34,7 @@ export function CommentList({ comments }: CommentListProps) {
 
   if (comments.length === 0) {
     return (
-      <div className="bg-muted/10 px-3 py-5 text-sm">
+      <div className="border-y border-border/60 py-5 text-sm">
         <div>
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-muted-foreground" suppressHydrationWarning />
@@ -58,7 +58,7 @@ export function CommentList({ comments }: CommentListProps) {
           {rootComments.length} 条线索 &middot; {comments.length} 条评论
         </p>
       </div>
-      <div className="grid gap-1" role="list">
+      <div className="border-t border-border/60" role="list">
         {rootComments.map((comment) => (
           <CommentItem key={comment.id} comment={comment} />
         ))}
@@ -79,7 +79,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
   const replyCount = comment.children.length;
 
   return (
-    <article className="group -mx-2 px-2 py-4 transition-all duration-300 hover:bg-muted/10" role="listitem">
+    <article className="group border-b border-border/50 py-4 transition-colors hover:bg-muted/10" role="listitem">
       <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)]">
         <div className="flex size-8 items-center justify-center border-[0.5px] border-border/40 bg-muted/20 text-xs font-medium text-muted-foreground">
           {initial}
@@ -105,7 +105,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
             </div>
             <button
               type="button"
-              className="inline-flex h-7 items-center justify-center gap-1.5 bg-muted/10 px-2 text-xs font-medium text-muted-foreground opacity-100 transition-all duration-300 hover:bg-muted/20 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+              className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground opacity-100 transition-colors hover:bg-muted/20 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
               onClick={() => setReplying(!replying)}
               aria-expanded={replying}
               aria-label={`回复 ${comment.author_name}`}
@@ -119,7 +119,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
           </div>
 
           {replying && (
-            <div className="mt-4 border-[0.5px] border-border/20 bg-muted/10 px-3 py-3">
+            <div className="mt-4 border-y border-border/50 py-3">
               <div className="mb-3">
                 <p className="text-xs text-muted-foreground">
                   回复 {comment.author_name}
