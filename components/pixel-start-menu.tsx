@@ -99,24 +99,24 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
     >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <p className="pixel-label text-primary">Start</p>
+          <p className="pixel-label text-primary">Press Start</p>
           <h1
             id="pixel-start-title"
             className="mt-2 text-2xl font-semibold leading-tight md:text-3xl"
           >
-            选择阅读模式
+            选择状态
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            技术笔记、项目复盘和日常观察都放在这里，按你想进入的状态浏览。
+            像进入游戏菜单一样，选择文章、见闻、标签或归档继续浏览。
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-2 font-mono text-xs text-muted-foreground sm:w-64">
           <span className="border border-border/70 bg-muted/50 px-2 py-1.5">
-            {props.totalCount} 条记录
+            BLOG OS
           </span>
           <span className="border border-border/70 bg-muted/50 px-2 py-1.5">
-            {props.totalViews.toLocaleString("zh-CN")} 阅读
+            {props.totalCount} LOGS
           </span>
         </div>
       </div>
