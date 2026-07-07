@@ -1,0 +1,195 @@
+"use client";
+
+import Link from "next/link";
+import { useState, type CSSProperties } from "react";
+import type { LucideIcon } from "lucide-react";
+import { Archive, ArrowRight, BookOpenText, Map, Tags } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type PixelStartMenuProps = {
+  articleCount: number;
+  momentCount: number;
+  totalCount: number;
+  totalViews: number;
+};
+
+type ModeKey = "posts" | "moments" | "tags" | "archive";
+
+type Mode = {
+  key: ModeKey;
+  label: string;
+  code: string;
+  title: string;
+  description: string;
+  href: string;
+  cta: string;
+  stat: (props: PixelStartMenuProps) => string;
+  progress: (props: PixelStartMenuProps) => number;
+  color: string;
+  icon: LucideIcon;
+};
+
+const modes: Mode[] = [
+  {
+    key: "posts",
+    label: "阅读",
+    code: "QUEST",
+    title: "主线任务",
+    description: "进入技术笔记、项目复盘和长期主题。",
+    href: "/posts",
+    cta: "进入文章",
+    stat: ({ articleCount }) => `${articleCount} 篇文章`,
+    progress: ({ articleCount, totalCount }) =>
+      totalCount > 0 ? Math.round((articleCount / totalCount) * 100) : 0,
+    color: "var(--pixel-blue)",
+    icon: BookOpenText,
+  },
+  {
+    key: "moments",
+    label: "见闻",
+    code: "MAP",
+    title: "地图事件",
+    description: "浏览短记录、日常观察和路上的碎片。",
+    href: "/moments",
+    cta: "进入见闻",
+    stat: ({ momentCount }) => `${momentCount} 条见闻`,
+    progress: ({ momentCount, totalCount }) =>
+      totalCount > 0 ? Math.round((momentCount / totalCount) * 100) : 0,
+    color: "var(--pixel-green)",
+    icon: Map,
+  },
+  {
+    key: "tags",
+    label: "标签",
+    code: "BAG",
+    title: "道具背包",
+    description: "按关键词把相关内容串起来。",
+    href: "/tag",
+    cta: "打开标签",
+    stat: ({ totalViews }) => `${totalViews.toLocaleString("zh-CN")} 次阅读`,
+    progress: ({ totalViews }) => Math.min(100, Math.max(12, totalViews * 4)),
+    color: "var(--pixel-yellow)",
+    icon: Tags,
+  },
+  {
+    key: "archive",
+    label: "归档",
+    code: "SAVE",
+    title: "存档槽位",
+    description: "按时间回看所有已经发布的记录。",
+    href: "/archive",
+    cta: "读取归档",
+    stat: ({ totalCount }) => `${totalCount} 份存档`,
+    progress: ({ totalCount }) => Math.min(100, Math.max(14, totalCount * 16)),
+    color: "var(--pixel-red)",
+    icon: Archive,
+  },
+];
+
+export function PixelStartMenu(props: PixelStartMenuProps) {
+  const [activeKey, setActiveKey] = useState<ModeKey>("posts");
+  const activeMode = modes.find((mode) => mode.key === activeKey) || modes[0];
+  const Icon = activeMode.icon;
+  const progress = activeMode.progress(props);
+
+  return (
+    <section
+      aria-labelledby="pixel-start-title"
+      className="pixel-frame pixel-start-screen overflow-hidden"
+    >
+      <div className="grid gap-0 lg:grid-cols-[17rem_minmax(0,1fr)]">
+        <div className="border-b border-border bg-secondary/85 p-4 lg:border-b-0 lg:border-r">
+          <p className="pixel-label text-foreground">Lee Quest</p>
+          <h1
+            id="pixel-start-title"
+            className="mt-3 text-2xl font-semibold leading-tight md:text-3xl"
+          >
+            选择状态
+          </h1>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            技术笔记、项目复盘和日常观察按路径归档。
+          </p>
+        </div>
+
+        <div className="grid gap-4 p-4 md:grid-cols-[minmax(0,1fr)_15rem]">
+          <div className="grid gap-2 sm:grid-cols-2">
+            {modes.map((mode) => {
+              const ModeIcon = mode.icon;
+              const active = mode.key === activeKey;
+
+              return (
+                <button
+                  key={mode.key}
+                  type="button"
+                  aria-pressed={active}
+                  data-active={active}
+                  onClick={() => setActiveKey(mode.key)}
+                  className="pixel-game-option min-h-24 p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  style={{ "--mode-color": mode.color } as CSSProperties}
+                >
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="min-w-0">
+                      <span className="pixel-label block text-muted-foreground">
+                        {mode.code}
+                      </span>
+                      <span className="mt-2 block text-base font-semibold">
+                        {mode.label}
+                      </span>
+                    </span>
+                    <span
+                      className={cn(
+                        "grid size-8 shrink-0 place-items-center border border-border bg-background",
+                        active && "bg-primary text-primary-foreground"
+                      )}
+                    >
+                      <ModeIcon className="h-4 w-4" suppressHydrationWarning />
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div
+            className="border-2 border-border bg-card p-4 shadow-[3px_3px_0_var(--terminal-shadow)]"
+            style={{ "--mode-color": activeMode.color } as CSSProperties}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="pixel-label text-muted-foreground">
+                  {activeMode.code} SELECTED
+                </p>
+                <h2 className="mt-2 text-xl font-semibold leading-tight">
+                  {activeMode.title}
+                </h2>
+              </div>
+              <span className="grid size-9 shrink-0 place-items-center border border-border bg-[var(--mode-color)] text-foreground">
+                <Icon className="h-4 w-4" suppressHydrationWarning />
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              {activeMode.description}
+            </p>
+            <div className="mt-4">
+              <div className="flex items-center justify-between gap-3 font-mono text-xs">
+                <span>{activeMode.stat(props)}</span>
+                <span>{progress}%</span>
+              </div>
+              <div
+                className="pixel-health-bar mt-2 h-4 border-2 border-border"
+                style={{ "--progress": `${progress}%` } as CSSProperties}
+              />
+            </div>
+            <Link
+              href={activeMode.href}
+              className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 border-2 border-border bg-primary px-3 font-mono text-sm font-semibold text-primary-foreground shadow-[3px_3px_0_var(--terminal-shadow)] transition-[background-color,transform,box-shadow] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[4px_4px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
+              {activeMode.cta}
+              <ArrowRight className="h-4 w-4" suppressHydrationWarning />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

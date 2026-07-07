@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ContentRow } from "@/components/content-row";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { PixelStartMenu } from "@/components/pixel-start-menu";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
 type PostWithTaxonomy = Post & {
@@ -112,7 +113,7 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
       <main className="mx-auto w-full max-w-[980px] flex-1 px-5 py-9 md:px-6 md:py-12">
-        <HomeSummary
+        <PixelStartMenu
           articleCount={articleCount}
           momentCount={momentCount}
           totalCount={publishedRows?.length || 0}
@@ -123,47 +124,6 @@ export default async function HomePage() {
       </main>
       <Footer />
     </div>
-  );
-}
-
-function HomeSummary({
-  articleCount,
-  momentCount,
-  totalCount,
-  totalViews,
-}: {
-  articleCount: number;
-  momentCount: number;
-  totalCount: number;
-  totalViews: number;
-}) {
-  return (
-    <section aria-labelledby="home-summary-title" className="pixel-frame p-4 md:p-5">
-      <p className="pixel-label mb-3 text-primary">SYSTEM.LOG</p>
-      <h1
-        id="home-summary-title"
-        className="max-w-3xl text-2xl font-semibold leading-tight md:text-3xl"
-      >
-        &gt; 最近更新
-      </h1>
-      <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-        技术笔记、项目复盘和日常观察按时间归档，入口保持在顶部导航。
-      </p>
-      <div className="mt-4 flex flex-wrap gap-2 font-mono text-xs text-muted-foreground">
-        <span className="border border-border bg-muted/60 px-2 py-1">
-          ARTICLES {articleCount}
-        </span>
-        <span className="border border-border bg-muted/60 px-2 py-1">
-          MOMENTS {momentCount}
-        </span>
-        <span className="border border-border bg-muted/60 px-2 py-1">
-          FILES {totalCount}
-        </span>
-        <span className="border border-primary/70 bg-primary/10 px-2 py-1 text-primary">
-          READS {formatNumber(totalViews)}
-        </span>
-      </div>
-    </section>
   );
 }
 
