@@ -2,14 +2,22 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
-export function ThemeToggle() {
+type ThemeToggleProps = {
+  className?: string;
+};
+
+export function ThemeToggle({ className }: ThemeToggleProps = {}) {
   const { setTheme, theme } = useTheme();
 
   return (
     <button
       type="button"
-      className="relative inline-flex size-10 items-center justify-center border border-border bg-background text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className={cn(
+        "relative inline-flex size-10 items-center justify-center border border-border bg-background text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        className
+      )}
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       aria-label="切换主题"
     >

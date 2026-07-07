@@ -112,7 +112,7 @@ export default async function HomePage() {
 
   return (
     <DeviceShell>
-      <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <div className="public-device-layout">
       <Header />
       <main className="mx-auto w-full max-w-[980px] flex-1 px-5 py-9 md:px-6 md:py-12">
         <PixelStartMenu

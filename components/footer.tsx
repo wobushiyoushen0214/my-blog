@@ -3,8 +3,8 @@ import { Rss } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background/95">
-      <div className="mx-auto flex w-full max-w-[980px] flex-col gap-4 px-5 py-7 font-mono text-sm text-muted-foreground md:flex-row md:items-center md:justify-between md:px-6">
+    <footer className="site-footer">
+      <div className="site-footer-inner">
         <p className="border border-border bg-muted/50 px-2 py-1">
           &copy; {new Date().getFullYear()} Lee / Notes
         </p>

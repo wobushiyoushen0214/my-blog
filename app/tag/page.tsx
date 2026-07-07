@@ -111,7 +111,7 @@ export default async function TagsPage({
 
   return (
     <DeviceShell>
-      <div className="flex min-h-screen flex-col">
+      <div className="public-device-layout">
       <Header />
       <PublicPageShell className="py-9 md:py-12">
         <TagIndexHero

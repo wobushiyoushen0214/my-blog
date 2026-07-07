@@ -436,7 +436,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <DeviceShell>
-      <div className="flex min-h-screen flex-col">
+      <div className="public-device-layout">
       <Header />
       <main className="flex-1">
         <article className="mx-auto w-full max-w-[840px] px-5 py-10 md:px-6 md:py-12">

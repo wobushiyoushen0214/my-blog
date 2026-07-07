@@ -130,7 +130,7 @@ export default async function LinksPage({
 
   return (
     <DeviceShell>
-      <div className="flex min-h-screen flex-col">
+      <div className="public-device-layout">
       <Header />
       <PublicPageShell>
         <PublicPageHeader

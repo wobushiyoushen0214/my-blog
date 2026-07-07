@@ -16,8 +16,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
-export function SearchBar() {
+type SearchBarProps = {
+  className?: string;
+};
+
+export function SearchBar({ className }: SearchBarProps = {}) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [query, setQuery] = useState("");
@@ -63,7 +68,10 @@ export function SearchBar() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start"
+          className={cn(
+            "inline-flex h-10 items-center justify-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start",
+            className
+          )}
           aria-keyshortcuts="/"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
