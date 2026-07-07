@@ -89,7 +89,7 @@ export function ContentRow({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.25rem_minmax(0,1fr)_6.5rem]",
+        "group grid min-w-0 gap-3 border-b border-border/45 px-3 py-5 transition-[background-color,color] hover:bg-muted/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.25rem_minmax(0,1fr)_6.5rem]",
         className
       )}
     >
@@ -105,7 +105,7 @@ export function ContentRow({
           {displayMeta.map((item, index) => (
             <span
               key={`${item}-${index}`}
-              className="min-w-0 truncate border border-border/60 bg-muted/60 px-1.5 py-0.5 font-mono"
+              className="min-w-0 truncate border border-border/55 bg-muted/45 px-1.5 py-0.5 font-mono"
             >
               {item}
             </span>
@@ -125,7 +125,10 @@ export function ContentRow({
         {visibleTags.length > 0 ? (
           <span className="mt-3 flex min-w-0 flex-wrap gap-x-3 gap-y-1.5 font-mono text-xs text-muted-foreground">
             {visibleTags.map((tag) => (
-              <span key={tag.id} className="max-w-36 truncate text-primary underline-offset-4 group-hover:underline">
+              <span
+                key={tag.id}
+                className="max-w-36 truncate text-primary/85 underline-offset-4 group-hover:underline"
+              >
                 #{tag.name}
               </span>
             ))}

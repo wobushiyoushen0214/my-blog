@@ -473,7 +473,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <div className="min-w-0 space-y-3 py-5">
               <h1 className="max-w-3xl text-3xl font-semibold leading-tight md:text-4xl">
-                &gt; {post.title}
+                {post.title}
               </h1>
               {post.excerpt ? (
                 <p className="max-w-2xl text-base leading-7 text-muted-foreground">
