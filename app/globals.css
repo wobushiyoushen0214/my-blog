@@ -1472,6 +1472,105 @@
       box-shadow: none;
     }
   }
+
+  .device-stage {
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .device-console {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .device-display,
+  .device-screen {
+    min-height: 0;
+  }
+
+  .device-screen {
+    overflow: hidden;
+  }
+
+  .device-screen > .public-device-layout {
+    height: 100%;
+  }
+
+  .public-device-layout {
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+
+  .public-device-layout > main {
+    grid-row: 1;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .public-device-layout > footer {
+    grid-row: 2;
+  }
+
+  .public-device-layout > .site-sidebar {
+    grid-row: 1 / span 2;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .site-sidebar-inner {
+    height: 100%;
+    min-height: 0;
+  }
+
+  @media (max-width: 960px) {
+    .public-device-layout {
+      display: flex;
+      height: 100%;
+      min-height: 0;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .public-device-layout > .site-sidebar {
+      flex: 0 0 auto;
+      overflow: visible;
+    }
+
+    .public-device-layout > main {
+      flex: 1 1 auto;
+      height: auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .public-device-layout > footer {
+      flex: 0 0 auto;
+    }
+
+    .site-sidebar-inner {
+      height: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .device-stage {
+      height: 100dvh;
+      min-height: 100dvh;
+    }
+
+    .device-console {
+      height: 100dvh;
+      min-height: 0;
+    }
+  }
 }
 
 /* —— Tiptap editor styles —— */
