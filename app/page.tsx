@@ -138,20 +138,31 @@ function HomeSummary({
   totalViews: number;
 }) {
   return (
-    <section aria-labelledby="home-summary-title" className="border-b border-border/60 pb-5">
+    <section aria-labelledby="home-summary-title" className="pixel-frame p-4 md:p-5">
+      <p className="pixel-label mb-3 text-primary">SYSTEM.LOG</p>
       <h1
         id="home-summary-title"
         className="max-w-3xl text-2xl font-semibold leading-tight md:text-3xl"
       >
-        最近更新
+        &gt; 最近更新
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
         技术笔记、项目复盘和日常观察按时间归档，入口保持在顶部导航。
       </p>
-      <p className="mt-3 text-sm leading-6 text-muted-foreground">
-        {articleCount} 篇文章 · {momentCount} 条见闻 · {totalCount} 份归档 ·{" "}
-        {formatNumber(totalViews)} 次阅读
-      </p>
+      <div className="mt-4 flex flex-wrap gap-2 font-mono text-xs text-muted-foreground">
+        <span className="border border-border bg-muted/60 px-2 py-1">
+          ARTICLES {articleCount}
+        </span>
+        <span className="border border-border bg-muted/60 px-2 py-1">
+          MOMENTS {momentCount}
+        </span>
+        <span className="border border-border bg-muted/60 px-2 py-1">
+          FILES {totalCount}
+        </span>
+        <span className="border border-primary/70 bg-primary/10 px-2 py-1 text-primary">
+          READS {formatNumber(totalViews)}
+        </span>
+      </div>
     </section>
   );
 }
@@ -160,7 +171,7 @@ function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
   return (
     <section className="mt-7" aria-label="最近内容">
       {posts.length > 0 ? (
-        <div className="border-t border-border/60">
+        <div className="border-t border-border/80">
           {posts.map((post) => (
             <ContentRow
               key={post.id}

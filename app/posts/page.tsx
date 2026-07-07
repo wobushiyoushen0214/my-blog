@@ -337,19 +337,19 @@ function JournalHero({
       : "全部文章";
 
   return (
-    <header className="mb-7 border-b border-border/60 pb-5">
+    <header className="pixel-frame mb-7 p-4 md:p-5">
       <div className="min-w-0">
-        <p className="text-sm text-muted-foreground">
+        <p className="pixel-label text-primary">
           Journal
         </p>
         <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          {title}
+          &gt; {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           {description}
         </p>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">
+      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
         {context} · 当前 {totalCount} · 共 {allCount} · {getSortLabel(sort)}
       </p>
     </header>
@@ -374,7 +374,7 @@ function CategoryNav({
   return (
     <nav
       aria-label="文章分类"
-      className="-mx-5 flex gap-3 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
+      className="-mx-5 flex gap-2 overflow-x-auto border-b border-border/80 px-5 pb-3 md:mx-0 md:px-0"
     >
       <CategoryLink
         href={buildPostsPath({ searchQuery, sort })}
@@ -416,10 +416,10 @@ function CategoryLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-10 shrink-0 items-center gap-2 border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-9 shrink-0 items-center gap-2 border px-2 font-mono text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "border-primary text-foreground"
-          : "text-muted-foreground hover:border-border hover:text-foreground"
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-background text-muted-foreground hover:border-primary hover:bg-accent hover:text-foreground"
       )}
     >
       {children}
@@ -439,7 +439,7 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-4 border-b border-border/60 pb-4">
+    <section className="mt-4 border-b border-border/80 pb-4">
       <form
         action="/posts"
         aria-label="文章筛选"
@@ -456,7 +456,7 @@ function ListFilterBar({
           id="posts-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
+          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[border-color,background-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
@@ -464,14 +464,14 @@ function ListFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           应用
         </button>
         {hasFilters ? (
           <Link
             href={buildPostsPath({ categorySlug })}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-10 items-center justify-center border border-border bg-background px-4 font-mono text-sm font-medium text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -502,9 +502,9 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="text-xs text-muted-foreground">当前筛选</span>
+        <span className="font-mono text-xs text-primary">FILTER</span>
         {categoryName ? (
           <FilterPill
             label={`分类：${categoryName}`}
@@ -526,7 +526,7 @@ function ActiveFilterSummary({
       </div>
       <Link
         href="/posts"
-        className="inline-flex h-8 shrink-0 items-center justify-center px-0 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -538,7 +538,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>

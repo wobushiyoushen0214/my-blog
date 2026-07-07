@@ -183,7 +183,7 @@ export function CommentForm({
             value={form.author_name}
             onChange={(e) => updateField("author_name", e.target.value)}
             placeholder="你的昵称"
-            className="h-10 rounded-md border-border/60 bg-background shadow-none transition-colors hover:bg-muted/30 focus-visible:bg-background"
+            className="h-10 border-border/80 bg-background transition-colors hover:bg-muted/30 focus-visible:bg-background"
             autoFocus={autoFocus}
             disabled={loading}
             maxLength={NAME_MAX_LENGTH}
@@ -210,7 +210,7 @@ export function CommentForm({
             value={form.author_email}
             onChange={(e) => updateField("author_email", e.target.value)}
             placeholder="you@example.com"
-            className="h-10 rounded-md border-border/60 bg-background shadow-none transition-colors hover:bg-muted/30 focus-visible:bg-background"
+            className="h-10 border-border/80 bg-background transition-colors hover:bg-muted/30 focus-visible:bg-background"
             disabled={loading}
             maxLength={EMAIL_MAX_LENGTH}
             aria-invalid={Boolean(errors.author_email)}
@@ -236,7 +236,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none rounded-md border-border/60 bg-background shadow-none transition-colors hover:bg-muted/30 focus-visible:bg-background"
+          className="resize-none border-border/80 bg-background transition-colors hover:bg-muted/30 focus-visible:bg-background"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}
@@ -276,7 +276,7 @@ export function CommentForm({
             <button
               type="button"
               disabled={loading}
-              className="inline-flex h-9 items-center justify-center rounded-md px-3 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex h-9 items-center justify-center border border-border bg-background px-3 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
             >
               取消
             </button>
@@ -284,7 +284,7 @@ export function CommentForm({
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-foreground px-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+            className="inline-flex h-9 items-center justify-center gap-2 border border-primary bg-primary px-3 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
           >
             <Send className="h-4 w-4" suppressHydrationWarning />
             {loading ? "提交中..." : isReply ? "提交回复" : "提交评论"}

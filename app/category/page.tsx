@@ -189,19 +189,19 @@ function CategoryIndexHero({
   hasFilters: boolean;
 }) {
   return (
-    <header className="mb-7 border-b border-border/60 pb-5">
+    <header className="pixel-frame mb-7 p-4 md:p-5">
       <div className="min-w-0">
-        <p className="text-sm text-muted-foreground">
+        <p className="pixel-label text-primary">
           Categories
         </p>
         <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          {title}
+          &gt; {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           按主题浏览文章和见闻，快速进入相关内容。
         </p>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">
+      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
         {hasFilters ? "筛选视图" : filterTypeLabel(contentType)} · 当前 {filteredCount} · 共 {totalCount} ·{" "}
         文章分类 {postCategoryCount} · 见闻分类 {momentCategoryCount}
       </p>
@@ -225,17 +225,17 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="-mx-5 mt-4 flex gap-3 overflow-x-auto border-b border-border/60 px-5 md:mx-0 md:px-0"
+      className="-mx-5 mt-4 flex gap-2 overflow-x-auto border-b border-border/80 px-5 pb-3 md:mx-0 md:px-0"
     >
       {items.map((item) => (
         <Link
           key={item.value}
           href={buildCategoryPath({ query, type: item.value })}
           aria-current={activeType === item.value ? "page" : undefined}
-          className={`inline-flex h-10 shrink-0 items-center border-b border-transparent text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          className={`inline-flex h-9 shrink-0 items-center border px-2 font-mono text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeType === item.value
-              ? "border-primary text-foreground"
-              : "text-muted-foreground hover:border-border hover:text-foreground"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-background text-muted-foreground hover:border-primary hover:bg-accent hover:text-foreground"
           }`}
         >
           {item.label}
@@ -256,9 +256,9 @@ function ActiveCategorySummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="text-xs text-muted-foreground">当前筛选</span>
+        <span className="font-mono text-xs text-primary">FILTER</span>
         {query ? (
           <FilterPill
             label={`关键词：${query}`}
@@ -274,7 +274,7 @@ function ActiveCategorySummary({
       </div>
       <Link
         href="/category"
-        className="inline-flex h-8 shrink-0 items-center justify-center px-0 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -286,7 +286,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -324,7 +324,7 @@ function CategorySection({
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="group grid min-w-0 gap-3 border-b border-border/50 py-5 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+            className="group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
           >
             <span className="min-w-0">
               <span className="block truncate text-base font-medium leading-6 transition-colors group-hover:text-primary">

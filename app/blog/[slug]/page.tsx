@@ -440,33 +440,38 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <article className="mx-auto w-full max-w-[840px] px-5 py-10 md:px-6 md:py-12">
           <Link
             href={contentListHref}
-            className="mb-6 inline-flex h-9 items-center gap-2 rounded-md px-0 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="mb-6 inline-flex h-9 items-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
             返回{contentTypeLabel}
           </Link>
 
-          <header className="border-b border-border/60 pb-6">
-            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
-              <span>{contentTypeLabel}</span>
+          <header className="pixel-frame p-4 md:p-5">
+            <div className="flex min-w-0 flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground">
+              <span className="border border-primary/70 bg-primary/10 px-2 py-1 text-primary">
+                {contentTypeLabel}
+              </span>
               {post.category ? (
                 <>
-                  <span aria-hidden="true">/</span>
                   <Link
                     href={getCategoryBrowseHref(post.category)}
-                    className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="border border-border bg-muted/60 px-2 py-1 transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     {post.category.name}
                   </Link>
                 </>
               ) : null}
-              <span aria-hidden="true">/</span>
-              <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+              <time
+                dateTime={post.created_at}
+                className="border border-border bg-muted/60 px-2 py-1"
+              >
+                {formatDate(post.created_at)}
+              </time>
             </div>
 
             <div className="min-w-0 space-y-3 py-5">
               <h1 className="max-w-3xl text-3xl font-semibold leading-tight md:text-4xl">
-                {post.title}
+                &gt; {post.title}
               </h1>
               {post.excerpt ? (
                 <p className="max-w-2xl text-base leading-7 text-muted-foreground">
@@ -475,7 +480,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               ) : null}
             </div>
 
-            <p className="text-sm leading-6 text-muted-foreground">
+            <p className="border border-border bg-muted/60 px-2 py-1 font-mono text-xs leading-6 text-muted-foreground">
               约 {readingMinutes} 分钟 · {numberFormatter.format(post.view_count + 1)} 次阅读 ·{" "}
               {commentCount} 条评论 · 更新于 {formatDate(post.updated_at || post.created_at)}
             </p>
@@ -483,13 +488,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {tags.length > 0 ? (
               <nav
                 aria-label="文章标签"
-                className="mt-4 flex min-w-0 flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground"
+                className="mt-4 flex min-w-0 flex-wrap gap-2 font-mono text-sm text-muted-foreground"
               >
                 {tags.map((tag) => (
                   <Link
                     key={tag.id}
                     href={`/tag/${tag.slug}`}
-                    className="inline-flex h-8 items-center underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    className="inline-flex h-8 items-center border border-border bg-background px-2 text-primary underline-offset-4 transition-colors hover:border-primary hover:bg-accent hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   >
                     #{tag.name}
                   </Link>
@@ -500,7 +505,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {post.cover_image ? (
             <figure className="mt-6 max-w-[680px]">
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
+              <div className="relative aspect-[16/9] w-full overflow-hidden border border-border bg-muted shadow-[4px_4px_0_var(--terminal-shadow)]">
                 <Image
                   src={post.cover_image}
                   alt={post.title}
@@ -510,7 +515,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   className="object-cover"
                 />
               </div>
-              <figcaption className="mt-2 text-xs text-muted-foreground">
+              <figcaption className="mt-3 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
                 {post.title}
               </figcaption>
             </figure>
@@ -524,12 +529,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 prose-headings:scroll-mt-24 prose-headings:font-semibold
                 prose-p:my-5 prose-p:leading-8 prose-p:text-foreground/85
                 prose-a:text-primary prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-4 hover:prose-a:decoration-primary
-                prose-img:rounded-md
                 prose-blockquote:border-l-border prose-blockquote:text-muted-foreground
                 prose-hr:border-border/60
-                prose-pre:rounded-md prose-pre:border prose-pre:border-border/60 prose-pre:bg-muted/45 prose-pre:shadow-none
+                prose-pre:border prose-pre:border-border/60 prose-pre:bg-muted/45
                 prose-code:before:content-none prose-code:after:content-none
-                prose-code:rounded-sm prose-code:bg-muted/70 prose-code:px-1 prose-code:py-0.5 prose-code:text-sm prose-code:font-medium"
+                prose-code:bg-muted/70 prose-code:px-1 prose-code:py-0.5 prose-code:text-sm prose-code:font-medium"
               dangerouslySetInnerHTML={{ __html: articleContent }}
             />
 
@@ -543,18 +547,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <section
               id="comments"
               aria-labelledby="comments-title"
-              className="mt-12 border-t border-border/60 pt-8"
+              className="mt-12 border-t border-border/80 pt-8"
             >
               <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="pixel-label text-primary">
                     Discussion
                   </p>
                   <h2 id="comments-title" className="mt-1 text-lg font-semibold">
                     评论
                   </h2>
                 </div>
-                <span className="text-sm text-muted-foreground">
+                <span className="border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
                   {commentCount} 条已审核评论
                 </span>
               </div>
@@ -575,8 +579,8 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
   if (headings.length === 0) return null;
 
   return (
-    <section className="mb-8 border-y border-border/60 py-4">
-      <h2 className="text-sm font-medium text-foreground">
+    <section className="pixel-frame-sm mb-8 p-4">
+      <h2 className="pixel-label text-primary">
         目录
       </h2>
       <nav aria-label="文章目录" className="mt-3 grid gap-1">
@@ -585,7 +589,7 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
             key={heading.id}
             href={`#${heading.id}`}
             className={cn(
-              "line-clamp-2 min-h-8 px-2 py-1.5 text-sm leading-5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+              "line-clamp-2 min-h-8 border border-transparent px-2 py-1.5 font-mono text-sm leading-5 text-muted-foreground transition-colors hover:border-border hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
               heading.level === 3 && "pl-5 text-xs"
             )}
           >
@@ -607,7 +611,7 @@ function ArticlePager({
   if (!previousPost && !nextPost) return null;
 
   return (
-    <nav aria-label="相邻文章" className="mt-10 grid border-t border-border/60 md:grid-cols-2">
+    <nav aria-label="相邻文章" className="mt-10 grid border-t border-border/80 md:grid-cols-2">
       <NavigationPostCard
         post={previousPost}
         label="上一篇"
@@ -631,7 +635,7 @@ function NavigationPostCard({
     return (
       <div
         className={cn(
-          "border-b border-border/60 py-4",
+          "border-b border-border/80 py-4",
           direction === "previous" ? "md:border-r md:pr-4" : "md:pl-4 md:text-right"
         )}
       >
@@ -646,7 +650,7 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group border-b border-border/60 py-4 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:border-r md:px-4 first:md:pl-0 last:md:border-r-0 last:md:pr-0"
+      className="group border-b border-border/80 py-4 transition-[background-color,border-color,box-shadow] hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:border-r md:px-4 first:md:pl-0 last:md:border-r-0 last:md:pr-0"
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
@@ -685,10 +689,10 @@ function RelatedSection({
   contentTypeLabel: string;
 }) {
   return (
-    <section className="mt-12 border-t border-border/60 pt-8">
+    <section className="mt-12 border-t border-border/80 pt-8">
       <div className="mb-4">
         <div>
-          <p className="text-sm text-muted-foreground">
+          <p className="pixel-label text-primary">
             Related
           </p>
           <h2 className="mt-1 text-lg font-semibold">
@@ -719,7 +723,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
             className="group -mx-2 block px-2 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-              <span className="bg-muted/25 px-2 py-0.5 text-foreground">
+              <span className="border border-primary/70 bg-primary/10 px-2 py-0.5 font-mono text-primary">
                 {getContentTypeLabel(contentType)}
               </span>
               {post.relationLabel ? (

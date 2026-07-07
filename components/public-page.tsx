@@ -42,11 +42,11 @@ export function PublicPageHeader({
   action,
 }: PublicPageHeaderProps) {
   return (
-    <header className="mb-7 border-b border-border/60 pb-5">
+    <header className="pixel-frame mb-7 p-4 md:p-5">
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-5 inline-flex h-10 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mb-5 inline-flex h-9 items-center gap-1.5 border border-border bg-background px-2 font-mono text-sm text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
           {backLabel}
@@ -57,7 +57,7 @@ export function PublicPageHeader({
         <div className="min-w-0 space-y-3">
           <div className="space-y-2">
             {eyebrow ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="pixel-label text-primary">
                 {eyebrow}
               </p>
             ) : null}
@@ -66,7 +66,7 @@ export function PublicPageHeader({
                 {title}
               </h1>
               {countLabel ? (
-                <span className="text-sm text-muted-foreground">
+                <span className="border border-border bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
                   {countLabel}
                 </span>
               ) : null}
@@ -99,7 +99,7 @@ export function PublicActionLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-10 items-center gap-2 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-10 items-center gap-2 border border-border bg-background px-3 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         className
       )}
     >
@@ -126,13 +126,13 @@ export function PublicEmptyState({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-2xl py-12 text-center",
+        "pixel-frame mx-auto w-full max-w-2xl p-8 text-center",
         className
       )}
     >
       <div className="grid place-items-center gap-4">
         {Icon ? (
-          <span className="flex size-10 items-center justify-center rounded-md border border-border/60 text-muted-foreground">
+          <span className="flex size-10 items-center justify-center border border-border bg-background text-primary shadow-[2px_2px_0_var(--terminal-shadow)]">
             <Icon className="h-5 w-5" suppressHydrationWarning />
           </span>
         ) : null}

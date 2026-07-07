@@ -61,7 +61,7 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex min-w-0 overflow-hidden border border-border/60 bg-background transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden border border-border bg-card shadow-[4px_4px_0_var(--terminal-shadow)] transition-[background-color,border-color,box-shadow] hover:border-primary hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured && showMedia
           ? "flex-col sm:grid sm:grid-cols-[minmax(0,1fr)_12rem]"
           : "flex-col"
@@ -70,7 +70,7 @@ export function PostCard({
       {showMedia ? (
         <div
           className={cn(
-            "relative w-full overflow-hidden bg-muted/30",
+            "relative w-full overflow-hidden border-b border-border bg-muted/30",
             isFeatured ? "order-last min-h-40 sm:order-none sm:min-h-full" : "aspect-[16/10]"
           )}
         >
@@ -95,24 +95,24 @@ export function PostCard({
         )}
       >
         <div className="flex-1 space-y-2.5">
-          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 border border-border/60 bg-muted/60 px-1.5 py-0.5">
               <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
               <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
             </span>
-            <span className="inline-flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1.5 border border-border/60 bg-muted/60 px-1.5 py-0.5">
               <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
               {formatViews(post.view_count)} 阅读
             </span>
-            <span className="inline-flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1.5 border border-border/60 bg-muted/60 px-1.5 py-0.5">
               <Clock3 className="h-3.5 w-3.5" suppressHydrationWarning />
               约 {readingMinutes} 分钟
             </span>
-            <span className="text-xs text-foreground">
+            <span className="border border-primary/70 bg-primary/10 px-1.5 py-0.5 text-xs text-primary">
               {contentTypeLabel}
             </span>
             {post.category ? (
-              <span className="min-w-0 truncate border-l border-border/60 pl-2 text-xs text-muted-foreground">
+              <span className="min-w-0 truncate border border-border/60 bg-muted/60 px-1.5 py-0.5 text-xs text-muted-foreground">
                 {post.category.name}
               </span>
             ) : null}
@@ -140,11 +140,11 @@ export function PostCard({
         </div>
 
         {post.tags && post.tags.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
+          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 font-mono text-xs text-muted-foreground">
             {post.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag.id}
-                className="max-w-36 truncate"
+                className="max-w-36 truncate text-primary"
               >
                 #{tag.name}
               </span>

@@ -302,27 +302,27 @@ function CategoryHero({
   hasFilters: boolean;
 }) {
   return (
-    <header className="mb-7 border-b border-border/60 pb-5">
+    <header className="pixel-frame mb-7 p-4 md:p-5">
       <Link
         href="/category"
-        className="mb-5 inline-flex h-9 items-center gap-2 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="mb-5 inline-flex h-9 items-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
         所有分类
       </Link>
 
       <div className="min-w-0">
-        <p className="text-sm text-muted-foreground">
+        <p className="pixel-label text-primary">
           Category
         </p>
         <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          {category.name}
+          &gt; {category.name}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           该{categoryTypeLabel}下的已发布内容。
         </p>
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">
+      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
         当前 {totalCount} · 共 {totalCategoryCount} ·{" "}
         {hasFilters ? "已筛选" : getSortLabel(sort)}
       </p>
@@ -342,7 +342,7 @@ function CategoryFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border-b border-border/60 pb-5">
+    <section className="border-b border-border/80 pb-5">
       <form
         action={`/category/${encodeURIComponent(slug)}`}
         aria-label="分类内容筛选"
@@ -356,7 +356,7 @@ function CategoryFilterBar({
           id="category-detail-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 rounded-md border border-border/60 bg-background px-3 text-sm text-foreground outline-none transition-[border-color,background-color,box-shadow] hover:bg-muted/30 focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
+          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[border-color,background-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
@@ -364,14 +364,14 @@ function CategoryFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           应用
         </button>
         {hasFilters ? (
           <Link
             href={buildCategoryPath({ slug })}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-10 items-center justify-center border border-border bg-background px-4 font-mono text-sm font-medium text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             清除
           </Link>
@@ -394,9 +394,9 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/50 pb-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="text-xs text-muted-foreground">当前筛选</span>
+        <span className="font-mono text-xs text-primary">FILTER</span>
         {searchQuery ? (
           <FilterPill
             label={`关键词：${searchQuery}`}
@@ -412,7 +412,7 @@ function ActiveFilterSummary({
       </div>
       <Link
         href={buildCategoryPath({ slug })}
-        className="inline-flex h-8 shrink-0 items-center justify-center px-0 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -424,7 +424,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-border/60 px-2 text-xs text-foreground transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>

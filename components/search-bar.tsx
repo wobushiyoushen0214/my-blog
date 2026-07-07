@@ -63,7 +63,7 @@ export function SearchBar() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-md px-2 text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start"
+          className="inline-flex h-10 items-center justify-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start"
           aria-keyshortcuts="/"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
@@ -71,7 +71,7 @@ export function SearchBar() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="gap-0 overflow-hidden border border-border/70 bg-background p-0 shadow-none sm:max-w-lg"
+        className="gap-0 overflow-hidden border border-primary/70 bg-background p-0 sm:max-w-lg"
         showCloseButton={false}
       >
         <DialogHeader className="sr-only">
@@ -99,18 +99,18 @@ export function SearchBar() {
                 placeholder="搜索标题、正文、分类或标签..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="h-10 rounded-md border-border/60 bg-background pl-10 shadow-none transition-colors hover:bg-muted/30 focus-visible:bg-background"
+                className="h-10 border-border/80 bg-background pl-10 transition-colors hover:bg-muted/30 focus-visible:bg-background"
               />
             </div>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,box-shadow] hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               搜索
             </button>
             <button
               type="button"
-              className="inline-flex size-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex size-10 items-center justify-center border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               aria-label="关闭搜索"
               onClick={() => setOpen(false)}
             >

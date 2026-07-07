@@ -89,27 +89,30 @@ export function ContentRow({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group grid min-w-0 gap-3 border-b border-border/50 py-5 transition-colors hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.25rem_minmax(0,1fr)_6.5rem]",
+        "group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.25rem_minmax(0,1fr)_6.5rem]",
         className
       )}
     >
       <time
         dateTime={dateTime || post.created_at}
-        className="text-xs tabular-nums text-muted-foreground sm:pt-1"
+        className="font-mono text-xs tabular-nums text-primary sm:pt-1"
       >
         {displayDate}
       </time>
 
       <span className="min-w-0">
-        <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+        <span className="flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
           {displayMeta.map((item, index) => (
-            <span key={`${item}-${index}`} className="min-w-0 truncate">
+            <span
+              key={`${item}-${index}`}
+              className="min-w-0 truncate border border-border/60 bg-muted/60 px-1.5 py-0.5 font-mono"
+            >
               {item}
             </span>
           ))}
         </span>
 
-        <span className="mt-1.5 block line-clamp-2 text-base font-medium leading-6 transition-colors group-hover:text-primary md:text-[17px]">
+        <span className="mt-2 block line-clamp-2 text-base font-medium leading-6 transition-colors group-hover:text-primary md:text-[17px]">
           {post.title}
         </span>
 
@@ -120,9 +123,9 @@ export function ContentRow({
         ) : null}
 
         {visibleTags.length > 0 ? (
-          <span className="mt-3 flex min-w-0 flex-wrap gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
+          <span className="mt-3 flex min-w-0 flex-wrap gap-x-3 gap-y-1.5 font-mono text-xs text-muted-foreground">
             {visibleTags.map((tag) => (
-              <span key={tag.id} className="max-w-36 truncate underline-offset-4 group-hover:underline">
+              <span key={tag.id} className="max-w-36 truncate text-primary underline-offset-4 group-hover:underline">
                 #{tag.name}
               </span>
             ))}
@@ -130,7 +133,7 @@ export function ContentRow({
         ) : null}
       </span>
 
-      <span className="flex flex-wrap items-start gap-x-3 gap-y-1 text-xs text-muted-foreground sm:block sm:text-right">
+      <span className="flex flex-wrap items-start gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground sm:block sm:text-right">
         {displayRightMeta.map((item, index) => (
           <span key={`${item}-${index}`} className="block sm:mt-1 first:sm:mt-0">
             {item}
