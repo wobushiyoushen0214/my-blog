@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
@@ -228,7 +229,8 @@ export default async function PostsPage({
   const allArticleCount = allArticlePosts?.length || 0;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <PublicPageShell className="py-9 md:py-12">
         <JournalHero
@@ -308,8 +310,9 @@ export default async function PostsPage({
           />
         )}
       </PublicPageShell>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

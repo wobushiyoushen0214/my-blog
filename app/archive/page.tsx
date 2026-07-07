@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import { ContentRow } from "@/components/content-row";
 import {
   PublicActionLink,
@@ -267,7 +268,8 @@ export default async function ArchivePage({
   const pageTitle = query ? `归档 · ${query}` : "归档";
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <PublicPageShell className="py-9 md:py-12">
         <ArchiveHero
@@ -327,8 +329,9 @@ export default async function ArchivePage({
           )}
         </div>
       </PublicPageShell>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

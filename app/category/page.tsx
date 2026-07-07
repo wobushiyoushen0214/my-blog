@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import {
   PublicActionLink,
   PublicEmptyState,
@@ -119,7 +120,8 @@ export default async function CategoriesPage({
     : `当前没有${filterTypeLabel(contentType)}，可以切换到全部分类查看。`;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <PublicPageShell className="py-9 md:py-12">
         <CategoryIndexHero
@@ -166,8 +168,9 @@ export default async function CategoriesPage({
           />
         )}
       </PublicPageShell>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

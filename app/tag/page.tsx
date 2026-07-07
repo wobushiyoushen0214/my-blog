@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import {
   PublicActionLink,
   PublicEmptyState,
@@ -109,7 +110,8 @@ export default async function TagsPage({
     : `当前没有${statusLabel(status)}，可以切换到全部标签查看。`;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <PublicPageShell className="py-9 md:py-12">
         <TagIndexHero
@@ -154,8 +156,9 @@ export default async function TagsPage({
           />
         )}
       </PublicPageShell>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import {
   PublicActionLink,
   PublicEmptyState,
@@ -128,7 +129,8 @@ export default async function LinksPage({
     : `${friendLinks.length} 个站点`;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <PublicPageShell>
         <PublicPageHeader
@@ -247,8 +249,9 @@ export default async function LinksPage({
           </aside>
         </div>
       </PublicPageShell>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

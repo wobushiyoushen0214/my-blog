@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ContentRow } from "@/components/content-row";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import { PixelStartMenu } from "@/components/pixel-start-menu";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
@@ -110,7 +111,8 @@ export default async function HomePage() {
   const ledgerPosts = postsWithTags;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
       <main className="mx-auto w-full max-w-[980px] flex-1 px-5 py-9 md:px-6 md:py-12">
         <PixelStartMenu
@@ -122,8 +124,9 @@ export default async function HomePage() {
 
         <RecentLedger posts={ledgerPosts} />
       </main>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

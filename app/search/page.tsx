@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import { ContentRow } from "@/components/content-row";
 import {
   PublicActionLink,
@@ -305,7 +306,8 @@ export default async function SearchPage({
         : undefined;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <PublicPageShell>
         <PublicPageHeader
@@ -439,8 +441,9 @@ export default async function SearchPage({
           )}
         </div>
       </PublicPageShell>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

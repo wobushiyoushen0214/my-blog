@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
 import { cn } from "@/lib/utils";
@@ -434,7 +435,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const nextPost = nextPostData as unknown as NavigationPost | null;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
         <article className="mx-auto w-full max-w-[840px] px-5 py-10 md:px-6 md:py-12">
@@ -570,8 +572,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </article>
       </main>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 

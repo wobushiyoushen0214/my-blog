@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { DeviceShell } from "@/components/device-shell";
 import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
@@ -267,7 +268,8 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     : `${totalTaggedCount} 篇`;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <DeviceShell>
+      <div className="flex min-h-screen flex-col">
       <Header />
       <PublicPageShell className="py-9 md:py-12">
         <TagHero
@@ -349,8 +351,9 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
           />
         )}
       </PublicPageShell>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </DeviceShell>
   );
 }
 
