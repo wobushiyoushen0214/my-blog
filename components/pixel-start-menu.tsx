@@ -99,16 +99,24 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
     >
       <div className="grid gap-0 lg:grid-cols-[17rem_minmax(0,1fr)]">
         <div className="border-b border-border bg-secondary/85 p-4 lg:border-b-0 lg:border-r">
-          <p className="pixel-label text-foreground">Lee Quest</p>
+          <p className="pixel-label text-foreground">Lee Pocket</p>
           <h1
             id="pixel-start-title"
             className="mt-3 text-2xl font-semibold leading-tight md:text-3xl"
           >
-            选择状态
+            选择存档
           </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            技术笔记、项目复盘和日常观察按路径归档。
+            像打开一台随身掌机一样，选择要进入的内容状态。
           </p>
+          <div className="mt-5 grid grid-cols-2 gap-2 font-mono text-[11px] text-muted-foreground">
+            <span className="border border-border bg-background px-2 py-1">
+              BLOG OS
+            </span>
+            <span className="border border-border bg-background px-2 py-1">
+              {props.totalCount} LOGS
+            </span>
+          </div>
         </div>
 
         <div className="grid gap-4 p-4 md:grid-cols-[minmax(0,1fr)_15rem]">
@@ -124,7 +132,7 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
                   aria-pressed={active}
                   data-active={active}
                   onClick={() => setActiveKey(mode.key)}
-                  className="pixel-game-option min-h-24 p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="pixel-game-option min-h-24 overflow-hidden p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                   style={{ "--mode-color": mode.color } as CSSProperties}
                 >
                   <span className="flex items-start justify-between gap-3">
@@ -151,7 +159,7 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
           </div>
 
           <div
-            className="border-2 border-border bg-card p-4 shadow-[3px_3px_0_var(--terminal-shadow)]"
+            className="pixel-cartridge-panel border-2 border-border bg-card p-4 shadow-[3px_3px_0_var(--terminal-shadow)]"
             style={{ "--mode-color": activeMode.color } as CSSProperties}
           >
             <div className="flex items-start justify-between gap-3">
