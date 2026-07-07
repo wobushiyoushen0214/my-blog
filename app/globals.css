@@ -1630,6 +1630,58 @@
       box-shadow: none;
     }
   }
+
+  .public-device-layout > main {
+    width: 100%;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .public-device-layout > main > * {
+    width: min(100%, 980px);
+    margin-inline: auto;
+  }
+
+  .public-device-layout > main > article {
+    width: min(100%, 840px);
+  }
+
+  .article-hero-panel {
+    border: 0;
+    border-left: 4px solid var(--primary);
+    background:
+      linear-gradient(90deg, color-mix(in oklab, var(--primary) 10%, transparent), transparent 48%),
+      color-mix(in oklab, var(--card) 82%, transparent);
+    box-shadow: none;
+  }
+
+  .article-hero-panel [class*="border"] {
+    border-color: color-mix(in oklab, var(--border) 68%, transparent);
+  }
+
+  .article-hero-panel > p {
+    border: 0;
+    border-left: 2px solid color-mix(in oklab, var(--primary) 58%, var(--border));
+    background: color-mix(in oklab, var(--muted) 42%, transparent);
+  }
+
+  .article-hero-panel nav a,
+  .article-hero-panel time,
+  .article-hero-panel span {
+    box-shadow: none;
+  }
+
+  @media (max-width: 640px) {
+    .public-device-layout > main > *,
+    .public-device-layout > main > article {
+      width: 100%;
+    }
+
+    .article-hero-panel {
+      border-left-width: 3px;
+    }
+  }
 }
 
 /* —— Tiptap editor styles —— */

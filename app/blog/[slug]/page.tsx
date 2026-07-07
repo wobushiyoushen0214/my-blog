@@ -448,7 +448,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             返回{contentTypeLabel}
           </Link>
 
-          <header className="pixel-frame p-4 md:p-5">
+          <header className="article-hero-panel p-4 md:p-5">
             <div className="flex min-w-0 flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground">
               <span className="border border-primary/70 bg-primary/10 px-2 py-1 text-primary">
                 {contentTypeLabel}
