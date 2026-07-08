@@ -202,10 +202,10 @@ export function PublicPillLink({
       href={href}
       aria-current={ariaCurrent}
       className={cn(
-        "inline-flex h-8 shrink-0 items-center gap-2 border-b-2 px-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-7 shrink-0 items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "border-slate-950 text-slate-950 dark:border-white dark:text-white"
-          : "border-transparent text-neutral-500 hover:border-neutral-300 hover:text-slate-950 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white",
+          ? "text-slate-950 dark:text-white"
+          : "text-neutral-500 hover:text-slate-950 dark:text-neutral-400 dark:hover:text-white",
         className
       )}
     >
@@ -229,7 +229,12 @@ export function PublicFilterSummary({
         </span>
         {children}
       </div>
-      <PublicPillLink href={clearHref}>清除全部</PublicPillLink>
+      <Link
+        href={clearHref}
+        className="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 dark:hover:text-white"
+      >
+        清除全部
+      </Link>
     </div>
   );
 }
@@ -244,7 +249,7 @@ export function PublicFilterPill({
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-neutral-200 bg-transparent px-2.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 font-mono text-[10px] text-neutral-500 transition-colors hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 dark:hover:text-white"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>

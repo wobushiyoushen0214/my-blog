@@ -15,9 +15,6 @@ import {
   PublicMetaPill,
   PublicPageShell,
   PublicPillLink,
-  publicPrimaryButtonClassName,
-  publicSecondaryButtonClassName,
-  publicSelectClassName,
 } from "@/components/public-page";
 import {
   NotebookText,
@@ -420,46 +417,39 @@ function ListFilterBar({
   searchQuery: string;
   sort: SortOption;
 }) {
-  const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
+  const sortItems: Array<{ value: SortOption; label: string }> = [
+    { value: "newest", label: "最新发布" },
+    { value: "updated", label: "最近更新" },
+    { value: "popular", label: "阅读最多" },
+  ];
 
   return (
-      <form
-        action="/moments"
-        aria-label="见闻筛选"
-        className="flex flex-col gap-2 sm:flex-row sm:items-center"
-      >
-        {categorySlug ? (
-          <input type="hidden" name="category" value={categorySlug} />
-        ) : null}
-        {searchQuery ? <input type="hidden" name="q" value={searchQuery} /> : null}
-        <label htmlFor="moments-sort" className="sr-only">
-          见闻排序
-        </label>
-        <select
-          id="moments-sort"
-          name="sort"
-          defaultValue={sort}
-          className={`${publicSelectClassName} sm:w-40`}
+    <nav
+      aria-label="见闻排序"
+      className="flex flex-wrap items-center gap-x-4 gap-y-2"
+    >
+      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+        排序
+      </span>
+      {sortItems.map((item) => (
+        <Link
+          key={item.value}
+          href={buildMomentsPath({
+            categorySlug,
+            searchQuery,
+            sort: item.value,
+          })}
+          aria-current={sort === item.value ? "page" : undefined}
+          className={
+            sort === item.value
+              ? "font-mono text-[10px] font-bold uppercase tracking-wider text-slate-950 dark:text-white"
+              : "font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:text-slate-950 dark:text-neutral-400 dark:hover:text-white"
+          }
         >
-          <option value="newest">最新发布</option>
-          <option value="updated">最近更新</option>
-          <option value="popular">阅读最多</option>
-        </select>
-        <button
-          type="submit"
-          className={publicPrimaryButtonClassName}
-        >
-          应用
-        </button>
-        {hasFilters ? (
-          <Link
-            href={buildMomentsPath({ categorySlug })}
-            className={publicSecondaryButtonClassName}
-          >
-            清除
-          </Link>
-        ) : null}
-      </form>
+          {item.label}
+        </Link>
+      ))}
+    </nav>
   );
 }
 
