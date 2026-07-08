@@ -46,7 +46,7 @@ export function PublicPageHeader({
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-5 inline-flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+          className="mb-5 inline-flex h-8 items-center gap-1.5 rounded-md border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
           {backLabel}
@@ -66,7 +66,7 @@ export function PublicPageHeader({
                 {title}
               </h1>
               {countLabel ? (
-                <span className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   {countLabel}
                 </span>
               ) : null}
@@ -115,7 +115,7 @@ export function PublicCompactHeader({
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-4 inline-flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+          className="mb-4 inline-flex h-8 items-center gap-1.5 rounded-md border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
           {backLabel}
@@ -137,7 +137,7 @@ export function PublicCompactHeader({
             </p>
           ) : null}
         </div>
-        <div className="flex min-w-0 flex-wrap items-center gap-2 md:justify-end">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 md:justify-end">
           {meta}
           {action}
         </div>
@@ -156,7 +156,7 @@ export function PublicMetaPill({
   return (
     <span
       className={cn(
-        "inline-flex h-7 max-w-full items-center rounded-full border border-neutral-200 bg-neutral-50 px-2.5 font-mono text-[10px] uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400",
+        "inline-flex max-w-full items-center font-mono text-[10px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400",
         className
       )}
     >
@@ -202,10 +202,10 @@ export function PublicPillLink({
       href={href}
       aria-current={ariaCurrent}
       className={cn(
-        "inline-flex h-8 shrink-0 items-center gap-2 rounded-full border px-3 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-8 shrink-0 items-center gap-2 border-b-2 px-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "border-neutral-950 bg-neutral-950 text-white dark:border-white dark:bg-white dark:text-black"
-          : "border-neutral-200 bg-transparent text-neutral-500 hover:border-neutral-400 hover:text-slate-950 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-white",
+          ? "border-slate-950 text-slate-950 dark:border-white dark:text-white"
+          : "border-transparent text-neutral-500 hover:border-neutral-300 hover:text-slate-950 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white",
         className
       )}
     >
@@ -244,7 +244,7 @@ export function PublicFilterPill({
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-2.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-neutral-200 bg-transparent px-2.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -254,10 +254,13 @@ export function PublicFilterPill({
 }
 
 export const publicSelectClassName =
-  "h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 shadow-none outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]";
+  "h-9 rounded-md border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 shadow-none outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]";
 
 export const publicPrimaryButtonClassName =
-  "inline-flex h-9 items-center justify-center rounded-full border border-neutral-950 bg-neutral-950 px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-none transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-white dark:bg-white dark:text-black dark:hover:bg-neutral-200";
+  "inline-flex h-9 items-center justify-center rounded-md border border-neutral-950 bg-neutral-950 px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-none transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-white dark:bg-white dark:text-black dark:hover:bg-neutral-200";
+
+export const publicSecondaryButtonClassName =
+  "inline-flex h-9 items-center justify-center rounded-md border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white";
 
 type PublicActionLinkProps = {
   href: string;
@@ -274,7 +277,7 @@ export function PublicActionLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-9 items-center gap-2 rounded-full border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white",
+        publicSecondaryButtonClassName,
         className
       )}
     >
@@ -307,7 +310,7 @@ export function PublicEmptyState({
     >
       <div className="grid place-items-center gap-4">
         {Icon ? (
-          <span className="flex size-10 items-center justify-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+          <span className="flex size-10 items-center justify-center rounded-md border border-neutral-200 bg-neutral-50 text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
             <Icon className="h-5 w-5" suppressHydrationWarning />
           </span>
         ) : null}

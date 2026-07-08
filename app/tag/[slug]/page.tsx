@@ -16,6 +16,7 @@ import {
   PublicMetaPill,
   PublicPageShell,
   publicPrimaryButtonClassName,
+  publicSecondaryButtonClassName,
   publicSelectClassName,
 } from "@/components/public-page";
 import { Hash, Search } from "lucide-react";
@@ -423,7 +424,7 @@ function TagFilterBar({
       {hasFilters ? (
         <Link
           href={buildTagPath({ slug })}
-          className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+          className={publicSecondaryButtonClassName}
         >
           清除
         </Link>
