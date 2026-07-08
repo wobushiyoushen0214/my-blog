@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -14,6 +16,16 @@ import {
   Sparkles,
   Terminal,
 } from "lucide-react";
+import { motion } from "motion/react";
+import type { IconType } from "react-icons";
+import {
+  SiNextdotjs,
+  SiReact,
+  SiSupabase,
+  SiTailwindcss,
+  SiTypescript,
+  SiVercel,
+} from "react-icons/si";
 
 const profileLinks = [
   { href: "/posts", label: "Blog" },
@@ -80,18 +92,73 @@ const focusAreas = [
   },
 ];
 
+const techOrbit: Array<{
+  label: string;
+  icon: IconType;
+  className: string;
+  delay: number;
+}> = [
+  {
+    label: "Next.js",
+    icon: SiNextdotjs,
+    className: "left-8 top-20",
+    delay: 0,
+  },
+  {
+    label: "React",
+    icon: SiReact,
+    className: "right-10 top-24",
+    delay: 0.8,
+  },
+  {
+    label: "TypeScript",
+    icon: SiTypescript,
+    className: "bottom-24 left-12",
+    delay: 1.5,
+  },
+  {
+    label: "Tailwind",
+    icon: SiTailwindcss,
+    className: "bottom-20 right-12",
+    delay: 2.2,
+  },
+  {
+    label: "Supabase",
+    icon: SiSupabase,
+    className: "left-1/2 top-8 -translate-x-1/2",
+    delay: 2.8,
+  },
+  {
+    label: "Vercel",
+    icon: SiVercel,
+    className: "bottom-8 left-1/2 -translate-x-1/2",
+    delay: 3.4,
+  },
+];
+
+const fadeUp = {
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+};
+
 export default function PersonalHomePage() {
   return (
     <main className="min-h-screen bg-[#f5f2ea] text-slate-800">
       <PersonalHeader />
 
-      <section
+      <motion.section
         id="home"
+        {...fadeUp}
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         className="mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-20 pt-28 sm:px-8 lg:px-10"
       >
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.72fr)]">
           <div className="relative">
-            <div className="relative max-w-xl border border-slate-900/10 bg-[#fffaf0] p-6 shadow-[12px_12px_0_rgba(15,23,42,0.12)] sm:p-8">
+            <motion.div
+              whileHover={{ rotate: -1, y: -4 }}
+              transition={{ type: "spring", stiffness: 220, damping: 18 }}
+              className="relative max-w-xl border border-slate-900/10 bg-[#fffaf0] p-6 shadow-[12px_12px_0_rgba(15,23,42,0.12)] sm:p-8"
+            >
               <p className="text-lg font-extrabold text-slate-900">
                 My name is:
               </p>
@@ -116,7 +183,7 @@ export default function PersonalHomePage() {
                 </ul>
               </div>
               <div className="absolute -bottom-5 -left-5 h-16 w-16 bg-orange-400" />
-            </div>
+            </motion.div>
 
             <p className="mt-10 max-w-3xl text-2xl font-medium leading-snug text-slate-700 sm:text-3xl">
               I build web products, write down engineering notes, and keep a
@@ -124,10 +191,26 @@ export default function PersonalHomePage() {
             </p>
           </div>
 
-          <div className="relative min-h-[28rem] overflow-hidden border border-slate-900/10 bg-slate-900 p-6 text-[#f5f2ea] shadow-[12px_12px_0_rgba(15,23,42,0.14)]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, rotate: 2 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="relative min-h-[28rem] overflow-hidden border border-slate-900/10 bg-slate-900 p-6 text-[#f5f2ea] shadow-[12px_12px_0_rgba(15,23,42,0.14)]"
+          >
             <div className="absolute inset-8 border border-dashed border-white/15" />
-            <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15" />
-            <div className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20" />
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+              className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20"
+            />
+            {techOrbit.map((tech) => (
+              <OrbitIcon key={tech.label} {...tech} />
+            ))}
             <div className="relative z-10 flex h-full min-h-[24rem] flex-col justify-between">
               <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
                 <span>Profile</span>
@@ -166,12 +249,16 @@ export default function PersonalHomePage() {
                 </span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
-      <section
+      <motion.section
         id="blog"
+        {...fadeUp}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        viewport={{ once: true, amount: 0.25 }}
+        whileInView="animate"
         className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10"
       >
         <div className="flex flex-col gap-4 border-b border-slate-900/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
@@ -192,14 +279,22 @@ export default function PersonalHomePage() {
             <FeatureLink key={item.href} {...item} />
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10">
+      <motion.section
+        {...fadeUp}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        viewport={{ once: true, amount: 0.25 }}
+        whileInView="animate"
+        className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10"
+      >
         <div className="grid gap-5 lg:grid-cols-3">
           {focusAreas.map((item) => (
-            <section
+            <motion.section
               key={item.id}
               id={item.id}
+              whileHover={{ y: -6 }}
+              transition={{ type: "spring", stiffness: 260, damping: 22 }}
               className="border border-slate-900/10 bg-white/55 p-6"
             >
               <div className="mb-12 flex items-center justify-between">
@@ -217,12 +312,18 @@ export default function PersonalHomePage() {
               <p className="mt-5 text-sm leading-6 text-slate-600">
                 {item.description}
               </p>
-            </section>
+            </motion.section>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10">
+      <motion.section
+        {...fadeUp}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        viewport={{ once: true, amount: 0.25 }}
+        whileInView="animate"
+        className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10"
+      >
         <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="bg-slate-900 p-8 text-[#f5f2ea]">
             <Music2 className="h-7 w-7 text-orange-400" suppressHydrationWarning />
@@ -252,7 +353,7 @@ export default function PersonalHomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <footer className="mx-auto flex w-full max-w-7xl flex-col gap-4 border-t border-slate-900/10 px-4 py-10 text-sm text-slate-500 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
         <span className="font-serif text-2xl font-black italic text-slate-300">
@@ -320,6 +421,35 @@ function PersonalHeader() {
   );
 }
 
+function OrbitIcon({
+  label,
+  icon: Icon,
+  className,
+  delay,
+}: {
+  label: string;
+  icon: IconType;
+  className: string;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      className={`absolute z-10 grid h-11 w-11 place-items-center border border-white/15 bg-white/10 text-white/75 backdrop-blur ${className}`}
+      title={label}
+      aria-label={label}
+      animate={{ y: [0, -8, 0], rotate: [0, 4, 0] }}
+      transition={{
+        duration: 4.2,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    >
+      <Icon className="h-5 w-5" aria-hidden />
+    </motion.div>
+  );
+}
+
 function FeatureLink({
   href,
   title,
@@ -334,27 +464,32 @@ function FeatureLink({
   icon: LucideIcon;
 }) {
   return (
-    <Link
-      href={href}
-      className="group border border-slate-900/10 bg-[#fffaf0] p-6 transition-colors hover:border-orange-400"
+    <motion.div
+      whileHover={{ y: -6 }}
+      transition={{ type: "spring", stiffness: 260, damping: 22 }}
     >
-      <div className="flex items-start justify-between gap-4">
-        <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-orange-500">
-          {meta}
+      <Link
+        href={href}
+        className="group block border border-slate-900/10 bg-[#fffaf0] p-6 transition-colors hover:border-orange-400"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-orange-500">
+            {meta}
+          </span>
+          <Icon
+            className="h-5 w-5 text-slate-500 transition-colors group-hover:text-orange-500"
+            suppressHydrationWarning
+          />
+        </div>
+        <h3 className="mt-16 font-serif text-3xl font-black italic text-slate-900">
+          {title}
+        </h3>
+        <p className="mt-4 text-sm leading-6 text-slate-600">{description}</p>
+        <span className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-slate-900 transition-colors group-hover:text-orange-500">
+          Open
+          <ArrowUpRight className="h-4 w-4" suppressHydrationWarning />
         </span>
-        <Icon
-          className="h-5 w-5 text-slate-500 transition-colors group-hover:text-orange-500"
-          suppressHydrationWarning
-        />
-      </div>
-      <h3 className="mt-16 font-serif text-3xl font-black italic text-slate-900">
-        {title}
-      </h3>
-      <p className="mt-4 text-sm leading-6 text-slate-600">{description}</p>
-      <span className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-slate-900 transition-colors group-hover:text-orange-500">
-        Open
-        <ArrowUpRight className="h-4 w-4" suppressHydrationWarning />
-      </span>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }
