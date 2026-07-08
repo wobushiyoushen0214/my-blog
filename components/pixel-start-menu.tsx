@@ -121,8 +121,8 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
         </div>
       </div>
 
-      <div className="mt-5 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
-        <div className="grid auto-rows-fr gap-2 sm:grid-cols-2">
+      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-stretch">
+        <div className="grid min-h-52 grid-rows-4 gap-2 sm:grid-cols-2 sm:grid-rows-2">
           {modes.map((mode) => {
             const ModeIcon = mode.icon;
             const active = mode.key === activeKey;
@@ -134,7 +134,7 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
                 aria-pressed={active}
                 data-active={active}
                 onClick={() => setActiveKey(mode.key)}
-                className="pixel-game-option min-h-24 overflow-hidden p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="pixel-game-option h-full min-h-24 overflow-hidden p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 style={{ "--mode-color": mode.color } as CSSProperties}
               >
                 <span className="flex items-center justify-between gap-3">
@@ -161,15 +161,15 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
         </div>
 
         <div
-          className="pixel-cartridge-panel border border-border bg-card p-4"
+          className="pixel-cartridge-panel flex min-h-52 flex-col border border-border bg-card p-4"
           style={{ "--mode-color": activeMode.color } as CSSProperties}
         >
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex min-h-14 items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="pixel-label text-muted-foreground">
                 {activeMode.code}
               </p>
-              <h2 className="mt-2 text-lg font-semibold leading-tight">
+              <h2 className="mt-2 line-clamp-2 text-lg font-semibold leading-tight">
                 {activeMode.title}
               </h2>
             </div>
@@ -177,13 +177,13 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
               <Icon className="h-4 w-4" suppressHydrationWarning />
             </span>
           </div>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          <p className="mt-3 min-h-12 line-clamp-2 text-sm leading-6 text-muted-foreground">
             {activeMode.description}
           </p>
-          <div className="mt-4">
+          <div className="mt-auto pt-4">
             <div className="flex items-center justify-between gap-3 font-mono text-xs text-muted-foreground">
-              <span>{activeMode.stat(props)}</span>
-              <span>{progress}%</span>
+              <span className="min-w-0 truncate">{activeMode.stat(props)}</span>
+              <span className="shrink-0">{progress}%</span>
             </div>
             <div
               className="pixel-health-bar mt-2 h-2 border border-border/70"
