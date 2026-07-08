@@ -12,7 +12,6 @@ import {
   PublicEmptyState,
   PublicFilterPill,
   PublicFilterSummary,
-  PublicMetaPill,
   PublicPageShell,
   PublicPillLink,
 } from "@/components/public-page";
@@ -230,7 +229,6 @@ export default async function PostsPage({
     searchQuery,
     sort,
   });
-  const totalCount = count || 0;
   const allArticleCount = allArticlePosts?.length || 0;
 
   return (
@@ -248,20 +246,6 @@ export default async function PostsPage({
                 : "文章"
           }
           description="技术笔记、项目复盘与长期主题。"
-          meta={
-            <>
-              <PublicMetaPill>
-                {categoryName
-                  ? `分类 / ${categoryName}`
-                  : searchQuery
-                    ? `关键词 / ${searchQuery}`
-                    : "全部文章"}
-              </PublicMetaPill>
-              <PublicMetaPill>当前 {totalCount}</PublicMetaPill>
-              <PublicMetaPill>共 {allArticleCount}</PublicMetaPill>
-              <PublicMetaPill>{getSortLabel(sort)}</PublicMetaPill>
-            </>
-          }
         />
 
         <PublicControlStrip>

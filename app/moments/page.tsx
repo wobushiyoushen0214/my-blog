@@ -12,7 +12,6 @@ import {
   PublicEmptyState,
   PublicFilterPill,
   PublicFilterSummary,
-  PublicMetaPill,
   PublicPageShell,
   PublicPillLink,
 } from "@/components/public-page";
@@ -266,20 +265,6 @@ export default async function MomentsPage({
                 : "见闻"
           }
           description="轻量观察、摘录和阶段性记录。"
-          meta={
-            <>
-              <PublicMetaPill>
-                {activeCategory
-                  ? `分类 / ${activeCategory.name}`
-                  : searchQuery
-                    ? `关键词 / ${searchQuery}`
-                    : "全部见闻"}
-              </PublicMetaPill>
-              <PublicMetaPill>当前 {totalCount}</PublicMetaPill>
-              <PublicMetaPill>共 {totalMomentCount}</PublicMetaPill>
-              <PublicMetaPill>{getSortLabel(sort)}</PublicMetaPill>
-            </>
-          }
         />
 
         <PublicControlStrip>
