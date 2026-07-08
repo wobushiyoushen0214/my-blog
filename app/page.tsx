@@ -284,7 +284,7 @@ function FeaturedEssay({ post }: { post: PostWithTaxonomy }) {
           ) : (
             <span className="absolute inset-0 flex flex-col justify-between p-5">
               <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400">
-                Lee Notes
+                leempty
               </span>
               <span className="max-w-[11rem] font-serif text-2xl italic leading-tight text-neutral-500 dark:text-neutral-400">
                 {contentTypeLabel(post)}

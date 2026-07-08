@@ -50,7 +50,7 @@ export function HeaderClient() {
             href="/"
             className="shrink-0 font-serif text-2xl font-bold italic tracking-tighter text-slate-900 transition-colors dark:text-white"
           >
-            LeeNotes.
+            leempty
           </Link>
 
           <div className="hidden h-4 w-px bg-neutral-200 dark:bg-neutral-800 md:block" />
