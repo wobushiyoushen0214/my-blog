@@ -5,8 +5,8 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
-        <p className="rounded-md border border-border bg-muted/50 px-2 py-1">
-          &copy; {new Date().getFullYear()} Lee / Notes
+        <p>
+          &copy; {new Date().getFullYear()} Narrative Studio. Cultivating structure & rhythm.
         </p>
         <nav
           className="flex flex-wrap items-center gap-x-4 gap-y-2"
@@ -18,7 +18,7 @@ export function Footer() {
             title="RSS Feed"
           >
             <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
-            RSS
+            Dispatch
           </Link>
           <Link
             href="/admin"

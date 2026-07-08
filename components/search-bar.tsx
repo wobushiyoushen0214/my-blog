@@ -75,7 +75,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
           aria-keyshortcuts="/"
         >
           <Search className="h-4 w-4" suppressHydrationWarning />
-          <span className="sr-only sm:not-sr-only">搜索</span>
+          <span className="sr-only sm:not-sr-only">Search indices...</span>
         </button>
       </DialogTrigger>
       <DialogContent

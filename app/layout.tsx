@@ -6,7 +6,14 @@
  * @Description: 
  */
 import type { Metadata } from "next";
-import { Geist_Mono, Hanken_Grotesk, Press_Start_2P } from "next/font/google";
+import {
+  Geist_Mono,
+  Hanken_Grotesk,
+  Inter,
+  JetBrains_Mono,
+  Lora,
+  Press_Start_2P,
+} from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -27,6 +34,21 @@ const pressStart = Press_Start_2P({
   variable: "--font-press-start",
   subsets: ["latin"],
   weight: "400",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
+  subsets: ["latin"],
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -50,11 +72,11 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body
-        className={`${hankenGrotesk.variable} ${geistMono.variable} ${pressStart.variable} font-sans`}
+        className={`${hankenGrotesk.variable} ${geistMono.variable} ${pressStart.variable} ${inter.variable} ${lora.variable} ${jetBrainsMono.variable} font-sans`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
         >

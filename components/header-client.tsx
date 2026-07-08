@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SearchBar } from "@/components/search-bar";
 import { cn } from "@/lib/utils";
@@ -47,22 +46,20 @@ export function HeaderClient() {
           href="/"
           className="site-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
-          <span className="site-brand-mark" aria-hidden="true">
-            <Sparkles className="h-4 w-4" suppressHydrationWarning />
-          </span>
+          <span className="site-brand-mark">NARRATIVE.</span>
           <span className="site-brand-copy">
-            <span>Lee Studio</span>
-            <span>Notes and field logs</span>
+            <span>Lee Notes</span>
+            <span>Digital Garden</span>
           </span>
         </Link>
 
         <nav className="site-nav" aria-label="主导航">
-          <NavLink href="/" label="首页" active={isHome} />
-          <NavLink href="/posts" label="文章" active={isPosts} />
-          <NavLink href="/moments" label="见闻" active={isMoments} />
-          <NavLink href="/tag" label="标签" active={isTags} />
-          <NavLink href="/archive" label="归档" active={isArchive} />
-          <NavLink href="/links" label="友链" active={isLinks} />
+          <NavLink href="/" label="Garden" active={isHome} />
+          <NavLink href="/posts" label="Essays" active={isPosts} />
+          <NavLink href="/moments" label="Logs" active={isMoments} />
+          <NavLink href="/tag" label="Index" active={isTags} />
+          <NavLink href="/archive" label="Timeline" active={isArchive} />
+          <NavLink href="/links" label="Links" active={isLinks} />
         </nav>
 
         <div className="site-sidebar-tools">
