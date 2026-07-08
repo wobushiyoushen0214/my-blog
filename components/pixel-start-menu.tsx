@@ -121,8 +121,8 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
         </div>
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
-        <div className="grid gap-2 sm:grid-cols-2">
+      <div className="mt-5 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
+        <div className="grid auto-rows-fr gap-2 sm:grid-cols-2">
           {modes.map((mode) => {
             const ModeIcon = mode.icon;
             const active = mode.key === activeKey;
@@ -134,7 +134,7 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
                 aria-pressed={active}
                 data-active={active}
                 onClick={() => setActiveKey(mode.key)}
-                className="pixel-game-option min-h-20 overflow-hidden p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="pixel-game-option min-h-24 overflow-hidden p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 style={{ "--mode-color": mode.color } as CSSProperties}
               >
                 <span className="flex items-center justify-between gap-3">
