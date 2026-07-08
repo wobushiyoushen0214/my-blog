@@ -53,12 +53,12 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Lee",
-    template: "%s | Lee",
+    default: "leempty",
+    template: "%s | leempty",
   },
   description: siteDescription,
   openGraph: {
-    title: "Lee",
+    title: "leempty",
     description: siteDescription,
     type: "website",
   },

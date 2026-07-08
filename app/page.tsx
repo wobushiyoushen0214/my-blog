@@ -1,420 +1,360 @@
-import { createClient } from "@/lib/supabase/server";
-import { ContentRow } from "@/components/content-row";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import {
-  Archive,
+  ArrowUpRight,
+  BookOpen,
+  Code2,
+  Gamepad2,
   Link as LinkIcon,
-  Layers,
-  Pin,
+  Mail,
+  MapPin,
+  Music2,
+  PenLine,
   Rss,
+  Sparkles,
+  Terminal,
 } from "lucide-react";
-import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
-type PostWithTaxonomy = Post & {
-  category?: Category | null;
-  tags?: Tag[];
-};
+const profileLinks = [
+  { href: "/posts", label: "Blog" },
+  { href: "/moments", label: "Moments" },
+  { href: "/tag", label: "Tags" },
+  { href: "/links", label: "Links" },
+];
 
-function attachTagsFromRows(
-  posts: PostWithTaxonomy[],
-  postTags: PostTag[],
-  tags: Tag[]
-) {
-  const tagById = new Map(tags.map((tag) => [tag.id, tag]));
-  const tagsByPostId = new Map<string, Tag[]>();
+const roles = [
+  "Frontend Developer",
+  "Product Builder",
+  "Technical Writer",
+  "Digital Tinkerer",
+];
 
-  postTags.forEach((postTag) => {
-    const tag = tagById.get(postTag.tag_id);
-    if (!tag) return;
+const blogEntrances = [
+  {
+    href: "/posts",
+    title: "文章",
+    description: "长期技术笔记、项目复盘和工程实践。",
+    meta: "Essays",
+    icon: PenLine,
+  },
+  {
+    href: "/moments",
+    title: "见闻",
+    description: "轻量观察、摘录和阶段性记录。",
+    meta: "Field Logs",
+    icon: Sparkles,
+  },
+  {
+    href: "/archive",
+    title: "归档",
+    description: "按时间回看所有已经发布的内容。",
+    meta: "Archive",
+    icon: BookOpen,
+  },
+];
 
-    const groupedTags = tagsByPostId.get(postTag.post_id);
-    if (groupedTags) {
-      groupedTags.push(tag);
-      return;
-    }
+const focusAreas = [
+  {
+    id: "code",
+    eyebrow: "Code",
+    title: "把复杂界面拆成可维护的产品系统。",
+    description:
+      "关注 React、Next.js、工程化、交互细节，以及从真实需求里长出来的前端架构。",
+    icon: Code2,
+  },
+  {
+    id: "writing",
+    eyebrow: "Writing",
+    title: "把项目里的判断、踩坑和方法沉淀下来。",
+    description:
+      "博客保留原有功能，作为文章、见闻、标签和归档的内容系统继续运行。",
+    icon: Terminal,
+  },
+  {
+    id: "life",
+    eyebrow: "Life",
+    title: "记录工具、游戏、音乐和日常灵感。",
+    description:
+      "个人页负责快速介绍我是谁，博客负责承载更完整的内容和上下文。",
+    icon: Gamepad2,
+  },
+];
 
-    tagsByPostId.set(postTag.post_id, [tag]);
-  });
-
-  return posts.map((post) => ({
-    ...post,
-    tags: tagsByPostId.get(post.id) || [],
-  }));
-}
-
-function formatShortDate(date: string) {
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("zh-CN").format(value || 0);
-}
-
-function contentTypeLabel(post?: PostWithTaxonomy | null) {
-  return post?.category?.type === "moment" ? "见闻" : "文章";
-}
-
-function estimateReadingMinutes(post: Pick<PostWithTaxonomy, "title" | "content" | "excerpt">) {
-  const text = (post.content || post.excerpt || post.title)
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  const cjkCount = text.match(/[\u4e00-\u9fff]/g)?.length || 0;
-  const latinWordCount =
-    text
-      .replace(/[\u4e00-\u9fff]/g, " ")
-      .match(/[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*/g)?.length || 0;
-
-  return Math.max(1, Math.ceil(cjkCount / 450 + latinWordCount / 220));
-}
-
-function stripHtml(value?: string | null) {
-  return (value || "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&[a-zA-Z0-9#]+;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-export default async function HomePage() {
-  const supabase = await createClient();
-
-  const [
-    { data: recentData },
-    { data: publishedRows },
-    { data: categories },
-    { data: tags },
-  ] = await Promise.all([
-    supabase
-      .from("posts")
-      .select("*, category:categories(*)")
-      .eq("published", true)
-      .order("created_at", { ascending: false })
-      .limit(8),
-    supabase
-      .from("posts")
-      .select("id, category_id, view_count")
-      .eq("published", true),
-    supabase.from("categories").select("*").order("name"),
-    supabase.from("tags").select("*").order("name"),
-  ]);
-
-  const categoryById = new Map(
-    (categories || []).map((category) => [category.id, category as Category])
-  );
-  const publishedPostIds = (publishedRows || []).map((post) => post.id);
-  const { data: postTags } =
-    publishedPostIds.length > 0
-      ? await supabase
-          .from("post_tags")
-          .select("post_id, tag_id")
-          .in("post_id", publishedPostIds)
-      : { data: [] };
-
-  const postTagRows = (postTags || []) as PostTag[];
-  const tagRows = (tags || []) as Tag[];
-  const postsWithTags = attachTagsFromRows(
-    (recentData || []) as unknown as PostWithTaxonomy[],
-    postTagRows,
-    tagRows
-  );
-
-  const articleCount = (publishedRows || []).filter((post) => {
-    const category = post.category_id ? categoryById.get(post.category_id) : null;
-    return category?.type !== "moment";
-  }).length;
-  const momentCount = (publishedRows || []).filter((post) => {
-    const category = post.category_id ? categoryById.get(post.category_id) : null;
-    return category?.type === "moment";
-  }).length;
-  const totalViews = (publishedRows || []).reduce(
-    (sum, post) => sum + (post.view_count || 0),
-    0
-  );
-  const ledgerPosts = postsWithTags;
-  const featuredPost = ledgerPosts[0] || null;
-  const regularPosts = ledgerPosts.slice(1);
-  const visibleCategories = ((categories || []) as Category[])
-    .filter((category) => category.type !== "moment")
-    .slice(0, 4);
-
+export default function PersonalHomePage() {
   return (
-    <div className="min-h-screen bg-neutral-50 font-sans text-slate-800 transition-colors duration-300 dark:bg-[#0a0a0a] dark:text-neutral-200">
-      <Header />
-      <main className="min-h-[calc(100vh-5rem)]">
-        <div className="narrative-catalog mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+    <main className="min-h-screen bg-[#f5f2ea] text-slate-800">
+      <PersonalHeader />
+
+      <section
+        id="home"
+        className="mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-20 pt-28 sm:px-8 lg:px-10"
+      >
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.72fr)]">
+          <div className="relative">
+            <div className="relative max-w-xl border border-slate-900/10 bg-[#fffaf0] p-6 shadow-[12px_12px_0_rgba(15,23,42,0.12)] sm:p-8">
+              <p className="text-lg font-extrabold text-slate-900">
+                My name is:
+              </p>
+              <h1 className="mt-5 border-b-2 border-slate-800 pb-5 font-serif text-5xl font-black italic leading-none text-orange-500 sm:text-7xl">
+                leempty
+              </h1>
+              <div className="mt-6 text-right">
+                <p className="mb-3 text-left text-lg font-extrabold text-slate-900">
+                  I&apos;m a:
+                </p>
+                <ul className="space-y-1 text-xl font-semibold leading-tight text-slate-800 sm:text-2xl">
+                  {roles.map((role) => (
+                    <li key={role}>
+                      <a
+                        href="#code"
+                        className="underline decoration-transparent underline-offset-4 transition-colors hover:text-orange-500 hover:decoration-orange-400"
+                      >
+                        {role}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="absolute -bottom-5 -left-5 h-16 w-16 bg-orange-400" />
+            </div>
+
+            <p className="mt-10 max-w-3xl text-2xl font-medium leading-snug text-slate-700 sm:text-3xl">
+              I build web products, write down engineering notes, and keep a
+              small public notebook about code, tools and daily observations.
+            </p>
+          </div>
+
+          <div className="relative min-h-[28rem] overflow-hidden border border-slate-900/10 bg-slate-900 p-6 text-[#f5f2ea] shadow-[12px_12px_0_rgba(15,23,42,0.14)]">
+            <div className="absolute inset-8 border border-dashed border-white/15" />
+            <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15" />
+            <div className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20" />
+            <div className="relative z-10 flex h-full min-h-[24rem] flex-col justify-between">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
+                <span>Profile</span>
+                <span>Suzhou, China</span>
+              </div>
+              <div className="mx-auto grid h-36 w-36 place-items-center border border-white/20 bg-white/10 text-center backdrop-blur">
+                <span className="font-serif text-5xl font-black italic text-orange-400">
+                  le
+                </span>
+              </div>
+              <div className="grid gap-3 text-sm text-white/70 sm:grid-cols-2">
+                <a
+                  href="mailto:hello@leempty.site"
+                  className="flex items-center gap-2 transition-colors hover:text-white"
+                >
+                  <Mail className="h-4 w-4" suppressHydrationWarning />
+                  hello@leempty.site
+                </a>
+                <Link
+                  href="/rss.xml"
+                  className="flex items-center gap-2 transition-colors hover:text-white"
+                >
+                  <Rss className="h-4 w-4" suppressHydrationWarning />
+                  RSS Feed
+                </Link>
+                <Link
+                  href="/links"
+                  className="flex items-center gap-2 transition-colors hover:text-white"
+                >
+                  <LinkIcon className="h-4 w-4" suppressHydrationWarning />
+                  Links
+                </Link>
+                <span className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" suppressHydrationWarning />
+                  Remote / Web
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="blog"
+        className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10"
+      >
+        <div className="flex flex-col gap-4 border-b border-slate-900/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-orange-500">
+              Blog System
+            </p>
+            <h2 className="mt-3 font-serif text-4xl font-black italic text-slate-900">
+              博客功能保留在这里。
+            </h2>
+          </div>
+          <p className="max-w-lg text-sm leading-6 text-slate-600">
+            根路由用于个人介绍；文章、见闻、标签、归档、友链和 RSS 继续作为独立内容入口。
+          </p>
+        </div>
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
+          {blogEntrances.map((item) => (
+            <FeatureLink key={item.href} {...item} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10">
+        <div className="grid gap-5 lg:grid-cols-3">
+          {focusAreas.map((item) => (
             <section
-              className="space-y-10 lg:col-span-3"
-              aria-label="Garden catalog"
+              key={item.id}
+              id={item.id}
+              className="border border-slate-900/10 bg-white/55 p-6"
             >
-              <CategoryFilterStrip
-                categories={visibleCategories}
-                totalCount={publishedRows?.length || 0}
-              />
-
-              {featuredPost ? (
-                <div className="space-y-12">
-                  <FeaturedEssay post={featuredPost} />
-                  <RecentLedger posts={regularPosts} />
-                </div>
-              ) : (
-                <div className="py-16 text-center">
-                  <p className="font-serif text-base font-light italic text-slate-950 dark:text-white">
-                    Garden is empty
-                  </p>
-                  <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                    发布内容后，这里会展示最新的 garden notes。
-                  </p>
-                </div>
-              )}
-            </section>
-
-            <aside className="lg:col-span-1" aria-label="Garden profile">
-              <div className="sticky top-24 space-y-6">
-                <AuthorProfile />
-                <GardenStatus
-                  articleCount={articleCount}
-                  momentCount={momentCount}
-                  totalCount={publishedRows?.length || 0}
-                  totalViews={totalViews}
+              <div className="mb-12 flex items-center justify-between">
+                <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-orange-500">
+                  {item.eyebrow}
+                </span>
+                <item.icon
+                  className="h-5 w-5 text-slate-500"
+                  suppressHydrationWarning
                 />
               </div>
-            </aside>
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-function RecentLedger({ posts }: { posts: PostWithTaxonomy[] }) {
-  return (
-    <section className="space-y-4" aria-label="Recent garden notes">
-      {posts.length > 0 ? (
-        <>
-          <div className="font-sans text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
-            <span>Recent Garden Notes</span>
-          </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {posts.map((post) => (
-            <ContentRow
-              key={post.id}
-              post={post}
-              dateLabel={formatShortDate(post.created_at)}
-              typeLabel={contentTypeLabel(post)}
-              rightMeta={[`${formatNumber(post.view_count)} 阅读`]}
-            />
-          ))}
-          </div>
-        </>
-      ) : (
-        <div className="py-10 text-center">
-          <span className="text-xs leading-6 text-neutral-500 dark:text-neutral-400">
-            继续发布后，这里会形成最近的 garden notes。
-          </span>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function CategoryFilterStrip({
-  categories,
-  totalCount,
-}: {
-  categories: Category[];
-  totalCount: number;
-}) {
-  return (
-    <div className="flex flex-col gap-4 border-b border-slate-50 pb-5 dark:border-zinc-800/40 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-wrap gap-2">
-        <Link className="narrative-pill narrative-pill-active" href="/posts">
-          All Seeds
-        </Link>
-        {categories.map((category) => (
-          <Link
-            key={category.id}
-            className="narrative-pill"
-            href={`/posts?category=${encodeURIComponent(category.slug)}`}
-          >
-            {category.name}
-          </Link>
-        ))}
-      </div>
-      <span className="font-mono text-[10px] uppercase text-slate-400 dark:text-zinc-500">
-        Showing {totalCount} logs
-      </span>
-    </div>
-  );
-}
-
-function FeaturedEssay({ post }: { post: PostWithTaxonomy }) {
-  const coverImage = post.cover_image?.trim();
-
-  return (
-    <section className="space-y-4" aria-label="Featured essay">
-      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
-        <Pin className="h-3.5 w-3.5 rotate-45 text-neutral-400" suppressHydrationWarning />
-        <span>Featured Essay</span>
-      </div>
-
-      <Link
-        href={`/blog/${post.slug}`}
-        className="group relative flex cursor-pointer flex-col overflow-hidden rounded-md border border-neutral-200 bg-white transition-all hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900/10 dark:hover:border-neutral-700 md:flex-row"
-      >
-        <div
-          className="narrative-media-slot relative aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-900 md:w-2/5 md:aspect-auto"
-          style={
-            coverImage
-              ? { backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")` }
-              : undefined
-          }
-          aria-label={coverImage ? post.title : undefined}
-        >
-          {coverImage ? (
-            <span className="absolute inset-0 bg-neutral-950/10 transition-colors duration-500 group-hover:bg-transparent" />
-          ) : (
-            <span className="absolute inset-0 flex flex-col justify-between p-5">
-              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400">
-                leempty
-              </span>
-              <span className="max-w-[11rem] font-serif text-2xl italic leading-tight text-neutral-500 dark:text-neutral-400">
-                {contentTypeLabel(post)}
-              </span>
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col justify-between p-8 md:w-3/5">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
-                {contentTypeLabel(post)}
-              </span>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-                {estimateReadingMinutes(post)} min read
-              </span>
-            </div>
-            <h2 className="font-serif text-3xl font-light italic leading-[1.2] text-slate-950 transition-colors dark:text-white">
-              {post.title}
-            </h2>
-            {post.excerpt ? (
-              <p className="line-clamp-3 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
-                {stripHtml(post.excerpt)}
+              <h3 className="font-serif text-2xl font-black italic leading-tight text-slate-900">
+                {item.title}
+              </h3>
+              <p className="mt-5 text-sm leading-6 text-slate-600">
+                {item.description}
               </p>
-            ) : null}
-          </div>
+            </section>
+          ))}
+        </div>
+      </section>
 
-          <div className="mt-8 flex items-center justify-between border-t border-neutral-100 pt-6 dark:border-neutral-800/40">
-            <div className="flex min-w-0 flex-wrap gap-2">
-              {(post.tags || []).slice(0, 4).map((tag) => (
-                <span
-                  key={tag.id}
-                  className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500"
-                >
-                  #{tag.name.toLowerCase()}
-                </span>
-              ))}
+      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-8 lg:px-10">
+        <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="bg-slate-900 p-8 text-[#f5f2ea]">
+            <Music2 className="h-7 w-7 text-orange-400" suppressHydrationWarning />
+            <h2 className="mt-8 font-serif text-4xl font-black italic">
+              Space for projects, games and music.
+            </h2>
+          </div>
+          <div className="border border-slate-900/10 bg-[#fffaf0] p-8">
+            <p className="text-2xl font-medium leading-snug text-slate-700">
+              这个个人页只负责第一印象和方向导航。更细的内容继续沉淀在博客系统里，避免把首页变成重复的信息列表。
+            </p>
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+              <Link
+                href="/posts"
+                className="inline-flex items-center gap-2 font-bold text-slate-900 transition-colors hover:text-orange-500"
+              >
+                Read posts
+                <ArrowUpRight className="h-4 w-4" suppressHydrationWarning />
+              </Link>
+              <Link
+                href="/archive"
+                className="inline-flex items-center gap-2 font-bold text-slate-900 transition-colors hover:text-orange-500"
+              >
+                View archive
+                <ArrowUpRight className="h-4 w-4" suppressHydrationWarning />
+              </Link>
             </div>
-            <span className="flex shrink-0 items-center gap-4 text-slate-950 dark:text-white">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.25em]">
-                Read Essay
-              </span>
-              <span className="h-px w-10 bg-neutral-400 transition-all duration-300 group-hover:w-16 dark:bg-neutral-600" />
-            </span>
           </div>
         </div>
-      </Link>
-    </section>
-  );
-}
+      </section>
 
-function AuthorProfile() {
-  return (
-    <section className="rounded-md border border-neutral-200 bg-white p-6 text-center dark:border-neutral-800 dark:bg-neutral-900/10">
-      <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-full border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950">
-        <span className="font-serif text-xl font-semibold italic text-slate-950 dark:text-white">
-          Lee
+      <footer className="mx-auto flex w-full max-w-7xl flex-col gap-4 border-t border-slate-900/10 px-4 py-10 text-sm text-slate-500 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
+        <span className="font-serif text-2xl font-black italic text-slate-300">
+          leempty
         </span>
-      </div>
-
-      <h2 className="font-serif text-base font-light text-slate-950 dark:text-white">
-        Lee
-      </h2>
-      <span className="mt-1 block font-sans text-[8px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
-        Developer & Writer
-      </span>
-
-      <p className="mt-4 px-2 text-center font-serif text-xs italic leading-relaxed text-neutral-500 dark:text-neutral-400">
-        &quot;Cultivating notes across engineering practice, project retrospectives,
-        and small observations.&quot;
-      </p>
-
-      <div className="mt-5 flex items-center justify-center gap-4 text-neutral-400 dark:text-neutral-500">
-        <Link href="/links" className="transition-colors hover:text-slate-900 dark:hover:text-white" title="Links">
-          <LinkIcon className="h-4 w-4" suppressHydrationWarning />
-        </Link>
-        <Link href="/archive" className="transition-colors hover:text-slate-900 dark:hover:text-white" title="Archive">
-          <Archive className="h-4 w-4" suppressHydrationWarning />
-        </Link>
-        <Link href="/rss.xml" className="transition-colors hover:text-slate-900 dark:hover:text-white" title="RSS dispatch">
-          <Rss className="h-4 w-4" suppressHydrationWarning />
-        </Link>
-      </div>
-    </section>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <Link href="/posts" className="transition-colors hover:text-slate-900">
+            Blog
+          </Link>
+          <Link href="/links" className="transition-colors hover:text-slate-900">
+            Links
+          </Link>
+          <Link href="/rss.xml" className="transition-colors hover:text-slate-900">
+            RSS
+          </Link>
+        </div>
+      </footer>
+    </main>
   );
 }
 
-function GardenStatus({
-  articleCount,
-  momentCount,
-  totalCount,
-  totalViews,
+function PersonalHeader() {
+  return (
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-slate-900/10 bg-[#f5f2ea]/85 px-4 py-4 backdrop-blur sm:px-8 lg:px-10">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
+        <nav className="flex items-center gap-8 text-slate-700">
+          <a href="#home" className="font-serif text-2xl font-black italic">
+            leempty
+          </a>
+          <div className="hidden items-center gap-6 text-sm font-medium lg:flex">
+            <a href="#blog" className="transition-colors hover:text-orange-500">
+              Blog
+            </a>
+            <a href="#code" className="transition-colors hover:text-orange-500">
+              Code
+            </a>
+            <a href="#writing" className="transition-colors hover:text-orange-500">
+              Writing
+            </a>
+            <a href="#life" className="transition-colors hover:text-orange-500">
+              Life
+            </a>
+          </div>
+        </nav>
+        <div className="flex items-center gap-4 text-sm font-medium text-slate-700">
+          {profileLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="hidden transition-colors hover:text-orange-500 sm:inline"
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Link
+            href="/links"
+            aria-label="Links"
+            className="transition-colors hover:text-orange-500"
+          >
+            <LinkIcon className="h-5 w-5" suppressHydrationWarning />
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function FeatureLink({
+  href,
+  title,
+  description,
+  meta,
+  icon: Icon,
 }: {
-  articleCount: number;
-  momentCount: number;
-  totalCount: number;
-  totalViews: number;
+  href: string;
+  title: string;
+  description: string;
+  meta: string;
+  icon: LucideIcon;
 }) {
   return (
-    <section className="rounded-md border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900/10">
-      <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2.5 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-neutral-800 dark:text-neutral-500">
-        <Layers className="h-3.5 w-3.5" suppressHydrationWarning />
-        <span>Garden Status</span>
-      </h2>
-      <ul className="space-y-3 text-xs text-neutral-500 dark:text-neutral-400">
-        <li className="flex items-center justify-between">
-          <span>Total Active Seeds</span>
-          <span className="font-serif font-bold italic text-slate-950 dark:text-white">
-            {totalCount}
-          </span>
-        </li>
-        <li className="flex items-center justify-between">
-          <span>Essays</span>
-          <span className="font-serif font-bold italic text-slate-950 dark:text-white">
-            {articleCount}
-          </span>
-        </li>
-        <li className="flex items-center justify-between">
-          <span>Field Logs</span>
-          <span className="font-serif font-bold italic text-slate-950 dark:text-white">
-            {momentCount}
-          </span>
-        </li>
-        <li className="flex items-center justify-between">
-          <span>Total Views</span>
-          <span className="font-mono text-[10px] text-neutral-400">
-            {formatNumber(totalViews)}
-          </span>
-        </li>
-      </ul>
-    </section>
+    <Link
+      href={href}
+      className="group border border-slate-900/10 bg-[#fffaf0] p-6 transition-colors hover:border-orange-400"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-orange-500">
+          {meta}
+        </span>
+        <Icon
+          className="h-5 w-5 text-slate-500 transition-colors group-hover:text-orange-500"
+          suppressHydrationWarning
+        />
+      </div>
+      <h3 className="mt-16 font-serif text-3xl font-black italic text-slate-900">
+        {title}
+      </h3>
+      <p className="mt-4 text-sm leading-6 text-slate-600">{description}</p>
+      <span className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-slate-900 transition-colors group-hover:text-orange-500">
+        Open
+        <ArrowUpRight className="h-4 w-4" suppressHydrationWarning />
+      </span>
+    </Link>
   );
 }
