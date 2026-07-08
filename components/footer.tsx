@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="site-footer-inner">
         <p>
-          &copy; {new Date().getFullYear()} Narrative Studio. Cultivating structure & rhythm.
+          &copy; {new Date().getFullYear()} Lee Notes. Engineering, projects & field logs.
         </p>
         <nav
           className="flex flex-wrap items-center gap-x-4 gap-y-2"

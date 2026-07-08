@@ -67,21 +67,6 @@ function getTypeLabel(post: ContentRowPost) {
   return post.category?.type === "moment" ? "见闻" : "文章";
 }
 
-const fallbackCovers = [
-  "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1541462608143-67571c6738dd?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-];
-
-function getCoverImage(post: Pick<ContentRowPost, "cover_image" | "slug">) {
-  if (post.cover_image) return post.cover_image;
-  const index = post.slug
-    .split("")
-    .reduce((sum, char) => sum + char.charCodeAt(0), 0) % fallbackCovers.length;
-  return fallbackCovers[index];
-}
-
 export function ContentRow({
   post,
   dateLabel,
@@ -107,6 +92,7 @@ export function ContentRow({
     ];
   const visibleTags = showTags ? post.tags?.slice(0, 4) || [] : [];
   const readMinutes = estimateReadingMinutes(post);
+  const coverImage = post.cover_image?.trim();
 
   return (
     <Link
@@ -116,13 +102,27 @@ export function ContentRow({
         className
       )}
     >
-      <span className="relative mb-4 block aspect-[16/10] overflow-hidden rounded-sm bg-neutral-100 dark:bg-neutral-900">
-        <img
-          src={getCoverImage(post)}
-          alt={post.title}
-          referrerPolicy="no-referrer"
-          className="h-full w-full object-cover grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100"
-        />
+      <span
+        className="narrative-media-slot relative mb-4 block aspect-[16/10] overflow-hidden rounded-sm bg-neutral-100 dark:bg-neutral-900"
+        style={
+          coverImage
+            ? { backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")` }
+            : undefined
+        }
+        aria-label={coverImage ? post.title : undefined}
+      >
+        {coverImage ? (
+          <span className="absolute inset-0 bg-neutral-950/10 transition-colors duration-500 group-hover:bg-transparent" />
+        ) : (
+          <span className="absolute inset-0 flex flex-col justify-between p-4">
+            <span className="font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-neutral-400">
+              Lee Notes
+            </span>
+            <span className="max-w-[8rem] font-serif text-xl italic leading-tight text-neutral-500 dark:text-neutral-400">
+              {displayType}
+            </span>
+          </span>
+        )}
         <span className="absolute right-3 top-3 border border-neutral-200 bg-neutral-100 px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
           {displayType}
         </span>

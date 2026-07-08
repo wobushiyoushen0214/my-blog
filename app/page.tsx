@@ -5,11 +5,11 @@ import { Footer } from "@/components/footer";
 import { DeviceShell } from "@/components/device-shell";
 import Link from "next/link";
 import {
-  Github,
+  Archive,
+  Link as LinkIcon,
   Layers,
   Pin,
   Rss,
-  Twitter,
 } from "lucide-react";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
@@ -59,21 +59,6 @@ function formatNumber(value: number) {
 
 function contentTypeLabel(post?: PostWithTaxonomy | null) {
   return post?.category?.type === "moment" ? "见闻" : "文章";
-}
-
-const fallbackCovers = [
-  "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1541462608143-67571c6738dd?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
-];
-
-function getCoverImage(post: Pick<PostWithTaxonomy, "cover_image" | "slug">) {
-  if (post.cover_image) return post.cover_image;
-  const index = post.slug
-    .split("")
-    .reduce((sum, char) => sum + char.charCodeAt(0), 0) % fallbackCovers.length;
-  return fallbackCovers[index];
 }
 
 function estimateReadingMinutes(post: Pick<PostWithTaxonomy, "title" | "content" | "excerpt">) {
@@ -270,6 +255,8 @@ function CategoryFilterStrip({
 }
 
 function FeaturedEssay({ post }: { post: PostWithTaxonomy }) {
+  const coverImage = post.cover_image?.trim();
+
   return (
     <section className="space-y-4" aria-label="Featured essay">
       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
@@ -281,13 +268,27 @@ function FeaturedEssay({ post }: { post: PostWithTaxonomy }) {
         href={`/blog/${post.slug}`}
         className="group relative flex cursor-pointer flex-col overflow-hidden rounded-md border border-neutral-200 bg-white transition-all hover:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900/10 dark:hover:border-neutral-700 md:flex-row"
       >
-        <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-900 md:w-2/5 md:aspect-auto">
-          <img
-            src={getCoverImage(post)}
-            alt={post.title}
-            referrerPolicy="no-referrer"
-            className="h-full w-full object-cover grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100"
-          />
+        <div
+          className="narrative-media-slot relative aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-900 md:w-2/5 md:aspect-auto"
+          style={
+            coverImage
+              ? { backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")` }
+              : undefined
+          }
+          aria-label={coverImage ? post.title : undefined}
+        >
+          {coverImage ? (
+            <span className="absolute inset-0 bg-neutral-950/10 transition-colors duration-500 group-hover:bg-transparent" />
+          ) : (
+            <span className="absolute inset-0 flex flex-col justify-between p-5">
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400">
+                Lee Notes
+              </span>
+              <span className="max-w-[11rem] font-serif text-2xl italic leading-tight text-neutral-500 dark:text-neutral-400">
+                {contentTypeLabel(post)}
+              </span>
+            </span>
+          )}
         </div>
         <div className="flex flex-col justify-between p-8 md:w-3/5">
           <div className="space-y-4">
@@ -336,13 +337,10 @@ function FeaturedEssay({ post }: { post: PostWithTaxonomy }) {
 function AuthorProfile() {
   return (
     <section className="rounded-md border border-neutral-200 bg-white p-6 text-center dark:border-neutral-800 dark:bg-neutral-900/10">
-      <div className="mx-auto mb-4 h-20 w-20 overflow-hidden rounded-full border border-neutral-200 p-0.5 dark:border-neutral-800">
-        <img
-          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
-          alt="Garden owner portrait"
-          referrerPolicy="no-referrer"
-          className="h-full w-full rounded-full object-cover grayscale opacity-90 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
-        />
+      <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-full border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950">
+        <span className="font-serif text-xl font-semibold italic text-slate-950 dark:text-white">
+          Lee
+        </span>
       </div>
 
       <h2 className="font-serif text-base font-light text-slate-950 dark:text-white">
@@ -359,10 +357,10 @@ function AuthorProfile() {
 
       <div className="mt-5 flex items-center justify-center gap-4 text-neutral-400 dark:text-neutral-500">
         <Link href="/links" className="transition-colors hover:text-slate-900 dark:hover:text-white" title="Links">
-          <Twitter className="h-4 w-4" suppressHydrationWarning />
+          <LinkIcon className="h-4 w-4" suppressHydrationWarning />
         </Link>
         <Link href="/archive" className="transition-colors hover:text-slate-900 dark:hover:text-white" title="Archive">
-          <Github className="h-4 w-4" suppressHydrationWarning />
+          <Archive className="h-4 w-4" suppressHydrationWarning />
         </Link>
         <Link href="/rss.xml" className="transition-colors hover:text-slate-900 dark:hover:text-white" title="RSS dispatch">
           <Rss className="h-4 w-4" suppressHydrationWarning />

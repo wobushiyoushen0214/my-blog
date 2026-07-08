@@ -46,7 +46,7 @@ export function HeaderClient() {
           href="/"
           className="site-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
-          <span className="site-brand-mark">NARRATIVE.</span>
+          <span className="site-brand-mark">Lee Notes.</span>
           <span className="site-brand-copy">
             <span>Lee Notes</span>
             <span>Digital Garden</span>

@@ -3699,7 +3699,7 @@
   }
 }
 
-/* NARRATIVE final alignment. Kept after all legacy public-site overrides. */
+/* Final editorial garden alignment. Kept after all legacy public-site overrides. */
 @layer components {
   :root {
     --background: #fafafa;
@@ -4001,6 +4001,38 @@
     border-color: #e5e5e5 !important;
     background: #ffffff !important;
     text-decoration: none !important;
+  }
+
+  .narrative-media-slot {
+    background:
+      linear-gradient(135deg, rgba(15, 23, 42, 0.05), transparent 42%),
+      repeating-linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.07) 0 1px,
+        transparent 1px 12px
+      ),
+      #f5f5f5 !important;
+    background-position: center;
+    background-size: cover;
+    filter: grayscale(1);
+    transition:
+      filter 500ms ease,
+      opacity 500ms ease;
+  }
+
+  .group:hover .narrative-media-slot {
+    filter: grayscale(0);
+  }
+
+  .dark .narrative-media-slot {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 42%),
+      repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08) 0 1px,
+        transparent 1px 12px
+      ),
+      #171717 !important;
   }
 
   .narrative-article-card:hover {
