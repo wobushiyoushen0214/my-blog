@@ -33,9 +33,9 @@ const modes: Mode[] = [
   {
     key: "posts",
     label: "阅读",
-    code: "QUEST",
-    title: "主线任务",
-    description: "进入技术笔记、项目复盘和长期主题。",
+    code: "Writing",
+    title: "文章库",
+    description: "系统化的技术笔记、项目复盘和长期主题。",
     href: "/posts",
     cta: "进入文章",
     stat: ({ articleCount }) => `${articleCount} 篇文章`,
@@ -47,9 +47,9 @@ const modes: Mode[] = [
   {
     key: "moments",
     label: "见闻",
-    code: "MAP",
-    title: "地图事件",
-    description: "浏览短记录、日常观察和路上的碎片。",
+    code: "Signals",
+    title: "见闻流",
+    description: "轻量记录、日常观察和阶段性摘录。",
     href: "/moments",
     cta: "进入见闻",
     stat: ({ momentCount }) => `${momentCount} 条见闻`,
@@ -61,9 +61,9 @@ const modes: Mode[] = [
   {
     key: "tags",
     label: "标签",
-    code: "BAG",
-    title: "道具背包",
-    description: "按关键词把相关内容串起来。",
+    code: "Index",
+    title: "标签索引",
+    description: "按关键词组织文章脉络，快速定位相关内容。",
     href: "/tag",
     cta: "打开标签",
     stat: ({ totalViews }) => `${totalViews.toLocaleString("zh-CN")} 次阅读`,
@@ -74,9 +74,9 @@ const modes: Mode[] = [
   {
     key: "archive",
     label: "归档",
-    code: "SAVE",
-    title: "存档槽位",
-    description: "按时间回看所有已经发布的记录。",
+    code: "Timeline",
+    title: "时间归档",
+    description: "按发布时间回看所有已经沉淀的记录。",
     href: "/archive",
     cta: "读取归档",
     stat: ({ totalCount }) => `${totalCount} 份存档`,
@@ -99,24 +99,24 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
     >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <p className="pixel-label text-primary">Press Start</p>
+          <p className="pixel-label text-primary">Knowledge Base</p>
           <h1
             id="pixel-start-title"
             className="mt-2 text-2xl font-semibold leading-tight md:text-3xl"
           >
-            选择状态
+            Lee Notes
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            像进入游戏菜单一样，选择文章、见闻、标签或归档继续浏览。
+            一个用于沉淀想法、代码和阶段性观察的个人知识库。
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-2 font-mono text-xs text-muted-foreground sm:w-64">
           <span className="border border-border/70 bg-muted/50 px-2 py-1.5">
-            BLOG OS
+            PUBLISHED
           </span>
           <span className="border border-border/70 bg-muted/50 px-2 py-1.5">
-            {props.totalCount} LOGS
+            {props.totalCount} RECORDS
           </span>
         </div>
       </div>

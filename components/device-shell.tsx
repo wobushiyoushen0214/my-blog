@@ -10,9 +10,9 @@ export function DeviceShell({ children }: DeviceShellProps) {
       <div className="device-console">
         <div className="device-display">
           <div className="device-screen-hud" aria-hidden="true">
-            <span>LEE/NOTES</span>
-            <span>PIXEL WORKSPACE</span>
-            <span>ONLINE</span>
+            <span>Lee Notes</span>
+            <span>Knowledge Workspace</span>
+            <span>Public</span>
           </div>
           <div className="device-screen">{children}</div>
         </div>
