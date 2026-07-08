@@ -6,16 +6,14 @@ import { Footer } from "@/components/footer";
 import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
 import { ReaderProgress } from "@/components/reader-progress";
+import { ReaderToolbar } from "@/components/reader-toolbar";
 import { cn } from "@/lib/utils";
 import {
-  ArrowLeft,
-  Bookmark,
   Calendar,
   ChevronLeft,
   ChevronRight,
   Clock,
   CornerDownRight,
-  Eye,
   MessageSquare,
   Share2,
   Tag,
@@ -456,35 +454,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       <main className="relative min-h-[calc(100vh-5rem)] pb-20">
         <div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
-          <div className="mb-10 flex items-center justify-between gap-4">
-            <Link
-              href={contentListHref}
-              className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 transition-colors hover:text-slate-900 dark:text-neutral-500 dark:hover:text-white"
-            >
-              <ArrowLeft
-                className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1"
-                suppressHydrationWarning
-              />
-              <span>Back to Garden</span>
-            </Link>
-
-            <div className="flex items-center gap-2">
-              <a
-                href="#comments"
-                className="flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 px-4 text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900"
-              >
-                <MessageSquare className="h-3 w-3" suppressHydrationWarning />
-                <span>{commentCount}</span>
-              </a>
-              <button
-                type="button"
-                className="flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 px-4 text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900"
-              >
-                <Bookmark className="h-3 w-3" suppressHydrationWarning />
-                <span>Save</span>
-              </button>
-            </div>
-          </div>
+          <ReaderToolbar backHref={contentListHref} />
 
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
             <aside className="hidden lg:col-span-1 lg:block" aria-label="Reader actions">
@@ -506,20 +476,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     {commentCount} Comments
                   </span>
                 </a>
-
-                <div className="flex flex-col items-center space-y-1">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500">
-                    <Eye className="h-5 w-5" suppressHydrationWarning />
-                  </div>
-                  <span className="font-mono text-xs font-semibold text-slate-500 dark:text-zinc-400">
-                    {numberFormatter.format(post.view_count + 1)} Views
-                  </span>
-                </div>
               </div>
             </aside>
 
             <article className="lg:col-span-2">
-              <div className="mx-auto max-w-2xl rounded-md border border-neutral-200 bg-white px-8 py-12 dark:border-[#262626] dark:bg-[#0d0d0d]/40">
+              <div className="reader-article-card mx-auto max-w-2xl rounded-md border border-neutral-200 bg-white px-6 py-10 dark:border-[#262626] dark:bg-[#0d0d0d]/40 sm:px-8 sm:py-12">
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                   <span className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
                     {contentTypeLabel}
@@ -555,7 +516,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <span>Published {formatDate(post.created_at)}</span>
                   </time>
                   <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
-                  <span>Updated {formatDate(post.updated_at)}</span>
+                  <span className="bg-neutral-100 px-2 py-0.5 text-[8px] font-bold tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
+                    Select Text to Highlight
+                  </span>
                 </div>
 
                 {post.cover_image ? (
@@ -569,7 +532,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ) : null}
 
                 <div
+                  id="article-content"
                   className="prose prose-neutral dark:prose-invert max-w-none
+                    reader-prose
                     prose-headings:scroll-mt-24
                     prose-p:my-5 prose-p:text-neutral-600 prose-p:leading-relaxed dark:prose-p:text-neutral-400
                     prose-a:text-slate-950 prose-a:underline prose-a:decoration-neutral-300 prose-a:underline-offset-4 hover:prose-a:decoration-slate-950 dark:prose-a:text-white dark:prose-a:decoration-neutral-700
@@ -597,7 +562,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ) : null}
               </div>
 
-              <div className="mt-8 flex items-center justify-around border-y border-slate-100 py-3 lg:hidden dark:border-zinc-800">
+              <div className="reader-width-frame mx-auto mt-8 flex max-w-2xl items-center justify-around border-y border-slate-100 py-3 lg:hidden dark:border-zinc-800">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-zinc-400">
                   <Clock className="h-4 w-4" suppressHydrationWarning />
                   {readingMinutes} Min Read
@@ -616,7 +581,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <section
                 id="comments"
                 aria-labelledby="comments-title"
-                className="mt-8 rounded-md border border-neutral-200 bg-white p-6 dark:border-[#262626] dark:bg-[#0d0d0d]/40"
+                className="reader-width-frame mx-auto mt-8 max-w-2xl rounded-md border border-neutral-200 bg-white p-6 dark:border-[#262626] dark:bg-[#0d0d0d]/40"
               >
                 <div className="mb-6 flex flex-col gap-2 border-b border-neutral-100 pb-4 dark:border-[#262626] sm:flex-row sm:items-end sm:justify-between">
                   <div>
@@ -731,7 +696,7 @@ function ArticlePager({
   return (
     <nav
       aria-label="相邻文章"
-      className="mt-8 grid overflow-hidden rounded-md border border-neutral-200 bg-white dark:border-[#262626] dark:bg-[#0d0d0d]/40 md:grid-cols-2"
+      className="reader-width-frame mx-auto mt-8 grid max-w-2xl overflow-hidden rounded-md border border-neutral-200 bg-white dark:border-[#262626] dark:bg-[#0d0d0d]/40 md:grid-cols-2"
     >
       <NavigationPostCard
         post={previousPost}
