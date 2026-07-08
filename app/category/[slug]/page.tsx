@@ -8,10 +8,17 @@ import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
+  PublicCompactHeader,
+  PublicControlStrip,
   PublicEmptyState,
+  PublicFilterPill,
+  PublicFilterSummary,
+  PublicMetaPill,
   PublicPageShell,
+  publicPrimaryButtonClassName,
+  publicSelectClassName,
 } from "@/components/public-page";
-import { ArrowLeft, FolderOpen, Search, X } from "lucide-react";
+import { FolderOpen, Search } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -213,18 +220,26 @@ export default async function CategoryPage({
     <DeviceShell>
       <div className="public-device-layout">
       <Header />
-      <PublicPageShell className="py-9 md:py-12">
-        <CategoryHero
-          category={typedCategory}
-          categoryTypeLabel={categoryTypeLabel}
-          totalCount={totalCount}
-          totalCategoryCount={totalCategoryCount || 0}
-          sort={sort}
-          hasFilters={hasFilters}
+      <PublicPageShell>
+        <PublicCompactHeader
+          eyebrow="Category"
+          title={typedCategory.name}
+          description={`该${categoryTypeLabel}下的已发布内容。`}
+          backHref="/category"
+          backLabel="所有分类"
+          meta={
+            <>
+              <PublicMetaPill>当前 {totalCount}</PublicMetaPill>
+              <PublicMetaPill>共 {totalCategoryCount || 0}</PublicMetaPill>
+              <PublicMetaPill>
+                {hasFilters ? "已筛选" : getSortLabel(sort)}
+              </PublicMetaPill>
+            </>
+          }
         />
 
         {totalCategoryCount ? (
-          <>
+          <PublicControlStrip>
             <CategoryFilterBar
               slug={slug}
               rawQuery={rawQuery}
@@ -236,13 +251,13 @@ export default async function CategoryPage({
               searchQuery={searchQuery}
               sort={sort}
             />
-          </>
+          </PublicControlStrip>
         ) : null}
 
         {(postsWithTags || []).length > 0 ? (
-          <div className="mt-8 space-y-8">
-            <section aria-label={`${categoryTypeLabel}列表`} className="border-t border-border/60">
-              <div className="grid">
+          <div className="space-y-8">
+            <section aria-label={`${categoryTypeLabel}列表`}>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {postsWithTags.map((post) => (
                   <ContentRow key={post.id} post={post} />
                 ))}
@@ -289,50 +304,6 @@ export default async function CategoryPage({
   );
 }
 
-function CategoryHero({
-  category,
-  categoryTypeLabel,
-  totalCount,
-  totalCategoryCount,
-  sort,
-  hasFilters,
-}: {
-  category: Category;
-  categoryTypeLabel: string;
-  totalCount: number;
-  totalCategoryCount: number;
-  sort: SortOption;
-  hasFilters: boolean;
-}) {
-  return (
-    <header className="pixel-frame mb-7 p-4 md:p-5">
-      <Link
-        href="/category"
-        className="mb-5 inline-flex h-9 items-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
-        所有分类
-      </Link>
-
-      <div className="min-w-0">
-        <p className="pixel-label text-primary">
-          Category
-        </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          {category.name}
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          该{categoryTypeLabel}下的已发布内容。
-        </p>
-      </div>
-      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
-        当前 {totalCount} · 共 {totalCategoryCount} ·{" "}
-        {hasFilters ? "已筛选" : getSortLabel(sort)}
-      </p>
-    </header>
-  );
-}
-
 function CategoryFilterBar({
   slug,
   rawQuery,
@@ -345,42 +316,37 @@ function CategoryFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border-b border-border/80 pb-5">
-      <form
-        action={`/category/${encodeURIComponent(slug)}`}
-        aria-label="分类内容筛选"
-        className="flex flex-col gap-2 sm:flex-row sm:items-center"
+    <form
+      action={`/category/${encodeURIComponent(slug)}`}
+      aria-label="分类内容筛选"
+      className="flex flex-col gap-2 sm:flex-row sm:items-center"
+    >
+      {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
+      <label htmlFor="category-detail-sort" className="sr-only">
+        分类内容排序
+      </label>
+      <select
+        id="category-detail-sort"
+        name="sort"
+        defaultValue={sort}
+        className={`${publicSelectClassName} sm:w-40`}
       >
-        {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
-        <label htmlFor="category-detail-sort" className="sr-only">
-          分类内容排序
-        </label>
-        <select
-          id="category-detail-sort"
-          name="sort"
-          defaultValue={sort}
-          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[border-color,background-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
+        <option value="newest">最新发布</option>
+        <option value="updated">最近更新</option>
+        <option value="popular">阅读最多</option>
+      </select>
+      <button type="submit" className={publicPrimaryButtonClassName}>
+        应用
+      </button>
+      {hasFilters ? (
+        <Link
+          href={buildCategoryPath({ slug })}
+          className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
         >
-          <option value="newest">最新发布</option>
-          <option value="updated">最近更新</option>
-          <option value="popular">阅读最多</option>
-        </select>
-        <button
-          type="submit"
-          className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          应用
-        </button>
-        {hasFilters ? (
-          <Link
-            href={buildCategoryPath({ slug })}
-            className="inline-flex h-10 items-center justify-center border border-border bg-background px-4 font-mono text-sm font-medium text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            清除
-          </Link>
-        ) : null}
-      </form>
-    </section>
+          清除
+        </Link>
+      ) : null}
+    </form>
   );
 }
 
@@ -397,41 +363,19 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-primary">FILTER</span>
-        {searchQuery ? (
-          <FilterPill
-            label={`关键词：${searchQuery}`}
-            href={buildCategoryPath({ slug, sort })}
-          />
-        ) : null}
-        {sort !== DEFAULT_SORT ? (
-          <FilterPill
-            label={`排序：${getSortLabel(sort)}`}
-            href={buildCategoryPath({ slug, searchQuery })}
-          />
-        ) : null}
-      </div>
-      <Link
-        href={buildCategoryPath({ slug })}
-        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        清除全部
-      </Link>
-    </section>
-  );
-}
-
-function FilterPill({ label, href }: { label: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      aria-label={`移除${label}`}
-    >
-      <span className="truncate">{label}</span>
-      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
-    </Link>
+    <PublicFilterSummary clearHref={buildCategoryPath({ slug })}>
+      {searchQuery ? (
+        <PublicFilterPill
+          label={`关键词：${searchQuery}`}
+          href={buildCategoryPath({ slug, sort })}
+        />
+      ) : null}
+      {sort !== DEFAULT_SORT ? (
+        <PublicFilterPill
+          label={`排序：${getSortLabel(sort)}`}
+          href={buildCategoryPath({ slug, searchQuery })}
+        />
+      ) : null}
+    </PublicFilterSummary>
   );
 }

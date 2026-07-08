@@ -5,10 +5,16 @@ import { Footer } from "@/components/footer";
 import { DeviceShell } from "@/components/device-shell";
 import {
   PublicActionLink,
+  PublicCompactHeader,
+  PublicControlStrip,
   PublicEmptyState,
+  PublicFilterPill,
+  PublicFilterSummary,
+  PublicMetaPill,
   PublicPageShell,
+  PublicPillLink,
 } from "@/components/public-page";
-import { ArrowRight, FolderOpen, X } from "lucide-react";
+import { ArrowRight, FolderOpen } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category } from "@/lib/types";
 
@@ -123,20 +129,28 @@ export default async function CategoriesPage({
     <DeviceShell>
       <div className="public-device-layout">
       <Header />
-      <PublicPageShell className="py-9 md:py-12">
-        <CategoryIndexHero
+      <PublicPageShell>
+        <PublicCompactHeader
+          eyebrow="Categories"
           title={contentType === DEFAULT_TYPE ? "所有分类" : filterTypeLabel(contentType)}
-          filteredCount={filteredCategories.length}
-          totalCount={categoriesWithCount.length}
-          postCategoryCount={allPostCategoryCount}
-          momentCategoryCount={allMomentCategoryCount}
-          contentType={contentType}
-          hasFilters={hasFilters}
+          description="按主题浏览文章和见闻，快速进入相关内容。"
+          meta={
+            <>
+              <PublicMetaPill>
+                {hasFilters ? "筛选视图" : filterTypeLabel(contentType)}
+              </PublicMetaPill>
+              <PublicMetaPill>当前 {filteredCategories.length}</PublicMetaPill>
+              <PublicMetaPill>共 {categoriesWithCount.length}</PublicMetaPill>
+              <PublicMetaPill>文章 {allPostCategoryCount}</PublicMetaPill>
+              <PublicMetaPill>见闻 {allMomentCategoryCount}</PublicMetaPill>
+            </>
+          }
         />
 
-        <CategoryTypeSwitch query={query} activeType={contentType} />
-
-        <ActiveCategorySummary query={query} contentType={contentType} />
+        <PublicControlStrip>
+          <CategoryTypeSwitch query={query} activeType={contentType} />
+          <ActiveCategorySummary query={query} contentType={contentType} />
+        </PublicControlStrip>
 
         {filteredCategories.length > 0 ? (
           <div className="mt-8 space-y-8">
@@ -174,44 +188,6 @@ export default async function CategoriesPage({
   );
 }
 
-function CategoryIndexHero({
-  title,
-  filteredCount,
-  totalCount,
-  postCategoryCount,
-  momentCategoryCount,
-  contentType,
-  hasFilters,
-}: {
-  title: string;
-  filteredCount: number;
-  totalCount: number;
-  postCategoryCount: number;
-  momentCategoryCount: number;
-  contentType: CategoryFilterType;
-  hasFilters: boolean;
-}) {
-  return (
-    <header className="pixel-frame mb-7 p-4 md:p-5">
-      <div className="min-w-0">
-        <p className="pixel-label text-primary">
-          Categories
-        </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          {title}
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          按主题浏览文章和见闻，快速进入相关内容。
-        </p>
-      </div>
-      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
-        {hasFilters ? "筛选视图" : filterTypeLabel(contentType)} · 当前 {filteredCount} · 共 {totalCount} ·{" "}
-        文章分类 {postCategoryCount} · 见闻分类 {momentCategoryCount}
-      </p>
-    </header>
-  );
-}
-
 function CategoryTypeSwitch({
   query,
   activeType,
@@ -228,21 +204,17 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="-mx-5 mt-4 flex gap-2 overflow-x-auto border-b border-border/80 px-5 pb-3 md:mx-0 md:px-0"
+      className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
     >
       {items.map((item) => (
-        <Link
+        <PublicPillLink
           key={item.value}
           href={buildCategoryPath({ query, type: item.value })}
-          aria-current={activeType === item.value ? "page" : undefined}
-          className={`inline-flex h-9 shrink-0 items-center border px-2 font-mono text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
-            activeType === item.value
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-background text-muted-foreground hover:border-primary hover:bg-accent hover:text-foreground"
-          }`}
+          active={activeType === item.value}
+          ariaCurrent={activeType === item.value ? "page" : undefined}
         >
           {item.label}
-        </Link>
+        </PublicPillLink>
       ))}
     </nav>
   );
@@ -259,42 +231,20 @@ function ActiveCategorySummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-primary">FILTER</span>
-        {query ? (
-          <FilterPill
-            label={`关键词：${query}`}
-            href={buildCategoryPath({ type: contentType })}
-          />
-        ) : null}
-        {contentType !== DEFAULT_TYPE ? (
-          <FilterPill
-            label={`类型：${filterTypeLabel(contentType)}`}
-            href={buildCategoryPath({ query })}
-          />
-        ) : null}
-      </div>
-      <Link
-        href="/category"
-        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        清除全部
-      </Link>
-    </section>
-  );
-}
-
-function FilterPill({ label, href }: { label: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      aria-label={`移除${label}`}
-    >
-      <span className="truncate">{label}</span>
-      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
-    </Link>
+    <PublicFilterSummary clearHref="/category">
+      {query ? (
+        <PublicFilterPill
+          label={`关键词：${query}`}
+          href={buildCategoryPath({ type: contentType })}
+        />
+      ) : null}
+      {contentType !== DEFAULT_TYPE ? (
+        <PublicFilterPill
+          label={`类型：${filterTypeLabel(contentType)}`}
+          href={buildCategoryPath({ query })}
+        />
+      ) : null}
+    </PublicFilterSummary>
   );
 }
 
@@ -313,12 +263,12 @@ function CategorySection({
     <section className="space-y-3">
       <div className="flex flex-col gap-1 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold">{title}</h2>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+          <h2 className="font-serif text-base font-light italic text-slate-950 dark:text-white">{title}</h2>
+          <p className="mt-1 text-sm leading-6 text-neutral-500 dark:text-neutral-400">
             {description}
           </p>
         </div>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-neutral-500 dark:text-neutral-400">
           {categories.length} 个
         </span>
       </div>
@@ -327,26 +277,26 @@ function CategorySection({
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+            className="group grid min-w-0 gap-3 border-b border-neutral-100 px-3 py-5 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-[#262626] dark:hover:bg-neutral-900/20 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
           >
             <span className="min-w-0">
-              <span className="block truncate text-base font-medium leading-6 transition-colors group-hover:text-primary">
+              <span className="block truncate font-serif text-base font-light italic leading-6 text-slate-950 transition-colors group-hover:text-slate-700 dark:text-white">
                 {category.name}
               </span>
-              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">
+              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+                <span className="font-medium text-slate-950 dark:text-white">
                   {categoryTypeLabel(category.type)}
                 </span>
-                <span className="truncate text-sm text-muted-foreground">
+                <span className="truncate text-sm text-neutral-500 dark:text-neutral-400">
                   {category.slug || "未设置 slug"}
                 </span>
               </span>
             </span>
-            <span className="text-sm text-muted-foreground sm:text-right">
+            <span className="text-sm text-neutral-500 dark:text-neutral-400 sm:text-right">
               {category.postCount} 篇内容
             </span>
             <ArrowRight
-              className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
+              className="h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-slate-950 dark:group-hover:text-white sm:justify-self-end"
               suppressHydrationWarning
             />
           </Link>

@@ -7,13 +7,19 @@ import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
+  PublicCompactHeader,
+  PublicControlStrip,
   PublicEmptyState,
+  PublicFilterPill,
+  PublicFilterSummary,
+  PublicMetaPill,
   PublicPageShell,
+  PublicPillLink,
+  publicPrimaryButtonClassName,
+  publicSelectClassName,
 } from "@/components/public-page";
-import { cn } from "@/lib/utils";
 import {
   NotebookText,
-  X,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Category, Post, Tag } from "@/lib/types";
@@ -252,7 +258,8 @@ export default async function MomentsPage({
       <div className="public-device-layout">
       <Header />
       <PublicPageShell>
-        <MomentHero
+        <PublicCompactHeader
+          eyebrow="Moments"
           title={
             activeCategory
               ? `见闻 · ${activeCategory.name}`
@@ -261,36 +268,47 @@ export default async function MomentsPage({
                 : "见闻"
           }
           description="轻量观察、摘录和阶段性记录。"
-          totalCount={totalCount}
-          allCount={totalMomentCount}
-          categoryName={activeCategory?.name ?? null}
-          searchQuery={searchQuery}
-          sort={sort}
+          meta={
+            <>
+              <PublicMetaPill>
+                {activeCategory
+                  ? `分类 / ${activeCategory.name}`
+                  : searchQuery
+                    ? `关键词 / ${searchQuery}`
+                    : "全部见闻"}
+              </PublicMetaPill>
+              <PublicMetaPill>当前 {totalCount}</PublicMetaPill>
+              <PublicMetaPill>共 {totalMomentCount}</PublicMetaPill>
+              <PublicMetaPill>{getSortLabel(sort)}</PublicMetaPill>
+            </>
+          }
         />
 
-        <CategoryNav
-          categories={categorySummaries}
-          activeSlug={activeCategorySlug}
-          totalCount={totalMomentCount}
-          searchQuery={searchQuery}
-          sort={sort}
-        />
-
-        <ListFilterBar
-          categorySlug={activeCategorySlug}
-          searchQuery={searchQuery}
-          sort={sort}
-        />
-
-        <ActiveFilterSummary
-          categoryName={activeCategory?.name ?? null}
-          categorySlug={activeCategorySlug}
-          searchQuery={searchQuery}
-          sort={sort}
-        />
+        <PublicControlStrip>
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <CategoryNav
+              categories={categorySummaries}
+              activeSlug={activeCategorySlug}
+              totalCount={totalMomentCount}
+              searchQuery={searchQuery}
+              sort={sort}
+            />
+            <ListFilterBar
+              categorySlug={activeCategorySlug}
+              searchQuery={searchQuery}
+              sort={sort}
+            />
+          </div>
+          <ActiveFilterSummary
+            categoryName={activeCategory?.name ?? null}
+            categorySlug={activeCategorySlug}
+            searchQuery={searchQuery}
+            sort={sort}
+          />
+        </PublicControlStrip>
 
         {postsWithTags.length > 0 ? (
-          <div className="mt-8 space-y-8">
+          <div className="space-y-8">
             <MomentStream posts={postsWithTags} />
 
             <Pagination
@@ -329,49 +347,6 @@ export default async function MomentsPage({
   );
 }
 
-function MomentHero({
-  title,
-  description,
-  totalCount,
-  allCount,
-  categoryName,
-  searchQuery,
-  sort,
-}: {
-  title: string;
-  description: string;
-  totalCount: number;
-  allCount: number;
-  categoryName: string | null;
-  searchQuery: string;
-  sort: SortOption;
-}) {
-  const context = categoryName
-    ? `分类 / ${categoryName}`
-    : searchQuery
-      ? `关键词 / ${searchQuery}`
-      : "全部见闻";
-
-  return (
-    <header className="mb-7 rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10 md:p-6">
-      <div className="min-w-0">
-        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
-          Moments
-        </p>
-        <h1 className="mt-2 font-serif text-2xl font-light italic leading-tight text-slate-950 dark:text-white md:text-3xl">
-          {title}
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-          {description}
-        </p>
-      </div>
-      <p className="mt-4 inline-flex rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400">
-        {context} · 当前 {totalCount} · 共 {allCount} · {getSortLabel(sort)}
-      </p>
-    </header>
-  );
-}
-
 function CategoryNav({
   categories,
   activeSlug,
@@ -390,7 +365,7 @@ function CategoryNav({
   return (
     <nav
       aria-label="见闻分类"
-      className="-mx-4 flex gap-2 overflow-x-auto border-b border-neutral-100 px-4 pb-4 dark:border-[#262626] sm:mx-0 sm:px-0"
+      className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
     >
       <CategoryLink
         href={buildMomentsPath({ searchQuery, sort })}
@@ -429,17 +404,9 @@ function CategoryLink({
   children: ReactNode;
 }) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "inline-flex h-8 shrink-0 items-center gap-2 rounded-full border px-3 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-        active
-          ? "border-neutral-950 bg-neutral-950 text-white dark:border-white dark:bg-white dark:text-black"
-          : "border-neutral-200 bg-transparent text-neutral-400 hover:border-neutral-400 hover:text-slate-950 dark:border-neutral-800 dark:text-neutral-500 dark:hover:border-neutral-600 dark:hover:text-white"
-      )}
-    >
+    <PublicPillLink href={href} active={active}>
       {children}
-    </Link>
+    </PublicPillLink>
   );
 }
 
@@ -455,7 +422,6 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-4 border-b border-neutral-100 pb-4 dark:border-[#262626]">
       <form
         action="/moments"
         aria-label="见闻筛选"
@@ -472,7 +438,7 @@ function ListFilterBar({
           id="moments-sort"
           name="sort"
           defaultValue={sort}
-          className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a] sm:w-40"
+          className={`${publicSelectClassName} sm:w-40`}
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
@@ -480,7 +446,7 @@ function ListFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-950 bg-neutral-950 px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-white dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+          className={publicPrimaryButtonClassName}
         >
           应用
         </button>
@@ -493,7 +459,6 @@ function ListFilterBar({
           </Link>
         ) : null}
       </form>
-    </section>
   );
 }
 
@@ -518,48 +483,26 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-neutral-100 pb-3 dark:border-[#262626] sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">FILTER</span>
+    <PublicFilterSummary clearHref="/moments">
         {categoryName ? (
-          <FilterPill
+          <PublicFilterPill
             label={`分类：${categoryName}`}
             href={buildMomentsPath({ searchQuery, sort })}
           />
         ) : null}
         {searchQuery ? (
-          <FilterPill
+          <PublicFilterPill
             label={`关键词：${searchQuery}`}
             href={buildMomentsPath({ categorySlug, sort })}
           />
         ) : null}
         {sort !== DEFAULT_SORT ? (
-          <FilterPill
+          <PublicFilterPill
             label={`排序：${getSortLabel(sort)}`}
             href={buildMomentsPath({ categorySlug, searchQuery })}
           />
         ) : null}
-      </div>
-      <Link
-        href="/moments"
-        className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
-      >
-        清除全部
-      </Link>
-    </section>
-  );
-}
-
-function FilterPill({ label, href }: { label: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-2.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
-      aria-label={`移除${label}`}
-    >
-      <span className="truncate">{label}</span>
-      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
-    </Link>
+    </PublicFilterSummary>
   );
 }
 
@@ -569,7 +512,7 @@ function MomentStream({
   posts: PostWithTaxonomy[];
 }) {
   return (
-    <section aria-label="见闻列表" className="border-t border-neutral-100 pt-6 dark:border-[#262626]">
+    <section aria-label="见闻列表">
       <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {posts.map((post) => {
           const updated =

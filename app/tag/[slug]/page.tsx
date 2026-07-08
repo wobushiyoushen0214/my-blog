@@ -8,10 +8,17 @@ import { ContentRow } from "@/components/content-row";
 import { Pagination } from "@/components/pagination";
 import {
   PublicActionLink,
+  PublicCompactHeader,
+  PublicControlStrip,
   PublicEmptyState,
+  PublicFilterPill,
+  PublicFilterSummary,
+  PublicMetaPill,
   PublicPageShell,
+  publicPrimaryButtonClassName,
+  publicSelectClassName,
 } from "@/components/public-page";
-import { ArrowLeft, Hash, Search, X } from "lucide-react";
+import { Hash, Search } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -271,19 +278,27 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     <DeviceShell>
       <div className="public-device-layout">
       <Header />
-      <PublicPageShell className="py-9 md:py-12">
-        <TagHero
-          tagName={tag.name}
-          countLabel={countLabel}
-          count={count}
-          totalTaggedCount={totalTaggedCount}
-          contentType={contentType}
-          sort={sort}
-          hasFilters={hasFilters}
+      <PublicPageShell>
+        <PublicCompactHeader
+          eyebrow="Tag"
+          title={`#${tag.name}`}
+          description="该标签关联的已发布内容。"
+          backHref="/tag"
+          backLabel="所有标签"
+          meta={
+            <>
+              <PublicMetaPill>{countLabel}</PublicMetaPill>
+              <PublicMetaPill>当前 {count}</PublicMetaPill>
+              <PublicMetaPill>共 {totalTaggedCount}</PublicMetaPill>
+              <PublicMetaPill>
+                {hasFilters ? getSearchTypeLabel(contentType) : getSortLabel(sort)}
+              </PublicMetaPill>
+            </>
+          }
         />
 
         {totalTaggedCount > 0 ? (
-          <>
+          <PublicControlStrip>
             <TagFilterBar
               slug={slug}
               rawQuery={rawQuery}
@@ -297,16 +312,15 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
               contentType={contentType}
               sort={sort}
             />
-          </>
+          </PublicControlStrip>
         ) : null}
 
         {postsWithTags.length > 0 ? (
-          <div className="mt-8 space-y-8">
+          <div className="space-y-8">
             <section
               aria-label={`${getSearchTypeLabel(contentType)}列表`}
-              className="border-t border-border/60"
             >
-              <div className="grid">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {postsWithTags.map((post) => (
                   <ContentRow
                     key={post.id}
@@ -357,52 +371,6 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
   );
 }
 
-function TagHero({
-  tagName,
-  countLabel,
-  count,
-  totalTaggedCount,
-  contentType,
-  sort,
-  hasFilters,
-}: {
-  tagName: string;
-  countLabel: string;
-  count: number;
-  totalTaggedCount: number;
-  contentType: SearchType;
-  sort: SortOption;
-  hasFilters: boolean;
-}) {
-  return (
-    <header className="pixel-frame mb-7 p-4 md:p-5">
-      <Link
-        href="/tag"
-        className="mb-5 inline-flex h-9 items-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
-        所有标签
-      </Link>
-
-      <div className="min-w-0">
-        <p className="pixel-label text-primary">
-          Tag
-        </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          #{tagName}
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          该标签关联的已发布内容。
-        </p>
-      </div>
-      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
-        {countLabel} · 当前 {count} · 共 {totalTaggedCount} ·{" "}
-        {hasFilters ? getSearchTypeLabel(contentType) : getSortLabel(sort)}
-      </p>
-    </header>
-  );
-}
-
 function TagFilterBar({
   slug,
   rawQuery,
@@ -417,55 +385,50 @@ function TagFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="border-b border-border/80 pb-5">
-      <form
-        action={`/tag/${encodeURIComponent(slug)}`}
-        aria-label="标签内容筛选"
-        className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+    <form
+      action={`/tag/${encodeURIComponent(slug)}`}
+      aria-label="标签内容筛选"
+      className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+    >
+      {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
+      <label htmlFor="tag-detail-type" className="sr-only">
+        标签内容类型
+      </label>
+      <select
+        id="tag-detail-type"
+        name="type"
+        defaultValue={contentType}
+        className={`${publicSelectClassName} sm:w-40`}
       >
-        {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
-        <label htmlFor="tag-detail-type" className="sr-only">
-          标签内容类型
-        </label>
-        <select
-          id="tag-detail-type"
-          name="type"
-          defaultValue={contentType}
-          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[border-color,background-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
+        <option value="all">全部内容</option>
+        <option value="post">只看文章</option>
+        <option value="moment">只看见闻</option>
+      </select>
+      <label htmlFor="tag-detail-sort" className="sr-only">
+        标签内容排序
+      </label>
+      <select
+        id="tag-detail-sort"
+        name="sort"
+        defaultValue={sort}
+        className={`${publicSelectClassName} sm:w-40`}
+      >
+        <option value="newest">最新发布</option>
+        <option value="updated">最近更新</option>
+        <option value="popular">阅读最多</option>
+      </select>
+      <button type="submit" className={publicPrimaryButtonClassName}>
+        应用
+      </button>
+      {hasFilters ? (
+        <Link
+          href={buildTagPath({ slug })}
+          className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
         >
-          <option value="all">全部内容</option>
-          <option value="post">只看文章</option>
-          <option value="moment">只看见闻</option>
-        </select>
-        <label htmlFor="tag-detail-sort" className="sr-only">
-          标签内容排序
-        </label>
-        <select
-          id="tag-detail-sort"
-          name="sort"
-          defaultValue={sort}
-          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[border-color,background-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
-        >
-          <option value="newest">最新发布</option>
-          <option value="updated">最近更新</option>
-          <option value="popular">阅读最多</option>
-        </select>
-        <button
-          type="submit"
-          className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          应用
-        </button>
-        {hasFilters ? (
-          <Link
-            href={buildTagPath({ slug })}
-            className="inline-flex h-10 items-center justify-center border border-border bg-background px-4 font-mono text-sm font-medium text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            清除
-          </Link>
-        ) : null}
-      </form>
-    </section>
+          清除
+        </Link>
+      ) : null}
+    </form>
   );
 }
 
@@ -486,47 +449,25 @@ function ActiveTagFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-primary">FILTER</span>
-        {searchQuery ? (
-          <FilterPill
-            label={`关键词：${searchQuery}`}
-            href={buildTagPath({ slug, type: contentType, sort })}
-          />
-        ) : null}
-        {contentType !== DEFAULT_TYPE ? (
-          <FilterPill
-            label={`类型：${getSearchTypeLabel(contentType)}`}
-            href={buildTagPath({ slug, searchQuery, sort })}
-          />
-        ) : null}
-        {sort !== DEFAULT_SORT ? (
-          <FilterPill
-            label={`排序：${getSortLabel(sort)}`}
-            href={buildTagPath({ slug, searchQuery, type: contentType })}
-          />
-        ) : null}
-      </div>
-      <Link
-        href={buildTagPath({ slug })}
-        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        清除全部
-      </Link>
-    </section>
-  );
-}
-
-function FilterPill({ label, href }: { label: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      aria-label={`移除${label}`}
-    >
-      <span className="truncate">{label}</span>
-      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
-    </Link>
+    <PublicFilterSummary clearHref={buildTagPath({ slug })}>
+      {searchQuery ? (
+        <PublicFilterPill
+          label={`关键词：${searchQuery}`}
+          href={buildTagPath({ slug, type: contentType, sort })}
+        />
+      ) : null}
+      {contentType !== DEFAULT_TYPE ? (
+        <PublicFilterPill
+          label={`类型：${getSearchTypeLabel(contentType)}`}
+          href={buildTagPath({ slug, searchQuery, sort })}
+        />
+      ) : null}
+      {sort !== DEFAULT_SORT ? (
+        <PublicFilterPill
+          label={`排序：${getSortLabel(sort)}`}
+          href={buildTagPath({ slug, searchQuery, type: contentType })}
+        />
+      ) : null}
+    </PublicFilterSummary>
   );
 }
