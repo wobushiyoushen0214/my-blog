@@ -95,34 +95,50 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
   return (
     <section
       aria-labelledby="pixel-start-title"
-      className="pixel-frame pixel-start-screen p-4 md:p-5"
+      className="claude-hero"
     >
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="min-w-0">
-          <p className="pixel-label text-primary">Knowledge Base</p>
+      <div className="claude-hero-copy">
+        <p className="claude-eyebrow">Lee Notes</p>
+        <div className="claude-hero-heading">
           <h1
             id="pixel-start-title"
-            className="mt-2 text-2xl font-semibold leading-tight md:text-3xl"
+            className="text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl"
           >
-            Lee Notes
+            记录技术、项目与日常见闻。
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            一个用于沉淀想法、代码和阶段性观察的个人知识库。
+            一个偏个人知识库的博客。这里放长期主题、工程实践、项目复盘，也保留一些短记录和路上的观察。
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 font-mono text-xs text-muted-foreground sm:w-64">
-          <span className="border border-border/70 bg-muted/50 px-2 py-1.5">
-            PUBLISHED
+        <div className="claude-hero-actions">
+          <Link href="/posts" className="claude-primary-link">
+            开始阅读
+            <ArrowRight className="h-4 w-4" suppressHydrationWarning />
+          </Link>
+          <Link href="/archive" className="claude-secondary-link">
+            查看归档
+          </Link>
+        </div>
+
+        <div className="claude-stat-grid" aria-label="站点统计">
+          <span>
+            <strong>{props.articleCount}</strong>
+            文章
           </span>
-          <span className="border border-border/70 bg-muted/50 px-2 py-1.5">
-            {props.totalCount} RECORDS
+          <span>
+            <strong>{props.momentCount}</strong>
+            见闻
+          </span>
+          <span>
+            <strong>{props.totalCount}</strong>
+            总记录
           </span>
         </div>
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-stretch">
-        <div className="grid min-h-52 grid-rows-4 gap-2 sm:grid-cols-2 sm:grid-rows-2">
+      <div className="claude-hero-panel">
+        <div className="grid gap-2">
           {modes.map((mode) => {
             const ModeIcon = mode.icon;
             const active = mode.key === activeKey;
@@ -134,25 +150,23 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
                 aria-pressed={active}
                 data-active={active}
                 onClick={() => setActiveKey(mode.key)}
-                className="pixel-game-option h-full min-h-24 overflow-hidden p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="claude-route-card"
                 style={{ "--mode-color": mode.color } as CSSProperties}
               >
-                <span className="flex items-center justify-between gap-3">
-                  <span className="min-w-0">
-                    <span className="pixel-label block text-muted-foreground">
-                      {mode.code}
-                    </span>
-                    <span className="mt-1.5 block text-base font-semibold">
-                      {mode.label}
-                    </span>
+                <span
+                  className={cn(
+                    "claude-route-icon",
+                    active && "claude-route-icon-active"
+                  )}
+                >
+                  <ModeIcon className="h-4 w-4" suppressHydrationWarning />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold">
+                    {mode.title}
                   </span>
-                  <span
-                    className={cn(
-                      "grid size-8 shrink-0 place-items-center border border-border/70 bg-background text-muted-foreground",
-                      active && "border-primary bg-primary text-primary-foreground"
-                    )}
-                  >
-                    <ModeIcon className="h-4 w-4" suppressHydrationWarning />
+                  <span className="mt-1 line-clamp-1 block text-xs text-muted-foreground">
+                    {mode.description}
                   </span>
                 </span>
               </button>
@@ -161,23 +175,23 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
         </div>
 
         <div
-          className="pixel-cartridge-panel flex min-h-52 flex-col border border-border bg-card p-4"
+          className="claude-insight-panel"
           style={{ "--mode-color": activeMode.color } as CSSProperties}
         >
-          <div className="flex min-h-14 items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="pixel-label text-muted-foreground">
+              <p className="claude-eyebrow text-muted-foreground">
                 {activeMode.code}
               </p>
-              <h2 className="mt-2 line-clamp-2 text-lg font-semibold leading-tight">
+              <h2 className="mt-3 text-2xl font-semibold leading-tight">
                 {activeMode.title}
               </h2>
             </div>
-            <span className="grid size-9 shrink-0 place-items-center border border-border/70 bg-muted text-primary">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
               <Icon className="h-4 w-4" suppressHydrationWarning />
             </span>
           </div>
-          <p className="mt-3 min-h-12 line-clamp-2 text-sm leading-6 text-muted-foreground">
+          <p className="mt-4 min-h-12 text-sm leading-6 text-muted-foreground">
             {activeMode.description}
           </p>
           <div className="mt-auto pt-4">
@@ -186,13 +200,13 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
               <span className="shrink-0">{progress}%</span>
             </div>
             <div
-              className="pixel-health-bar mt-2 h-2 border border-border/70"
+              className="claude-progress-line mt-2"
               style={{ "--progress": `${progress}%` } as CSSProperties}
             />
           </div>
           <Link
             href={activeMode.href}
-            className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 border border-primary bg-primary px-3 font-mono text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="claude-panel-link"
           >
             {activeMode.cta}
             <ArrowRight className="h-4 w-4" suppressHydrationWarning />

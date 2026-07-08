@@ -370,7 +370,7 @@ function ArchiveHero({
           </p>
           <div className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
             <h1 className="min-w-0 text-2xl font-semibold leading-tight md:text-3xl">
-              &gt; {title}
+              {title}
             </h1>
             <span className="border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
               {countLabel}

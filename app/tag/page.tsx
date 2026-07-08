@@ -186,7 +186,7 @@ function TagIndexHero({
           Tags
         </p>
         <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          &gt; {title}
+          {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           通过关键词聚合相关内容，适合快速交叉浏览。

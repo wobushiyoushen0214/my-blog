@@ -389,7 +389,7 @@ function TagHero({
           Tag
         </p>
         <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          &gt; #{tagName}
+          #{tagName}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           该标签关联的已发布内容。

@@ -359,7 +359,7 @@ function MomentHero({
           Moments
         </p>
         <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
-          &gt; {title}
+          {title}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
           {description}
