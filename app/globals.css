@@ -3810,10 +3810,18 @@
     padding: 0 1.5rem !important;
   }
 
-  .site-brand {
+  .site-header-left {
     display: flex !important;
+    min-width: 0 !important;
     align-items: center !important;
     gap: 1.5rem !important;
+  }
+
+  .site-brand {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    gap: 0 !important;
     color: #0f172a !important;
     text-decoration: none !important;
   }
@@ -3844,6 +3852,12 @@
 
   .site-brand::after,
   .site-sidebar-tools::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  .site-brand-divider,
+  .site-control-divider {
     content: "";
     display: none;
     width: 1px;
@@ -3851,8 +3865,8 @@
     background: #e5e5e5;
   }
 
-  .dark .site-brand::after,
-  .dark .site-sidebar-tools::before {
+  .dark .site-brand-divider,
+  .dark .site-control-divider {
     background: #262626;
   }
 
@@ -3861,6 +3875,10 @@
     align-items: center !important;
     justify-content: flex-start !important;
     gap: 1.5rem !important;
+  }
+
+  .site-nav-desktop {
+    display: none !important;
   }
 
   .site-nav-link {
@@ -3894,11 +3912,68 @@
 
   .site-sidebar-tools {
     display: flex !important;
+    flex: 0 0 auto !important;
     align-items: center !important;
     gap: 1.5rem !important;
     margin: 0 !important;
     border: 0 !important;
     padding: 0 !important;
+  }
+
+  .site-status {
+    display: none !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    color: #a3a3a3 !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.25em !important;
+    line-height: 1 !important;
+    text-transform: uppercase !important;
+  }
+
+  .dark .site-status {
+    color: #525252 !important;
+  }
+
+  .site-status-dot {
+    position: relative !important;
+    display: flex !important;
+    width: 0.375rem !important;
+    height: 0.375rem !important;
+  }
+
+  .site-status-dot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: #4ade80;
+    opacity: 0.75;
+    animation: site-ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .site-status-dot span {
+    position: relative;
+    display: inline-flex;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: #22c55e;
+  }
+
+  @keyframes site-ping {
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  .site-mobile-nav {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
   }
 
   .site-search-trigger {
@@ -3914,6 +3989,12 @@
     font-size: 10px !important;
     letter-spacing: 0.05em !important;
     text-transform: uppercase !important;
+  }
+
+  .site-search-trigger svg {
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+    color: #a3a3a3 !important;
   }
 
   .dark .site-search-trigger {
@@ -4148,9 +4229,16 @@
   }
 
   @media (min-width: 768px) {
-    .site-brand::after,
-    .site-nav {
+    .site-brand-divider {
+      display: block !important;
+    }
+
+    .site-nav-desktop {
       display: flex !important;
+    }
+
+    .site-mobile-nav {
+      display: none !important;
     }
   }
 
@@ -4164,18 +4252,23 @@
     }
 
     .site-search-trigger,
-    .site-sidebar-tools::before {
+    .site-status,
+    .site-control-divider {
       display: flex !important;
+    }
+
+    .site-control-divider {
+      display: block !important;
     }
   }
 
   @media (max-width: 767px) {
     .site-sidebar-inner {
-      height: auto !important;
+      height: 5rem !important;
       min-height: 5rem !important;
-      flex-wrap: wrap !important;
+      flex-wrap: nowrap !important;
       gap: 0.75rem !important;
-      padding: 0.9rem 1rem !important;
+      padding: 0 1rem !important;
     }
 
     .site-brand-mark {
@@ -4183,15 +4276,15 @@
     }
 
     .site-nav {
-      order: 3 !important;
-      display: flex !important;
-      width: 100% !important;
-      overflow-x: auto !important;
-      padding-bottom: 0.25rem !important;
+      overflow-x: visible !important;
     }
 
     .site-sidebar-tools {
       gap: 0.75rem !important;
+    }
+
+    .site-mobile-nav .site-nav-link {
+      letter-spacing: 0.12em !important;
     }
   }
 }
