@@ -46,7 +46,7 @@ export function PublicPageHeader({
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-5 inline-flex h-9 items-center gap-1.5 border border-border bg-background px-2 font-mono text-sm text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mb-5 inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
           {backLabel}
@@ -66,7 +66,7 @@ export function PublicPageHeader({
                 {title}
               </h1>
               {countLabel ? (
-                <span className="border border-border bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
+                <span className="rounded-md border border-border bg-muted px-2 py-1 text-xs text-muted-foreground">
                   {countLabel}
                 </span>
               ) : null}
@@ -99,7 +99,7 @@ export function PublicActionLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-10 items-center gap-2 border border-border bg-background px-3 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-10 items-center gap-2 rounded-md border border-border bg-background px-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         className
       )}
     >
@@ -132,7 +132,7 @@ export function PublicEmptyState({
     >
       <div className="grid place-items-center gap-4">
         {Icon ? (
-          <span className="flex size-10 items-center justify-center border border-border bg-background text-primary shadow-[2px_2px_0_var(--terminal-shadow)]">
+          <span className="flex size-10 items-center justify-center rounded-lg border border-border bg-background text-primary">
             <Icon className="h-5 w-5" suppressHydrationWarning />
           </span>
         ) : null}

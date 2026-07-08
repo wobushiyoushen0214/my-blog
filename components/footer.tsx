@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
-        <p className="border border-border bg-muted/50 px-2 py-1">
+        <p className="rounded-md border border-border bg-muted/50 px-2 py-1">
           &copy; {new Date().getFullYear()} Lee / Notes
         </p>
         <nav
@@ -14,7 +14,7 @@ export function Footer() {
         >
           <Link
             href="/rss.xml"
-            className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-2 transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-background px-2 transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             title="RSS Feed"
           >
             <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
@@ -22,7 +22,7 @@ export function Footer() {
           </Link>
           <Link
             href="/admin"
-            className="inline-flex h-9 items-center border border-border bg-background px-2 text-xs text-muted-foreground/70 transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-9 items-center rounded-md border border-border bg-background px-2 text-xs text-muted-foreground/70 transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             管理
           </Link>

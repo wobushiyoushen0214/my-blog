@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SearchBar } from "@/components/search-bar";
 import { cn } from "@/lib/utils";
@@ -46,10 +47,12 @@ export function HeaderClient() {
           href="/"
           className="site-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
-          <span className="site-brand-mark">LEE</span>
+          <span className="site-brand-mark" aria-hidden="true">
+            <Sparkles className="h-4 w-4" suppressHydrationWarning />
+          </span>
           <span className="site-brand-copy">
-            <span>NOTES</span>
-            <span>个人记录系统</span>
+            <span>Lee Studio</span>
+            <span>Notes and field logs</span>
           </span>
         </Link>
 

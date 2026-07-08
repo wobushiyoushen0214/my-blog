@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import type { LucideIcon } from "lucide-react";
-import { Archive, ArrowRight, BookOpenText, Map, Tags } from "lucide-react";
+import {
+  Archive,
+  ArrowRight,
+  BookOpenText,
+  Map,
+  Search,
+  Tags,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type PixelStartMenuProps = {
@@ -33,7 +40,7 @@ const modes: Mode[] = [
   {
     key: "posts",
     label: "阅读",
-    code: "Writing",
+    code: "Library",
     title: "文章库",
     description: "系统化的技术笔记、项目复盘和长期主题。",
     href: "/posts",
@@ -47,7 +54,7 @@ const modes: Mode[] = [
   {
     key: "moments",
     label: "见闻",
-    code: "Signals",
+    code: "Field notes",
     title: "见闻流",
     description: "轻量记录、日常观察和阶段性摘录。",
     href: "/moments",
@@ -61,7 +68,7 @@ const modes: Mode[] = [
   {
     key: "tags",
     label: "标签",
-    code: "Index",
+    code: "Topics",
     title: "标签索引",
     description: "按关键词组织文章脉络，快速定位相关内容。",
     href: "/tag",
@@ -74,7 +81,7 @@ const modes: Mode[] = [
   {
     key: "archive",
     label: "归档",
-    code: "Timeline",
+    code: "Archive",
     title: "时间归档",
     description: "按发布时间回看所有已经沉淀的记录。",
     href: "/archive",
@@ -95,33 +102,34 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
   return (
     <section
       aria-labelledby="pixel-start-title"
-      className="claude-hero"
+      className="studio-hero"
     >
-      <div className="claude-hero-copy">
-        <p className="claude-eyebrow">Lee Notes</p>
-        <div className="claude-hero-heading">
+      <div className="studio-hero-copy">
+        <p className="studio-eyebrow">Lee Studio</p>
+        <div className="studio-hero-heading">
           <h1
             id="pixel-start-title"
-            className="text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl"
+            className="text-4xl font-semibold leading-[1.04] tracking-tight md:text-6xl"
           >
-            记录技术、项目与日常见闻。
+            把工程实践、项目复盘和日常观察整理成可检索的记录。
           </h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            一个偏个人知识库的博客。这里放长期主题、工程实践、项目复盘，也保留一些短记录和路上的观察。
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+            面向长期阅读的个人知识库。文章沉淀方法和系统，见闻保存阶段性想法，标签和归档帮助快速回到上下文。
           </p>
         </div>
 
-        <div className="claude-hero-actions">
-          <Link href="/posts" className="claude-primary-link">
+        <div className="studio-hero-actions">
+          <Link href="/posts" className="studio-primary-link">
             开始阅读
             <ArrowRight className="h-4 w-4" suppressHydrationWarning />
           </Link>
-          <Link href="/archive" className="claude-secondary-link">
-            查看归档
+          <Link href="/search" className="studio-secondary-link">
+            <Search className="h-4 w-4" suppressHydrationWarning />
+            搜索内容
           </Link>
         </div>
 
-        <div className="claude-stat-grid" aria-label="站点统计">
+        <div className="studio-stat-grid" aria-label="站点统计">
           <span>
             <strong>{props.articleCount}</strong>
             文章
@@ -137,7 +145,7 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
         </div>
       </div>
 
-      <div className="claude-hero-panel">
+      <div className="studio-hero-panel">
         <div className="grid gap-2">
           {modes.map((mode) => {
             const ModeIcon = mode.icon;
@@ -150,13 +158,13 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
                 aria-pressed={active}
                 data-active={active}
                 onClick={() => setActiveKey(mode.key)}
-                className="claude-route-card"
+                className="studio-route-card"
                 style={{ "--mode-color": mode.color } as CSSProperties}
               >
                 <span
                   className={cn(
-                    "claude-route-icon",
-                    active && "claude-route-icon-active"
+                    "studio-route-icon",
+                    active && "studio-route-icon-active"
                   )}
                 >
                   <ModeIcon className="h-4 w-4" suppressHydrationWarning />
@@ -175,19 +183,19 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
         </div>
 
         <div
-          className="claude-insight-panel"
+          className="studio-insight-panel"
           style={{ "--mode-color": activeMode.color } as CSSProperties}
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="claude-eyebrow text-muted-foreground">
+              <p className="studio-eyebrow text-muted-foreground">
                 {activeMode.code}
               </p>
               <h2 className="mt-3 text-2xl font-semibold leading-tight">
                 {activeMode.title}
               </h2>
             </div>
-            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
+            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
               <Icon className="h-4 w-4" suppressHydrationWarning />
             </span>
           </div>
@@ -200,13 +208,13 @@ export function PixelStartMenu(props: PixelStartMenuProps) {
               <span className="shrink-0">{progress}%</span>
             </div>
             <div
-              className="claude-progress-line mt-2"
+              className="studio-progress-line mt-2"
               style={{ "--progress": `${progress}%` } as CSSProperties}
             />
           </div>
           <Link
             href={activeMode.href}
-            className="claude-panel-link"
+            className="studio-panel-link"
           >
             {activeMode.cta}
             <ArrowRight className="h-4 w-4" suppressHydrationWarning />

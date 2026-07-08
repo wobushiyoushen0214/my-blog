@@ -69,7 +69,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
         <button
           type="button"
           className={cn(
-            "inline-flex h-10 items-center justify-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start",
+            "inline-flex h-10 items-center justify-center gap-2 rounded-md border border-border bg-background px-2 text-sm text-muted-foreground transition-[background-color,color,border-color] hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start",
             className
           )}
           aria-keyshortcuts="/"
@@ -79,7 +79,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="gap-0 overflow-hidden border border-primary/70 bg-background p-0 sm:max-w-lg"
+        className="gap-0 overflow-hidden border border-border bg-background p-0 shadow-xl sm:max-w-lg"
         showCloseButton={false}
       >
         <DialogHeader className="sr-only">
@@ -112,13 +112,13 @@ export function SearchBar({ className }: SearchBarProps = {}) {
             </div>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-[background-color,color,box-shadow] hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex h-10 items-center justify-center rounded-md border border-primary bg-primary px-4 text-sm font-medium text-primary-foreground transition-[background-color,color] hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               搜索
             </button>
             <button
               type="button"
-              className="inline-flex size-10 items-center justify-center border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              className="inline-flex size-10 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               aria-label="关闭搜索"
               onClick={() => setOpen(false)}
             >

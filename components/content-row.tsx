@@ -89,13 +89,13 @@ export function ContentRow({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "content-row-link group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow,transform] hover:border-x-border hover:bg-accent/45 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.25rem_minmax(0,1fr)_6.5rem]",
+        "content-row-link group grid min-w-0 gap-3 border-b border-border/60 px-4 py-5 transition-[background-color,border-color] hover:bg-accent/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.25rem_minmax(0,1fr)_7rem]",
         className
       )}
     >
       <time
         dateTime={dateTime || post.created_at}
-        className="font-mono text-xs tabular-nums text-primary sm:pt-1"
+        className="font-mono text-xs tabular-nums text-muted-foreground sm:pt-1"
       >
         {displayDate}
       </time>
@@ -105,14 +105,14 @@ export function ContentRow({
           {displayMeta.map((item, index) => (
             <span
               key={`${item}-${index}`}
-              className="min-w-0 truncate border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono"
+              className="min-w-0 truncate rounded-md border border-border/70 bg-muted/55 px-1.5 py-0.5 font-mono"
             >
               {item}
             </span>
           ))}
         </span>
 
-        <span className="mt-2 block line-clamp-2 text-base font-medium leading-6 transition-colors group-hover:text-primary md:text-[17px]">
+        <span className="mt-2 block line-clamp-2 text-base font-semibold leading-6 transition-colors group-hover:text-primary md:text-[17px]">
           {post.title}
         </span>
 
@@ -123,11 +123,11 @@ export function ContentRow({
         ) : null}
 
         {visibleTags.length > 0 ? (
-          <span className="mt-3 flex min-w-0 flex-wrap gap-x-3 gap-y-1.5 font-mono text-xs text-muted-foreground">
+          <span className="mt-3 flex min-w-0 flex-wrap gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
             {visibleTags.map((tag) => (
               <span
                 key={tag.id}
-                className="max-w-36 truncate text-primary/85 underline-offset-4 group-hover:underline"
+                className="max-w-36 truncate rounded-md bg-secondary/60 px-1.5 py-0.5 text-secondary-foreground/90"
               >
                 #{tag.name}
               </span>
