@@ -15,7 +15,7 @@ export function ThemeToggle({ className }: ThemeToggleProps = {}) {
     <button
       type="button"
       className={cn(
-        "relative inline-flex size-10 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-[background-color,color,border-color] hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "relative flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 bg-transparent text-neutral-600 outline-none transition-colors hover:bg-neutral-900 hover:text-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-white dark:hover:text-black",
         className
       )}
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}

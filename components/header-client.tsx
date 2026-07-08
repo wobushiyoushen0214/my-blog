@@ -10,18 +10,23 @@ function NavLink({
   href,
   label,
   active,
+  className,
 }: {
   href: string;
   label: string;
   active: boolean;
+  className?: string;
 }) {
   return (
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "site-nav-link",
-        active && "site-nav-link-active"
+        "transition-colors duration-200",
+        active
+          ? "text-slate-950 dark:text-white"
+          : "text-neutral-400 hover:text-slate-950 dark:text-neutral-500 dark:hover:text-white",
+        className
       )}
     >
       {label}
@@ -38,23 +43,22 @@ export function HeaderClient() {
   const isSearch = pathname === "/search";
 
   return (
-    <header className="site-sidebar">
-      <div className="site-sidebar-inner">
-        <div className="site-header-left">
+    <header className="sticky top-0 z-40 w-full border-b border-neutral-100 bg-white/95 backdrop-blur-md transition-colors duration-300 dark:border-neutral-900 dark:bg-[#0a0a0a]/95">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 sm:px-8 lg:px-10">
+        <div className="flex min-w-0 items-center space-x-6">
           <Link
             href="/"
-            className="site-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="shrink-0 font-serif text-2xl font-bold italic tracking-tighter text-slate-900 transition-colors dark:text-white"
           >
-            <span className="site-brand-mark">Lee Notes.</span>
-            <span className="site-brand-copy">
-              <span>Lee Notes</span>
-              <span>Digital Garden</span>
-            </span>
+            Lee Notes.
           </Link>
 
-          <div className="site-brand-divider" aria-hidden="true" />
+          <div className="hidden h-4 w-px bg-neutral-200 dark:bg-neutral-800 md:block" />
 
-          <nav className="site-nav site-nav-desktop" aria-label="主导航">
+          <nav
+            className="hidden items-center space-x-6 text-[10px] font-bold uppercase tracking-[0.25em] md:flex"
+            aria-label="主导航"
+          >
             <NavLink href="/" label="Garden" active={isHome} />
             <NavLink href="/posts" label="Essays" active={isPosts} />
             <NavLink href="/moments" label="Logs" active={isMoments} />
@@ -62,25 +66,29 @@ export function HeaderClient() {
           </nav>
         </div>
 
-        <div className="site-sidebar-tools">
-          {isSearch ? null : <SearchBar className="site-search-trigger" />}
+        <div className="flex shrink-0 items-center space-x-6">
+          {isSearch ? null : <SearchBar />}
 
-          <div className="site-status" aria-label="站点在线">
-            <span className="site-status-dot" aria-hidden="true">
-              <span />
+          <div className="hidden items-center gap-2 text-[9px] font-medium uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-600 lg:flex">
+            <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
             </span>
             <span>SYSTEM ONLINE</span>
           </div>
 
-          <div className="site-control-divider" aria-hidden="true" />
+          <div className="h-4 w-px bg-neutral-200 dark:bg-neutral-800" />
 
-          <nav className="site-mobile-nav" aria-label="移动端导航">
-            <NavLink href="/" label="Garden" active={isHome} />
-            <NavLink href="/posts" label="Essays" active={isPosts} />
-            <NavLink href="/moments" label="Logs" active={isMoments} />
+          <nav
+            className="flex items-center space-x-3 text-[10px] font-bold uppercase tracking-wider md:hidden"
+            aria-label="移动端导航"
+          >
+            <NavLink href="/" label="Garden" active={isHome} className="tracking-wider" />
+            <NavLink href="/posts" label="Essays" active={isPosts} className="tracking-wider" />
+            <NavLink href="/moments" label="Logs" active={isMoments} className="tracking-wider" />
           </nav>
 
-          <ThemeToggle className="site-theme-trigger" />
+          <ThemeToggle />
         </div>
       </div>
     </header>

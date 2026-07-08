@@ -69,13 +69,15 @@ export function SearchBar({ className }: SearchBarProps = {}) {
         <button
           type="button"
           className={cn(
-            "inline-flex h-10 items-center justify-center gap-2 rounded-md border border-border bg-background px-2 text-sm text-muted-foreground transition-[background-color,color,border-color] hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-24 sm:justify-start",
+            "hidden w-[180px] items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50/50 py-1.5 pl-3 pr-4 font-sans text-[10px] uppercase tracking-wider text-neutral-800 outline-none transition-all hover:border-neutral-300 hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-100 dark:hover:border-neutral-700 dark:hover:bg-[#0a0a0a] sm:inline-flex",
             className
           )}
           aria-keyshortcuts="/"
         >
-          <Search className="h-4 w-4" suppressHydrationWarning />
-          <span className="sr-only sm:not-sr-only">Search indices...</span>
+          <Search className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500" suppressHydrationWarning />
+          <span className="truncate text-neutral-400 dark:text-neutral-500">
+            Search indices...
+          </span>
         </button>
       </DialogTrigger>
       <DialogContent
