@@ -122,7 +122,7 @@ export function CommentForm({
 
     const { error } = await supabase.from("comments").insert({
       post_id: postId,
-      parent_id: parentId || null,
+      parent_id: parentId ?? null,
       author_name: form.author_name.trim(),
       author_email: form.author_email.trim(),
       content: form.content.trim(),
@@ -148,24 +148,24 @@ export function CommentForm({
       onSubmit={handleSubmit}
       noValidate
       className={cn(
-        "py-1",
+        "py-1 text-neutral-600 dark:text-neutral-300",
         compact && "bg-transparent py-0"
       )}
     >
       {!isReply ? (
         <div className="py-3">
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-foreground">
+            <h3 className="font-serif text-base font-light italic text-slate-950 dark:text-white">
               发表评论
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs leading-6 text-neutral-500 dark:text-neutral-400">
               评论提交后会进入审核队列，通过后展示在页面中。
             </p>
           </div>
         </div>
       ) : (
         <div className="pb-3">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
             回复会进入审核队列，通过后展示在对应评论下。
           </p>
         </div>
@@ -174,7 +174,7 @@ export function CommentForm({
         <div className="space-y-2 py-3">
           <Label
             htmlFor={ids.name}
-            className="text-sm font-medium text-foreground"
+            className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500"
           >
             昵称 *
           </Label>
@@ -183,7 +183,7 @@ export function CommentForm({
             value={form.author_name}
             onChange={(e) => updateField("author_name", e.target.value)}
             placeholder="你的昵称"
-            className="h-10 border-border/80 bg-background transition-colors hover:bg-muted/30 focus-visible:bg-background"
+            className="h-10 rounded-full border-neutral-200 bg-neutral-50/50 text-xs transition-colors placeholder:text-neutral-400 hover:bg-white focus-visible:bg-white dark:border-neutral-800 dark:bg-neutral-900/40 dark:hover:bg-[#0a0a0a] dark:focus-visible:bg-[#0a0a0a]"
             autoFocus={autoFocus}
             disabled={loading}
             maxLength={NAME_MAX_LENGTH}
@@ -200,7 +200,7 @@ export function CommentForm({
         <div className="space-y-2 py-3">
           <Label
             htmlFor={ids.email}
-            className="text-sm font-medium text-foreground"
+            className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500"
           >
             邮箱（选填）
           </Label>
@@ -210,7 +210,7 @@ export function CommentForm({
             value={form.author_email}
             onChange={(e) => updateField("author_email", e.target.value)}
             placeholder="you@example.com"
-            className="h-10 border-border/80 bg-background transition-colors hover:bg-muted/30 focus-visible:bg-background"
+            className="h-10 rounded-full border-neutral-200 bg-neutral-50/50 text-xs transition-colors placeholder:text-neutral-400 hover:bg-white focus-visible:bg-white dark:border-neutral-800 dark:bg-neutral-900/40 dark:hover:bg-[#0a0a0a] dark:focus-visible:bg-[#0a0a0a]"
             disabled={loading}
             maxLength={EMAIL_MAX_LENGTH}
             aria-invalid={Boolean(errors.author_email)}
@@ -226,7 +226,7 @@ export function CommentForm({
       <div className="space-y-2 py-3">
         <Label
           htmlFor={ids.content}
-          className="text-sm font-medium text-foreground"
+          className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500"
         >
           评论内容 *
         </Label>
@@ -236,7 +236,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none border-border/80 bg-background transition-colors hover:bg-muted/30 focus-visible:bg-background"
+          className="resize-none rounded-md border-neutral-200 bg-neutral-50/50 text-xs transition-colors placeholder:text-neutral-400 hover:bg-white focus-visible:bg-white dark:border-neutral-800 dark:bg-neutral-900/40 dark:hover:bg-[#0a0a0a] dark:focus-visible:bg-[#0a0a0a]"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}
@@ -248,7 +248,7 @@ export function CommentForm({
             {errors.content}
           </p>
         ) : null}
-        <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400 sm:flex-row sm:items-center sm:justify-between">
           <span>请保持具体、友善，支持换行；提交后需要审核。</span>
           <span
             className={
@@ -267,7 +267,7 @@ export function CommentForm({
           {errors.form ? (
             <p className="text-sm text-destructive">{errors.form}</p>
           ) : successMessage ? (
-            <p className="text-sm text-foreground">{successMessage}</p>
+            <p className="text-sm text-slate-950 dark:text-white">{successMessage}</p>
           ) : null}
         </div>
 
@@ -276,7 +276,8 @@ export function CommentForm({
             <button
               type="button"
               disabled={loading}
-              className="inline-flex h-9 items-center justify-center border border-border bg-background px-3 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+              onClick={onCancel}
+              className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
             >
               取消
             </button>
@@ -284,7 +285,7 @@ export function CommentForm({
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex h-9 items-center justify-center gap-2 border border-primary bg-primary px-3 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-slate-950 bg-slate-950 px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:border-white dark:bg-white dark:text-black dark:hover:bg-neutral-200"
           >
             <Send className="h-4 w-4" suppressHydrationWarning />
             {loading ? "提交中..." : isReply ? "提交回复" : "提交评论"}

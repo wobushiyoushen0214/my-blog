@@ -1,20 +1,33 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { DeviceShell } from "@/components/device-shell";
 import { CommentForm } from "@/components/comment-form";
 import { CommentList } from "@/components/comment-list";
+import { ReaderProgress } from "@/components/reader-progress";
 import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
+  Bookmark,
+  Calendar,
   ChevronLeft,
   ChevronRight,
+  Clock,
+  CornerDownRight,
+  Eye,
+  MessageSquare,
+  Share2,
+  Tag,
 } from "lucide-react";
 import type { Metadata } from "next";
-import type { Category, Post, PostTag, Tag as TagType } from "@/lib/types";
+import type {
+  Category,
+  Comment as CommentType,
+  Post,
+  PostTag,
+  Tag as TagType,
+} from "@/lib/types";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -80,7 +93,7 @@ function getCategoryBrowseHref(
 
 function estimateReadingMinutes(html: string) {
   const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-  const chineseChars = (text.match(/[\u4e00-\u9fff]/g) || []).length;
+  const chineseChars = text.match(/[\u4e00-\u9fff]/g)?.length ?? 0;
   const latinWords = text
     .replace(/[\u4e00-\u9fff]/g, " ")
     .split(/\s+/)
@@ -109,7 +122,7 @@ function decodeHtmlEntities(value: string) {
       const code = Number.parseInt(key.slice(1), 10);
       return Number.isNaN(code) ? match : String.fromCodePoint(code);
     }
-    return namedEntities[key] || match;
+    return namedEntities[key] ?? match;
   });
 }
 
@@ -128,7 +141,7 @@ function slugifyHeading(text: string, index: number) {
     .replace(/^-+|-+$/g, "")
     .slice(0, 64);
 
-  return slug || `section-${index + 1}`;
+  return slug.length > 0 ? slug : `section-${index + 1}`;
 }
 
 function buildArticleContent(html: string) {
@@ -142,7 +155,7 @@ function buildArticleContent(html: string) {
       if (!text) return match;
 
       const baseId = slugifyHeading(text, headings.length);
-      const nextIndex = usedIds.get(baseId) || 0;
+      const nextIndex = usedIds.get(baseId) ?? 0;
       usedIds.set(baseId, nextIndex + 1);
       const id = nextIndex === 0 ? baseId : `${baseId}-${nextIndex + 1}`;
       const level = Number(levelText) as 2 | 3;
@@ -184,7 +197,7 @@ function attachTagsFromRows(
 
   return posts.map((post) => ({
     ...post,
-    tags: tagsByPostId.get(post.id) || [],
+    tags: tagsByPostId.get(post.id) ?? [],
   }));
 }
 
@@ -202,7 +215,7 @@ function buildRelatedCandidates({
   const byId = new Map<string, RelatedPost>();
 
   const addPost = (post: RelatedPost) => {
-    const sharedTagCount = sharedTagCounts.get(post.id) || 0;
+    const sharedTagCount = sharedTagCounts.get(post.id) ?? 0;
     const sameCategory = Boolean(
       currentCategoryId && post.category_id === currentCategoryId
     );
@@ -221,7 +234,7 @@ function buildRelatedCandidates({
           : "同类型";
     const existing = byId.get(post.id);
 
-    if (existing && (existing.relationRank || 0) >= relationRank) return;
+    if (existing && (existing.relationRank ?? 0) >= relationRank) return;
     byId.set(post.id, {
       ...post,
       relationLabel,
@@ -234,7 +247,7 @@ function buildRelatedCandidates({
 
   return Array.from(byId.values())
     .sort((a, b) => {
-      const rankDelta = (b.relationRank || 0) - (a.relationRank || 0);
+      const rankDelta = (b.relationRank ?? 0) - (a.relationRank ?? 0);
       if (rankDelta !== 0) return rankDelta;
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     })
@@ -308,33 +321,35 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       .eq("id", post.id),
   ]);
 
-  const currentTagIds = ((postTags || []) as CurrentPostTagRow[]).map(
-    (pt) => pt.tag_id
-  );
-  const commentCount = comments?.length || 0;
-  const siblingCategoryIds = (siblingCategories || []).map((category) => category.id);
+  const postTagRows = postTags as CurrentPostTagRow[];
+  const commentRows = comments as CommentType[];
+  const siblingCategoryRows = siblingCategories as Pick<Category, "id">[];
 
-  const { data: relatedPostTags } =
-    currentTagIds.length > 0
-      ? await supabase
-          .from("post_tags")
-          .select("post_id, tag_id")
-          .in("tag_id", currentTagIds)
-          .neq("post_id", post.id)
-      : { data: [] };
+  const currentTagIds = postTagRows.map((pt) => pt.tag_id);
+  const commentCount = commentRows.length;
+  const siblingCategoryIds = siblingCategoryRows.map((category) => category.id);
 
-  const sharedTagCounts = (relatedPostTags || []).reduce<Map<string, number>>(
+  let relatedPostTagRows: PostTag[] = [];
+  if (currentTagIds.length > 0) {
+    const { data } = await supabase
+      .from("post_tags")
+      .select("post_id, tag_id")
+      .in("tag_id", currentTagIds)
+      .neq("post_id", post.id);
+    relatedPostTagRows = data as PostTag[];
+  }
+
+  const sharedTagCounts = relatedPostTagRows.reduce<Map<string, number>>(
     (counts, postTag) => {
-      counts.set(postTag.post_id, (counts.get(postTag.post_id) || 0) + 1);
+      counts.set(postTag.post_id, (counts.get(postTag.post_id) ?? 0) + 1);
       return counts;
     },
     new Map()
   );
   const tagRelatedPostIds = Array.from(sharedTagCounts.keys());
 
-  const tagRelatedPostsPromise = (async () => {
-    if (tagRelatedPostIds.length === 0) return { data: [] };
-
+  let tagRelatedPostsData: RelatedPost[] = [];
+  if (tagRelatedPostIds.length > 0) {
     let query = supabase
       .from("posts")
       .select("*, category:categories(name,slug,type)")
@@ -347,8 +362,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       query = query.in("category_id", siblingCategoryIds);
     }
 
-    return query;
-  })();
+    const { data } = await query;
+    tagRelatedPostsData = data as unknown as RelatedPost[];
+  }
 
   let categoryRelatedQuery = supabase
     .from("posts")
@@ -386,42 +402,41 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const [
-    { data: tagRelatedPostsData },
     { data: categoryRelatedPostsData },
     { data: previousPostData },
     { data: nextPostData },
   ] = await Promise.all([
-    tagRelatedPostsPromise,
     categoryRelatedQuery,
     previousPostQuery.maybeSingle(),
     nextPostQuery.maybeSingle(),
   ]);
+  const categoryRelatedPosts = categoryRelatedPostsData as unknown as RelatedPost[];
   const relatedCandidates = buildRelatedCandidates({
-    tagRelatedPosts: (tagRelatedPostsData || []) as unknown as RelatedPost[],
-    categoryRelatedPosts: (categoryRelatedPostsData || []) as unknown as RelatedPost[],
+    tagRelatedPosts: tagRelatedPostsData,
+    categoryRelatedPosts,
     sharedTagCounts,
     currentCategoryId: post.category_id,
   });
   const relatedCandidateIds = relatedCandidates.map((candidate) => candidate.id);
-  const { data: candidatePostTags } =
-    relatedCandidateIds.length > 0
-      ? await supabase
-          .from("post_tags")
-          .select("post_id, tag_id")
-          .in("post_id", relatedCandidateIds)
-      : { data: [] };
-  const candidatePostTagRows = (candidatePostTags || []) as PostTag[];
+  let candidatePostTagRows: PostTag[] = [];
+  if (relatedCandidateIds.length > 0) {
+    const { data } = await supabase
+      .from("post_tags")
+      .select("post_id, tag_id")
+      .in("post_id", relatedCandidateIds);
+    candidatePostTagRows = data as PostTag[];
+  }
   const usedTagIds = Array.from(
     new Set([
       ...currentTagIds,
       ...candidatePostTagRows.map((postTag) => postTag.tag_id),
     ])
   );
-  const { data: tagRows } =
-    usedTagIds.length > 0
-      ? await supabase.from("tags").select("*").in("id", usedTagIds)
-      : { data: [] };
-  const usedTags = (tagRows || []) as TagType[];
+  let usedTags: TagType[] = [];
+  if (usedTagIds.length > 0) {
+    const { data } = await supabase.from("tags").select("*").in("id", usedTagIds);
+    usedTags = data as TagType[];
+  }
   const tagById = new Map(usedTags.map((tag) => [tag.id, tag]));
   const tags = currentTagIds
     .map((tagId) => tagById.get(tagId))
@@ -435,146 +450,240 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const nextPost = nextPostData as unknown as NavigationPost | null;
 
   return (
-    <DeviceShell>
-      <div className="public-device-layout">
+    <div className="min-h-screen bg-neutral-50 font-sans text-slate-800 transition-colors duration-300 dark:bg-[#0a0a0a] dark:text-neutral-200">
       <Header />
-      <main className="flex-1">
-        <article className="mx-auto w-full max-w-[840px] px-5 py-10 md:px-6 md:py-12">
-          <Link
-            href={contentListHref}
-            className="mb-6 inline-flex h-9 items-center gap-2 border border-border bg-background px-2 font-mono text-sm text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            <ArrowLeft className="h-4 w-4" suppressHydrationWarning />
-            返回{contentTypeLabel}
-          </Link>
+      <ReaderProgress />
 
-          <header className="article-hero-panel p-4 md:p-5">
-            <div className="flex min-w-0 flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground">
-              <span className="border border-primary/70 bg-primary/10 px-2 py-1 text-primary">
-                {contentTypeLabel}
-              </span>
-              {post.category ? (
-                <>
-                  <Link
-                    href={getCategoryBrowseHref(post.category)}
-                    className="border border-border bg-muted/60 px-2 py-1 transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    {post.category.name}
-                  </Link>
-                </>
-              ) : null}
-              <time
-                dateTime={post.created_at}
-                className="border border-border bg-muted/60 px-2 py-1"
+      <main className="relative min-h-[calc(100vh-5rem)] pb-20">
+        <div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+          <div className="mb-10 flex items-center justify-between gap-4">
+            <Link
+              href={contentListHref}
+              className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 transition-colors hover:text-slate-900 dark:text-neutral-500 dark:hover:text-white"
+            >
+              <ArrowLeft
+                className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1"
+                suppressHydrationWarning
+              />
+              <span>Back to Garden</span>
+            </Link>
+
+            <div className="flex items-center gap-2">
+              <a
+                href="#comments"
+                className="flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 px-4 text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900"
               >
-                {formatDate(post.created_at)}
-              </time>
-            </div>
-
-            <div className="min-w-0 space-y-3 py-5">
-              <h1 className="max-w-3xl text-3xl font-semibold leading-tight md:text-4xl">
-                {post.title}
-              </h1>
-              {post.excerpt ? (
-                <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                  {post.excerpt}
-                </p>
-              ) : null}
-            </div>
-
-            <p className="border border-border bg-muted/60 px-2 py-1 font-mono text-xs leading-6 text-muted-foreground">
-              约 {readingMinutes} 分钟 · {numberFormatter.format(post.view_count + 1)} 次阅读 ·{" "}
-              {commentCount} 条评论 · 更新于 {formatDate(post.updated_at || post.created_at)}
-            </p>
-
-            {tags.length > 0 ? (
-              <nav
-                aria-label="文章标签"
-                className="mt-4 flex min-w-0 flex-wrap gap-2 font-mono text-sm text-muted-foreground"
+                <MessageSquare className="h-3 w-3" suppressHydrationWarning />
+                <span>{commentCount}</span>
+              </a>
+              <button
+                type="button"
+                className="flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 px-4 text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900"
               >
-                {tags.map((tag) => (
-                  <Link
-                    key={tag.id}
-                    href={`/tag/${tag.slug}`}
-                    className="inline-flex h-8 items-center border border-border bg-background px-2 text-primary underline-offset-4 transition-colors hover:border-primary hover:bg-accent hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    #{tag.name}
-                  </Link>
-                ))}
-              </nav>
-            ) : null}
-          </header>
+                <Bookmark className="h-3 w-3" suppressHydrationWarning />
+                <span>Save</span>
+              </button>
+            </div>
+          </div>
 
-          {post.cover_image ? (
-            <figure className="mt-6 max-w-[680px]">
-              <div className="relative aspect-[16/9] w-full overflow-hidden border border-border bg-muted shadow-[4px_4px_0_var(--terminal-shadow)]">
-                <Image
-                  src={post.cover_image}
-                  alt={post.title}
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 680px"
-                  className="object-cover"
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
+            <aside className="hidden lg:col-span-1 lg:block" aria-label="Reader actions">
+              <div className="sticky top-28 flex flex-col items-center space-y-8">
+                <div className="flex flex-col items-center space-y-1">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition-colors dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500">
+                    <Clock className="h-5 w-5" suppressHydrationWarning />
+                  </div>
+                  <span className="font-mono text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                    {readingMinutes} Min Read
+                  </span>
+                </div>
+
+                <a href="#comments" className="flex flex-col items-center space-y-1">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition-colors hover:bg-slate-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:bg-zinc-800">
+                    <MessageSquare className="h-5 w-5" suppressHydrationWarning />
+                  </span>
+                  <span className="font-mono text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                    {commentCount} Comments
+                  </span>
+                </a>
+
+                <div className="flex flex-col items-center space-y-1">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500">
+                    <Eye className="h-5 w-5" suppressHydrationWarning />
+                  </div>
+                  <span className="font-mono text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                    {numberFormatter.format(post.view_count + 1)} Views
+                  </span>
+                </div>
+              </div>
+            </aside>
+
+            <article className="lg:col-span-2">
+              <div className="mx-auto max-w-2xl rounded-md border border-neutral-200 bg-white px-8 py-12 dark:border-[#262626] dark:bg-[#0d0d0d]/40">
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <span className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
+                    {contentTypeLabel}
+                  </span>
+                  {post.category ? (
+                    <Link
+                      href={getCategoryBrowseHref(post.category)}
+                      className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 transition-colors hover:bg-neutral-200 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800"
+                    >
+                      {post.category.name}
+                    </Link>
+                  ) : null}
+                </div>
+
+                <h1 className="font-serif text-3xl font-light italic leading-tight text-slate-950 dark:text-white sm:text-4xl">
+                  {post.title}
+                </h1>
+
+                {post.excerpt ? (
+                  <p className="mt-4 text-sm leading-7 text-neutral-500 dark:text-neutral-400">
+                    {post.excerpt}
+                  </p>
+                ) : null}
+
+                <div className="my-6 flex flex-wrap items-center gap-4 border-y border-neutral-200 py-3 font-mono text-[10px] uppercase tracking-wider text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
+                    <span>{readingMinutes} minutes read</span>
+                  </span>
+                  <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+                  <time dateTime={post.created_at} className="flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5" suppressHydrationWarning />
+                    <span>Published {formatDate(post.created_at)}</span>
+                  </time>
+                  <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+                  <span>Updated {formatDate(post.updated_at)}</span>
+                </div>
+
+                {post.cover_image ? (
+                  <div
+                    className="narrative-media-slot mb-8 aspect-[16/10] overflow-hidden rounded-sm border border-neutral-200 bg-neutral-100 dark:border-[#262626] dark:bg-neutral-900"
+                    style={{
+                      backgroundImage: `url("${post.cover_image.replace(/"/g, '\\"')}")`,
+                    }}
+                    aria-label={post.title}
+                  />
+                ) : null}
+
+                <div
+                  className="prose prose-neutral dark:prose-invert max-w-none
+                    prose-headings:scroll-mt-24
+                    prose-p:my-5 prose-p:text-neutral-600 prose-p:leading-relaxed dark:prose-p:text-neutral-400
+                    prose-a:text-slate-950 prose-a:underline prose-a:decoration-neutral-300 prose-a:underline-offset-4 hover:prose-a:decoration-slate-950 dark:prose-a:text-white dark:prose-a:decoration-neutral-700
+                    prose-blockquote:border-l-2 prose-blockquote:border-neutral-400 prose-blockquote:bg-neutral-50/50 prose-blockquote:py-3 prose-blockquote:pl-5 prose-blockquote:text-neutral-500 dark:prose-blockquote:border-neutral-700 dark:prose-blockquote:bg-neutral-900/10 dark:prose-blockquote:text-neutral-400
+                    prose-pre:rounded-md prose-pre:border prose-pre:border-[#262626] prose-pre:bg-neutral-950 prose-pre:text-xs
+                    prose-code:before:content-none prose-code:after:content-none prose-code:rounded prose-code:bg-neutral-100 prose-code:px-1 prose-code:py-0.5 prose-code:text-[11px] dark:prose-code:bg-neutral-900"
+                  dangerouslySetInnerHTML={{ __html: articleContent }}
+                />
+
+                {tags.length > 0 ? (
+                  <nav
+                    aria-label="文章标签"
+                    className="mt-10 flex flex-wrap gap-2 border-t border-neutral-100 pt-6 dark:border-[#262626]"
+                  >
+                    {tags.map((tagItem) => (
+                      <Link
+                        key={tagItem.id}
+                        href={`/tag/${tagItem.slug}`}
+                        className="border border-neutral-200 bg-neutral-50/50 px-3 py-1 font-mono text-[9px] font-medium text-neutral-400 transition-colors hover:border-neutral-400 hover:text-slate-950 dark:border-[#262626] dark:bg-neutral-900/20 dark:text-neutral-500 dark:hover:border-neutral-700 dark:hover:text-white"
+                      >
+                        #{tagItem.name}
+                      </Link>
+                    ))}
+                  </nav>
+                ) : null}
+              </div>
+
+              <div className="mt-8 flex items-center justify-around border-y border-slate-100 py-3 lg:hidden dark:border-zinc-800">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-zinc-400">
+                  <Clock className="h-4 w-4" suppressHydrationWarning />
+                  {readingMinutes} Min Read
+                </span>
+                <a
+                  href="#comments"
+                  className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white"
+                >
+                  <MessageSquare className="h-4 w-4" suppressHydrationWarning />
+                  {commentCount} Comments
+                </a>
+              </div>
+
+              <ArticlePager previousPost={previousPost} nextPost={nextPost} />
+
+              <section
+                id="comments"
+                aria-labelledby="comments-title"
+                className="mt-8 rounded-md border border-neutral-200 bg-white p-6 dark:border-[#262626] dark:bg-[#0d0d0d]/40"
+              >
+                <div className="mb-6 flex flex-col gap-2 border-b border-neutral-100 pb-4 dark:border-[#262626] sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
+                      Discussion
+                    </p>
+                    <h2
+                      id="comments-title"
+                      className="mt-1 font-serif text-xl font-light italic text-slate-950 dark:text-white"
+                    >
+                      评论
+                    </h2>
+                  </div>
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                    {commentCount} approved comments
+                  </span>
+                </div>
+                <div className="space-y-8">
+                  <CommentList comments={commentRows} />
+                  <CommentForm postId={post.id} />
+                </div>
+              </section>
+            </article>
+
+            <aside className="hidden lg:col-span-1 lg:block" aria-label="Reader navigation">
+              <div className="sticky top-28 space-y-6">
+                <TableOfContents headings={headings} />
+
+                <section className="rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10">
+                  <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
+                    <Share2 className="h-3.5 w-3.5" suppressHydrationWarning />
+                    <span>Article Signals</span>
+                  </h2>
+                  <ul className="space-y-3 text-xs text-neutral-500 dark:text-neutral-400">
+                    <li className="flex items-center justify-between">
+                      <span>Reading Time</span>
+                      <span className="font-serif font-bold italic text-slate-950 dark:text-white">
+                        {readingMinutes}m
+                      </span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span>Total Views</span>
+                      <span className="font-mono text-[10px] text-neutral-400">
+                        {numberFormatter.format(post.view_count + 1)}
+                      </span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span>Comments</span>
+                      <span className="font-serif font-bold italic text-slate-950 dark:text-white">
+                        {commentCount}
+                      </span>
+                    </li>
+                  </ul>
+                </section>
+
+                <RelatedSection
+                  posts={relatedPosts}
+                  contentTypeLabel={contentTypeLabel}
                 />
               </div>
-              <figcaption className="mt-3 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
-                {post.title}
-              </figcaption>
-            </figure>
-          ) : null}
-
-          <div className="max-w-[680px] py-10 md:py-12">
-            <TableOfContents headings={headings} />
-
-            <div
-              className="prose prose-neutral dark:prose-invert max-w-none
-                prose-headings:scroll-mt-24 prose-headings:font-semibold
-                prose-p:my-5 prose-p:leading-8 prose-p:text-foreground/85
-                prose-a:text-primary prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-4 hover:prose-a:decoration-primary
-                prose-blockquote:border-l-border prose-blockquote:text-muted-foreground
-                prose-hr:border-border/60
-                prose-pre:border prose-pre:border-border/60 prose-pre:bg-muted/45
-                prose-code:before:content-none prose-code:after:content-none
-                prose-code:bg-muted/70 prose-code:px-1 prose-code:py-0.5 prose-code:text-sm prose-code:font-medium"
-              dangerouslySetInnerHTML={{ __html: articleContent }}
-            />
-
-            <ArticlePager previousPost={previousPost} nextPost={nextPost} />
-
-            <RelatedSection
-              posts={relatedPosts}
-              contentTypeLabel={contentTypeLabel}
-            />
-
-            <section
-              id="comments"
-              aria-labelledby="comments-title"
-              className="mt-12 border-t border-border/80 pt-8"
-            >
-              <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="pixel-label text-primary">
-                    Discussion
-                  </p>
-                  <h2 id="comments-title" className="mt-1 text-lg font-semibold">
-                    评论
-                  </h2>
-                </div>
-                <span className="border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
-                  {commentCount} 条已审核评论
-                </span>
-              </div>
-              <div className="space-y-8">
-                <CommentList comments={comments || []} />
-                <CommentForm postId={post.id} />
-              </div>
-            </section>
+            </aside>
           </div>
-        </article>
+        </div>
       </main>
-        <Footer />
-      </div>
-    </DeviceShell>
+
+      <Footer />
+    </div>
   );
 }
 
@@ -582,21 +691,27 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
   if (headings.length === 0) return null;
 
   return (
-    <section className="pixel-frame-sm mb-8 p-4">
-      <h2 className="pixel-label text-primary">
-        目录
+    <section className="rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10">
+      <h2 className="mb-4 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
+        Table of Contents
       </h2>
-      <nav aria-label="文章目录" className="mt-3 grid gap-1">
+      <nav aria-label="文章目录" className="space-y-2">
         {headings.map((heading) => (
           <a
             key={heading.id}
             href={`#${heading.id}`}
             className={cn(
-              "line-clamp-2 min-h-8 border border-transparent px-2 py-1.5 font-mono text-sm leading-5 text-muted-foreground transition-colors hover:border-border hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-              heading.level === 3 && "pl-5 text-xs"
+              "group flex items-start text-left text-[11px] text-neutral-600 transition-colors hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white",
+              heading.level === 3 && "pl-3 text-neutral-400 dark:text-neutral-500"
             )}
           >
-            {heading.text}
+            {heading.level === 3 ? (
+              <CornerDownRight
+                className="mr-1 mt-0.5 h-2.5 w-2.5 shrink-0 opacity-40"
+                suppressHydrationWarning
+              />
+            ) : null}
+            <span className="line-clamp-1">{heading.text}</span>
           </a>
         ))}
       </nav>
@@ -614,7 +729,10 @@ function ArticlePager({
   if (!previousPost && !nextPost) return null;
 
   return (
-    <nav aria-label="相邻文章" className="mt-10 grid border-t border-border/80 md:grid-cols-2">
+    <nav
+      aria-label="相邻文章"
+      className="mt-8 grid overflow-hidden rounded-md border border-neutral-200 bg-white dark:border-[#262626] dark:bg-[#0d0d0d]/40 md:grid-cols-2"
+    >
       <NavigationPostCard
         post={previousPost}
         label="上一篇"
@@ -638,12 +756,14 @@ function NavigationPostCard({
     return (
       <div
         className={cn(
-          "border-b border-border/80 py-4",
-          direction === "previous" ? "md:border-r md:pr-4" : "md:pl-4 md:text-right"
+          "p-5",
+          direction === "previous" ? "md:border-r md:border-neutral-200 md:dark:border-[#262626]" : "md:text-right"
         )}
       >
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+          {label}
+        </p>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
           暂无更多相邻文章
         </p>
       </div>
@@ -653,29 +773,34 @@ function NavigationPostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group border-b border-border/80 py-4 transition-[background-color,border-color,box-shadow] hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:border-r md:px-4 first:md:pl-0 last:md:border-r-0 last:md:pr-0"
+      className={cn(
+        "group p-5 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:hover:bg-neutral-900/30",
+        direction === "previous" && "md:border-r md:border-neutral-200 md:dark:border-[#262626]"
+      )}
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
           <ChevronLeft
-            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
+            className="mt-0.5 h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-slate-950 dark:group-hover:text-white"
             suppressHydrationWarning
           />
         ) : null}
         <div className={direction === "next" ? "min-w-0 text-right" : "min-w-0"}>
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-6 transition-colors group-hover:text-primary">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+            {label}
+          </p>
+          <h3 className="mt-2 line-clamp-2 font-serif text-base font-light italic leading-6 text-slate-950 transition-colors dark:text-white">
             {post.title}
           </h3>
           {post.category ? (
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
               {post.category.name}
             </p>
           ) : null}
         </div>
         {direction === "next" ? (
           <ChevronRight
-            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
+            className="mt-0.5 h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-slate-950 dark:group-hover:text-white"
             suppressHydrationWarning
           />
         ) : null}
@@ -692,21 +817,15 @@ function RelatedSection({
   contentTypeLabel: string;
 }) {
   return (
-    <section className="mt-12 border-t border-border/80 pt-8">
-      <div className="mb-4">
-        <div>
-          <p className="pixel-label text-primary">
-            Related
-          </p>
-          <h2 className="mt-1 text-lg font-semibold">
-            相关内容
-          </h2>
-        </div>
-      </div>
+    <section className="rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10">
+      <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
+        <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
+        <span>Related</span>
+      </h2>
       {posts.length > 0 ? (
         <RelatedContentList posts={posts} />
       ) : (
-        <p className="text-sm leading-6 text-muted-foreground">
+        <p className="font-serif text-[11px] italic leading-relaxed text-neutral-400 dark:text-neutral-500">
           暂无同类{contentTypeLabel}。
         </p>
       )}
@@ -716,17 +835,17 @@ function RelatedSection({
 
 function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
   return (
-    <div className="grid gap-1">
+    <div className="space-y-3">
       {posts.map((post) => {
         const contentType = getContentType(post.category);
         return (
           <Link
             key={post.id}
             href={`/blog/${post.slug}`}
-            className="group -mx-2 block px-2 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="group block border-l-2 border-neutral-200 py-0.5 pl-3 transition-colors hover:border-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:hover:border-neutral-500"
           >
-            <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-              <span className="border border-primary/70 bg-primary/10 px-2 py-0.5 font-mono text-primary">
+            <div className="flex min-w-0 items-center gap-2 font-mono text-[9px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+              <span>
                 {getContentTypeLabel(contentType)}
               </span>
               {post.relationLabel ? (
@@ -735,16 +854,16 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                 <span className="min-w-0 truncate">{post.category.name}</span>
               ) : null}
             </div>
-            <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-6 transition-colors group-hover:text-primary">
+            <h3 className="mt-1 line-clamp-2 font-serif text-sm font-light italic leading-5 text-slate-950 transition-colors group-hover:text-slate-700 dark:text-white dark:group-hover:text-neutral-200">
               {post.title}
             </h3>
             {post.excerpt ? (
-              <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
+              <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-neutral-500 dark:text-neutral-400">
                 {post.excerpt}
               </p>
             ) : null}
             {post.tags && post.tags.length > 0 ? (
-              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
                 {post.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag.id}
