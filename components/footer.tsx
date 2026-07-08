@@ -1,32 +1,12 @@
-import Link from "next/link";
-import { Rss } from "lucide-react";
-
 export function Footer() {
   return (
-    <footer className="site-footer">
-      <div className="site-footer-inner">
-        <p>
-          &copy; {new Date().getFullYear()} Lee Notes. Engineering, projects & field logs.
-        </p>
-        <nav
-          className="flex flex-wrap items-center gap-x-4 gap-y-2"
-          aria-label="站点辅助链接"
-        >
-          <Link
-            href="/rss.xml"
-            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-background px-2 transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            title="RSS Feed"
-          >
-            <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
-            Dispatch
-          </Link>
-          <Link
-            href="/admin"
-            className="inline-flex h-9 items-center rounded-md border border-border bg-background px-2 text-xs text-muted-foreground/70 transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            管理
-          </Link>
-        </nav>
+    <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between border-t border-neutral-200 px-6 py-8 text-[9px] font-medium uppercase tracking-[0.25em] text-neutral-400 dark:border-neutral-900 dark:text-neutral-600 sm:flex-row sm:px-8 lg:px-10">
+      <span>
+        &copy; {new Date().getFullYear()} LeeNotes. Engineering, projects & field logs.
+      </span>
+      <div className="mt-2 flex items-center gap-2 sm:mt-0">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+        <span>SYSTEM ONLINE</span>
       </div>
     </footer>
   );

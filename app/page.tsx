@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { ContentRow } from "@/components/content-row";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { DeviceShell } from "@/components/device-shell";
 import Link from "next/link";
 import {
   Archive,
@@ -146,12 +145,15 @@ export default async function HomePage() {
     .slice(0, 4);
 
   return (
-    <DeviceShell>
-      <div className="public-device-layout">
-        <Header />
-        <main className="narrative-catalog mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-neutral-50 font-sans text-slate-800 transition-colors duration-300 dark:bg-[#0a0a0a] dark:text-neutral-200">
+      <Header />
+      <main className="min-h-[calc(100vh-5rem)]">
+        <div className="narrative-catalog mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-            <section className="space-y-10 lg:col-span-3" aria-label="Garden catalog">
+            <section
+              className="space-y-10 lg:col-span-3"
+              aria-label="Garden catalog"
+            >
               <CategoryFilterStrip
                 categories={visibleCategories}
                 totalCount={publishedRows?.length || 0}
@@ -186,10 +188,10 @@ export default async function HomePage() {
               </div>
             </aside>
           </div>
-        </main>
-        <Footer />
-      </div>
-    </DeviceShell>
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 }
 
@@ -232,7 +234,7 @@ function CategoryFilterStrip({
   totalCount: number;
 }) {
   return (
-    <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 dark:border-zinc-800/40 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-4 border-b border-slate-50 pb-5 dark:border-zinc-800/40 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap gap-2">
         <Link className="narrative-pill narrative-pill-active" href="/posts">
           All Seeds

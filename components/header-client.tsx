@@ -50,7 +50,7 @@ export function HeaderClient() {
             href="/"
             className="shrink-0 font-serif text-2xl font-bold italic tracking-tighter text-slate-900 transition-colors dark:text-white"
           >
-            Lee Notes.
+            LeeNotes.
           </Link>
 
           <div className="hidden h-4 w-px bg-neutral-200 dark:bg-neutral-800 md:block" />
@@ -66,7 +66,7 @@ export function HeaderClient() {
           </nav>
         </div>
 
-        <div className="flex shrink-0 items-center space-x-6">
+        <div className="flex shrink-0 items-center space-x-6" id="header-controls">
           {isSearch ? null : <SearchBar />}
 
           <div className="hidden items-center gap-2 text-[9px] font-medium uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-600 lg:flex">

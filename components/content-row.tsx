@@ -98,7 +98,7 @@ export function ContentRow({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "content-row-link narrative-article-card group relative flex min-w-0 flex-col overflow-hidden rounded-md border border-neutral-200 bg-white p-5 transition-all duration-300 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-850 dark:bg-neutral-900/10 dark:hover:border-neutral-700",
+        "content-row-link narrative-article-card group relative flex min-w-0 flex-col overflow-hidden rounded-md border border-neutral-200 bg-white p-5 transition-all duration-300 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-[#262626] dark:bg-neutral-900/10 dark:hover:border-neutral-700",
         className
       )}
     >
@@ -158,7 +158,7 @@ export function ContentRow({
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="mb-2 block font-serif text-lg font-light italic leading-tight text-slate-950 transition-colors duration-300 group-hover:text-slate-800 dark:text-white dark:group-hover:text-neutral-250">
+        <span className="mb-2 block font-serif text-lg font-light italic leading-tight text-slate-950 transition-colors duration-300 group-hover:text-slate-800 dark:text-white dark:group-hover:text-neutral-200">
           {post.title}
         </span>
 
@@ -169,7 +169,7 @@ export function ContentRow({
         ) : null}
       </span>
 
-      <span className="my-3.5 block border-t border-neutral-100 dark:border-neutral-850" />
+      <span className="my-3.5 block border-t border-neutral-100 dark:border-[#262626]" />
 
       <span className="flex items-center justify-between">
         <span className="flex items-center gap-3 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
