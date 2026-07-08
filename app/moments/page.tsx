@@ -251,7 +251,7 @@ export default async function MomentsPage({
     <DeviceShell>
       <div className="public-device-layout">
       <Header />
-      <PublicPageShell className="py-9 md:py-12">
+      <PublicPageShell>
         <MomentHero
           title={
             activeCategory
@@ -353,19 +353,19 @@ function MomentHero({
       : "全部见闻";
 
   return (
-    <header className="pixel-frame mb-7 p-4 md:p-5">
+    <header className="mb-7 rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10 md:p-6">
       <div className="min-w-0">
-        <p className="pixel-label text-primary">
+        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
           Moments
         </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
+        <h1 className="mt-2 font-serif text-2xl font-light italic leading-tight text-slate-950 dark:text-white md:text-3xl">
           {title}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-neutral-500 dark:text-neutral-400">
           {description}
         </p>
       </div>
-      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
+      <p className="mt-4 inline-flex rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400">
         {context} · 当前 {totalCount} · 共 {allCount} · {getSortLabel(sort)}
       </p>
     </header>
@@ -390,7 +390,7 @@ function CategoryNav({
   return (
     <nav
       aria-label="见闻分类"
-      className="-mx-5 flex gap-2 overflow-x-auto border-b border-border/80 px-5 pb-3 md:mx-0 md:px-0"
+      className="-mx-4 flex gap-2 overflow-x-auto border-b border-neutral-100 px-4 pb-4 dark:border-[#262626] sm:mx-0 sm:px-0"
     >
       <CategoryLink
         href={buildMomentsPath({ searchQuery, sort })}
@@ -432,10 +432,10 @@ function CategoryLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center gap-2 border px-2 font-mono text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex h-8 shrink-0 items-center gap-2 rounded-full border px-3 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background text-muted-foreground hover:border-primary hover:bg-accent hover:text-foreground"
+          ? "border-neutral-950 bg-neutral-950 text-white dark:border-white dark:bg-white dark:text-black"
+          : "border-neutral-200 bg-transparent text-neutral-400 hover:border-neutral-400 hover:text-slate-950 dark:border-neutral-800 dark:text-neutral-500 dark:hover:border-neutral-600 dark:hover:text-white"
       )}
     >
       {children}
@@ -455,7 +455,7 @@ function ListFilterBar({
   const hasFilters = Boolean(searchQuery || sort !== DEFAULT_SORT);
 
   return (
-    <section className="mt-4 border-b border-border/80 pb-4">
+    <section className="mt-4 border-b border-neutral-100 pb-4 dark:border-[#262626]">
       <form
         action="/moments"
         aria-label="见闻筛选"
@@ -472,7 +472,7 @@ function ListFilterBar({
           id="moments-sort"
           name="sort"
           defaultValue={sort}
-          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[border-color,background-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
+          className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a] sm:w-40"
         >
           <option value="newest">最新发布</option>
           <option value="updated">最近更新</option>
@@ -480,14 +480,14 @@ function ListFilterBar({
         </select>
         <button
           type="submit"
-          className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-950 bg-neutral-950 px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-white dark:bg-white dark:text-black dark:hover:bg-neutral-200"
         >
           应用
         </button>
         {hasFilters ? (
           <Link
             href={buildMomentsPath({ categorySlug })}
-            className="inline-flex h-10 items-center justify-center border border-border bg-background px-4 font-mono text-sm font-medium text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
           >
             清除
           </Link>
@@ -518,9 +518,9 @@ function ActiveFilterSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-neutral-100 pb-3 dark:border-[#262626] sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-primary">FILTER</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">FILTER</span>
         {categoryName ? (
           <FilterPill
             label={`分类：${categoryName}`}
@@ -542,7 +542,7 @@ function ActiveFilterSummary({
       </div>
       <Link
         href="/moments"
-        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
       >
         清除全部
       </Link>
@@ -554,7 +554,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-2.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -569,8 +569,8 @@ function MomentStream({
   posts: PostWithTaxonomy[];
 }) {
   return (
-    <section aria-label="见闻列表" className="border-t border-border/80">
-      <ol className="grid">
+    <section aria-label="见闻列表" className="border-t border-neutral-100 pt-6 dark:border-[#262626]">
+      <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {posts.map((post) => {
           const updated =
             post.updated_at.slice(0, 10) !== post.created_at.slice(0, 10);

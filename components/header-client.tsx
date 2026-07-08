@@ -37,7 +37,7 @@ function NavLink({
 export function HeaderClient() {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isPosts = pathname === "/posts";
+  const isPosts = pathname === "/posts" || pathname.startsWith("/blog/");
   const isMoments = pathname === "/moments";
   const isTags = pathname.startsWith("/tag");
   const isSearch = pathname === "/search";
@@ -59,10 +59,10 @@ export function HeaderClient() {
             className="hidden items-center space-x-6 text-[10px] font-bold uppercase tracking-[0.25em] md:flex"
             aria-label="主导航"
           >
-            <NavLink href="/" label="Garden" active={isHome} />
-            <NavLink href="/posts" label="Essays" active={isPosts} />
-            <NavLink href="/moments" label="Logs" active={isMoments} />
-            <NavLink href="/tag" label="Index" active={isTags} />
+            <NavLink href="/" label="首页" active={isHome} />
+            <NavLink href="/posts" label="文章" active={isPosts} />
+            <NavLink href="/moments" label="见闻" active={isMoments} />
+            <NavLink href="/tag" label="标签" active={isTags} />
           </nav>
         </div>
 
@@ -83,9 +83,9 @@ export function HeaderClient() {
             className="flex items-center space-x-3 text-[10px] font-bold uppercase tracking-wider md:hidden"
             aria-label="移动端导航"
           >
-            <NavLink href="/" label="Garden" active={isHome} className="tracking-wider" />
-            <NavLink href="/posts" label="Essays" active={isPosts} className="tracking-wider" />
-            <NavLink href="/moments" label="Logs" active={isMoments} className="tracking-wider" />
+            <NavLink href="/" label="首页" active={isHome} className="tracking-wider" />
+            <NavLink href="/posts" label="文章" active={isPosts} className="tracking-wider" />
+            <NavLink href="/moments" label="见闻" active={isMoments} className="tracking-wider" />
           </nav>
 
           <ThemeToggle />

@@ -4673,12 +4673,12 @@ body {
 
 html[data-reader-width="narrow"] .reader-article-card,
 html[data-reader-width="narrow"] .reader-width-frame {
-  max-width: 32rem !important;
+  max-width: 42rem !important;
 }
 
 html[data-reader-width="wide"] .reader-article-card,
 html[data-reader-width="wide"] .reader-width-frame {
-  max-width: 48rem !important;
+  max-width: 56rem !important;
 }
 
 html[data-reader-font="serif"] .reader-prose {

@@ -453,11 +453,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <ReaderProgress />
 
       <main className="relative min-h-[calc(100vh-5rem)] pb-20">
-        <div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[92rem] px-4 pt-10 sm:px-6 lg:px-8">
           <ReaderToolbar backHref={contentListHref} />
 
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
-            <aside className="hidden lg:col-span-1 lg:block" aria-label="Reader actions">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[6.5rem_minmax(0,52rem)_18rem] lg:justify-center xl:grid-cols-[7.5rem_minmax(0,54rem)_18.5rem]">
+            <aside className="hidden lg:block" aria-label="Reader actions">
               <div className="sticky top-28 flex flex-col items-center space-y-8">
                 <div className="flex flex-col items-center space-y-1">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition-colors dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500">
@@ -479,8 +479,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
             </aside>
 
-            <article className="lg:col-span-2">
-              <div className="reader-article-card mx-auto max-w-2xl rounded-md border border-neutral-200 bg-white px-6 py-10 dark:border-[#262626] dark:bg-[#0d0d0d]/40 sm:px-8 sm:py-12">
+            <article>
+              <div className="reader-article-card mx-auto max-w-[52rem] rounded-md border border-neutral-200 bg-white px-6 py-10 dark:border-[#262626] dark:bg-[#0d0d0d]/40 sm:px-8 sm:py-12">
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                   <span className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
                     {contentTypeLabel}
@@ -562,7 +562,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ) : null}
               </div>
 
-              <div className="reader-width-frame mx-auto mt-8 flex max-w-2xl items-center justify-around border-y border-slate-100 py-3 lg:hidden dark:border-zinc-800">
+              <div className="reader-width-frame mx-auto mt-8 flex max-w-[52rem] items-center justify-around border-y border-slate-100 py-3 lg:hidden dark:border-zinc-800">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-zinc-400">
                   <Clock className="h-4 w-4" suppressHydrationWarning />
                   {readingMinutes} Min Read
@@ -581,7 +581,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <section
                 id="comments"
                 aria-labelledby="comments-title"
-                className="reader-width-frame mx-auto mt-8 max-w-2xl rounded-md border border-neutral-200 bg-white p-6 dark:border-[#262626] dark:bg-[#0d0d0d]/40"
+                className="reader-width-frame mx-auto mt-8 max-w-[52rem] rounded-md border border-neutral-200 bg-white p-6 dark:border-[#262626] dark:bg-[#0d0d0d]/40"
               >
                 <div className="mb-6 flex flex-col gap-2 border-b border-neutral-100 pb-4 dark:border-[#262626] sm:flex-row sm:items-end sm:justify-between">
                   <div>
@@ -606,7 +606,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </section>
             </article>
 
-            <aside className="hidden lg:col-span-1 lg:block" aria-label="Reader navigation">
+            <aside className="hidden lg:block" aria-label="Reader navigation">
               <div className="sticky top-28 space-y-6">
                 <TableOfContents headings={headings} />
 
@@ -696,7 +696,7 @@ function ArticlePager({
   return (
     <nav
       aria-label="相邻文章"
-      className="reader-width-frame mx-auto mt-8 grid max-w-2xl overflow-hidden rounded-md border border-neutral-200 bg-white dark:border-[#262626] dark:bg-[#0d0d0d]/40 md:grid-cols-2"
+      className="reader-width-frame mx-auto mt-8 grid max-w-[52rem] overflow-hidden rounded-md border border-neutral-200 bg-white dark:border-[#262626] dark:bg-[#0d0d0d]/40 md:grid-cols-2"
     >
       <NavigationPostCard
         post={previousPost}

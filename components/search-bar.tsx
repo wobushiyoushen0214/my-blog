@@ -61,7 +61,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search indices..."
+          placeholder="搜索内容..."
           aria-keyshortcuts="/"
           className="w-full rounded-full border border-neutral-200 bg-neutral-50/50 py-1.5 pl-8 pr-4 font-sans text-[10px] uppercase tracking-wider text-neutral-800 outline-none transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-700 dark:focus:bg-[#0a0a0a]"
         />

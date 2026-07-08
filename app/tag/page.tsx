@@ -180,19 +180,19 @@ function TagIndexHero({
   hasFilters: boolean;
 }) {
   return (
-    <header className="pixel-frame mb-7 p-4 md:p-5">
+    <header className="mb-7 rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10 md:p-6">
       <div className="min-w-0">
-        <p className="pixel-label text-primary">
+        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
           Tags
         </p>
-        <h1 className="mt-2 text-2xl font-semibold leading-tight md:text-3xl">
+        <h1 className="mt-2 font-serif text-2xl font-light italic leading-tight text-slate-950 dark:text-white md:text-3xl">
           {title}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-neutral-500 dark:text-neutral-400">
           通过关键词聚合相关内容，适合快速交叉浏览。
         </p>
       </div>
-      <p className="mt-4 inline-flex border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
+      <p className="mt-4 inline-flex rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400">
         {hasFilters ? "筛选视图" : statusLabel(status)} · 当前 {filteredCount} · 共 {totalCount} ·{" "}
         已使用 {usedCount} · 未使用 {unusedCount}
       </p>
@@ -216,17 +216,17 @@ function TagStatusSwitch({
   return (
     <nav
       aria-label="标签使用状态"
-      className="-mx-5 mt-4 flex gap-2 overflow-x-auto border-b border-border/80 px-5 pb-3 md:mx-0 md:px-0"
+      className="-mx-4 mt-4 flex gap-2 overflow-x-auto border-b border-neutral-100 px-4 pb-4 dark:border-[#262626] sm:mx-0 sm:px-0"
     >
       {items.map((item) => (
         <Link
           key={item.value}
           href={buildTagPath({ query, status: item.value })}
           aria-current={activeStatus === item.value ? "page" : undefined}
-          className={`inline-flex h-9 shrink-0 items-center border px-2 font-mono text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          className={`inline-flex h-8 shrink-0 items-center rounded-full border px-3 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
             activeStatus === item.value
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-background text-muted-foreground hover:border-primary hover:bg-accent hover:text-foreground"
+              ? "border-neutral-950 bg-neutral-950 text-white dark:border-white dark:bg-white dark:text-black"
+              : "border-neutral-200 bg-transparent text-neutral-400 hover:border-neutral-400 hover:text-slate-950 dark:border-neutral-800 dark:text-neutral-500 dark:hover:border-neutral-600 dark:hover:text-white"
           }`}
         >
           {item.label}
@@ -247,9 +247,9 @@ function ActiveTagSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-neutral-100 pb-3 dark:border-[#262626] sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-primary">FILTER</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">FILTER</span>
         {query ? (
           <FilterPill
             label={`关键词：${query}`}
@@ -265,7 +265,7 @@ function ActiveTagSummary({
       </div>
       <Link
         href="/tag"
-        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
       >
         清除全部
       </Link>
@@ -277,7 +277,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-2.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -290,27 +290,27 @@ function TagResultRow({ tag }: { tag: TagWithCount }) {
   return (
     <Link
       href={`/tag/${tag.slug}`}
-      className="group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+      className="group grid min-w-0 gap-3 border-b border-neutral-100 px-3 py-5 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-[#262626] dark:hover:bg-neutral-900/20 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
     >
       <span className="min-w-0">
-        <span className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+        <span className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+          <span className="inline-flex items-center gap-1.5 font-medium text-slate-950 dark:text-white">
             <Hash className="h-3.5 w-3.5" suppressHydrationWarning />
             标签
           </span>
-          <span className="truncate text-sm text-muted-foreground">
+          <span className="truncate text-sm text-neutral-500 dark:text-neutral-400">
             {tag.slug || "未设置 slug"}
           </span>
         </span>
-        <span className="mt-2 block truncate text-base font-medium leading-6 transition-colors group-hover:text-primary">
+        <span className="mt-2 block truncate font-serif text-base font-light italic leading-6 text-slate-950 transition-colors group-hover:text-slate-700 dark:text-white">
           {tag.name}
         </span>
       </span>
-      <span className="text-sm text-muted-foreground sm:text-right">
+      <span className="text-sm text-neutral-500 dark:text-neutral-400 sm:text-right">
         {tag.postCount} 篇内容
       </span>
       <ArrowRight
-        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
+        className="h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-slate-950 dark:group-hover:text-white sm:justify-self-end"
         suppressHydrationWarning
       />
     </Link>
