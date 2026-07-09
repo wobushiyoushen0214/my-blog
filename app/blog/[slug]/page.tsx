@@ -448,7 +448,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const nextPost = nextPostData as unknown as NavigationPost | null;
 
   return (
-    <div className="min-h-screen bg-neutral-50 font-sans text-slate-800 transition-colors duration-300 dark:bg-[#0a0a0a] dark:text-neutral-200">
+    <div className="min-h-screen bg-neutral-50 font-sans text-slate-800 transition-colors duration-300 dark:bg-transparent dark:text-neutral-200">
       <Header />
       <ReaderProgress />
 
@@ -458,7 +458,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[6.5rem_minmax(0,52rem)_18rem] lg:justify-center xl:grid-cols-[7.5rem_minmax(0,54rem)_18.5rem]">
             <aside className="hidden lg:block" aria-label="Reader actions">
-              <div className="sticky top-28 flex flex-col items-center space-y-8">
+              <div className="sticky top-28 flex flex-col items-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-150">
                 <div className="flex flex-col items-center space-y-1">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition-colors dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500">
                     <Clock className="h-5 w-5" suppressHydrationWarning />
@@ -480,7 +480,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </aside>
 
             <article>
-              <div className="reader-article-card mx-auto max-w-[52rem] rounded-md border border-neutral-200 bg-white px-6 py-10 dark:border-[#262626] dark:bg-[#0d0d0d]/40 sm:px-8 sm:py-12">
+              <div className="reader-article-card surface-card mx-auto max-w-[52rem] rounded-md px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                   <span className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
                     {contentTypeLabel}
@@ -581,7 +581,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <section
                 id="comments"
                 aria-labelledby="comments-title"
-                className="reader-width-frame mx-auto mt-8 max-w-[52rem] rounded-md border border-neutral-200 bg-white p-6 dark:border-[#262626] dark:bg-[#0d0d0d]/40"
+                className="reader-article-card surface-card mx-auto mt-8 max-w-[52rem] rounded-md p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both"
               >
                 <div className="mb-6 flex flex-col gap-2 border-b border-neutral-100 pb-4 dark:border-[#262626] sm:flex-row sm:items-end sm:justify-between">
                   <div>
@@ -607,10 +607,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </article>
 
             <aside className="hidden lg:block" aria-label="Reader navigation">
-              <div className="sticky top-28 space-y-6">
+              <div className="sticky top-28 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-300">
                 <TableOfContents headings={headings} />
 
-                <section className="rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10">
+                <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[400ms]">
                   <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
                     <Share2 className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>Article Signals</span>
@@ -656,8 +656,8 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
   if (headings.length === 0) return null;
 
   return (
-    <section className="rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10">
-      <h2 className="mb-4 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
+    <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[350ms]">
+      <h2 className="mb-4 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#1a1a1f] dark:text-neutral-500">
         Table of Contents
       </h2>
       <nav aria-label="文章目录" className="space-y-2">
@@ -782,8 +782,8 @@ function RelatedSection({
   contentTypeLabel: string;
 }) {
   return (
-    <section className="rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10">
-      <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
+    <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[500ms]">
+      <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#1a1a1f] dark:text-neutral-500">
         <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
         <span>Related</span>
       </h2>

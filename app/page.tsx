@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -14,7 +12,6 @@ import {
   Sparkles,
   Terminal,
 } from "lucide-react";
-import { motion } from "motion/react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { DeviceShell } from "@/components/device-shell";
@@ -83,6 +80,9 @@ const blogEntrances = [
 const monoLabel =
   "font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500";
 
+const enterBase =
+  "animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both";
+
 export default function PersonalHomePage() {
   return (
     <DeviceShell>
@@ -102,11 +102,11 @@ export default function PersonalHomePage() {
 
 function Hero() {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="border-b border-neutral-100 pb-12 dark:border-[#1a1a1a] sm:pb-16"
+    <section
+      className={cn(
+        enterBase,
+        "border-b border-neutral-100 pb-12 dark:border-[#1a1a1f] sm:pb-16"
+      )}
     >
       <p className={monoLabel}>Hello / 你好</p>
       <h1 className="mt-4 font-serif text-5xl font-light italic leading-none tracking-tight text-slate-950 dark:text-white sm:text-6xl">
@@ -147,15 +147,12 @@ function Hero() {
           View archive
           <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
         </Link>
-        <Link
-          href="/rss.xml"
-          className={publicSecondaryButtonClassName}
-        >
+        <Link href="/rss.xml" className={publicSecondaryButtonClassName}>
           <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
           RSS
         </Link>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -167,20 +164,22 @@ function FocusSection() {
         title="What I spend time on"
         id="focus-heading"
       />
-      <div className="grid gap-px overflow-hidden rounded-md border border-neutral-200 bg-neutral-200 dark:border-[#1a1a1a] dark:bg-[#1a1a1a] sm:grid-cols-3">
-        {focusAreas.map((item) => (
-          <motion.section
+      <div className="grid gap-4 sm:grid-cols-3">
+        {focusAreas.map((item, index) => (
+          <section
             key={item.id}
             id={item.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="group flex flex-col gap-4 bg-white p-6 transition-colors duration-200 hover:bg-neutral-50 dark:bg-[#0d0d0d] dark:hover:bg-[#171717]"
+            className={cn(
+              "surface-card surface-card-hover group flex flex-col gap-4 p-6",
+              enterBase,
+              index === 1 && "delay-100",
+              index === 2 && "delay-200"
+            )}
           >
             <div className="flex items-center justify-between">
               <span className={monoLabel}>{item.eyebrow}</span>
               <item.icon
-                className="h-4 w-4 text-neutral-300 transition-colors group-hover:text-neutral-500 dark:text-neutral-600 dark:group-hover:text-neutral-400"
+                className="h-4 w-4 text-neutral-300 transition-colors group-hover:text-neutral-500 dark:text-neutral-600 dark:group-hover:text-neutral-300"
                 suppressHydrationWarning
               />
             </div>
@@ -190,7 +189,7 @@ function FocusSection() {
             <p className="text-xs leading-6 text-neutral-500 dark:text-neutral-400">
               {item.description}
             </p>
-          </motion.section>
+          </section>
         ))}
       </div>
     </section>
@@ -206,12 +205,17 @@ function EntranceSection() {
         id="entrance-heading"
         description="根路由用于个人介绍；文章、见闻、标签、归档、友链和 RSS 继续作为独立内容入口。"
       />
-      <div className="grid gap-8 border-t border-neutral-100 pt-8 dark:border-[#1a1a1a]">
-        {blogEntrances.map((item) => (
+      <div className={cn("grid gap-8 border-t border-neutral-100 pt-8 dark:border-[#1a1a1f]", enterBase)}>
+        {blogEntrances.map((item, index) => (
           <Link
             key={item.href}
             href={item.href}
-            className="group flex items-start justify-between gap-6 py-1 transition-colors"
+            className={cn(
+              "group flex items-start justify-between gap-6 py-1 transition-colors",
+              "animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+              index === 1 && "delay-100",
+              index === 2 && "delay-200"
+            )}
           >
             <div className="min-w-0">
               <div className="flex items-center gap-3">
@@ -237,11 +241,16 @@ function EntranceSection() {
 
 function ClosingSection() {
   return (
-    <section className="space-y-6 rounded-md border border-neutral-200 bg-white p-7 dark:border-[#1a1a1a] dark:bg-[#0d0d0d] sm:p-9">
+    <section
+      className={cn(
+        "surface-card space-y-6 p-7 sm:p-9",
+        enterBase
+      )}
+    >
       <p className="max-w-3xl font-serif text-xl font-light italic leading-relaxed text-neutral-600 dark:text-neutral-300">
         这个个人页只负责第一印象和方向导航。更细的内容继续沉淀在博客系统里，避免把首页变成重复的信息列表。
       </p>
-      <div className="grid gap-3 border-t border-neutral-100 pt-6 sm:grid-cols-2 lg:grid-cols-4 dark:border-[#1a1a1a]">
+      <div className="grid gap-3 border-t border-neutral-100 pt-6 sm:grid-cols-2 lg:grid-cols-4 dark:border-[#1a1a1f]">
         <ContactLink
           href="mailto:hello@leempty.site"
           icon={Mail}
