@@ -57,12 +57,12 @@ export function PublicPageHeader({
         <div className="min-w-0 space-y-3">
           <div className="space-y-2">
             {eyebrow ? (
-              <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
                 {eyebrow}
               </p>
             ) : null}
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-              <h1 className="min-w-0 font-serif text-2xl font-light italic leading-tight text-slate-950 dark:text-white md:text-3xl">
+              <h1 className="min-w-0 font-serif text-3xl font-light italic leading-tight tracking-tight text-slate-950 dark:text-white md:text-4xl">
                 {title}
               </h1>
               {countLabel ? (
@@ -124,11 +124,11 @@ export function PublicCompactHeader({
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
           {eyebrow ? (
-            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
               {eyebrow}
             </p>
           ) : null}
-          <h1 className="mt-2 min-w-0 font-serif text-2xl font-light italic leading-tight text-slate-950 dark:text-white md:text-3xl">
+          <h1 className="mt-2 min-w-0 font-serif text-3xl font-light italic leading-tight tracking-tight text-slate-950 dark:text-white md:text-4xl">
             {title}
           </h1>
           {description ? (

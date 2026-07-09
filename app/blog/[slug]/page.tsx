@@ -481,43 +481,47 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <article>
               <div className="reader-article-card surface-card mx-auto max-w-[52rem] rounded-md px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
-                <div className="mb-4 flex flex-wrap items-center gap-2">
-                  <span className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
-                    {contentTypeLabel}
-                  </span>
+                <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+                  <span>{contentTypeLabel}</span>
                   {post.category ? (
-                    <Link
-                      href={getCategoryBrowseHref(post.category)}
-                      className="bg-neutral-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-neutral-600 transition-colors hover:bg-neutral-200 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800"
-                    >
-                      {post.category.name}
-                    </Link>
+                    <>
+                      <span className="text-neutral-300 dark:text-neutral-700">
+                        /
+                      </span>
+                      <Link
+                        href={getCategoryBrowseHref(post.category)}
+                        className="transition-colors hover:text-slate-950 dark:hover:text-white"
+                      >
+                        {post.category.name}
+                      </Link>
+                    </>
                   ) : null}
                 </div>
 
-                <h1 className="font-serif text-3xl font-light italic leading-tight text-slate-950 dark:text-white sm:text-4xl">
+                <h1 className="mt-5 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-slate-950 dark:text-white sm:text-5xl">
                   {post.title}
                 </h1>
 
+                <div className="mt-7 w-16 border-t border-neutral-300 dark:border-neutral-700" />
+
                 {post.excerpt ? (
-                  <p className="mt-4 text-sm leading-7 text-neutral-500 dark:text-neutral-400">
+                  <p className="mt-7 max-w-2xl font-serif text-lg font-light italic leading-relaxed text-neutral-500 dark:text-neutral-400">
                     {post.excerpt}
                   </p>
                 ) : null}
 
-                <div className="my-6 flex flex-wrap items-center gap-4 border-y border-neutral-200 py-3 font-mono text-[10px] uppercase tracking-wider text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
-                    <span>{readingMinutes} minutes read</span>
-                  </span>
-                  <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
-                  <time dateTime={post.created_at} className="flex items-center gap-1.5">
+                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-neutral-200 pt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 dark:border-[#1f1f26] dark:text-neutral-500">
+                  <time
+                    dateTime={post.created_at}
+                    className="flex items-center gap-1.5"
+                  >
                     <Calendar className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>Published {formatDate(post.created_at)}</span>
                   </time>
-                  <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
-                  <span className="bg-neutral-100 px-2 py-0.5 text-[8px] font-bold tracking-widest text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
-                    Select Text to Highlight
+                  <span className="text-neutral-300 dark:text-neutral-700">/</span>
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
+                    <span>{readingMinutes} min read</span>
                   </span>
                 </div>
 
