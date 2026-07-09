@@ -12,14 +12,7 @@ import {
   Sparkles,
   Terminal,
 } from "lucide-react";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { DeviceShell } from "@/components/device-shell";
-import {
-  PublicPageShell,
-  publicPrimaryButtonClassName,
-  publicSecondaryButtonClassName,
-} from "@/components/public-page";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const roles = [
@@ -77,26 +70,88 @@ const blogEntrances = [
   },
 ];
 
+const navLinks = [
+  { href: "/posts", label: "文章" },
+  { href: "/moments", label: "见闻" },
+  { href: "/archive", label: "归档" },
+  { href: "/links", label: "友链" },
+];
+
 const monoLabel =
   "font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500";
 
 const enterBase =
   "animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both";
 
+// Standalone button styles (token-based, no dependency on the blog page system).
+const primaryBtn =
+  "inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-foreground bg-foreground px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+const secondaryBtn =
+  "inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-border bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+
 export default function PersonalHomePage() {
   return (
-    <DeviceShell>
-      <div className="public-device-layout">
-        <Header />
-        <PublicPageShell className="space-y-16 pb-20 pt-10 sm:space-y-20 sm:pt-14">
-          <Hero />
-          <FocusSection />
-          <EntranceSection />
-          <ClosingSection />
-        </PublicPageShell>
-        <Footer />
+    <div className="flex min-h-screen flex-col">
+      <StandaloneHeader />
+      <main className="mx-auto w-full max-w-6xl flex-1 space-y-16 px-5 pb-24 pt-14 sm:space-y-20 sm:px-8 sm:pt-20">
+        <Hero />
+        <FocusSection />
+        <EntranceSection />
+        <ClosingSection />
+      </main>
+      <StandaloneFooter />
+    </div>
+  );
+}
+
+function StandaloneHeader() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-md">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
+        <Link
+          href="/"
+          className="font-serif text-xl font-medium italic tracking-tight text-foreground transition-opacity hover:opacity-70"
+        >
+          leempty
+        </Link>
+
+        <nav
+          className="hidden items-center gap-6 sm:flex"
+          aria-label="主导航"
+        >
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-3">
+          <Link
+            href="/rss.xml"
+            className="hidden font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground sm:inline"
+          >
+            RSS
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
-    </DeviceShell>
+    </header>
+  );
+}
+
+function StandaloneFooter() {
+  return (
+    <footer className="border-t border-border/60">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-5 py-8 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <span>© {new Date().getFullYear()} leempty</span>
+        <span>Engineering · Projects · Field logs</span>
+      </div>
+    </footer>
   );
 }
 
@@ -109,7 +164,7 @@ function Hero() {
       )}
     >
       <p className={monoLabel}>Hello / 你好</p>
-      <h1 className="mt-4 font-serif text-5xl font-light italic leading-none tracking-tight text-slate-950 dark:text-white sm:text-6xl">
+      <h1 className="mt-4 font-serif text-6xl font-light italic leading-none tracking-tight text-slate-950 dark:text-white sm:text-7xl">
         leempty
       </h1>
 
@@ -133,21 +188,15 @@ function Hero() {
       </div>
 
       <div className="mt-9 flex flex-wrap items-center gap-3">
-        <Link
-          href="/posts"
-          className={cn(publicPrimaryButtonClassName, "gap-1.5")}
-        >
+        <Link href="/posts" className={primaryBtn}>
           Read posts
           <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
         </Link>
-        <Link
-          href="/archive"
-          className={cn(publicSecondaryButtonClassName, "gap-1.5")}
-        >
+        <Link href="/archive" className={cn(secondaryBtn, "gap-1.5")}>
           View archive
           <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
         </Link>
-        <Link href="/rss.xml" className={publicSecondaryButtonClassName}>
+        <Link href="/rss.xml" className={secondaryBtn}>
           <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
           RSS
         </Link>
@@ -241,12 +290,7 @@ function EntranceSection() {
 
 function ClosingSection() {
   return (
-    <section
-      className={cn(
-        "surface-card space-y-6 p-7 sm:p-9",
-        enterBase
-      )}
-    >
+    <section className={cn("surface-card space-y-6 p-7 sm:p-9", enterBase)}>
       <p className="max-w-3xl font-serif text-xl font-light italic leading-relaxed text-neutral-600 dark:text-neutral-300">
         这个个人页只负责第一印象和方向导航。更细的内容继续沉淀在博客系统里，避免把首页变成重复的信息列表。
       </p>
