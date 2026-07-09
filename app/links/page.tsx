@@ -360,7 +360,7 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+      className="friend-link-row group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px] animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-2">
@@ -422,7 +422,7 @@ function InfoPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="border-y border-border/60 py-4">
+    <section className="surface-card border-y border-border/60 py-4 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both delay-100">
       <div className="pb-2">
         <h2 className="text-sm font-medium text-foreground">
           {title}

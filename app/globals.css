@@ -4872,3 +4872,18 @@ html[data-reader-size="xl"] .reader-prose li {
     --tw-animation-delay: 0ms !important;
   }
 }
+
+/* Staggered entrance for links-page rows (per category section). */
+.grid > .friend-link-row:nth-child(1) { --tw-animation-delay: 0ms; }
+.grid > .friend-link-row:nth-child(2) { --tw-animation-delay: 60ms; }
+.grid > .friend-link-row:nth-child(3) { --tw-animation-delay: 120ms; }
+.grid > .friend-link-row:nth-child(4) { --tw-animation-delay: 180ms; }
+.grid > .friend-link-row:nth-child(5) { --tw-animation-delay: 240ms; }
+.grid > .friend-link-row:nth-child(6) { --tw-animation-delay: 300ms; }
+.grid > .friend-link-row:nth-child(n + 7) { --tw-animation-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .grid > .friend-link-row {
+    --tw-animation-delay: 0ms !important;
+  }
+}
