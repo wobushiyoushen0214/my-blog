@@ -98,7 +98,7 @@ export function ContentRow({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "content-row-link narrative-article-card group relative flex min-w-0 flex-col overflow-hidden rounded-md border border-neutral-200 bg-white p-5 transition-all duration-300 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-[#262626] dark:bg-neutral-900/10 dark:hover:border-neutral-700",
+        "content-row-link narrative-article-card group relative flex min-w-0 flex-col overflow-hidden rounded-md border border-neutral-200 bg-white p-5 transition-all duration-300 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-[#262626] dark:bg-neutral-900/10 dark:hover:border-neutral-700 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
         className
       )}
     >

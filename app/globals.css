@@ -4852,3 +4852,23 @@ html[data-reader-size="xl"] .reader-prose li {
     transform: none !important;
   }
 }
+
+/* —— Staggered list-card entrance (posts / moments / archive / category / tag / search).
+   Custom properties inherit, so setting the delay on the grid's direct child
+   (the .content-row-link itself, or the <li> wrapping it in moments) propagates
+   to the animated card inside. Capped at 8 items; the tail shares the max delay. */
+.grid > :is(.content-row-link, li):nth-child(1) { --tw-animation-delay: 0ms; }
+.grid > :is(.content-row-link, li):nth-child(2) { --tw-animation-delay: 70ms; }
+.grid > :is(.content-row-link, li):nth-child(3) { --tw-animation-delay: 140ms; }
+.grid > :is(.content-row-link, li):nth-child(4) { --tw-animation-delay: 210ms; }
+.grid > :is(.content-row-link, li):nth-child(5) { --tw-animation-delay: 280ms; }
+.grid > :is(.content-row-link, li):nth-child(6) { --tw-animation-delay: 350ms; }
+.grid > :is(.content-row-link, li):nth-child(7) { --tw-animation-delay: 420ms; }
+.grid > :is(.content-row-link, li):nth-child(8) { --tw-animation-delay: 490ms; }
+.grid > :is(.content-row-link, li):nth-child(n + 9) { --tw-animation-delay: 490ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .grid > :is(.content-row-link, li) {
+    --tw-animation-delay: 0ms !important;
+  }
+}

@@ -42,7 +42,7 @@ export function PublicPageHeader({
   action,
 }: PublicPageHeaderProps) {
   return (
-    <header className="mb-7 rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10 md:p-6">
+    <header className="mb-7 rounded-md border border-neutral-200 bg-white p-5 dark:border-[#262626] dark:bg-neutral-900/10 md:p-6 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
       {backHref && backLabel ? (
         <Link
           href={backHref}
@@ -108,7 +108,7 @@ export function PublicCompactHeader({
   return (
     <header
       className={cn(
-        "mb-5 border-b border-neutral-100 pb-5 dark:border-[#262626]",
+        "mb-5 border-b border-neutral-100 pb-5 dark:border-[#262626] animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both",
         className
       )}
     >
@@ -175,7 +175,7 @@ export function PublicControlStrip({
   return (
     <section
       className={cn(
-        "mb-6 border-b border-neutral-100 pb-4 dark:border-[#262626]",
+        "mb-6 border-b border-neutral-100 pb-4 dark:border-[#262626] animate-in fade-in slide-in-from-bottom-3 duration-600 fill-mode-both delay-100",
         className
       )}
     >
