@@ -4887,3 +4887,52 @@ html[data-reader-size="xl"] .reader-prose li {
     --tw-animation-delay: 0ms !important;
   }
 }
+
+/* —— Home page premium ambient: layered glow + film grain (no header, product/personal landing). */
+.home-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(72rem 72rem at 50% -16%, rgba(124, 126, 144, 0.15), transparent 62%),
+    radial-gradient(52rem 52rem at 88% 6%, rgba(86, 90, 124, 0.11), transparent 58%),
+    radial-gradient(46rem 46rem at 4% 90%, rgba(120, 122, 140, 0.07), transparent 56%);
+}
+
+.home-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.06;
+}
+
+.light .home-glow {
+  background:
+    radial-gradient(64rem 64rem at 50% -16%, rgba(28, 27, 23, 0.05), transparent 62%),
+    radial-gradient(48rem 48rem at 88% 6%, rgba(28, 27, 23, 0.035), transparent 58%);
+}
+
+.light .home-grain {
+  opacity: 0.025;
+}
+
+.home-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 60%, color-mix(in oklab, var(--background) 92%, #000000) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-grain,
+  .home-glow,
+  .home-vignette {
+    animation: none !important;
+  }
+}

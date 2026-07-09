@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   BookOpen,
+  ChevronDown,
   Code2,
   Gamepad2,
   Link as LinkIcon,
@@ -68,13 +69,12 @@ const blogEntrances = [
     description: "按时间回看所有已经发布的内容。",
     icon: BookOpen,
   },
-];
-
-const navLinks = [
-  { href: "/posts", label: "文章" },
-  { href: "/moments", label: "见闻" },
-  { href: "/archive", label: "归档" },
-  { href: "/links", label: "友链" },
+  {
+    href: "/links",
+    title: "友链",
+    description: "长期阅读和互相连接的站点。",
+    icon: LinkIcon,
+  },
 ];
 
 const monoLabel =
@@ -83,123 +83,77 @@ const monoLabel =
 const enterBase =
   "animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both";
 
-// Standalone button styles (token-based, no dependency on the blog page system).
 const primaryBtn =
-  "inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-foreground bg-foreground px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+  "inline-flex h-10 items-center justify-center gap-1.5 rounded-md border border-foreground bg-foreground px-5 font-mono text-[10px] font-bold uppercase tracking-wider text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 const secondaryBtn =
-  "inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-border bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+  "inline-flex h-10 items-center justify-center gap-1.5 rounded-md border border-border bg-transparent px-5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 
 export default function PersonalHomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <StandaloneHeader />
-      <main className="mx-auto w-full max-w-6xl flex-1 space-y-16 px-5 pb-24 pt-14 sm:space-y-20 sm:px-8 sm:pt-20">
+    <div className="relative min-h-screen">
+      <div aria-hidden className="home-glow" />
+      <div aria-hidden className="home-grain" />
+      <div aria-hidden className="home-vignette" />
+      <div className="relative z-10">
         <Hero />
         <FocusSection />
         <EntranceSection />
         <ClosingSection />
-      </main>
-      <StandaloneFooter />
+        <StandaloneFooter />
+      </div>
     </div>
-  );
-}
-
-function StandaloneHeader() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
-        <Link
-          href="/"
-          className="font-serif text-xl font-medium italic tracking-tight text-foreground transition-opacity hover:opacity-70"
-        >
-          leempty
-        </Link>
-
-        <nav
-          className="hidden items-center gap-6 sm:flex"
-          aria-label="主导航"
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/rss.xml"
-            className="hidden font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground sm:inline"
-          >
-            RSS
-          </Link>
-          <ThemeToggle />
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function StandaloneFooter() {
-  return (
-    <footer className="border-t border-border/60">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-5 py-8 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
-        <span>© {new Date().getFullYear()} leempty</span>
-        <span>Engineering · Projects · Field logs</span>
-      </div>
-    </footer>
   );
 }
 
 function Hero() {
   return (
-    <section
-      className={cn(
-        enterBase,
-        "border-b border-neutral-100 pb-12 dark:border-[#1a1a1f] sm:pb-16"
-      )}
-    >
-      <p className={monoLabel}>Hello / 你好</p>
-      <h1 className="mt-4 font-serif text-6xl font-light italic leading-none tracking-tight text-slate-950 dark:text-white sm:text-7xl">
-        leempty
-      </h1>
-
-      <p className="mt-7 max-w-2xl font-serif text-lg font-light italic leading-relaxed text-neutral-500 dark:text-neutral-400 sm:text-xl">
-        I build web products, write down engineering notes, and keep a small
-        public notebook about code, tools and daily observations.
-      </p>
-
-      <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-        {roles.map((role, index) => (
-          <span
-            key={role}
-            className="inline-flex items-center font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500"
-          >
-            {role}
-            {index < roles.length - 1 ? (
-              <span className="ml-3 h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
-            ) : null}
-          </span>
-        ))}
+    <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-5 py-28 text-center">
+      <div className="absolute right-5 top-6 sm:right-8 sm:top-8">
+        <ThemeToggle />
       </div>
 
-      <div className="mt-9 flex flex-wrap items-center gap-3">
-        <Link href="/posts" className={primaryBtn}>
-          Read posts
-          <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
-        </Link>
-        <Link href="/archive" className={cn(secondaryBtn, "gap-1.5")}>
-          View archive
-          <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
-        </Link>
-        <Link href="/rss.xml" className={secondaryBtn}>
-          <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
-          RSS
-        </Link>
+      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
+        <p className={monoLabel}>Hello / 你好</p>
+        <h1 className="mt-7 font-serif text-7xl font-light italic leading-[0.9] tracking-tight text-slate-950 dark:text-white sm:text-8xl">
+          leempty
+        </h1>
+        <p className="mx-auto mt-8 max-w-2xl font-serif text-lg font-light italic leading-relaxed text-neutral-500 dark:text-neutral-400 sm:text-xl">
+          I build web products, write down engineering notes, and keep a small
+          public notebook about code, tools and daily observations.
+        </p>
+
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
+          {roles.map((role, index) => (
+            <span
+              key={role}
+              className="inline-flex items-center font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500"
+            >
+              {role}
+              {index < roles.length - 1 ? (
+                <span className="ml-3 h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+              ) : null}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <Link href="/posts" className={primaryBtn}>
+            Read posts
+            <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
+          </Link>
+          <Link href="/archive" className={cn(secondaryBtn, "gap-1.5")}>
+            Browse archive
+            <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
+          </Link>
+          <Link href="/rss.xml" className={secondaryBtn}>
+            <Rss className="h-3.5 w-3.5" suppressHydrationWarning />
+            RSS
+          </Link>
+        </div>
+      </div>
+
+      <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-neutral-400 dark:text-neutral-600">
+        <ChevronDown className="h-5 w-5 animate-bounce" suppressHydrationWarning />
       </div>
     </section>
   );
@@ -207,11 +161,12 @@ function Hero() {
 
 function FocusSection() {
   return (
-    <section aria-labelledby="focus-heading" className="space-y-6">
+    <section aria-labelledby="focus-heading" className="mx-auto w-full max-w-6xl space-y-6 px-5 py-24 sm:px-8 sm:py-28">
       <SectionHeading
         eyebrow="Focus"
         title="What I spend time on"
         id="focus-heading"
+        center
       />
       <div className="grid gap-4 sm:grid-cols-3">
         {focusAreas.map((item, index) => (
@@ -247,23 +202,27 @@ function FocusSection() {
 
 function EntranceSection() {
   return (
-    <section aria-labelledby="entrance-heading" className="space-y-6">
+    <section
+      aria-labelledby="entrance-heading"
+      className="mx-auto w-full max-w-6xl space-y-8 px-5 py-24 sm:px-8 sm:py-28"
+    >
       <SectionHeading
         eyebrow="Journal"
         title="博客功能保留在这里"
         id="entrance-heading"
         description="根路由用于个人介绍；文章、见闻、标签、归档、友链和 RSS 继续作为独立内容入口。"
+        center
       />
-      <div className={cn("grid gap-8 border-t border-neutral-100 pt-8 dark:border-[#1a1a1f]", enterBase)}>
+      <div className={cn("grid gap-px overflow-hidden rounded-md border border-neutral-200 bg-neutral-200 dark:border-[#1a1a1f] dark:bg-[#1a1a1f] sm:grid-cols-2", enterBase)}>
         {blogEntrances.map((item, index) => (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              "group flex items-start justify-between gap-6 py-1 transition-colors",
-              "animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
-              index === 1 && "delay-100",
-              index === 2 && "delay-200"
+              "group flex items-start justify-between gap-6 bg-white p-6 transition-colors duration-200 hover:bg-neutral-50 dark:bg-[#0d0d0d] dark:hover:bg-[#171717] animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+              index === 1 && "delay-75",
+              index === 2 && "delay-150",
+              index === 3 && "delay-200"
             )}
           >
             <div className="min-w-0">
@@ -290,21 +249,34 @@ function EntranceSection() {
 
 function ClosingSection() {
   return (
-    <section className={cn("surface-card space-y-6 p-7 sm:p-9", enterBase)}>
-      <p className="max-w-3xl font-serif text-xl font-light italic leading-relaxed text-neutral-600 dark:text-neutral-300">
-        这个个人页只负责第一印象和方向导航。更细的内容继续沉淀在博客系统里，避免把首页变成重复的信息列表。
-      </p>
-      <div className="grid gap-3 border-t border-neutral-100 pt-6 sm:grid-cols-2 lg:grid-cols-4 dark:border-[#1a1a1f]">
-        <ContactLink
-          href="mailto:hello@leempty.site"
-          icon={Mail}
-          label="hello@leempty.site"
-        />
-        <ContactLink href="/rss.xml" icon={Rss} label="RSS Feed" />
-        <ContactLink href="/links" icon={LinkIcon} label="Links" />
-        <ContactLink href="/archive" icon={MapPin} label="Suzhou, China" />
+    <section className="mx-auto w-full max-w-6xl px-5 py-24 sm:px-8 sm:py-28">
+      <div className={cn("surface-card space-y-6 p-7 sm:p-12", enterBase)}>
+        <p className="mx-auto max-w-3xl text-center font-serif text-2xl font-light italic leading-relaxed text-neutral-600 dark:text-neutral-300">
+          这个个人页只负责第一印象和方向导航。更细的内容继续沉淀在博客系统里，避免把首页变成重复的信息列表。
+        </p>
+        <div className="grid gap-3 border-t border-neutral-100 pt-6 sm:grid-cols-2 lg:grid-cols-4 dark:border-[#1a1a1f]">
+          <ContactLink
+            href="mailto:hello@leempty.site"
+            icon={Mail}
+            label="hello@leempty.site"
+          />
+          <ContactLink href="/rss.xml" icon={Rss} label="RSS Feed" />
+          <ContactLink href="/links" icon={LinkIcon} label="Links" />
+          <ContactLink href="/archive" icon={MapPin} label="Suzhou, China" />
+        </div>
       </div>
     </section>
+  );
+}
+
+function StandaloneFooter() {
+  return (
+    <footer className="border-t border-border/60">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-5 py-8 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <span>© {new Date().getFullYear()} leempty</span>
+        <span>Engineering · Projects · Field logs</span>
+      </div>
+    </footer>
   );
 }
 
@@ -333,14 +305,16 @@ function SectionHeading({
   title,
   description,
   id,
+  center,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
   id?: string;
+  center?: boolean;
 }) {
   return (
-    <div className="space-y-2">
+    <div className={cn("space-y-2", center && "text-center")}>
       <p className={monoLabel}>{eyebrow}</p>
       <h2
         id={id}
@@ -349,7 +323,12 @@ function SectionHeading({
         {title}
       </h2>
       {description ? (
-        <p className="max-w-2xl text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+        <p
+          className={cn(
+            "max-w-2xl text-sm leading-6 text-neutral-500 dark:text-neutral-400",
+            center && "mx-auto"
+          )}
+        >
           {description}
         </p>
       ) : null}
