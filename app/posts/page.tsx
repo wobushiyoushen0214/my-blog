@@ -236,7 +236,6 @@ export default async function PostsPage({
       <Header />
       <PublicPageShell>
         <PublicCompactHeader
-          eyebrow="01 — Journal"
           title={
             categoryName
               ? `文章 · ${categoryName}`
@@ -244,10 +243,10 @@ export default async function PostsPage({
                 ? `文章 · ${searchQuery}`
                 : "文章"
           }
-          description="技术笔记、项目复盘与长期主题。按时间索引，像杂志目录一样扫读。"
+          description="技术笔记、项目复盘与长期主题。按时间索引扫读。"
           meta={
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-              {allArticleCount} entries
+            <span className="text-[13px] text-muted-foreground">
+              {allArticleCount} 篇
             </span>
           }
         />

@@ -460,22 +460,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <aside className="hidden lg:block" aria-label="Reader actions">
               <div className="sticky top-28 flex flex-col items-start gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-150">
                 <div className="space-y-1">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
-                    Read
+                  <p className="text-[12px] text-muted-foreground/70">
+                    阅读
                   </p>
-                  <p className="font-mono text-xs text-muted-foreground">
-                    {readingMinutes} min
+                  <p className="text-[13px] text-muted-foreground">
+                    {readingMinutes} 分钟
                   </p>
                 </div>
                 <a
                   href="#comments"
                   className="space-y-1 transition-colors hover:text-foreground"
                 >
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
-                    Notes
+                  <p className="text-[12px] text-muted-foreground/70">
+                    评论
                   </p>
-                  <p className="font-mono text-xs text-muted-foreground">
-                    {commentCount} comments
+                  <p className="text-[13px] text-muted-foreground">
+                    {commentCount} 条
                   </p>
                 </a>
               </div>
@@ -483,7 +483,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <article>
               <div className="reader-article-card surface-card mx-auto max-w-[52rem] px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
-                <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-3 text-[13px] text-muted-foreground">
                   <span>{contentTypeLabel}</span>
                   {post.category ? (
                     <>
@@ -500,30 +500,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   ) : null}
                 </div>
 
-                <h1 className="mt-5 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+                <h1 className="mt-5 font-serif text-4xl font-medium leading-[1.05] tracking-tight text-foreground sm:text-5xl">
                   {post.title}
                 </h1>
 
                 <div className="mt-7 w-16 border-t border-border" />
 
                 {post.excerpt ? (
-                  <p className="mt-7 max-w-2xl font-serif text-lg font-light italic leading-relaxed text-muted-foreground">
+                  <p className="mt-7 max-w-2xl text-[1.05rem] leading-8 text-muted-foreground">
                     {post.excerpt}
                   </p>
                 ) : null}
 
-                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5 text-[13px] text-muted-foreground">
                   <time
                     dateTime={post.created_at}
                     className="flex items-center gap-1.5"
                   >
                     <Calendar className="h-3.5 w-3.5" suppressHydrationWarning />
-                    <span>Published {formatDate(post.created_at)}</span>
+                    <span>{formatDate(post.created_at)}</span>
                   </time>
                   <span className="text-border">/</span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
-                    <span>{readingMinutes} min read</span>
+                    <span>{readingMinutes} 分钟</span>
                   </span>
                 </div>
 
@@ -555,14 +555,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     aria-label="文章标签"
                     className="mt-10 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-border pt-6"
                   >
-                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
-                      Tags
+                    <span className="text-[12px] text-muted-foreground/70">
+                      标签
                     </span>
                     {tags.map((tagItem) => (
                       <Link
                         key={tagItem.id}
                         href={`/tag/${tagItem.slug}`}
-                        className="font-mono text-[11px] tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
+                        className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {tagItem.name}
                       </Link>
@@ -574,14 +574,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="reader-width-frame mx-auto mt-8 flex max-w-[52rem] items-center justify-around border-y border-border py-3 lg:hidden">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
                   <Clock className="h-4 w-4" suppressHydrationWarning />
-                  {readingMinutes} Min Read
+                  {readingMinutes} 分钟阅读
                 </span>
                 <a
                   href="#comments"
                   className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground"
                 >
                   <MessageSquare className="h-4 w-4" suppressHydrationWarning />
-                  {commentCount} Comments
+                  {commentCount} 条评论
                 </a>
               </div>
 
@@ -594,18 +594,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               >
                 <div className="mb-6 flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      Discussion
+                    <p className="text-[12px] text-muted-foreground">
+                      讨论
                     </p>
                     <h2
                       id="comments-title"
-                      className="mt-1 font-serif text-xl font-light italic text-foreground"
+                      className="mt-1 font-serif text-xl font-medium text-foreground"
                     >
                       评论
                     </h2>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {commentCount} approved comments
+                  <span className="text-[13px] text-muted-foreground">
+                    {commentCount} 条已通过
                   </span>
                 </div>
                 <div className="space-y-8">
@@ -620,26 +620,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <TableOfContents headings={headings} />
 
                 <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[400ms]">
-                  <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 text-[13px] text-muted-foreground">
                     <Share2 className="h-3.5 w-3.5" suppressHydrationWarning />
-                    <span>Signals</span>
+                    <span>数据</span>
                   </h2>
                   <ul className="space-y-3 text-xs text-muted-foreground">
                     <li className="flex items-center justify-between">
-                      <span>Reading Time</span>
-                      <span className="font-serif font-bold italic text-foreground">
+                      <span>阅读时长</span>
+                      <span className="font-serif font-medium text-foreground">
                         {readingMinutes}m
                       </span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span>Total Views</span>
-                      <span className="font-mono text-[10px] text-muted-foreground">
+                      <span>阅读量</span>
+                      <span className="text-[13px] text-muted-foreground">
                         {numberFormatter.format(post.view_count + 1)}
                       </span>
                     </li>
                     <li className="flex items-center justify-between">
-                      <span>Comments</span>
-                      <span className="font-serif font-bold italic text-foreground">
+                      <span>评论</span>
+                      <span className="font-serif font-medium text-foreground">
                         {commentCount}
                       </span>
                     </li>
@@ -666,8 +666,8 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
 
   return (
     <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[350ms]">
-      <h2 className="mb-4 border-b border-border pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        Contents
+      <h2 className="mb-4 border-b border-border pb-2 text-[13px] text-muted-foreground">
+        目录
       </h2>
       <nav aria-label="文章目录" className="space-y-2">
         {headings.map((heading) => (
@@ -734,7 +734,7 @@ function NavigationPostCard({
           direction === "previous" ? "md:border-r md:border-border" : "md:text-right"
         )}
       >
-        <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        <p className="text-[13px] text-muted-foreground">
           {label}
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -760,10 +760,10 @@ function NavigationPostCard({
           />
         ) : null}
         <div className={direction === "next" ? "min-w-0 text-right" : "min-w-0"}>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          <p className="text-[13px] text-muted-foreground">
             {label}
           </p>
-          <h3 className="mt-2 line-clamp-2 font-serif text-base font-light italic leading-6 text-foreground transition-colors">
+          <h3 className="mt-2 line-clamp-2 font-serif text-base font-medium leading-6 text-foreground transition-colors">
             {post.title}
           </h3>
           {post.category ? (
@@ -792,14 +792,14 @@ function RelatedSection({
 }) {
   return (
     <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[500ms]">
-      <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 text-[13px] text-muted-foreground">
         <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
-        <span>Related</span>
+        <span>相关</span>
       </h2>
       {posts.length > 0 ? (
         <RelatedContentList posts={posts} />
       ) : (
-        <p className="font-serif text-[11px] italic leading-relaxed text-muted-foreground">
+        <p className="text-[13px] leading-relaxed text-muted-foreground">
           暂无同类{contentTypeLabel}。
         </p>
       )}
@@ -818,7 +818,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
             href={`/blog/${post.slug}`}
             className="group block border-l-2 border-border py-0.5 pl-3 transition-colors hover:border-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <div className="flex min-w-0 items-center gap-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
+            <div className="flex min-w-0 items-center gap-2 text-[12px] text-muted-foreground">
               <span>
                 {getContentTypeLabel(contentType)}
               </span>
@@ -828,7 +828,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                 <span className="min-w-0 truncate">{post.category.name}</span>
               ) : null}
             </div>
-            <h3 className="mt-1 line-clamp-2 font-serif text-sm font-light italic leading-5 text-foreground transition-opacity group-hover:opacity-75">
+            <h3 className="mt-1 line-clamp-2 font-serif text-sm font-medium leading-5 text-foreground transition-opacity group-hover:opacity-75">
               {post.title}
             </h3>
             {post.excerpt ? (
@@ -837,7 +837,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
               </p>
             ) : null}
             {post.tags && post.tags.length > 0 ? (
-              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[9px] text-muted-foreground">
+              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
                 {post.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag.id}

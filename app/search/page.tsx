@@ -316,7 +316,6 @@ export default async function SearchPage({
       <Header />
       <PublicPageShell>
         <PublicPageHeader
-          eyebrow="Search"
           title={query ? `搜索 · ${query}` : "搜索"}
           description="按关键词检索标题、正文、分类和标签，也可以按内容类型和排序继续收窄。"
           countLabel={resultLabel}
@@ -526,7 +525,7 @@ function SearchMatchPanel({
   return (
     <section className="mt-5 border-y border-border py-5">
       <div>
-        <h2 className="font-serif text-base font-light italic text-foreground">
+        <h2 className="font-serif text-base font-medium text-foreground">
           主题命中
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
@@ -538,7 +537,7 @@ function SearchMatchPanel({
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="font-mono text-[11px] tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             {category.name}
           </Link>
@@ -547,7 +546,7 @@ function SearchMatchPanel({
           <Link
             key={tag.id}
             href={`/tag/${tag.slug}`}
-            className="font-mono text-[11px] tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             {tag.name}
           </Link>

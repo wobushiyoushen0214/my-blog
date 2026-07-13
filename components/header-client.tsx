@@ -39,7 +39,7 @@ function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative inline-flex h-full items-center font-mono text-[10px] font-medium uppercase tracking-[0.2em] transition-colors duration-200",
+        "relative inline-flex h-full items-center text-[13px] tracking-[0.01em] transition-colors duration-200",
         active
           ? "text-foreground"
           : "text-muted-foreground hover:text-foreground"
@@ -62,18 +62,18 @@ export function HeaderClient() {
   const isSearch = pathname === "/search";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
-      <div className="mx-auto flex h-14 max-w-7xl items-stretch justify-between gap-6 px-5 sm:px-8 lg:px-10">
+    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+      <div className="mx-auto flex h-14 max-w-5xl items-stretch justify-between gap-6 px-5 sm:px-8 lg:px-10">
         <div className="flex min-w-0 items-stretch gap-8">
           <Link
             href="/"
-            className="flex shrink-0 items-center font-serif text-[1.35rem] font-light italic leading-none tracking-tight text-foreground transition-opacity hover:opacity-70"
+            className="flex shrink-0 items-center font-serif text-[1.2rem] font-medium leading-none tracking-tight text-foreground transition-opacity hover:opacity-70"
           >
             leempty
           </Link>
 
           <nav
-            className="hidden items-stretch gap-7 md:flex"
+            className="hidden items-stretch gap-6 md:flex"
             aria-label="主导航"
           >
             {navItems.map((item) => (

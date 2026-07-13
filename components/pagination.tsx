@@ -70,11 +70,11 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex min-h-9 min-w-9 items-center justify-center border px-3 font-mono text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+    "inline-flex min-h-9 min-w-9 items-center justify-center border px-3 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
   const edgeLinkClassName =
-    "flex min-h-9 items-center gap-1 border border-border bg-transparent px-3 font-mono text-[11px] font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+    "flex min-h-9 items-center gap-1 border border-border bg-transparent px-3 text-[13px] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
   const disabledClassName =
-    "flex min-h-9 items-center gap-1 border border-border/50 px-3 font-mono text-[11px] font-medium text-muted-foreground/40";
+    "flex min-h-9 items-center gap-1 border border-border/50 px-3 text-[13px] text-muted-foreground/40";
 
   return (
     <nav className="mt-10 sm:mt-12" aria-label="分页">
@@ -100,7 +100,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
             item === "ellipsis" ? (
               <span
                 key={`ellipsis-${index}`}
-                className="inline-flex min-h-9 min-w-9 items-center justify-center px-2 font-mono text-[11px] text-muted-foreground/50"
+                className="inline-flex min-h-9 min-w-9 items-center justify-center px-2 text-[13px] text-muted-foreground/50"
                 aria-hidden="true"
               >
                 ...
@@ -124,7 +124,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
           )}
         </div>
 
-        <span className="inline-flex min-h-9 min-w-20 items-center justify-center px-3 font-mono text-[11px] text-muted-foreground sm:hidden">
+        <span className="inline-flex min-h-9 min-w-20 items-center justify-center px-3 text-[13px] text-muted-foreground sm:hidden">
           {safeCurrentPage} / {totalPages}
         </span>
 

@@ -156,7 +156,7 @@ export function CommentForm({
       {!isReply ? (
         <div className="pb-4">
           <div className="space-y-1">
-            <h3 className="font-serif text-base font-light italic text-foreground">
+            <h3 className="font-serif text-base font-medium text-foreground">
               发表评论
             </h3>
             <p className="text-xs leading-6 text-muted-foreground">
@@ -175,7 +175,7 @@ export function CommentForm({
         <div className="space-y-2">
           <Label
             htmlFor={ids.name}
-            className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            className="text-[12px] text-muted-foreground"
           >
             昵称 *
           </Label>
@@ -201,7 +201,7 @@ export function CommentForm({
         <div className="space-y-2">
           <Label
             htmlFor={ids.email}
-            className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            className="text-[12px] text-muted-foreground"
           >
             邮箱（选填）
           </Label>
@@ -227,7 +227,7 @@ export function CommentForm({
       <div className="mt-3 space-y-2">
         <Label
           htmlFor={ids.content}
-          className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          className="text-[12px] text-muted-foreground"
         >
           评论内容 *
         </Label>

@@ -69,6 +69,19 @@ function getTypeLabel(post: ContentRowPost) {
   return post.category?.type === "moment" ? "见闻" : "文章";
 }
 
+function MetaBits({ items }: { items: string[] }) {
+  return (
+    <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] text-muted-foreground/75">
+      {items.map((item, index) => (
+        <span key={`${item}-${index}`} className="contents">
+          {index > 0 ? <span className="text-border">·</span> : null}
+          <span>{item}</span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function ContentRow({
   post,
   dateLabel,
@@ -93,7 +106,7 @@ export function ContentRow({
   const footMeta =
     rightMeta && rightMeta.length > 0
       ? rightMeta
-      : [`${readMinutes}m`, `${formatViews(post.view_count)} 阅读`];
+      : [`${readMinutes} 分钟`, `${formatViews(post.view_count)} 阅读`];
 
   if (variant === "card") {
     return (
@@ -166,6 +179,13 @@ function IndexVariant({
   coverImage?: string;
   className?: string;
 }) {
+  const bits = [
+    displayType,
+    ...(post.category?.name ? [post.category.name] : []),
+    ...visibleTags.slice(0, 2).map((tag) => tag.name),
+    ...footMeta,
+  ];
+
   return (
     <Link
       href={`/blog/${post.slug}`}
@@ -177,14 +197,14 @@ function IndexVariant({
       <span className="sm:block">
         <time
           dateTime={dateTime || post.created_at}
-          className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80"
+          className="block text-[13px] text-muted-foreground"
         >
           {displayDate}
         </time>
       </span>
 
       <span className="min-w-0">
-        <span className="block font-serif text-[1.55rem] font-light italic leading-snug tracking-tight text-foreground transition-opacity duration-300 group-hover:opacity-70 sm:text-[1.75rem]">
+        <span className="block font-serif text-[1.55rem] font-medium leading-snug tracking-tight text-foreground transition-opacity duration-300 group-hover:opacity-70 sm:text-[1.75rem]">
           {post.title}
         </span>
         {cleanExcerpt ? (
@@ -192,27 +212,7 @@ function IndexVariant({
             {cleanExcerpt}
           </span>
         ) : null}
-        <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[10px] tracking-[0.12em] text-muted-foreground/65">
-          <span>{displayType}</span>
-          {post.category?.name ? (
-            <>
-              <span className="text-border">·</span>
-              <span>{post.category.name}</span>
-            </>
-          ) : null}
-          {visibleTags.slice(0, 2).map((tag) => (
-            <span key={tag.id} className="contents">
-              <span className="text-border">·</span>
-              <span>{tag.name}</span>
-            </span>
-          ))}
-          {footMeta.map((item) => (
-            <span key={item} className="contents">
-              <span className="text-border">·</span>
-              <span>{item}</span>
-            </span>
-          ))}
-        </span>
+        <MetaBits items={bits} />
       </span>
 
       <span className="flex items-center gap-4 sm:items-start sm:pt-1">
@@ -253,31 +253,37 @@ function StreamVariant({
   footMeta: string[];
   className?: string;
 }) {
+  const bits = [
+    ...displayMeta.slice(0, 2),
+    ...visibleTags.slice(0, 2).map((tag) => tag.name),
+    ...footMeta,
+  ];
+
   return (
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group relative block border-b border-border/80 py-6 pl-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+        "group relative block border-b border-border/80 py-6 pl-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
         className
       )}
     >
       <span
         aria-hidden
-        className="absolute left-0 top-7 h-2 w-2 rounded-full border border-border bg-background transition-colors group-hover:border-foreground group-hover:bg-foreground"
+        className="absolute left-0 top-8 h-1.5 w-1.5 bg-muted-foreground/40 transition-colors group-hover:bg-foreground"
       />
       <span
         aria-hidden
-        className="absolute left-[3px] top-10 bottom-[-1px] w-px bg-border/70"
+        className="absolute left-[2px] top-10 bottom-[-1px] w-px bg-border/70"
       />
 
       <time
         dateTime={dateTime || post.created_at}
-        className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80"
+        className="text-[13px] text-muted-foreground"
       >
         {displayDate}
       </time>
 
-      <span className="mt-2 block font-serif text-xl font-light italic leading-snug text-foreground transition-opacity group-hover:opacity-70 sm:text-2xl">
+      <span className="mt-2 block font-serif text-xl font-medium leading-snug text-foreground transition-opacity group-hover:opacity-70 sm:text-2xl">
         {post.title}
       </span>
 
@@ -287,22 +293,10 @@ function StreamVariant({
         </span>
       ) : null}
 
-      <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[10px] tracking-[0.12em] text-muted-foreground/65">
-        {displayMeta.slice(0, 2).map((item, index) => (
-          <span key={item} className="contents">
+      <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] text-muted-foreground/75">
+        {bits.map((item, index) => (
+          <span key={`${item}-${index}`} className="contents">
             {index > 0 ? <span className="text-border">·</span> : null}
-            <span>{item}</span>
-          </span>
-        ))}
-        {visibleTags.slice(0, 2).map((tag) => (
-          <span key={tag.id} className="contents">
-            <span className="text-border">·</span>
-            <span>{tag.name}</span>
-          </span>
-        ))}
-        {footMeta.map((item) => (
-          <span key={item} className="contents">
-            <span className="text-border">·</span>
             <span>{item}</span>
           </span>
         ))}
@@ -342,7 +336,7 @@ function CardVariant({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group relative flex min-w-0 flex-col overflow-hidden border border-border bg-card/50 p-5 transition-colors duration-300 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
+        "group relative flex min-w-0 flex-col overflow-hidden border border-border bg-card/40 p-5 transition-colors duration-300 hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
         className
       )}
     >
@@ -361,15 +355,13 @@ function CardVariant({
           <span className="absolute inset-0 bg-foreground/5 transition-colors duration-500 group-hover:bg-transparent" />
         ) : (
           <span className="absolute inset-0 flex flex-col justify-between p-4">
-            <span className="font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
-              leempty
-            </span>
-            <span className="max-w-[8rem] font-serif text-xl italic leading-tight text-muted-foreground">
+            <span className="text-[12px] text-muted-foreground">leempty</span>
+            <span className="max-w-[8rem] font-serif text-xl font-medium leading-tight text-muted-foreground">
               {displayType}
             </span>
           </span>
         )}
-        <span className="absolute right-3 top-3 border border-border bg-background/90 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
+        <span className="absolute right-3 top-3 border border-border bg-background/90 px-2 py-0.5 text-[11px] text-muted-foreground backdrop-blur-sm">
           {displayType}
         </span>
       </span>
@@ -380,7 +372,7 @@ function CardVariant({
             ? visibleTags.slice(0, 2).map((tag) => (
                 <span
                   key={tag.id}
-                  className="max-w-24 truncate font-mono text-[9px] text-muted-foreground"
+                  className="max-w-24 truncate text-[12px] text-muted-foreground"
                 >
                   {tag.name}
                 </span>
@@ -388,7 +380,7 @@ function CardVariant({
             : displayMeta.slice(0, 2).map((item, index) => (
                 <span
                   key={`${item}-${index}`}
-                  className="max-w-24 truncate font-mono text-[9px] text-muted-foreground"
+                  className="max-w-24 truncate text-[12px] text-muted-foreground"
                 >
                   {item}
                 </span>
@@ -396,14 +388,14 @@ function CardVariant({
         </span>
         <time
           dateTime={dateTime || post.created_at}
-          className="shrink-0 font-mono text-[9px] text-muted-foreground"
+          className="shrink-0 text-[12px] text-muted-foreground"
         >
           {displayDate}
         </time>
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="mb-2 block font-serif text-lg font-light italic leading-tight text-foreground transition-opacity duration-300 group-hover:opacity-75">
+        <span className="mb-2 block font-serif text-lg font-medium leading-tight text-foreground transition-opacity duration-300 group-hover:opacity-75">
           {post.title}
         </span>
         {cleanExcerpt ? (
@@ -416,7 +408,7 @@ function CardVariant({
       <span className="my-3.5 block border-t border-border/80" />
 
       <span className="flex items-center justify-between">
-        <span className="flex items-center gap-3 font-mono text-[9px] text-muted-foreground">
+        <span className="flex items-center gap-3 text-[12px] text-muted-foreground">
           {footMeta.map((item) => (
             <span key={item}>{item}</span>
           ))}

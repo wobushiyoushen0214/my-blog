@@ -37,7 +37,7 @@ export function CommentList({ comments }: CommentListProps) {
       <div className="border-y border-border py-8">
         <div className="flex items-center gap-2 text-muted-foreground">
           <MessageSquare className="h-4 w-4" suppressHydrationWarning />
-          <p className="font-serif text-base font-light italic text-foreground">
+          <p className="font-serif text-base font-medium text-foreground">
             暂无评论
           </p>
         </div>
@@ -51,10 +51,10 @@ export function CommentList({ comments }: CommentListProps) {
   return (
     <section>
       <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/70">
+        <p className="text-[13px] text-muted-foreground/70">
           公开讨论
         </p>
-        <p className="font-mono text-[10px] tracking-wider text-muted-foreground">
+        <p className="text-[13px] text-muted-foreground">
           {rootComments.length} 条线索 · {comments.length} 条评论
         </p>
       </div>
@@ -84,7 +84,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
       role="listitem"
     >
       <div className="grid gap-3 sm:grid-cols-[40px_minmax(0,1fr)]">
-        <div className="flex size-8 items-center justify-center border border-border bg-muted/40 font-mono text-xs font-medium text-muted-foreground">
+        <div className="flex size-8 items-center justify-center border border-border bg-muted/40 text-xs font-medium text-muted-foreground">
           {initial}
         </div>
         <div className="min-w-0 flex-1 space-y-2">
@@ -96,19 +96,19 @@ function CommentItem({ comment }: { comment: CommentNode }) {
               <time
                 dateTime={comment.created_at}
                 title={createdAt.toLocaleString("zh-CN")}
-                className="font-mono text-[11px] text-muted-foreground"
+                className="text-[12px] text-muted-foreground"
               >
                 {formattedDate}
               </time>
               {replyCount > 0 ? (
-                <span className="font-mono text-[11px] text-muted-foreground/70">
+                <span className="text-[12px] text-muted-foreground/70">
                   · {replyCount} 条回复
                 </span>
               ) : null}
             </div>
             <button
               type="button"
-              className="inline-flex h-8 items-center justify-center gap-1.5 px-1 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground opacity-100 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+              className="inline-flex h-8 items-center justify-center gap-1.5 px-1 text-[13px] text-muted-foreground opacity-100 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
               onClick={() => setReplying(!replying)}
               aria-expanded={replying}
               aria-label={`回复 ${comment.author_name}`}

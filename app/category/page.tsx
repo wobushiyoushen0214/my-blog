@@ -132,7 +132,6 @@ export default async function CategoriesPage({
       <Header />
       <PublicPageShell>
         <PublicCompactHeader
-          eyebrow="Categories"
           title={contentType === DEFAULT_TYPE ? "所有分类" : filterTypeLabel(contentType)}
           description="按主题浏览文章和见闻，快速进入相关内容。"
           meta={
@@ -266,14 +265,14 @@ function CategorySection({
     <section className="space-y-3">
       <div className="flex flex-col gap-1 border-b border-border pb-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-serif text-2xl font-light italic text-foreground">
+          <h2 className="font-serif text-2xl font-medium text-foreground">
             {title}
           </h2>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
             {description}
           </p>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="text-[13px] text-muted-foreground">
           {categories.length} 个
         </span>
       </div>
@@ -285,17 +284,17 @@ function CategorySection({
             className="group grid min-w-0 gap-3 border-b border-border py-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_7rem_auto]"
           >
             <span className="min-w-0">
-              <span className="block truncate font-serif text-xl font-light italic leading-snug text-foreground transition-opacity group-hover:opacity-70">
+              <span className="block truncate font-serif text-xl font-medium leading-snug text-foreground transition-opacity group-hover:opacity-70">
                 {category.name}
               </span>
-              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
                 <span>{categoryTypeLabel(category.type)}</span>
                 <span className="truncate text-muted-foreground/70">
                   {category.slug || "—"}
                 </span>
               </span>
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:text-right">
+            <span className="text-[13px] text-muted-foreground sm:text-right">
               {category.postCount} 篇
             </span>
             <ArrowRight

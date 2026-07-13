@@ -1,9 +1,9 @@
 export function Footer() {
   return (
-    <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-border px-5 py-10 font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:flex-row sm:px-8 lg:px-10">
-      <span>&copy; {new Date().getFullYear()} leempty</span>
-      <span className="text-center sm:text-right">
-        Engineering notes, field logs &amp; quiet observations
+    <footer className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-2 border-t border-border px-5 py-10 text-[12px] text-muted-foreground sm:flex-row sm:items-center sm:px-8 lg:px-10">
+      <span>© {new Date().getFullYear()} leempty</span>
+      <span className="sm:text-right">
+        工程笔记 · 见闻 · 安静的观察
       </span>
     </footer>
   );

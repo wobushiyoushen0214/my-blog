@@ -43,7 +43,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
       <div className="mb-10 flex items-center justify-between gap-4">
         <Link
           href={backHref}
-          className="group flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground"
+          className="group flex items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft
             className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1"
@@ -57,7 +57,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
             type="button"
             onClick={() => setShowSettings((value) => !value)}
             className={cn(
-              "flex h-8 items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.18em] transition-colors",
+              "flex h-8 items-center gap-1.5 text-[13px] transition-colors",
               showSettings
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -70,7 +70,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
             type="button"
             onClick={() => setSaved((value) => !value)}
             className={cn(
-              "flex h-8 items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.18em] transition-colors",
+              "flex h-8 items-center gap-1.5 text-[13px] transition-colors",
               saved
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -127,7 +127,7 @@ function ReaderSegment<T extends string>({
 }) {
   return (
     <div className="space-y-2">
-      <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+      <span className="block text-[12px] text-muted-foreground/70">
         {label}
       </span>
       <div className="flex flex-wrap gap-x-3 gap-y-1 border-b border-border pb-2">
@@ -137,9 +137,9 @@ function ReaderSegment<T extends string>({
             type="button"
             onClick={() => onChange(option)}
             className={cn(
-              "font-mono text-[11px] tracking-[0.12em] transition-colors",
+              "text-[13px] transition-colors",
               value === option
-                ? "font-semibold text-foreground"
+                ? "font-medium text-foreground"
                 : "text-muted-foreground/70 hover:text-foreground"
             )}
           >

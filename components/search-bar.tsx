@@ -88,7 +88,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
           placeholder="搜索 /"
           aria-keyshortcuts="/"
           className={cn(
-            "h-8 w-full bg-transparent pr-1 font-mono text-[10px] uppercase tracking-wider text-foreground outline-none placeholder:text-muted-foreground/70",
+            "h-8 w-full bg-transparent pr-1 text-[13px] text-foreground outline-none placeholder:text-muted-foreground/70",
             open || query ? "opacity-100" : "pointer-events-none opacity-0"
           )}
         />

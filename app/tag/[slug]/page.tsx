@@ -281,7 +281,6 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
       <Header />
       <PublicPageShell>
         <PublicCompactHeader
-          eyebrow="Tag"
           title={tag.name}
           description="该标签关联的已发布内容。"
           backHref="/tag"

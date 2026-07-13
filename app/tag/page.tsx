@@ -54,20 +54,20 @@ function buildTagPath({
 
 function tagWeightClass(count: number, maxCount: number) {
   if (maxCount <= 0 || count <= 0) {
-    return "font-serif text-base font-light italic text-muted-foreground";
+    return "font-serif text-base font-medium text-muted-foreground";
   }
 
   const ratio = count / maxCount;
   if (ratio >= 0.7) {
-    return "font-serif text-3xl font-light italic text-foreground sm:text-4xl";
+    return "font-serif text-3xl font-medium text-foreground sm:text-4xl";
   }
   if (ratio >= 0.4) {
-    return "font-serif text-2xl font-light italic text-foreground sm:text-3xl";
+    return "font-serif text-2xl font-medium text-foreground sm:text-3xl";
   }
   if (ratio >= 0.15) {
-    return "font-serif text-xl font-light italic text-foreground";
+    return "font-serif text-xl font-medium text-foreground";
   }
-  return "font-serif text-lg font-light italic text-muted-foreground";
+  return "font-serif text-lg font-medium text-muted-foreground";
 }
 
 export default async function TagsPage({
@@ -136,17 +136,17 @@ export default async function TagsPage({
           <header className="mb-8 border-b border-border pb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
             <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
               <div className="min-w-0">
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
-                  Tags
+                <p className="text-[13px] text-muted-foreground">
+                  标签
                 </p>
-                <h1 className="mt-2 font-serif text-4xl font-light italic leading-tight tracking-tight text-foreground md:text-5xl">
+                <h1 className="mt-2 font-serif text-4xl font-medium leading-tight tracking-tight text-foreground md:text-5xl">
                   {status === DEFAULT_STATUS ? "所有标签" : statusLabel(status)}
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
                   按关键词交叉浏览内容。字号反映相关文章数量。
                 </p>
               </div>
-              <dl className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground md:justify-end">
+              <dl className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-muted-foreground md:justify-end">
                 <div>
                   <dt className="sr-only">当前</dt>
                   <dd>当前 {filteredTags.length}</dd>
@@ -186,8 +186,8 @@ export default async function TagsPage({
               </div>
 
               <div className="mt-14 border-t border-border pt-6">
-                <p className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
-                  Index
+                <p className="mb-4 text-[13px] text-muted-foreground">
+                  索引
                 </p>
                 <div className="grid gap-px border-t border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
                   {filteredTags.map((tag) => (
@@ -238,7 +238,7 @@ function TagStatusSwitch({
       className="border-y border-border/70 py-4"
     >
       <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-        <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50">
+        <span className="shrink-0 text-[12px] text-muted-foreground/50">
           状态
         </span>
         <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1.5">
@@ -248,7 +248,7 @@ function TagStatusSwitch({
               href={buildTagPath({ query, status: item.value })}
               aria-current={activeStatus === item.value ? "page" : undefined}
               className={cn(
-                "inline-flex shrink-0 items-baseline font-mono text-[11px] tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                "inline-flex shrink-0 items-baseline text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
                 activeStatus === item.value
                   ? "font-semibold text-foreground"
                   : "font-medium text-muted-foreground/70 hover:text-foreground"
@@ -276,7 +276,7 @@ function ActiveTagSummary({
   return (
     <section className="mt-4 flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="text-[13px] text-muted-foreground">
           Filter
         </span>
         {query ? (
@@ -294,7 +294,7 @@ function ActiveTagSummary({
       </div>
       <Link
         href="/tag"
-        className="inline-flex h-8 shrink-0 items-center font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="inline-flex h-8 shrink-0 items-center text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -306,7 +306,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -328,7 +328,7 @@ function TagCloudItem({
       className="group inline-flex max-w-full flex-col items-start gap-1 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <span className={cn("leading-none", weightClass)}>{tag.name}</span>
-      <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70">
+      <span className="text-[12px] text-muted-foreground/70">
         {tag.postCount} posts
       </span>
     </Link>
@@ -341,10 +341,10 @@ function TagIndexRow({ tag }: { tag: TagWithCount }) {
       href={`/tag/${tag.slug}`}
       className="group flex min-w-0 items-baseline justify-between gap-4 bg-background px-4 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
-      <span className="min-w-0 truncate font-serif text-base font-light italic text-foreground">
+      <span className="min-w-0 truncate font-serif text-base font-medium text-foreground">
         {tag.name}
       </span>
-      <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+      <span className="shrink-0 text-[13px] text-muted-foreground">
         {tag.postCount}
       </span>
     </Link>

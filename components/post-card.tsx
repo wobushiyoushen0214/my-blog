@@ -95,7 +95,7 @@ export function PostCard({
         )}
       >
         <div className="flex-1 space-y-2.5">
-          <div className="flex min-w-0 flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          <div className="flex min-w-0 flex-wrap items-center gap-2 text-[13px] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
               <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
@@ -121,7 +121,7 @@ export function PostCard({
           </div>
           <h2
             className={cn(
-              "line-clamp-2 font-serif font-light italic leading-tight text-foreground transition-opacity group-hover:opacity-75",
+              "line-clamp-2 font-serif font-medium leading-tight text-foreground transition-opacity group-hover:opacity-75",
               isFeatured ? "text-xl md:text-2xl" : "text-lg md:text-xl"
             )}
           >
@@ -140,7 +140,7 @@ export function PostCard({
         </div>
 
         {post.tags && post.tags.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 font-mono text-[10px] text-muted-foreground">
+          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 text-[13px] text-muted-foreground">
             {post.tags.slice(0, 3).map((tag) => (
               <span key={tag.id} className="max-w-36 truncate">
                 {tag.name}
@@ -150,7 +150,7 @@ export function PostCard({
         ) : null}
 
         {isFeatured ? (
-          <span className="mt-5 inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-foreground">
+          <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-foreground">
             {ctaLabel}
             <ArrowUpRight
               className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

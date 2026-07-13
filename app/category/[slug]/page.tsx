@@ -223,7 +223,6 @@ export default async function CategoryPage({
       <Header />
       <PublicPageShell>
         <PublicCompactHeader
-          eyebrow="Category"
           title={typedCategory.name}
           description={`该${categoryTypeLabel}下的已发布内容。`}
           backHref="/category"

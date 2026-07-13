@@ -368,21 +368,21 @@ function ArchiveHero({
     <header className="mb-8 border-b border-border pb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
       <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
-            Archive
+          <p className="text-[13px] text-muted-foreground">
+            归档
           </p>
           <div className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-            <h1 className="min-w-0 font-serif text-3xl font-light italic leading-tight tracking-tight text-foreground md:text-4xl">
+            <h1 className="min-w-0 font-serif text-3xl font-medium leading-tight tracking-tight text-foreground md:text-4xl">
               {title}
             </h1>
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            <span className="text-[13px] text-muted-foreground">
               {countLabel}
             </span>
           </div>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
             按发布时间回看文章和见闻。
           </p>
-          <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-[13px] text-muted-foreground">
             {metaItems.map((item) => (
               <div key={item}>
                 <dt className="sr-only">归档信息</dt>
@@ -456,7 +456,7 @@ function ActiveArchiveSummary({
   return (
     <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="text-[13px] text-muted-foreground">
           Filter
         </span>
         {query ? (
@@ -474,7 +474,7 @@ function ActiveArchiveSummary({
       </div>
       <Link
         href="/archive"
-        className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -486,7 +486,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>

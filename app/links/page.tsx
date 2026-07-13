@@ -137,7 +137,6 @@ export default async function LinksPage({
       <Header />
       <PublicPageShell>
         <PublicPageHeader
-          eyebrow="Links"
           title="友链"
           description="长期阅读和互相连接的站点。"
           countLabel={countLabel}
@@ -345,10 +344,10 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="truncate font-serif text-lg font-light italic leading-6 text-foreground transition-opacity group-hover:opacity-75">
+          <span className="truncate font-serif text-lg font-medium leading-6 text-foreground transition-opacity group-hover:opacity-75">
             {item.name}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-[13px] text-muted-foreground">
             {meta.join(" · ")}
           </span>
         </span>

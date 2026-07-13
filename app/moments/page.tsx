@@ -255,7 +255,6 @@ export default async function MomentsPage({
       <Header />
       <PublicPageShell>
         <PublicCompactHeader
-          eyebrow="02 — Field notes"
           title={
             activeCategory
               ? `见闻 · ${activeCategory.name}`
@@ -263,10 +262,10 @@ export default async function MomentsPage({
                 ? `见闻 · ${searchQuery}`
                 : "见闻"
           }
-          description="轻量观察、摘录和阶段性记录。以时间流呈现，而不是卡片墙。"
+          description="轻量观察、摘录和阶段性记录。以时间流呈现。"
           meta={
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-              {totalMomentCount} notes
+            <span className="text-[13px] text-muted-foreground">
+              {totalMomentCount} 条
             </span>
           }
         />
