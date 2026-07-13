@@ -484,7 +484,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <article>
               <div className="reader-article-card surface-card mx-auto max-w-[52rem] px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
                 <div className="flex flex-wrap items-center gap-3 text-[13px] text-muted-foreground">
-                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-medium text-primary">{contentTypeLabel}</span>
+                  <span className="text-[12px] font-medium text-muted-foreground">{contentTypeLabel}</span>
                   {post.category ? (
                     <>
                       <span className="text-border">
@@ -504,7 +504,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {post.title}
                 </h1>
 
-                <div className="mt-7 h-1 w-16 rounded-full bg-primary/70" />
+                <div className="mt-7 h-px w-14 bg-border" />
 
                 {post.excerpt ? (
                   <p className="mt-7 max-w-2xl text-[1.05rem] leading-8 text-muted-foreground">
@@ -560,7 +560,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       <Link
                         key={tagItem.id}
                         href={`/tag/${tagItem.slug}`}
-                        className="rounded-full border border-border/70 bg-card/70 px-2.5 py-1 text-[12px] text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+                        className="rounded-full border border-border/70 bg-card/70 px-2.5 py-1 text-[12px] text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
                       >
                         {tagItem.name}
                       </Link>
@@ -576,7 +576,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </span>
                 <a
                   href="#comments"
-                  className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+                  className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <MessageSquare className="h-4 w-4" suppressHydrationWarning />
                   {commentCount} 条评论
@@ -600,7 +600,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       评论
                     </h2>
                   </div>
-                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-medium text-primary">
+                  <span className="text-[13px] text-muted-foreground">
                     {commentCount} 条已通过
                   </span>
                 </div>
@@ -669,7 +669,7 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
             key={heading.id}
             href={`#${heading.id}`}
             className={cn(
-              "group flex items-start rounded-xl px-2 py-1.5 text-left text-[12px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary",
+              "group flex items-start rounded-md px-2 py-1.5 text-left text-[12px] text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground",
               heading.level === 3 && "pl-4 text-muted-foreground/80"
             )}
           >
@@ -746,13 +746,13 @@ function NavigationPostCard({
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
           <ChevronLeft
-            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
             suppressHydrationWarning
           />
         ) : null}
         <div className={direction === "next" ? "min-w-0 text-right" : "min-w-0"}>
           <p className="signal-meta">{label}</p>
-          <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-6 text-foreground transition-colors group-hover:text-primary">
+          <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-6 text-foreground transition-opacity group-hover:opacity-75">
             {post.title}
           </h3>
           {post.category ? (
@@ -763,7 +763,7 @@ function NavigationPostCard({
         </div>
         {direction === "next" ? (
           <ChevronRight
-            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
             suppressHydrationWarning
           />
         ) : null}
@@ -815,7 +815,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                 <span className="min-w-0 truncate">{post.category.name}</span>
               ) : null}
             </div>
-            <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary">
+            <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-foreground transition-opacity group-hover:opacity-75">
               {post.title}
             </h3>
             {post.excerpt ? (

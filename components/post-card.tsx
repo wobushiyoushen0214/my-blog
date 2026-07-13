@@ -110,7 +110,7 @@ export function PostCard({
               <Clock3 className="h-3.5 w-3.5" suppressHydrationWarning />
               约 {readingMinutes} 分钟
             </span>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[12px] font-medium text-primary">
+            <span className="text-[12px] font-medium text-muted-foreground">
               {contentTypeLabel}
             </span>
             {post.category ? (
@@ -119,7 +119,7 @@ export function PostCard({
           </div>
           <h2
             className={cn(
-              "line-clamp-2 font-semibold leading-tight text-foreground transition-colors group-hover:text-primary",
+              "line-clamp-2 font-semibold leading-tight text-foreground transition-colors group-hover:opacity-75",
               isFeatured ? "text-xl md:text-2xl" : "text-lg md:text-xl"
             )}
           >
@@ -151,7 +151,7 @@ export function PostCard({
         ) : null}
 
         {isFeatured ? (
-          <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-primary">
+          <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-foreground">
             {ctaLabel}
             <ArrowUpRight
               className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

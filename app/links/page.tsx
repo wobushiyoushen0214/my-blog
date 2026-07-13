@@ -344,7 +344,7 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="truncate text-lg font-semibold leading-6 text-foreground transition-colors group-hover:text-primary">
+          <span className="truncate text-lg font-semibold leading-6 text-foreground transition-colors group-hover:opacity-75">
             {item.name}
           </span>
           <span className="signal-meta">{meta.join(" · ")}</span>
@@ -354,7 +354,7 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
         </span>
       </span>
       <ExternalLink
-        className="h-4 w-4 shrink-0 self-center text-muted-foreground transition-colors group-hover:text-primary sm:justify-self-end"
+        className="h-4 w-4 shrink-0 self-center text-muted-foreground transition-colors group-hover:opacity-75 sm:justify-self-end"
         suppressHydrationWarning
       />
     </Link>

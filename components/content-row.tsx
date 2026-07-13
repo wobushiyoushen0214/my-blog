@@ -206,7 +206,7 @@ function IndexVariant({
       </span>
 
       <span className="min-w-0">
-        <span className="block text-[1.25rem] font-semibold leading-snug tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary sm:text-[1.4rem]">
+        <span className="block text-[1.25rem] font-semibold leading-snug tracking-tight text-foreground transition-colors duration-300 group-hover:opacity-75 sm:text-[1.4rem]">
           {post.title}
         </span>
         {cleanExcerpt ? (
@@ -227,7 +227,7 @@ function IndexVariant({
             aria-hidden
           />
         ) : null}
-        <span className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background/60 text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground">
+        <span className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background/60 text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground">
           <ArrowUpRight
             className="h-4 w-4"
             suppressHydrationWarning
@@ -273,7 +273,7 @@ function StreamVariant({
     >
       <span
         aria-hidden
-        className="absolute left-3 top-7 h-2 w-2 rounded-full bg-primary shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]"
+        className="absolute left-3 top-7 h-1.5 w-1.5 rounded-full bg-foreground/40"
       />
 
       <time
@@ -283,7 +283,7 @@ function StreamVariant({
         {displayDate}
       </time>
 
-      <span className="mt-2 block text-xl font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-[1.35rem]">
+      <span className="mt-2 block text-xl font-semibold leading-snug text-foreground transition-colors group-hover:opacity-75 sm:text-[1.35rem]">
         {post.title}
       </span>
 
@@ -303,7 +303,7 @@ function StreamVariant({
           </span>
         ))}
         <ArrowUpRight
-          className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
+          className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-75"
           suppressHydrationWarning
         />
       </span>
@@ -397,7 +397,7 @@ function CardVariant({
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="mb-2 block text-lg font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary">
+        <span className="mb-2 block text-lg font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:opacity-75">
           {post.title}
         </span>
         {cleanExcerpt ? (
@@ -415,7 +415,7 @@ function CardVariant({
             <span key={item}>{item}</span>
           ))}
         </span>
-        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground">
           <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
         </span>
       </span>

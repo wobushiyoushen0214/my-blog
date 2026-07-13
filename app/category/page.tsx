@@ -282,11 +282,11 @@ function CategorySection({
             className="signal-panel signal-panel-hover group grid min-w-0 gap-3 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_7rem_auto] sm:items-center"
           >
             <span className="min-w-0">
-              <span className="block truncate text-xl font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
+              <span className="block truncate text-xl font-semibold leading-snug text-foreground transition-colors group-hover:opacity-75">
                 {category.name}
               </span>
               <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
-                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[12px] font-medium text-primary">
+                <span className="text-[12px] font-medium text-muted-foreground">
                   {categoryTypeLabel(category.type)}
                 </span>
                 <span className="truncate signal-meta">
@@ -298,7 +298,7 @@ function CategorySection({
               {category.postCount} 篇
             </span>
             <ArrowRight
-              className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-primary sm:justify-self-end"
+              className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-colors group-hover:opacity-75 sm:justify-self-end"
               suppressHydrationWarning
             />
           </Link>

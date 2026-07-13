@@ -59,7 +59,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
             className={cn(
               "inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors",
               showSettings
-                ? "border-primary/30 bg-primary/10 text-primary"
+                ? "border-primary/30 border border-border/80 text-muted-foreground"
                 : "border-border/80 bg-card/70 text-muted-foreground hover:border-primary/30 hover:text-foreground"
             )}
           >
@@ -72,7 +72,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
             className={cn(
               "inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors",
               saved
-                ? "border-primary/30 bg-primary/10 text-primary"
+                ? "border-primary/30 border border-border/80 text-muted-foreground"
                 : "border-border/80 bg-card/70 text-muted-foreground hover:border-primary/30 hover:text-foreground"
             )}
           >
@@ -137,7 +137,7 @@ function ReaderSegment<T extends string>({
             className={cn(
               "rounded-full px-3 py-1.5 text-[13px] transition-colors",
               value === option
-                ? "bg-primary/10 font-medium text-primary"
+                ? "bg-muted/70 font-medium text-foreground"
                 : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
             )}
           >

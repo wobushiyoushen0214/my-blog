@@ -160,7 +160,7 @@ export default async function TagsPage({
               aria-label={query ? "匹配标签" : "标签索引"}
             >
               <div className="signal-panel p-5 sm:p-6">
-                <p className="signal-meta mb-4">cloud</p>
+                <p className="signal-meta mb-4">标签云</p>
                 <div className="flex flex-wrap items-end gap-x-6 gap-y-5 sm:gap-x-8 sm:gap-y-7">
                   {filteredTags.map((tag) => (
                     <TagCloudItem
@@ -173,7 +173,7 @@ export default async function TagsPage({
               </div>
 
               <div>
-                <p className="signal-meta mb-4">index</p>
+                <p className="signal-meta mb-4">索引</p>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {filteredTags.map((tag) => (
                     <TagIndexRow key={`index-${tag.id}`} tag={tag} />
@@ -277,7 +277,7 @@ function TagCloudItem({
     >
       <span
         className={cn(
-          "leading-none text-foreground transition-colors group-hover:text-primary",
+          "leading-none text-foreground transition-colors group-hover:opacity-75",
           weightClass
         )}
       >
@@ -294,7 +294,7 @@ function TagIndexRow({ tag }: { tag: TagWithCount }) {
       href={`/tag/${tag.slug}`}
       className="signal-panel signal-panel-hover group flex min-w-0 items-baseline justify-between gap-4 px-4 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
-      <span className="min-w-0 truncate text-base font-semibold text-foreground transition-colors group-hover:text-primary">
+      <span className="min-w-0 truncate text-base font-semibold text-foreground transition-colors group-hover:opacity-75">
         {tag.name}
       </span>
       <span className="shrink-0 signal-meta">{tag.postCount}</span>

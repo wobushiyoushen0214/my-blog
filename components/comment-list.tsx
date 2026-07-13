@@ -36,7 +36,7 @@ export function CommentList({ comments }: CommentListProps) {
     return (
       <div className="rounded-2xl border border-dashed border-border/80 bg-background/40 px-5 py-8">
         <div className="flex items-center gap-2 text-muted-foreground">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
+          <span className="grid h-9 w-9 place-items-center rounded-xl border border-border/80 text-muted-foreground">
             <MessageSquare className="h-4 w-4" suppressHydrationWarning />
           </span>
           <p className="text-base font-semibold text-foreground">暂无评论</p>
@@ -82,7 +82,7 @@ function CommentItem({ comment }: { comment: CommentNode }) {
       role="listitem"
     >
       <div className="grid gap-3 sm:grid-cols-[40px_minmax(0,1fr)]">
-        <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-xs font-semibold text-primary">
+        <div className="flex size-9 items-center justify-center rounded-xl border border-border/80 text-xs font-semibold text-muted-foreground">
           {initial}
         </div>
         <div className="min-w-0 flex-1 space-y-2">

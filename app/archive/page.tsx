@@ -367,16 +367,16 @@ function ArchiveHero({
 
   return (
     <header className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
-      <div className="signal-panel grid gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+      <div className="grid gap-6 border-b border-border/70 pb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
-          <p className="signal-meta text-primary">
+          <p className="signal-meta">
             归档
           </p>
           <div className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
             <h1 className="min-w-0 text-3xl font-semibold leading-tight tracking-tight text-foreground md:text-4xl">
               {title}
             </h1>
-            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-medium text-primary">
+            <span className="text-[13px] text-muted-foreground">
               {countLabel}
             </span>
           </div>
@@ -553,7 +553,7 @@ function YearJumpNav({ groups }: { groups: YearGroup[] }) {
         <Link
           key={group.year}
           href={`#archive-${group.year}`}
-          className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/50 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="inline-flex items-center gap-2 rounded-md border border-border/80 bg-background/50 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <span className="font-medium text-foreground">{group.year}</span>
           <span className="signal-meta">{group.count}</span>
