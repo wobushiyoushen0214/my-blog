@@ -58,10 +58,10 @@ export function SearchBar({ className }: SearchBarProps = {}) {
       </label>
       <div
         className={cn(
-          "flex h-8 items-center overflow-hidden border-b transition-[width,border-color] duration-200",
+          "flex h-9 items-center overflow-hidden rounded-full border bg-background/50 transition-[width,border-color,background-color] duration-200",
           open || query
-            ? "w-44 border-foreground/40"
-            : "w-8 border-transparent hover:border-border"
+            ? "w-48 border-primary/30 bg-card/80"
+            : "w-9 border-border/70 hover:border-primary/25"
         )}
       >
         <button
@@ -70,7 +70,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
             setOpen(true);
             requestAnimationFrame(() => inputRef.current?.focus());
           }}
-          className="flex h-8 w-8 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="flex h-9 w-9 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           aria-label="打开搜索"
         >
           <Search className="h-3.5 w-3.5" suppressHydrationWarning />
@@ -88,7 +88,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
           placeholder="搜索 /"
           aria-keyshortcuts="/"
           className={cn(
-            "h-8 w-full bg-transparent pr-1 text-[13px] text-foreground outline-none placeholder:text-muted-foreground/70",
+            "h-9 w-full bg-transparent pr-3 text-[13px] text-foreground outline-none placeholder:text-muted-foreground/70",
             open || query ? "opacity-100" : "pointer-events-none opacity-0"
           )}
         />

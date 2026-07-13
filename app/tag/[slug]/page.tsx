@@ -319,9 +319,8 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
           <div className="space-y-8">
             <section
               aria-label={`${getSearchTypeLabel(contentType)}列表`}
-              className="border-t border-border"
             >
-              <div className="grid">
+              <div className="grid gap-3">
                 {postsWithTags.map((post) => (
                   <ContentRow
                     key={post.id}
@@ -390,7 +389,7 @@ function TagFilterBar({
     <form
       action={`/tag/${encodeURIComponent(slug)}`}
       aria-label="标签内容筛选"
-      className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+      className="signal-panel flex flex-col gap-2 p-4 sm:flex-row sm:flex-wrap sm:items-center"
     >
       {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
       <label htmlFor="tag-detail-type" className="sr-only">

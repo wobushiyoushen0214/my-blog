@@ -4909,3 +4909,407 @@ html[data-reader-size="xl"] .reader-prose li {
 .home-vignette {
   display: none;
 }
+
+/* =========================================================
+   Signal Studio final cascade (2026-07-13)
+   Cool indigo-slate product studio — wins over all prior
+   paper/editorial layers. Keep this block last.
+   ========================================================= */
+
+:root,
+.light {
+  --radius: 0.85rem;
+  --background: #f3f6fb;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #3b5bdb;
+  --primary-foreground: #f8faff;
+  --secondary: #e8eef8;
+  --secondary-foreground: #1e293b;
+  --muted: #e8eef8;
+  --muted-foreground: #64748b;
+  --accent: #dce7fb;
+  --accent-foreground: #1e3a8a;
+  --destructive: #dc2626;
+  --border: #d7e0ef;
+  --input: #c7d3e8;
+  --ring: #3b5bdb;
+  --chart-1: #3b5bdb;
+  --chart-2: #0ea5e9;
+  --chart-3: #6366f1;
+  --chart-4: #f97316;
+  --chart-5: #14b8a6;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #3b5bdb;
+  --sidebar-primary-foreground: #f8faff;
+  --sidebar-accent: #e8eef8;
+  --sidebar-accent-foreground: #1e293b;
+  --sidebar-border: #d7e0ef;
+  --sidebar-ring: #3b5bdb;
+  --terminal-grid: transparent;
+  --terminal-grid-strong: transparent;
+  --terminal-shadow: rgba(15, 23, 42, 0.08);
+  --terminal-cyan: #0ea5e9;
+  --terminal-amber: #f59e0b;
+  --pixel-red: #ef4444;
+  --pixel-blue: #3b5bdb;
+  --pixel-green: #10b981;
+  --pixel-yellow: #f59e0b;
+  --signal-glow: rgba(59, 91, 219, 0.18);
+  --signal-glow-soft: rgba(14, 165, 233, 0.12);
+  --signal-panel: rgba(255, 255, 255, 0.82);
+  --signal-panel-border: rgba(215, 224, 239, 0.95);
+  --signal-shadow: 0 1px 2px rgba(15, 23, 42, 0.04),
+    0 12px 32px rgba(15, 23, 42, 0.06);
+  --signal-shadow-hover: 0 1px 2px rgba(15, 23, 42, 0.05),
+    0 18px 40px rgba(15, 23, 42, 0.1);
+}
+
+.dark {
+  --radius: 0.85rem;
+  --background: #070b14;
+  --foreground: #e8eefc;
+  --card: #0e1524;
+  --card-foreground: #e8eefc;
+  --popover: #0e1524;
+  --popover-foreground: #e8eefc;
+  --primary: #7c9cff;
+  --primary-foreground: #07101f;
+  --secondary: #151d30;
+  --secondary-foreground: #d5def3;
+  --muted: #121a2b;
+  --muted-foreground: #8b97b3;
+  --accent: #18233a;
+  --accent-foreground: #dce7ff;
+  --destructive: #f87171;
+  --border: #1e2a42;
+  --input: #273552;
+  --ring: #7c9cff;
+  --chart-1: #7c9cff;
+  --chart-2: #38bdf8;
+  --chart-3: #a78bfa;
+  --chart-4: #fb923c;
+  --chart-5: #2dd4bf;
+  --sidebar: #0b1220;
+  --sidebar-foreground: #e8eefc;
+  --sidebar-primary: #7c9cff;
+  --sidebar-primary-foreground: #07101f;
+  --sidebar-accent: #151d30;
+  --sidebar-accent-foreground: #dce7ff;
+  --sidebar-border: #1e2a42;
+  --sidebar-ring: #7c9cff;
+  --terminal-grid: transparent;
+  --terminal-grid-strong: transparent;
+  --terminal-shadow: rgba(0, 0, 0, 0.35);
+  --terminal-cyan: #38bdf8;
+  --terminal-amber: #fbbf24;
+  --pixel-red: #f87171;
+  --pixel-blue: #7c9cff;
+  --pixel-green: #34d399;
+  --pixel-yellow: #fbbf24;
+  --signal-glow: rgba(124, 156, 255, 0.2);
+  --signal-glow-soft: rgba(56, 189, 248, 0.12);
+  --signal-panel: rgba(14, 21, 36, 0.78);
+  --signal-panel-border: rgba(30, 42, 66, 0.95);
+  --signal-shadow: 0 1px 2px rgba(0, 0, 0, 0.25),
+    0 16px 40px rgba(0, 0, 0, 0.28);
+  --signal-shadow-hover: 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 22px 48px rgba(0, 0, 0, 0.38);
+}
+
+html,
+body {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+body {
+  font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  background:
+    radial-gradient(42rem 34rem at 12% -8%, var(--signal-glow), transparent 62%),
+    radial-gradient(36rem 28rem at 88% 0%, var(--signal-glow-soft), transparent 58%),
+    linear-gradient(180deg, color-mix(in oklab, var(--card) 55%, transparent), transparent 22rem),
+    var(--background) !important;
+  background-attachment: fixed !important;
+  letter-spacing: -0.011em !important;
+}
+
+body::before {
+  display: none !important;
+}
+
+.font-serif {
+  font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-style: normal !important;
+  letter-spacing: -0.03em !important;
+}
+
+.public-device-layout {
+  display: flex !important;
+  min-height: 100dvh !important;
+  height: auto !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+.public-device-layout > main {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 0 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.public-device-layout > main > *,
+.public-device-layout > main > article {
+  width: min(100%, 72rem) !important;
+  margin-inline: auto !important;
+}
+
+/* Ambient home mesh */
+.home-glow {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(40rem 30rem at 18% 8%, var(--signal-glow), transparent 70%),
+    radial-gradient(34rem 26rem at 82% 18%, var(--signal-glow-soft), transparent 68%) !important;
+}
+
+.home-grain {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  opacity: 0.035 !important;
+  mix-blend-mode: soft-light !important;
+}
+
+.light .home-grain {
+  opacity: 0.025 !important;
+}
+
+/* Soft panels replace paper hairlines */
+.surface-card,
+.reader-article-card,
+.reader-width-frame,
+.narrative-article-card {
+  border: 1px solid var(--signal-panel-border) !important;
+  border-radius: calc(var(--radius) + 0.15rem) !important;
+  background: var(--signal-panel) !important;
+  box-shadow: var(--signal-shadow) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.surface-card-hover:hover,
+.narrative-article-card:hover {
+  border-color: color-mix(in oklab, var(--primary) 28%, var(--border)) !important;
+  box-shadow: var(--signal-shadow-hover) !important;
+  background: color-mix(in oklab, var(--card) 92%, var(--accent)) !important;
+}
+
+.reader-prose h1,
+.reader-prose h2 {
+  font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.reader-prose h3 {
+  font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--primary) !important;
+}
+
+.reader-prose p,
+.reader-prose li {
+  color: color-mix(in oklab, var(--foreground) 78%, var(--muted-foreground)) !important;
+  line-height: 1.85 !important;
+}
+
+.reader-prose blockquote {
+  border-left: 3px solid var(--primary) !important;
+  border-radius: 0 var(--radius) var(--radius) 0 !important;
+  background: color-mix(in oklab, var(--accent) 55%, transparent) !important;
+  font-style: normal !important;
+}
+
+.prose {
+  --tw-prose-links: var(--primary);
+  --tw-prose-quote-borders: var(--primary);
+  font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
+}
+
+.prose h2::before,
+.prose h3::before {
+  content: none !important;
+}
+
+.prose pre {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  background: color-mix(in oklab, var(--muted) 70%, var(--card)) !important;
+  box-shadow: none !important;
+}
+
+.prose :not(pre) > code {
+  border-radius: 0.4rem !important;
+  background: color-mix(in oklab, var(--accent) 70%, transparent) !important;
+  color: var(--primary) !important;
+}
+
+/* Signal utility classes used by rewritten chrome */
+.signal-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.signal-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid color-mix(in oklab, var(--primary) 22%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 8%, var(--card));
+  padding: 0.3rem 0.7rem;
+  color: var(--primary);
+  font-family: var(--font-jetbrains-mono), var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.signal-panel {
+  border: 1px solid var(--signal-panel-border);
+  border-radius: calc(var(--radius) + 0.1rem);
+  background: var(--signal-panel);
+  box-shadow: var(--signal-shadow);
+  backdrop-filter: blur(14px);
+}
+
+.signal-panel-hover {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.signal-panel-hover:hover {
+  border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+  background: color-mix(in oklab, var(--card) 92%, var(--accent));
+  box-shadow: var(--signal-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.signal-primary-link {
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--primary);
+  padding: 0.6rem 1.15rem;
+  color: var(--primary-foreground);
+  font-size: 0.92rem;
+  font-weight: 650;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+  box-shadow: 0 8px 22px color-mix(in oklab, var(--primary) 28%, transparent);
+}
+
+.signal-primary-link:hover {
+  background: color-mix(in oklab, var(--primary) 88%, white);
+  transform: translateY(-1px);
+}
+
+.signal-secondary-link {
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  padding: 0.6rem 1.15rem;
+  color: var(--foreground);
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.signal-secondary-link:hover {
+  border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+  background: color-mix(in oklab, var(--accent) 55%, var(--card));
+}
+
+.signal-meta {
+  font-family: var(--font-jetbrains-mono), var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: var(--muted-foreground);
+}
+
+.signal-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 16%, transparent);
+}
+
+/* Content rows: force panel look over legacy hairline list rules */
+.content-row-link {
+  margin-inline: 0 !important;
+  border: 1px solid var(--signal-panel-border) !important;
+  border-radius: calc(var(--radius) + 0.1rem) !important;
+  background: var(--signal-panel) !important;
+  box-shadow: var(--signal-shadow) !important;
+  padding: 1.15rem 1.2rem !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.content-row-link:hover {
+  border-color: color-mix(in oklab, var(--primary) 30%, var(--border)) !important;
+  background: color-mix(in oklab, var(--card) 92%, var(--accent)) !important;
+  box-shadow: var(--signal-shadow-hover) !important;
+  transform: translateY(-1px) !important;
+  color: inherit !important;
+}
+
+.content-row-link:hover h3,
+.content-row-link:hover [class*="text-base"],
+.content-row-link:hover [class*="text-\[1"] {
+  color: var(--primary) !important;
+}
+
+/* Sticky floating header shell */
+header.sticky.top-0 {
+  border: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+/* Soft filter control strip leftovers */
+.public-device-layout select {
+  border-radius: 999px !important;
+}

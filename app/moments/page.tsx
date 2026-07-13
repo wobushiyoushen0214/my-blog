@@ -271,7 +271,7 @@ export default async function MomentsPage({
         />
 
         <PublicControlStrip>
-          <div className="flex flex-col gap-3 border-y border-border/70 py-4 lg:flex-row lg:items-baseline lg:justify-between">
+          <div className="signal-panel flex flex-col gap-3 p-4 lg:flex-row lg:items-center lg:justify-between">
             <CategoryNav
               categories={categorySummaries}
               activeSlug={activeCategorySlug}
@@ -470,8 +470,8 @@ function MomentStream({
   posts: PostWithTaxonomy[];
 }) {
   return (
-    <section aria-label="见闻列表" className="max-w-3xl border-t border-border">
-      <ol className="grid">
+    <section aria-label="见闻列表" className="max-w-3xl">
+      <ol className="grid gap-3">
         {posts.map((post) => {
           const updated =
             post.updated_at.slice(0, 10) !== post.created_at.slice(0, 10);

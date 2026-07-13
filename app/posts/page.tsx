@@ -252,7 +252,7 @@ export default async function PostsPage({
         />
 
         <PublicControlStrip>
-          <div className="flex flex-col gap-3 border-y border-border/70 py-4 lg:flex-row lg:items-baseline lg:justify-between">
+          <div className="signal-panel flex flex-col gap-3 p-4 lg:flex-row lg:items-center lg:justify-between">
             <CategoryNav
               categories={categorySummaries}
               activeSlug={activeCategorySlug}
@@ -276,11 +276,8 @@ export default async function PostsPage({
 
         {postsWithTags.length > 0 ? (
           <div className="space-y-8">
-            <section
-              aria-label="文章列表"
-              className="border-t border-border"
-            >
-              <div className="grid">
+            <section aria-label="文章列表">
+              <div className="grid gap-3">
                 {postsWithTags.map((post) => (
                   <ContentRow
                     key={post.id}

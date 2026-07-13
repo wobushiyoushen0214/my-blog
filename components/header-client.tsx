@@ -39,20 +39,13 @@ function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative inline-flex h-full items-center text-[13px] tracking-[0.01em] transition-colors duration-200",
+        "relative inline-flex h-9 items-center rounded-full px-3 text-[13px] font-medium tracking-[-0.01em] transition-colors duration-200",
         active
-          ? "text-foreground"
-          : "text-muted-foreground hover:text-foreground"
+          ? "bg-primary/10 text-primary"
+          : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
       )}
     >
       {label}
-      <span
-        aria-hidden
-        className={cn(
-          "absolute inset-x-0 bottom-0 h-px origin-left bg-foreground transition-transform duration-200",
-          active ? "scale-x-100" : "scale-x-0"
-        )}
-      />
     </Link>
   );
 }
@@ -62,18 +55,23 @@ export function HeaderClient() {
   const isSearch = pathname === "/search";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-14 max-w-5xl items-stretch justify-between gap-6 px-5 sm:px-8 lg:px-10">
-        <div className="flex min-w-0 items-stretch gap-8">
+    <header className="sticky top-0 z-40 w-full px-3 pt-3 sm:px-5">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 rounded-2xl border border-border/80 bg-card/80 px-3 shadow-[var(--signal-shadow)] backdrop-blur-xl supports-[backdrop-filter]:bg-card/70 sm:px-4">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-5">
           <Link
             href="/"
-            className="flex shrink-0 items-center font-serif text-[1.2rem] font-medium leading-none tracking-tight text-foreground transition-opacity hover:opacity-70"
+            className="flex shrink-0 items-center gap-2.5 rounded-xl px-1.5 py-1 text-foreground transition-opacity hover:opacity-80"
           >
-            leempty
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-[12px] font-bold tracking-tight text-primary-foreground">
+              le
+            </span>
+            <span className="text-[1.05rem] font-semibold leading-none tracking-tight">
+              leempty
+            </span>
           </Link>
 
           <nav
-            className="hidden items-stretch gap-6 md:flex"
+            className="hidden items-center gap-1 md:flex"
             aria-label="主导航"
           >
             {navItems.map((item) => (
@@ -87,11 +85,11 @@ export function HeaderClient() {
           </nav>
         </div>
 
-        <div className="flex shrink-0 items-center gap-3" id="header-controls">
+        <div className="flex shrink-0 items-center gap-2" id="header-controls">
           {isSearch ? null : <SearchBar />}
 
           <nav
-            className="flex h-full items-stretch gap-4 md:hidden"
+            className="flex items-center gap-1 md:hidden"
             aria-label="移动端导航"
           >
             {navItems
@@ -107,7 +105,7 @@ export function HeaderClient() {
               ))}
           </nav>
 
-          <ThemeToggle />
+          <ThemeToggle className="rounded-full hover:bg-muted/70" />
         </div>
       </div>
     </header>

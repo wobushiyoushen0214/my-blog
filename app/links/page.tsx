@@ -157,14 +157,16 @@ export default async function LinksPage({
           <div className="min-w-0 space-y-8">
             {filteredLinks.length > 0 ? (
               categories.map((category) => (
-                <section key={category} className="space-y-4">
-                  <div className="flex items-end justify-between gap-3 border-b border-border/60 pb-3">
-                    <h2 className="text-base font-medium">{category}</h2>
-                    <span className="text-sm text-muted-foreground">
+                <section key={category} className="space-y-3">
+                  <div className="flex items-end justify-between gap-3">
+                    <h2 className="text-base font-semibold tracking-tight">
+                      {category}
+                    </h2>
+                    <span className="signal-meta">
                       {groupedLinks[category].length} 个
                     </span>
                   </div>
-                  <div className="grid gap-1">
+                  <div className="grid gap-3">
                     {groupedLinks[category].map((item) => (
                       <FriendLinkRow key={item.href} item={item} />
                     ))}
@@ -224,10 +226,8 @@ export default async function LinksPage({
                   </div>
                 ))}
               </div>
-              <div className="mt-4 border-t border-border/60 pt-4">
-                <h3 className="text-xs font-medium text-foreground">
-                  留言时附上
-                </h3>
+              <div className="mt-4 rounded-2xl border border-dashed border-border/80 bg-background/40 px-3 py-3">
+                <h3 className="signal-meta text-foreground">留言时附上</h3>
                 <ul className="mt-2 grid gap-2">
                   {applicationFields.map((field) => (
                     <li key={field} className="text-sm leading-6 text-muted-foreground">
@@ -267,7 +267,7 @@ function LinkFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="py-1">
+    <section className="signal-panel p-4">
       <form
         action="/links"
         aria-label="友链筛选"
@@ -340,23 +340,21 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="friend-link-row group grid min-w-0 gap-3 border-b border-border/70 px-1 py-5 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_auto] animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
+      className="friend-link-row signal-panel signal-panel-hover group grid min-w-0 gap-3 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="truncate font-serif text-lg font-medium leading-6 text-foreground transition-opacity group-hover:opacity-75">
+          <span className="truncate text-lg font-semibold leading-6 text-foreground transition-colors group-hover:text-primary">
             {item.name}
           </span>
-          <span className="text-[13px] text-muted-foreground">
-            {meta.join(" · ")}
-          </span>
+          <span className="signal-meta">{meta.join(" · ")}</span>
         </span>
         <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
           {item.description}
         </span>
       </span>
       <ExternalLink
-        className="h-4 w-4 shrink-0 self-center text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
+        className="h-4 w-4 shrink-0 self-center text-muted-foreground transition-colors group-hover:text-primary sm:justify-self-end"
         suppressHydrationWarning
       />
     </Link>
@@ -373,7 +371,7 @@ function InfoPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="surface-card border-y border-border/60 py-4 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both delay-100">
+    <section className="signal-panel p-4 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both delay-100">
       <div className="pb-2">
         <h2 className="text-sm font-medium text-foreground">
           {title}

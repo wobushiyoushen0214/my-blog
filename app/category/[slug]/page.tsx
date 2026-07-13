@@ -256,11 +256,8 @@ export default async function CategoryPage({
 
         {(postsWithTags || []).length > 0 ? (
           <div className="space-y-8">
-            <section
-              aria-label={`${categoryTypeLabel}列表`}
-              className="border-t border-border"
-            >
-              <div className="grid">
+            <section aria-label={`${categoryTypeLabel}列表`}>
+              <div className="grid gap-3">
                 {postsWithTags.map((post) => (
                   <ContentRow key={post.id} post={post} variant="index" />
                 ))}
@@ -322,7 +319,7 @@ function CategoryFilterBar({
     <form
       action={`/category/${encodeURIComponent(slug)}`}
       aria-label="分类内容筛选"
-      className="flex flex-col gap-2 sm:flex-row sm:items-center"
+      className="signal-panel flex flex-col gap-2 p-4 sm:flex-row sm:items-center"
     >
       {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
       <label htmlFor="category-detail-sort" className="sr-only">

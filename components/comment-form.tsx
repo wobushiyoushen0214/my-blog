@@ -156,7 +156,7 @@ export function CommentForm({
       {!isReply ? (
         <div className="pb-4">
           <div className="space-y-1">
-            <h3 className="font-serif text-base font-medium text-foreground">
+            <h3 className="text-base font-semibold text-foreground">
               发表评论
             </h3>
             <p className="text-xs leading-6 text-muted-foreground">
@@ -184,7 +184,7 @@ export function CommentForm({
             value={form.author_name}
             onChange={(e) => updateField("author_name", e.target.value)}
             placeholder="你的昵称"
-            className="h-10 rounded-none border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
+            className="h-10 rounded-xl border-border bg-background/50 text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-card focus-visible:bg-card"
             autoFocus={autoFocus}
             disabled={loading}
             maxLength={NAME_MAX_LENGTH}
@@ -211,7 +211,7 @@ export function CommentForm({
             value={form.author_email}
             onChange={(e) => updateField("author_email", e.target.value)}
             placeholder="you@example.com"
-            className="h-10 rounded-none border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
+            className="h-10 rounded-xl border-border bg-background/50 text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-card focus-visible:bg-card"
             disabled={loading}
             maxLength={EMAIL_MAX_LENGTH}
             aria-invalid={Boolean(errors.author_email)}
@@ -237,7 +237,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none rounded-none border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
+          className="resize-none rounded-full border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}

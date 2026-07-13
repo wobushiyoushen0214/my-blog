@@ -204,7 +204,7 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="border-y border-border/70 py-4"
+      className="signal-panel p-4"
     >
       <PublicFilterRow label="类型">
         {items.map((item) => (
@@ -262,34 +262,34 @@ function CategorySection({
   if (categories.length === 0) return null;
 
   return (
-    <section className="space-y-3">
-      <div className="flex flex-col gap-1 border-b border-border pb-3 sm:flex-row sm:items-end sm:justify-between">
+    <section className="space-y-4">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-serif text-2xl font-medium text-foreground">
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">
             {title}
           </h2>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
             {description}
           </p>
         </div>
-        <span className="text-[13px] text-muted-foreground">
-          {categories.length} 个
-        </span>
+        <span className="signal-meta">{categories.length} 个</span>
       </div>
-      <div className="grid border-t border-border">
+      <div className="grid gap-3">
         {categories.map((category) => (
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="group grid min-w-0 gap-3 border-b border-border py-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_7rem_auto]"
+            className="signal-panel signal-panel-hover group grid min-w-0 gap-3 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_7rem_auto] sm:items-center"
           >
             <span className="min-w-0">
-              <span className="block truncate font-serif text-xl font-medium leading-snug text-foreground transition-opacity group-hover:opacity-70">
+              <span className="block truncate text-xl font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
                 {category.name}
               </span>
               <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
-                <span>{categoryTypeLabel(category.type)}</span>
-                <span className="truncate text-muted-foreground/70">
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[12px] font-medium text-primary">
+                  {categoryTypeLabel(category.type)}
+                </span>
+                <span className="truncate signal-meta">
                   {category.slug || "—"}
                 </span>
               </span>
@@ -298,7 +298,7 @@ function CategorySection({
               {category.postCount} 篇
             </span>
             <ArrowRight
-              className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-foreground sm:justify-self-end"
+              className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-primary sm:justify-self-end"
               suppressHydrationWarning
             />
           </Link>

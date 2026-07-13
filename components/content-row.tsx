@@ -71,11 +71,13 @@ function getTypeLabel(post: ContentRowPost) {
 
 function MetaBits({ items }: { items: string[] }) {
   return (
-    <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] text-muted-foreground/75">
+    <span className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12px] text-muted-foreground">
       {items.map((item, index) => (
-        <span key={`${item}-${index}`} className="contents">
-          {index > 0 ? <span className="text-border">·</span> : null}
-          <span>{item}</span>
+        <span
+          key={`${item}-${index}`}
+          className="rounded-full border border-border/70 bg-background/50 px-2 py-0.5"
+        >
+          {item}
         </span>
       ))}
     </span>
@@ -190,25 +192,25 @@ function IndexVariant({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group grid min-w-0 gap-4 border-b border-border py-7 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:gap-8 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+        "group signal-panel signal-panel-hover content-row-link grid min-w-0 gap-4 p-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:gap-6 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
         className
       )}
     >
       <span className="sm:block">
         <time
           dateTime={dateTime || post.created_at}
-          className="block text-[13px] text-muted-foreground"
+          className="signal-meta block"
         >
           {displayDate}
         </time>
       </span>
 
       <span className="min-w-0">
-        <span className="block font-serif text-[1.55rem] font-medium leading-snug tracking-tight text-foreground transition-opacity duration-300 group-hover:opacity-70 sm:text-[1.75rem]">
+        <span className="block text-[1.25rem] font-semibold leading-snug tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary sm:text-[1.4rem]">
           {post.title}
         </span>
         {cleanExcerpt ? (
-          <span className="mt-2.5 line-clamp-2 block max-w-2xl text-[0.925rem] leading-7 text-muted-foreground">
+          <span className="mt-2 line-clamp-2 block max-w-2xl text-[0.925rem] leading-7 text-muted-foreground">
             {cleanExcerpt}
           </span>
         ) : null}
@@ -218,17 +220,19 @@ function IndexVariant({
       <span className="flex items-center gap-4 sm:items-start sm:pt-1">
         {coverImage ? (
           <span
-            className="hidden h-16 w-24 shrink-0 bg-muted/50 bg-cover bg-center md:block"
+            className="hidden h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-muted/50 bg-cover bg-center md:block"
             style={{
               backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")`,
             }}
             aria-hidden
           />
         ) : null}
-        <ArrowUpRight
-          className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
-          suppressHydrationWarning
-        />
+        <span className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background/60 text-muted-foreground transition-colors group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground">
+          <ArrowUpRight
+            className="h-4 w-4"
+            suppressHydrationWarning
+          />
+        </span>
       </span>
     </Link>
   );
@@ -263,27 +267,23 @@ function StreamVariant({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group relative block border-b border-border/80 py-6 pl-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+        "group signal-panel signal-panel-hover content-row-link relative block p-5 pl-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
         className
       )}
     >
       <span
         aria-hidden
-        className="absolute left-0 top-8 h-1.5 w-1.5 bg-muted-foreground/40 transition-colors group-hover:bg-foreground"
-      />
-      <span
-        aria-hidden
-        className="absolute left-[2px] top-10 bottom-[-1px] w-px bg-border/70"
+        className="absolute left-3 top-7 h-2 w-2 rounded-full bg-primary shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]"
       />
 
       <time
         dateTime={dateTime || post.created_at}
-        className="text-[13px] text-muted-foreground"
+        className="signal-meta"
       >
         {displayDate}
       </time>
 
-      <span className="mt-2 block font-serif text-xl font-medium leading-snug text-foreground transition-opacity group-hover:opacity-70 sm:text-2xl">
+      <span className="mt-2 block text-xl font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-[1.35rem]">
         {post.title}
       </span>
 
@@ -293,15 +293,17 @@ function StreamVariant({
         </span>
       ) : null}
 
-      <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] text-muted-foreground/75">
+      <span className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12px] text-muted-foreground">
         {bits.map((item, index) => (
-          <span key={`${item}-${index}`} className="contents">
-            {index > 0 ? <span className="text-border">·</span> : null}
-            <span>{item}</span>
+          <span
+            key={`${item}-${index}`}
+            className="rounded-full border border-border/70 bg-background/50 px-2 py-0.5"
+          >
+            {item}
           </span>
         ))}
         <ArrowUpRight
-          className="ml-auto h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+          className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
           suppressHydrationWarning
         />
       </span>
@@ -336,12 +338,12 @@ function CardVariant({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group relative flex min-w-0 flex-col overflow-hidden border border-border bg-card/40 p-5 transition-colors duration-300 hover:bg-muted/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
+        "group relative flex min-w-0 flex-col overflow-hidden signal-panel signal-panel-hover content-row-link p-4 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
         className
       )}
     >
       <span
-        className="relative mb-4 block aspect-[16/10] overflow-hidden bg-muted/40 bg-cover bg-center"
+        className="relative mb-4 block aspect-[16/10] overflow-hidden rounded-2xl bg-muted/40 bg-cover bg-center"
         style={
           coverImage
             ? {
@@ -355,13 +357,13 @@ function CardVariant({
           <span className="absolute inset-0 bg-foreground/5 transition-colors duration-500 group-hover:bg-transparent" />
         ) : (
           <span className="absolute inset-0 flex flex-col justify-between p-4">
-            <span className="text-[12px] text-muted-foreground">leempty</span>
-            <span className="max-w-[8rem] font-serif text-xl font-medium leading-tight text-muted-foreground">
+            <span className="signal-meta">leempty</span>
+            <span className="max-w-[8rem] text-xl font-semibold leading-tight text-muted-foreground">
               {displayType}
             </span>
           </span>
         )}
-        <span className="absolute right-3 top-3 border border-border bg-background/90 px-2 py-0.5 text-[11px] text-muted-foreground backdrop-blur-sm">
+        <span className="absolute right-3 top-3 rounded-full border border-border/80 bg-background/90 px-2.5 py-0.5 text-[11px] text-muted-foreground backdrop-blur-sm">
           {displayType}
         </span>
       </span>
@@ -372,7 +374,7 @@ function CardVariant({
             ? visibleTags.slice(0, 2).map((tag) => (
                 <span
                   key={tag.id}
-                  className="max-w-24 truncate text-[12px] text-muted-foreground"
+                  className="max-w-24 truncate rounded-full border border-border/70 bg-background/50 px-2 py-0.5 text-[11px] text-muted-foreground"
                 >
                   {tag.name}
                 </span>
@@ -380,7 +382,7 @@ function CardVariant({
             : displayMeta.slice(0, 2).map((item, index) => (
                 <span
                   key={`${item}-${index}`}
-                  className="max-w-24 truncate text-[12px] text-muted-foreground"
+                  className="max-w-24 truncate rounded-full border border-border/70 bg-background/50 px-2 py-0.5 text-[11px] text-muted-foreground"
                 >
                   {item}
                 </span>
@@ -388,14 +390,14 @@ function CardVariant({
         </span>
         <time
           dateTime={dateTime || post.created_at}
-          className="shrink-0 text-[12px] text-muted-foreground"
+          className="signal-meta shrink-0"
         >
           {displayDate}
         </time>
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="mb-2 block font-serif text-lg font-medium leading-tight text-foreground transition-opacity duration-300 group-hover:opacity-75">
+        <span className="mb-2 block text-lg font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary">
           {post.title}
         </span>
         {cleanExcerpt ? (
@@ -405,7 +407,7 @@ function CardVariant({
         ) : null}
       </span>
 
-      <span className="my-3.5 block border-t border-border/80" />
+      <span className="my-3.5 block h-px bg-border/70" />
 
       <span className="flex items-center justify-between">
         <span className="flex items-center gap-3 text-[12px] text-muted-foreground">
@@ -413,7 +415,7 @@ function CardVariant({
             <span key={item}>{item}</span>
           ))}
         </span>
-        <span className="flex h-7 w-7 items-center justify-center border border-border text-muted-foreground transition-colors group-hover:border-foreground group-hover:bg-foreground group-hover:text-background">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
           <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
         </span>
       </span>

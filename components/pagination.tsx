@@ -70,11 +70,11 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex min-h-9 min-w-9 items-center justify-center border px-3 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+    "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border px-3 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
   const edgeLinkClassName =
-    "flex min-h-9 items-center gap-1 border border-border bg-transparent px-3 text-[13px] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+    "flex min-h-9 items-center gap-1 rounded-full border border-border bg-card/70 px-3 text-[13px] text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
   const disabledClassName =
-    "flex min-h-9 items-center gap-1 border border-border/50 px-3 text-[13px] text-muted-foreground/40";
+    "flex min-h-9 items-center gap-1 rounded-full border border-border/50 px-3 text-[13px] text-muted-foreground/40";
 
   return (
     <nav className="mt-10 sm:mt-12" aria-label="分页">
@@ -112,8 +112,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
                 className={cn(
                   pageLinkClassName,
                   item === safeCurrentPage
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-transparent text-muted-foreground hover:border-foreground/40 hover:text-foreground"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card/70 text-muted-foreground hover:border-primary/30 hover:text-foreground"
                 )}
                 aria-label={`第 ${item} 页`}
                 aria-current={item === safeCurrentPage ? "page" : undefined}

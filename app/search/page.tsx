@@ -321,7 +321,7 @@ export default async function SearchPage({
           countLabel={resultLabel}
         />
 
-        <section className="border-y border-border/70 py-4">
+        <section className="signal-panel p-4">
           <form
             className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_140px_140px_auto_auto]"
             role="search"
@@ -341,7 +341,7 @@ export default async function SearchPage({
                 name="q"
                 defaultValue={rawQuery}
                 placeholder="搜索标题、正文、分类或标签..."
-                className="h-9 rounded-none border-border bg-transparent pl-10 text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
+                className="h-10 rounded-full border-border bg-background/50 pl-10 text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-card focus-visible:bg-card"
               />
             </div>
             <label htmlFor="search-type" className="sr-only">
@@ -409,9 +409,9 @@ export default async function SearchPage({
           {shownPosts.length > 0 ? (
             <section
               aria-label={query ? "搜索结果列表" : "最近内容列表"}
-              className="border-t border-border/60"
+              className=""
             >
-              <div className="grid">
+              <div className="grid gap-3">
                 {shownPosts.map((post) => (
                   <ContentRow
                     key={post.id}
@@ -523,9 +523,9 @@ function SearchMatchPanel({
   tags: Tag[];
 }) {
   return (
-    <section className="mt-5 border-y border-border py-5">
+    <section className="signal-panel mt-5 p-5">
       <div>
-        <h2 className="font-serif text-base font-medium text-foreground">
+        <h2 className="text-base font-semibold text-foreground">
           主题命中
         </h2>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">

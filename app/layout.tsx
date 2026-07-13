@@ -72,7 +72,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body
-        className={`${hankenGrotesk.variable} ${geistMono.variable} ${pressStart.variable} ${inter.variable} ${lora.variable} ${jetBrainsMono.variable} font-sans`}
+        className={`${hankenGrotesk.variable} ${geistMono.variable} ${pressStart.variable} ${inter.variable} ${lora.variable} ${jetBrainsMono.variable} ${inter.className}`}
       >
         <ThemeProvider
           attribute="class"

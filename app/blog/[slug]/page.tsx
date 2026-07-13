@@ -484,7 +484,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <article>
               <div className="reader-article-card surface-card mx-auto max-w-[52rem] px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
                 <div className="flex flex-wrap items-center gap-3 text-[13px] text-muted-foreground">
-                  <span>{contentTypeLabel}</span>
+                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-medium text-primary">{contentTypeLabel}</span>
                   {post.category ? (
                     <>
                       <span className="text-border">
@@ -500,11 +500,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   ) : null}
                 </div>
 
-                <h1 className="mt-5 font-serif text-4xl font-medium leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+                <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl">
                   {post.title}
                 </h1>
 
-                <div className="mt-7 w-16 border-t border-border" />
+                <div className="mt-7 h-1 w-16 rounded-full bg-primary/70" />
 
                 {post.excerpt ? (
                   <p className="mt-7 max-w-2xl text-[1.05rem] leading-8 text-muted-foreground">
@@ -512,7 +512,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   </p>
                 ) : null}
 
-                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5 text-[13px] text-muted-foreground">
+                <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-border/70 bg-background/40 px-4 py-3 text-[13px] text-muted-foreground">
                   <time
                     dateTime={post.created_at}
                     className="flex items-center gap-1.5"
@@ -520,7 +520,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <Calendar className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>{formatDate(post.created_at)}</span>
                   </time>
-                  <span className="text-border">/</span>
+                  <span className="signal-dot" />
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>{readingMinutes} 分钟</span>
@@ -529,7 +529,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                 {post.cover_image ? (
                   <div
-                    className="narrative-media-slot mb-8 aspect-[16/10] overflow-hidden border border-border bg-muted/40"
+                    className="narrative-media-slot mb-8 aspect-[16/10] overflow-hidden rounded-2xl border border-border bg-muted/40 bg-cover bg-center"
                     style={{
                       backgroundImage: `url("${post.cover_image.replace(/"/g, '\\"')}")`,
                     }}
@@ -553,16 +553,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {tags.length > 0 ? (
                   <nav
                     aria-label="文章标签"
-                    className="mt-10 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-border pt-6"
+                    className="mt-10 flex flex-wrap items-center gap-x-2 gap-y-2 rounded-2xl border border-border/70 bg-background/40 px-4 py-4"
                   >
-                    <span className="text-[12px] text-muted-foreground/70">
-                      标签
-                    </span>
+                    <span className="signal-meta mr-1">tags</span>
                     {tags.map((tagItem) => (
                       <Link
                         key={tagItem.id}
                         href={`/tag/${tagItem.slug}`}
-                        className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                        className="rounded-full border border-border/70 bg-card/70 px-2.5 py-1 text-[12px] text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
                       >
                         {tagItem.name}
                       </Link>
@@ -571,14 +569,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ) : null}
               </div>
 
-              <div className="reader-width-frame mx-auto mt-8 flex max-w-[52rem] items-center justify-around border-y border-border py-3 lg:hidden">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
+              <div className="reader-width-frame surface-card mx-auto mt-8 flex max-w-[52rem] items-center justify-around rounded-2xl py-3 lg:hidden">
+                <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                   <Clock className="h-4 w-4" suppressHydrationWarning />
                   {readingMinutes} 分钟阅读
                 </span>
                 <a
                   href="#comments"
-                  className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
                 >
                   <MessageSquare className="h-4 w-4" suppressHydrationWarning />
                   {commentCount} 条评论
@@ -592,19 +590,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 aria-labelledby="comments-title"
                 className="reader-article-card surface-card mx-auto mt-8 max-w-[52rem] p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both"
               >
-                <div className="mb-6 flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-[12px] text-muted-foreground">
-                      讨论
-                    </p>
+                    <p className="signal-meta">讨论</p>
                     <h2
                       id="comments-title"
-                      className="mt-1 font-serif text-xl font-medium text-foreground"
+                      className="mt-1 text-xl font-semibold tracking-tight text-foreground"
                     >
                       评论
                     </h2>
                   </div>
-                  <span className="text-[13px] text-muted-foreground">
+                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-medium text-primary">
                     {commentCount} 条已通过
                   </span>
                 </div>
@@ -620,26 +616,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <TableOfContents headings={headings} />
 
                 <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[400ms]">
-                  <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 text-[13px] text-muted-foreground">
+                  <h2 className="mb-4 flex items-center gap-2 signal-meta">
                     <Share2 className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>数据</span>
                   </h2>
-                  <ul className="space-y-3 text-xs text-muted-foreground">
-                    <li className="flex items-center justify-between">
+                  <ul className="space-y-2 text-xs text-muted-foreground">
+                    <li className="flex items-center justify-between rounded-xl border border-border/70 bg-background/40 px-3 py-2">
                       <span>阅读时长</span>
-                      <span className="font-serif font-medium text-foreground">
+                      <span className="font-semibold text-foreground">
                         {readingMinutes}m
                       </span>
                     </li>
-                    <li className="flex items-center justify-between">
+                    <li className="flex items-center justify-between rounded-xl border border-border/70 bg-background/40 px-3 py-2">
                       <span>阅读量</span>
-                      <span className="text-[13px] text-muted-foreground">
+                      <span className="font-semibold text-foreground">
                         {numberFormatter.format(post.view_count + 1)}
                       </span>
                     </li>
-                    <li className="flex items-center justify-between">
+                    <li className="flex items-center justify-between rounded-xl border border-border/70 bg-background/40 px-3 py-2">
                       <span>评论</span>
-                      <span className="font-serif font-medium text-foreground">
+                      <span className="font-semibold text-foreground">
                         {commentCount}
                       </span>
                     </li>
@@ -666,17 +662,15 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
 
   return (
     <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[350ms]">
-      <h2 className="mb-4 border-b border-border pb-2 text-[13px] text-muted-foreground">
-        目录
-      </h2>
-      <nav aria-label="文章目录" className="space-y-2">
+      <h2 className="mb-4 signal-meta">目录</h2>
+      <nav aria-label="文章目录" className="space-y-1">
         {headings.map((heading) => (
           <a
             key={heading.id}
             href={`#${heading.id}`}
             className={cn(
-              "group flex items-start text-left text-[11px] text-muted-foreground transition-colors hover:text-foreground",
-              heading.level === 3 && "pl-3 text-muted-foreground/80"
+              "group flex items-start rounded-xl px-2 py-1.5 text-left text-[12px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary",
+              heading.level === 3 && "pl-4 text-muted-foreground/80"
             )}
           >
             {heading.level === 3 ? (
@@ -705,7 +699,7 @@ function ArticlePager({
   return (
     <nav
       aria-label="相邻文章"
-      className="reader-width-frame mx-auto mt-8 grid max-w-[52rem] overflow-hidden border border-border bg-card/60 md:grid-cols-2"
+      className="reader-width-frame mx-auto mt-8 grid max-w-[52rem] gap-3 md:grid-cols-2"
     >
       <NavigationPostCard
         post={previousPost}
@@ -730,13 +724,11 @@ function NavigationPostCard({
     return (
       <div
         className={cn(
-          "p-5",
-          direction === "previous" ? "md:border-r md:border-border" : "md:text-right"
+          "signal-panel p-5",
+          direction === "next" && "md:text-right"
         )}
       >
-        <p className="text-[13px] text-muted-foreground">
-          {label}
-        </p>
+        <p className="signal-meta">{label}</p>
         <p className="mt-2 text-sm text-muted-foreground">
           暂无更多相邻文章
         </p>
@@ -748,22 +740,19 @@ function NavigationPostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group p-5 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-        direction === "previous" && "md:border-r md:border-border"
+        "signal-panel signal-panel-hover group p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       )}
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
           <ChevronLeft
-            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
             suppressHydrationWarning
           />
         ) : null}
         <div className={direction === "next" ? "min-w-0 text-right" : "min-w-0"}>
-          <p className="text-[13px] text-muted-foreground">
-            {label}
-          </p>
-          <h3 className="mt-2 line-clamp-2 font-serif text-base font-medium leading-6 text-foreground transition-colors">
+          <p className="signal-meta">{label}</p>
+          <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-6 text-foreground transition-colors group-hover:text-primary">
             {post.title}
           </h3>
           {post.category ? (
@@ -774,7 +763,7 @@ function NavigationPostCard({
         </div>
         {direction === "next" ? (
           <ChevronRight
-            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
             suppressHydrationWarning
           />
         ) : null}
@@ -792,7 +781,7 @@ function RelatedSection({
 }) {
   return (
     <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[500ms]">
-      <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 text-[13px] text-muted-foreground">
+      <h2 className="mb-4 flex items-center gap-2 signal-meta">
         <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
         <span>相关</span>
       </h2>
@@ -809,26 +798,24 @@ function RelatedSection({
 
 function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {posts.map((post) => {
         const contentType = getContentType(post.category);
         return (
           <Link
             key={post.id}
             href={`/blog/${post.slug}`}
-            className="group block border-l-2 border-border py-0.5 pl-3 transition-colors hover:border-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="group block rounded-xl border border-border/70 bg-background/40 px-3 py-2.5 transition-colors hover:border-primary/30 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <div className="flex min-w-0 items-center gap-2 text-[12px] text-muted-foreground">
-              <span>
-                {getContentTypeLabel(contentType)}
-              </span>
+            <div className="flex min-w-0 items-center gap-2 signal-meta">
+              <span>{getContentTypeLabel(contentType)}</span>
               {post.relationLabel ? (
                 <span className="min-w-0 truncate">{post.relationLabel}</span>
               ) : post.category ? (
                 <span className="min-w-0 truncate">{post.category.name}</span>
               ) : null}
             </div>
-            <h3 className="mt-1 line-clamp-2 font-serif text-sm font-medium leading-5 text-foreground transition-opacity group-hover:opacity-75">
+            <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-foreground transition-colors group-hover:text-primary">
               {post.title}
             </h3>
             {post.excerpt ? (
@@ -837,11 +824,11 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
               </p>
             ) : null}
             {post.tags && post.tags.length > 0 ? (
-              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
+              <div className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
                 {post.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag.id}
-                    className="max-w-36 truncate"
+                    className="max-w-36 truncate rounded-full bg-muted/60 px-2 py-0.5"
                   >
                     {tag.name}
                   </span>

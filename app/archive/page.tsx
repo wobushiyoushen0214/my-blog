@@ -8,6 +8,8 @@ import { ContentRow } from "@/components/content-row";
 import {
   PublicActionLink,
   PublicEmptyState,
+  PublicFilterPill,
+  PublicFilterSummary,
   PublicPageShell,
   publicPrimaryButtonClassName,
   publicSecondaryButtonClassName,
@@ -18,7 +20,6 @@ import {
   CalendarDays,
   Rss,
   Search,
-  X,
 } from "lucide-react";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
@@ -365,17 +366,17 @@ function ArchiveHero({
     : ["等待第一篇记录", "按年份自动整理"];
 
   return (
-    <header className="mb-8 border-b border-border pb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+    <header className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
+      <div className="signal-panel grid gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
-          <p className="text-[13px] text-muted-foreground">
+          <p className="signal-meta text-primary">
             归档
           </p>
           <div className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-            <h1 className="min-w-0 font-serif text-3xl font-medium leading-tight tracking-tight text-foreground md:text-4xl">
+            <h1 className="min-w-0 text-3xl font-semibold leading-tight tracking-tight text-foreground md:text-4xl">
               {title}
             </h1>
-            <span className="text-[13px] text-muted-foreground">
+            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-medium text-primary">
               {countLabel}
             </span>
           </div>
@@ -410,7 +411,7 @@ function ArchiveFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="py-1">
+    <section className="signal-panel p-4">
       <form
         action="/archive"
         aria-label="归档筛选"
@@ -454,44 +455,20 @@ function ActiveArchiveSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="text-[13px] text-muted-foreground">
-          Filter
-        </span>
-        {query ? (
-          <FilterPill
-            label={`关键词：${query}`}
-            href={buildArchivePath({ type })}
-          />
-        ) : null}
-        {type !== DEFAULT_TYPE ? (
-          <FilterPill
-            label={`类型：${getTypeLabel(type)}`}
-            href={buildArchivePath({ query })}
-          />
-        ) : null}
-      </div>
-      <Link
-        href="/archive"
-        className="text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        清除全部
-      </Link>
-    </section>
-  );
-}
-
-function FilterPill({ label, href }: { label: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      aria-label={`移除${label}`}
-    >
-      <span className="truncate">{label}</span>
-      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
-    </Link>
+    <PublicFilterSummary clearHref="/archive">
+      {query ? (
+        <PublicFilterPill
+          label={`关键词：${query}`}
+          href={buildArchivePath({ type })}
+        />
+      ) : null}
+      {type !== DEFAULT_TYPE ? (
+        <PublicFilterPill
+          label={`类型：${getTypeLabel(type)}`}
+          href={buildArchivePath({ query })}
+        />
+      ) : null}
+    </PublicFilterSummary>
   );
 }
 
@@ -519,10 +496,10 @@ function YearSection({ group }: { group: YearGroup }) {
     >
       <div className="grid gap-4 sm:grid-cols-[5rem_minmax(0,1fr)]">
         <div className="sm:pt-1">
-          <h3 className="text-2xl font-semibold leading-none">
+          <h3 className="text-2xl font-semibold leading-none tracking-tight">
             {group.year}
           </h3>
-          <p className="mt-2 text-xs text-muted-foreground">{group.count} 篇</p>
+          <p className="mt-2 signal-meta">{group.count} 篇</p>
         </div>
         <div className="min-w-0 space-y-7">
           {group.months.map((month) => (
@@ -537,11 +514,11 @@ function YearSection({ group }: { group: YearGroup }) {
 function MonthSection({ month }: { month: MonthGroup }) {
   return (
     <section className="grid gap-3 sm:grid-cols-[5rem_minmax(0,1fr)]">
-      <h4 className="text-sm text-muted-foreground sm:pt-4">
+      <h4 className="signal-meta sm:pt-4">
         {month.label.replace(/^\d+ 年 /, "")}
       </h4>
-      <div className="min-w-0 border-l border-border/60 pl-4 sm:pl-5">
-        <div className="grid gap-1">
+      <div className="min-w-0 border-l-2 border-primary/20 pl-4 sm:pl-5">
+        <div className="grid gap-3">
           {month.posts.map((post) => (
             <ArchiveRow key={post.id} post={post} />
           ))}
@@ -570,20 +547,18 @@ function YearJumpNav({ groups }: { groups: YearGroup[] }) {
   return (
     <nav
       aria-label="归档年份索引"
-      className="flex flex-wrap gap-x-4 gap-y-2 border-y border-border/60 py-3"
+      className="signal-panel flex flex-wrap gap-2 p-3"
     >
-        {groups.map((group) => (
-          <Link
-            key={group.year}
-            href={`#archive-${group.year}`}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            <span className="font-medium">{group.year}</span>
-            <span className="text-xs text-muted-foreground">
-              {group.count} 篇
-            </span>
-          </Link>
-        ))}
+      {groups.map((group) => (
+        <Link
+          key={group.year}
+          href={`#archive-${group.year}`}
+          className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/50 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          <span className="font-medium text-foreground">{group.year}</span>
+          <span className="signal-meta">{group.count}</span>
+        </Link>
+      ))}
     </nav>
   );
 }
