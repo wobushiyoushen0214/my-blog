@@ -237,7 +237,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none rounded-full border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
+          className="resize-none rounded-none border-border bg-transparent text-sm shadow-none transition-colors placeholder:text-muted-foreground/60 focus-visible:bg-transparent"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}

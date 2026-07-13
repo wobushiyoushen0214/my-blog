@@ -144,7 +144,7 @@ export default async function TagsPage({
             description="按关键词交叉浏览内容。字号反映相关文章数量。"
             countLabel={`${filteredTags.length} / ${tagsWithCount.length}`}
             action={
-              <div className="flex flex-wrap gap-2 signal-meta">
+              <div className="flex flex-wrap gap-3 text-[12px] text-muted-foreground">
                 <span>已用 {usedTags.length}</span>
                 <span>未用 {tagsWithCount.length - usedTags.length}</span>
               </div>
@@ -159,8 +159,8 @@ export default async function TagsPage({
               className="mt-8 min-w-0 space-y-8"
               aria-label={query ? "匹配标签" : "标签索引"}
             >
-              <div className="signal-panel p-5 sm:p-6">
-                <p className="signal-meta mb-4">标签云</p>
+              <div className="border-b border-border/70 pb-8">
+                <p className="mb-4 text-[12px] text-muted-foreground">标签云</p>
                 <div className="flex flex-wrap items-end gap-x-6 gap-y-5 sm:gap-x-8 sm:gap-y-7">
                   {filteredTags.map((tag) => (
                     <TagCloudItem
@@ -173,7 +173,7 @@ export default async function TagsPage({
               </div>
 
               <div>
-                <p className="signal-meta mb-4">索引</p>
+                <p className="mb-4 text-[12px] text-muted-foreground">索引</p>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {filteredTags.map((tag) => (
                     <TagIndexRow key={`index-${tag.id}`} tag={tag} />
@@ -218,7 +218,7 @@ function TagStatusSwitch({
   ];
 
   return (
-    <nav aria-label="标签使用状态" className="signal-panel p-4">
+    <nav aria-label="标签使用状态" className="">
       <PublicFilterRow label="状态">
         {items.map((item) => (
           <PublicPillLink
@@ -283,7 +283,7 @@ function TagCloudItem({
       >
         {tag.name}
       </span>
-      <span className="signal-meta">{tag.postCount} posts</span>
+      <span className="text-[12px] text-muted-foreground">{tag.postCount}</span>
     </Link>
   );
 }
@@ -292,12 +292,12 @@ function TagIndexRow({ tag }: { tag: TagWithCount }) {
   return (
     <Link
       href={`/tag/${tag.slug}`}
-      className="signal-panel signal-panel-hover group flex min-w-0 items-baseline justify-between gap-4 px-4 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="group flex min-w-0 items-baseline justify-between gap-4 border-b border-border/70 py-4 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <span className="min-w-0 truncate text-base font-semibold text-foreground transition-colors group-hover:opacity-75">
         {tag.name}
       </span>
-      <span className="shrink-0 signal-meta">{tag.postCount}</span>
+      <span className="shrink-0 text-[12px] tabular-nums text-muted-foreground">{tag.postCount}</span>
     </Link>
   );
 }

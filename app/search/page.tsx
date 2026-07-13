@@ -321,7 +321,7 @@ export default async function SearchPage({
           countLabel={resultLabel}
         />
 
-        <section className="signal-panel p-4">
+        <section className="border-b border-border/70 pb-4">
           <form
             className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_140px_140px_auto_auto]"
             role="search"
@@ -341,7 +341,7 @@ export default async function SearchPage({
                 name="q"
                 defaultValue={rawQuery}
                 placeholder="搜索标题、正文、分类或标签..."
-                className="h-10 rounded-full border-border bg-background/50 pl-10 text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-card focus-visible:bg-card"
+                className="h-10 rounded-none border-border bg-transparent pl-10 text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 focus-visible:bg-transparent"
               />
             </div>
             <label htmlFor="search-type" className="sr-only">
@@ -523,7 +523,7 @@ function SearchMatchPanel({
   tags: Tag[];
 }) {
   return (
-    <section className="signal-panel mt-5 p-5">
+    <section className="mt-5 border-t border-border/70 pt-5">
       <div>
         <h2 className="text-base font-semibold text-foreground">
           主题命中

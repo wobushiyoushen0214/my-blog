@@ -204,7 +204,7 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="signal-panel p-4"
+      className=""
     >
       <PublicFilterRow label="类型">
         {items.map((item) => (
@@ -272,14 +272,14 @@ function CategorySection({
             {description}
           </p>
         </div>
-        <span className="signal-meta">{categories.length} 个</span>
+        <span className="text-[12px] tabular-nums text-muted-foreground">{categories.length} 个</span>
       </div>
       <div className="grid gap-3">
         {categories.map((category) => (
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="signal-panel signal-panel-hover group grid min-w-0 gap-3 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_7rem_auto] sm:items-center"
+            className="group grid min-w-0 gap-3 border-b border-border/70 py-5 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_7rem_auto] sm:items-center"
           >
             <span className="min-w-0">
               <span className="block truncate text-xl font-semibold leading-snug text-foreground transition-colors group-hover:opacity-75">
@@ -289,7 +289,7 @@ function CategorySection({
                 <span className="text-[12px] font-medium text-muted-foreground">
                   {categoryTypeLabel(category.type)}
                 </span>
-                <span className="truncate signal-meta">
+                <span className="truncate text-[12px] text-muted-foreground">
                   {category.slug || "—"}
                 </span>
               </span>

@@ -40,27 +40,27 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
 
   return (
     <>
-      <div className="mb-8 flex items-center justify-between gap-4">
+      <div className="mb-8 flex items-center justify-between gap-4 border-b border-border/70 pb-4">
         <Link
           href={backHref}
-          className="group inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/70 px-3 py-1.5 text-[13px] text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft
-            className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1"
+            className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
             suppressHydrationWarning
           />
           <span>返回列表</span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => setShowSettings((value) => !value)}
             className={cn(
-              "inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors",
+              "inline-flex items-center gap-1.5 text-[13px] transition-colors",
               showSettings
-                ? "border-primary/30 border border-border/80 text-muted-foreground"
-                : "border-border/80 bg-card/70 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                ? "font-medium text-foreground"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
             <Sliders className="h-3 w-3" suppressHydrationWarning />
@@ -70,10 +70,10 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
             type="button"
             onClick={() => setSaved((value) => !value)}
             className={cn(
-              "inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors",
+              "inline-flex items-center gap-1.5 text-[13px] transition-colors",
               saved
-                ? "border-primary/30 border border-border/80 text-muted-foreground"
-                : "border-border/80 bg-card/70 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                ? "font-medium text-foreground"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
             {saved ? (
@@ -87,7 +87,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
       </div>
 
       {showSettings ? (
-        <div className="signal-panel mb-8 p-5 sm:p-6">
+        <div className="mb-8 border-b border-border/70 pb-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <ReaderSegment
               label="字体"
@@ -127,18 +127,18 @@ function ReaderSegment<T extends string>({
 }) {
   return (
     <div className="space-y-2">
-      <span className="signal-meta block">{label}</span>
-      <div className="flex flex-wrap gap-1.5">
+      <span className="mb-2 block text-[12px] text-muted-foreground">{label}</span>
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
         {options.map((option) => (
           <button
             key={option}
             type="button"
             onClick={() => onChange(option)}
             className={cn(
-              "rounded-full px-3 py-1.5 text-[13px] transition-colors",
+              "py-1 text-[13px] transition-colors",
               value === option
-                ? "bg-muted/70 font-medium text-foreground"
-                : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                ? "font-medium text-foreground underline decoration-foreground/40 underline-offset-6"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
             {option}

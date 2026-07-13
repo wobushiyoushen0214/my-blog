@@ -39,7 +39,7 @@ function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative inline-flex h-9 items-center px-2.5 text-[13px] tracking-[-0.01em] transition-colors duration-200",
+        "relative inline-flex h-9 items-center px-2 text-[13px] tracking-[-0.01em] transition-colors duration-150",
         active
           ? "font-medium text-foreground"
           : "text-muted-foreground hover:text-foreground"
@@ -49,7 +49,7 @@ function NavLink({
       {active ? (
         <span
           aria-hidden
-          className="absolute inset-x-2.5 -bottom-0.5 h-px bg-foreground/70"
+          className="absolute inset-x-2 -bottom-px h-px bg-foreground/80"
         />
       ) : null}
     </Link>
@@ -61,12 +61,12 @@ export function HeaderClient() {
   const isSearch = pathname === "/search";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
+    <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
+      <div className="mx-auto flex h-13 max-w-5xl items-center justify-between gap-4 px-5 sm:px-8 lg:px-10" style={{ height: "3.25rem" }}>
         <div className="flex min-w-0 items-center gap-6 sm:gap-8">
           <Link
             href="/"
-            className="shrink-0 text-[1.02rem] font-semibold tracking-tight text-foreground transition-opacity hover:opacity-70"
+            className="shrink-0 text-[0.98rem] font-semibold tracking-tight text-foreground transition-opacity hover:opacity-65"
           >
             leempty
           </Link>
@@ -86,7 +86,7 @@ export function HeaderClient() {
           </nav>
         </div>
 
-        <div className="flex shrink-0 items-center gap-1.5" id="header-controls">
+        <div className="flex shrink-0 items-center gap-1" id="header-controls">
           {isSearch ? null : <SearchBar />}
 
           <nav
@@ -106,7 +106,7 @@ export function HeaderClient() {
               ))}
           </nav>
 
-          <ThemeToggle className="hover:bg-muted/50" />
+          <ThemeToggle className="hover:bg-transparent hover:opacity-70" />
         </div>
       </div>
     </header>

@@ -162,7 +162,7 @@ export default async function LinksPage({
                     <h2 className="text-base font-semibold tracking-tight">
                       {category}
                     </h2>
-                    <span className="signal-meta">
+                    <span className="text-[12px] text-muted-foreground">
                       {groupedLinks[category].length} 个
                     </span>
                   </div>
@@ -226,8 +226,8 @@ export default async function LinksPage({
                   </div>
                 ))}
               </div>
-              <div className="mt-4 rounded-2xl border border-dashed border-border/80 bg-background/40 px-3 py-3">
-                <h3 className="signal-meta text-foreground">留言时附上</h3>
+              <div className="mt-4 border border-dashed border-border/80 px-3 py-3">
+                <h3 className="text-[12px] font-medium text-foreground">留言时附上</h3>
                 <ul className="mt-2 grid gap-2">
                   {applicationFields.map((field) => (
                     <li key={field} className="text-sm leading-6 text-muted-foreground">
@@ -267,7 +267,7 @@ function LinkFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="signal-panel p-4">
+    <section className="border-b border-border/70 pb-4">
       <form
         action="/links"
         aria-label="友链筛选"
@@ -340,14 +340,14 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="friend-link-row signal-panel signal-panel-hover group grid min-w-0 gap-3 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
+      className="friend-link-row group grid min-w-0 gap-3 border-b border-border/70 py-5 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="truncate text-lg font-semibold leading-6 text-foreground transition-colors group-hover:opacity-75">
             {item.name}
           </span>
-          <span className="signal-meta">{meta.join(" · ")}</span>
+          <span className="text-[12px] text-muted-foreground">{meta.join(" · ")}</span>
         </span>
         <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
           {item.description}
@@ -371,7 +371,7 @@ function InfoPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="signal-panel p-4 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both delay-100">
+    <section className="border border-border/70 p-4">
       <div className="pb-2">
         <h2 className="text-sm font-medium text-foreground">
           {title}

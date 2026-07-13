@@ -252,7 +252,7 @@ export default async function PostsPage({
         />
 
         <PublicControlStrip>
-          <div className="signal-panel flex flex-col gap-3 p-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-3 border-b border-border/70 pb-4 lg:flex-row lg:items-center lg:justify-between">
             <CategoryNav
               categories={categorySummaries}
               activeSlug={activeCategorySlug}

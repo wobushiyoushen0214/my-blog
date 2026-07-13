@@ -366,7 +366,7 @@ function ArchiveHero({
     : ["等待第一篇记录", "按年份自动整理"];
 
   return (
-    <header className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
+    <header className="mb-8">
       <div className="grid gap-6 border-b border-border/70 pb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
           <p className="signal-meta">
@@ -411,7 +411,7 @@ function ArchiveFilterBar({
   hasFilters: boolean;
 }) {
   return (
-    <section className="signal-panel p-4">
+    <section className="border-b border-border/70 pb-4">
       <form
         action="/archive"
         aria-label="归档筛选"
@@ -547,7 +547,7 @@ function YearJumpNav({ groups }: { groups: YearGroup[] }) {
   return (
     <nav
       aria-label="归档年份索引"
-      className="signal-panel flex flex-wrap gap-2 p-3"
+      className="flex flex-wrap gap-x-3 gap-y-2 border-b border-border/70 pb-3"
     >
       {groups.map((group) => (
         <Link

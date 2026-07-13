@@ -70,15 +70,15 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const pageLinkClassName =
-    "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full border px-3 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+    "inline-flex min-h-9 min-w-8 items-center justify-center px-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
   const edgeLinkClassName =
-    "flex min-h-9 items-center gap-1 rounded-full border border-border bg-card/70 px-3 text-[13px] text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+    "flex min-h-9 items-center gap-1 text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
   const disabledClassName =
-    "flex min-h-9 items-center gap-1 rounded-full border border-border/50 px-3 text-[13px] text-muted-foreground/40";
+    "flex min-h-9 items-center gap-1 text-[13px] text-muted-foreground/40";
 
   return (
-    <nav className="mt-10 sm:mt-12" aria-label="分页">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-3">
+    <nav className="mt-10 border-t border-border/70 pt-6 sm:mt-12" aria-label="分页">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
         {safeCurrentPage > 1 ? (
           <Link
             href={getHref(safeCurrentPage - 1)}
@@ -95,12 +95,12 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
           </span>
         )}
 
-        <div className="hidden max-w-[min(56vw,520px)] items-stretch gap-1 overflow-x-auto sm:flex">
+        <div className="hidden max-w-[min(56vw,520px)] items-center gap-1 overflow-x-auto sm:flex">
           {items.map((item, index) =>
             item === "ellipsis" ? (
               <span
                 key={`ellipsis-${index}`}
-                className="inline-flex min-h-9 min-w-9 items-center justify-center px-2 text-[13px] text-muted-foreground/50"
+                className="inline-flex min-h-9 min-w-8 items-center justify-center px-2 text-[13px] text-muted-foreground/50"
                 aria-hidden="true"
               >
                 ...
@@ -112,8 +112,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
                 className={cn(
                   pageLinkClassName,
                   item === safeCurrentPage
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card/70 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                    ? "font-medium text-foreground underline decoration-foreground/50 underline-offset-6"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
                 aria-label={`第 ${item} 页`}
                 aria-current={item === safeCurrentPage ? "page" : undefined}

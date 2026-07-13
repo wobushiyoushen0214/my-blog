@@ -58,10 +58,10 @@ export function SearchBar({ className }: SearchBarProps = {}) {
       </label>
       <div
         className={cn(
-          "flex h-9 items-center overflow-hidden rounded-full border bg-background/50 transition-[width,border-color,background-color] duration-200",
+          "flex h-9 items-center overflow-hidden border-b bg-transparent transition-[width,border-color] duration-200",
           open || query
-            ? "w-48 border-primary/30 bg-card/80"
-            : "w-9 border-border/70 hover:border-primary/25"
+            ? "w-48 border-foreground/25"
+            : "w-9 border-transparent hover:border-border/80"
         )}
       >
         <button

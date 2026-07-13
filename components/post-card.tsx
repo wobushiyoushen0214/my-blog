@@ -61,9 +61,9 @@ export function PostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "signal-panel signal-panel-hover group flex min-w-0 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "group flex min-w-0 overflow-hidden border-b border-border/70 pb-7 transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         isFeatured && showMedia
-          ? "flex-col sm:grid sm:grid-cols-[minmax(0,1fr)_12rem]"
+          ? "flex-col sm:grid sm:grid-cols-[minmax(0,1fr)_12rem] sm:gap-8 sm:border-b sm:pb-8"
           : "flex-col"
       )}
     >
@@ -72,8 +72,8 @@ export function PostCard({
           className={cn(
             "relative w-full overflow-hidden bg-muted/30",
             isFeatured
-              ? "order-last min-h-40 sm:order-none sm:min-h-full sm:border-l sm:border-border/70"
-              : "aspect-[16/10] rounded-t-[calc(var(--radius)+0.05rem)]"
+              ? "order-last min-h-40 sm:order-none sm:min-h-full"
+              : "mb-4 aspect-[16/10]"
           )}
         >
           <Image
@@ -85,19 +85,14 @@ export function PostCard({
                 ? "(max-width: 640px) 100vw, 192px"
                 : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             }
-            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            className="object-cover"
           />
         </div>
       ) : null}
 
-      <div
-        className={cn(
-          "flex flex-1 flex-col",
-          isFeatured ? "p-5 md:p-6" : "p-5"
-        )}
-      >
+      <div className={cn("flex flex-1 flex-col", !showMedia && "pt-0")}>
         <div className="flex-1 space-y-2.5">
-          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px] text-muted-foreground">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <CalendarDays className="h-3.5 w-3.5" suppressHydrationWarning />
               <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
@@ -110,16 +105,14 @@ export function PostCard({
               <Clock3 className="h-3.5 w-3.5" suppressHydrationWarning />
               约 {readingMinutes} 分钟
             </span>
-            <span className="text-[12px] font-medium text-muted-foreground">
-              {contentTypeLabel}
-            </span>
+            <span>{contentTypeLabel}</span>
             {post.category ? (
-              <span className="min-w-0 truncate signal-meta">{post.category.name}</span>
+              <span className="min-w-0 truncate">{post.category.name}</span>
             ) : null}
           </div>
           <h2
             className={cn(
-              "line-clamp-2 font-semibold leading-tight text-foreground transition-colors group-hover:opacity-75",
+              "line-clamp-2 font-semibold leading-tight tracking-tight text-foreground",
               isFeatured ? "text-xl md:text-2xl" : "text-lg md:text-xl"
             )}
           >
@@ -138,15 +131,11 @@ export function PostCard({
         </div>
 
         {post.tags && post.tags.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {post.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag.id}
-                className="max-w-36 truncate rounded-full border border-border/70 bg-background/50 px-2.5 py-0.5 text-[12px] text-muted-foreground"
-              >
-                {tag.name}
-              </span>
-            ))}
+          <div className="mt-4 text-[12px] text-muted-foreground">
+            {post.tags
+              .slice(0, 3)
+              .map((tag) => tag.name)
+              .join(" · ")}
           </div>
         ) : null}
 

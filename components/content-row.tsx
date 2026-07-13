@@ -69,17 +69,11 @@ function getTypeLabel(post: ContentRowPost) {
   return post.category?.type === "moment" ? "见闻" : "文章";
 }
 
-function MetaBits({ items }: { items: string[] }) {
+function MetaLine({ items }: { items: string[] }) {
+  if (items.length === 0) return null;
   return (
-    <span className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12px] text-muted-foreground">
-      {items.map((item, index) => (
-        <span
-          key={`${item}-${index}`}
-          className="rounded-full border border-border/70 bg-background/50 px-2 py-0.5"
-        >
-          {item}
-        </span>
-      ))}
+    <span className="mt-2.5 block text-[12px] leading-5 text-muted-foreground">
+      {items.join(" · ")}
     </span>
   );
 }
@@ -192,48 +186,42 @@ function IndexVariant({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group signal-panel signal-panel-hover content-row-link grid min-w-0 gap-4 p-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:gap-6 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+        "group content-row-link grid min-w-0 gap-3 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[6rem_minmax(0,1fr)_auto] sm:gap-8",
         className
       )}
     >
-      <span className="sm:block">
-        <time
-          dateTime={dateTime || post.created_at}
-          className="signal-meta block"
-        >
-          {displayDate}
-        </time>
-      </span>
+      <time
+        dateTime={dateTime || post.created_at}
+        className="signal-meta tabular-nums"
+      >
+        {displayDate}
+      </time>
 
       <span className="min-w-0">
-        <span className="block text-[1.25rem] font-semibold leading-snug tracking-tight text-foreground transition-colors duration-300 group-hover:opacity-75 sm:text-[1.4rem]">
+        <span className="block text-[1.2rem] font-semibold leading-snug tracking-tight text-foreground transition-opacity group-hover:opacity-65 sm:text-[1.3rem]">
           {post.title}
         </span>
         {cleanExcerpt ? (
-          <span className="mt-2 line-clamp-2 block max-w-2xl text-[0.925rem] leading-7 text-muted-foreground">
+          <span className="mt-2 line-clamp-2 block max-w-2xl text-[0.92rem] leading-7 text-muted-foreground">
             {cleanExcerpt}
           </span>
         ) : null}
-        <MetaBits items={bits} />
+        <MetaLine items={bits} />
       </span>
 
-      <span className="flex items-center gap-4 sm:items-start sm:pt-1">
-        {coverImage ? (
-          <span
-            className="hidden h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-muted/50 bg-cover bg-center md:block"
-            style={{
-              backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")`,
-            }}
-            aria-hidden
-          />
-        ) : null}
-        <span className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background/60 text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground">
-          <ArrowUpRight
-            className="h-4 w-4"
-            suppressHydrationWarning
-          />
+      {coverImage ? (
+        <span
+          className="mt-1 hidden h-14 w-20 shrink-0 overflow-hidden bg-muted/40 bg-cover bg-center sm:mt-0 md:block"
+          style={{
+            backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")`,
+          }}
+          aria-hidden
+        />
+      ) : (
+        <span className="hidden text-muted-foreground/40 sm:block">
+          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" suppressHydrationWarning />
         </span>
-      </span>
+      )}
     </Link>
   );
 }
@@ -267,46 +255,33 @@ function StreamVariant({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group signal-panel signal-panel-hover content-row-link relative block p-5 pl-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+        "group content-row-link relative block pl-5 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         className
       )}
     >
       <span
         aria-hidden
-        className="absolute left-3 top-7 h-1.5 w-1.5 rounded-full bg-foreground/40"
+        className="absolute left-0 top-[1.55rem] h-1.5 w-1.5 rounded-full bg-foreground/30"
       />
 
       <time
         dateTime={dateTime || post.created_at}
-        className="signal-meta"
+        className="signal-meta tabular-nums"
       >
         {displayDate}
       </time>
 
-      <span className="mt-2 block text-xl font-semibold leading-snug text-foreground transition-colors group-hover:opacity-75 sm:text-[1.35rem]">
+      <span className="mt-2 block text-[1.15rem] font-semibold leading-snug tracking-tight text-foreground transition-opacity group-hover:opacity-65 sm:text-[1.25rem]">
         {post.title}
       </span>
 
       {cleanExcerpt ? (
-        <span className="mt-2 line-clamp-3 block max-w-2xl text-[0.925rem] leading-7 text-muted-foreground">
+        <span className="mt-2 line-clamp-3 block max-w-2xl text-[0.92rem] leading-7 text-muted-foreground">
           {cleanExcerpt}
         </span>
       ) : null}
 
-      <span className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12px] text-muted-foreground">
-        {bits.map((item, index) => (
-          <span
-            key={`${item}-${index}`}
-            className="rounded-full border border-border/70 bg-background/50 px-2 py-0.5"
-          >
-            {item}
-          </span>
-        ))}
-        <ArrowUpRight
-          className="ml-auto h-3.5 w-3.5 text-muted-foreground/60 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-75"
-          suppressHydrationWarning
-        />
-      </span>
+      <MetaLine items={bits} />
     </Link>
   );
 }
@@ -334,16 +309,20 @@ function CardVariant({
   coverImage?: string;
   className?: string;
 }) {
+  const tags = visibleTags.slice(0, 2).map((tag) => tag.name);
+  const metaBits =
+    tags.length > 0 ? tags : displayMeta.slice(0, 2);
+
   return (
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group relative flex min-w-0 flex-col overflow-hidden signal-panel signal-panel-hover content-row-link p-4 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
+        "group flex min-w-0 flex-col border-b border-border/70 pb-7 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 hover:opacity-80",
         className
       )}
     >
       <span
-        className="relative mb-4 block aspect-[16/10] overflow-hidden rounded-2xl bg-muted/40 bg-cover bg-center"
+        className="relative mb-4 block aspect-[16/10] overflow-hidden bg-muted/30 bg-cover bg-center"
         style={
           coverImage
             ? {
@@ -353,71 +332,35 @@ function CardVariant({
         }
         aria-label={coverImage ? post.title : undefined}
       >
-        {coverImage ? (
-          <span className="absolute inset-0 bg-foreground/5 transition-colors duration-500 group-hover:bg-transparent" />
-        ) : (
+        {!coverImage ? (
           <span className="absolute inset-0 flex flex-col justify-between p-4">
             <span className="signal-meta">leempty</span>
-            <span className="max-w-[8rem] text-xl font-semibold leading-tight text-muted-foreground">
-              {displayType}
-            </span>
+            <span className="text-sm text-muted-foreground">{displayType}</span>
           </span>
-        )}
-        <span className="absolute right-3 top-3 rounded-full border border-border/80 bg-background/90 px-2.5 py-0.5 text-[11px] text-muted-foreground backdrop-blur-sm">
-          {displayType}
-        </span>
+        ) : null}
       </span>
 
-      <span className="mb-2.5 flex items-center justify-between gap-3">
-        <span className="flex min-w-0 flex-wrap gap-1.5">
-          {visibleTags.length > 0
-            ? visibleTags.slice(0, 2).map((tag) => (
-                <span
-                  key={tag.id}
-                  className="max-w-24 truncate rounded-full border border-border/70 bg-background/50 px-2 py-0.5 text-[11px] text-muted-foreground"
-                >
-                  {tag.name}
-                </span>
-              ))
-            : displayMeta.slice(0, 2).map((item, index) => (
-                <span
-                  key={`${item}-${index}`}
-                  className="max-w-24 truncate rounded-full border border-border/70 bg-background/50 px-2 py-0.5 text-[11px] text-muted-foreground"
-                >
-                  {item}
-                </span>
-              ))}
-        </span>
+      <span className="mb-2 flex items-baseline justify-between gap-3">
+        <MetaLine items={metaBits} />
         <time
           dateTime={dateTime || post.created_at}
-          className="signal-meta shrink-0"
+          className="signal-meta shrink-0 tabular-nums"
         >
           {displayDate}
         </time>
       </span>
 
-      <span className="min-w-0 flex-1">
-        <span className="mb-2 block text-lg font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:opacity-75">
-          {post.title}
-        </span>
-        {cleanExcerpt ? (
-          <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-            {cleanExcerpt}
-          </span>
-        ) : null}
+      <span className="block text-[1.1rem] font-semibold leading-snug tracking-tight text-foreground">
+        {post.title}
       </span>
-
-      <span className="my-3.5 block h-px bg-border/70" />
-
-      <span className="flex items-center justify-between">
-        <span className="flex items-center gap-3 text-[12px] text-muted-foreground">
-          {footMeta.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
+      {cleanExcerpt ? (
+        <span className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
+          {cleanExcerpt}
         </span>
-        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground">
-          <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
-        </span>
+      ) : null}
+
+      <span className="mt-4 text-[12px] text-muted-foreground">
+        {footMeta.join(" · ")}
       </span>
     </Link>
   );

@@ -4911,112 +4911,112 @@ html[data-reader-size="xl"] .reader-prose li {
 }
 
 /* =========================================================
-   Refined public cascade (2026-07-13)
-   Quiet stone palette, restrained surfaces, no product-SaaS glow.
+   Quiet room cascade (2026-07-13)
+   Typography-first personal site. Hairlines over cards.
    Keep this block last.
    ========================================================= */
 
 :root,
 .light {
-  --radius: 0.7rem;
-  --background: #f6f5f2;
-  --foreground: #161513;
-  --card: #fffcf8;
-  --card-foreground: #161513;
-  --popover: #fffcf8;
-  --popover-foreground: #161513;
-  --primary: #1c1b19;
-  --primary-foreground: #f7f5f1;
-  --secondary: #eceae4;
+  --radius: 0.35rem;
+  --background: #f7f6f3;
+  --foreground: #141311;
+  --card: #f7f6f3;
+  --card-foreground: #141311;
+  --popover: #fbfaf7;
+  --popover-foreground: #141311;
+  --primary: #141311;
+  --primary-foreground: #f7f6f3;
+  --secondary: #ebe8e1;
   --secondary-foreground: #2a2824;
-  --muted: #eceae4;
-  --muted-foreground: #6d6a63;
-  --accent: #e7e4dc;
-  --accent-foreground: #1c1b19;
+  --muted: #ebe8e1;
+  --muted-foreground: #6f6b63;
+  --accent: #ebe8e1;
+  --accent-foreground: #141311;
   --destructive: #b42318;
-  --border: #e2dfd6;
-  --input: #d6d2c7;
-  --ring: #1c1b19;
-  --chart-1: #1c1b19;
+  --border: #e4e0d7;
+  --input: #d9d4c9;
+  --ring: #141311;
+  --chart-1: #141311;
   --chart-2: #5b6b7a;
   --chart-3: #8a6d4a;
   --chart-4: #6d7a5b;
   --chart-5: #7a5b6d;
-  --sidebar: #fffcf8;
-  --sidebar-foreground: #161513;
-  --sidebar-primary: #1c1b19;
-  --sidebar-primary-foreground: #f7f5f1;
-  --sidebar-accent: #eceae4;
+  --sidebar: #fbfaf7;
+  --sidebar-foreground: #141311;
+  --sidebar-primary: #141311;
+  --sidebar-primary-foreground: #f7f6f3;
+  --sidebar-accent: #ebe8e1;
   --sidebar-accent-foreground: #2a2824;
-  --sidebar-border: #e2dfd6;
-  --sidebar-ring: #1c1b19;
+  --sidebar-border: #e4e0d7;
+  --sidebar-ring: #141311;
   --terminal-grid: transparent;
   --terminal-grid-strong: transparent;
-  --terminal-shadow: rgba(22, 21, 19, 0.08);
+  --terminal-shadow: transparent;
   --terminal-cyan: #5b6b7a;
   --terminal-amber: #8a6d4a;
   --pixel-red: #b42318;
   --pixel-blue: #5b6b7a;
   --pixel-green: #5f7358;
   --pixel-yellow: #8a6d4a;
-  --signal-glow: rgba(22, 21, 19, 0.04);
-  --signal-glow-soft: rgba(138, 109, 74, 0.05);
-  --signal-panel: rgba(255, 252, 248, 0.92);
-  --signal-panel-border: rgba(226, 223, 214, 0.98);
-  --signal-shadow: 0 1px 0 rgba(22, 21, 19, 0.03);
-  --signal-shadow-hover: 0 1px 0 rgba(22, 21, 19, 0.04),
-    0 10px 28px rgba(22, 21, 19, 0.05);
+  --signal-glow: transparent;
+  --signal-glow-soft: transparent;
+  --signal-panel: transparent;
+  --signal-panel-border: var(--border);
+  --signal-shadow: none;
+  --signal-shadow-hover: none;
+  --room-rule: color-mix(in oklab, var(--foreground) 10%, var(--border));
 }
 
 .dark {
-  --radius: 0.7rem;
-  --background: #0c0c0b;
+  --radius: 0.35rem;
+  --background: #0d0d0c;
   --foreground: #eceae4;
-  --card: #141412;
+  --card: #0d0d0c;
   --card-foreground: #eceae4;
-  --popover: #141412;
+  --popover: #151513;
   --popover-foreground: #eceae4;
   --primary: #eceae4;
-  --primary-foreground: #121110;
-  --secondary: #1c1b18;
+  --primary-foreground: #111110;
+  --secondary: #1a1916;
   --secondary-foreground: #d8d5cc;
-  --muted: #1c1b18;
+  --muted: #1a1916;
   --muted-foreground: #9a968c;
-  --accent: #22211d;
+  --accent: #1a1916;
   --accent-foreground: #eceae4;
   --destructive: #f97066;
-  --border: #2a2924;
-  --input: #3a3831;
+  --border: #2a2823;
+  --input: #3a3730;
   --ring: #d8d5cc;
   --chart-1: #d8d5cc;
   --chart-2: #8fa0b0;
   --chart-3: #c4a574;
   --chart-4: #9aaf8c;
   --chart-5: #b08c9a;
-  --sidebar: #141412;
+  --sidebar: #151513;
   --sidebar-foreground: #eceae4;
   --sidebar-primary: #eceae4;
-  --sidebar-primary-foreground: #121110;
-  --sidebar-accent: #1c1b18;
+  --sidebar-primary-foreground: #111110;
+  --sidebar-accent: #1a1916;
   --sidebar-accent-foreground: #d8d5cc;
-  --sidebar-border: #2a2924;
+  --sidebar-border: #2a2823;
   --sidebar-ring: #d8d5cc;
   --terminal-grid: transparent;
   --terminal-grid-strong: transparent;
-  --terminal-shadow: rgba(0, 0, 0, 0.35);
+  --terminal-shadow: transparent;
   --terminal-cyan: #8fa0b0;
   --terminal-amber: #c4a574;
   --pixel-red: #f97066;
   --pixel-blue: #8fa0b0;
   --pixel-green: #9aaf8c;
   --pixel-yellow: #c4a574;
-  --signal-glow: rgba(236, 234, 228, 0.04);
-  --signal-glow-soft: rgba(196, 165, 116, 0.05);
-  --signal-panel: rgba(20, 20, 18, 0.9);
-  --signal-panel-border: rgba(42, 41, 36, 0.98);
-  --signal-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
-  --signal-shadow-hover: 0 1px 0 rgba(0, 0, 0, 0.4),
-    0 14px 32px rgba(0, 0, 0, 0.28);
+  --signal-glow: transparent;
+  --signal-glow-soft: transparent;
+  --signal-panel: transparent;
+  --signal-panel-border: var(--border);
+  --signal-shadow: none;
+  --signal-shadow-hover: none;
+  --room-rule: color-mix(in oklab, var(--foreground) 12%, var(--border));
 }
 
 html,
@@ -5028,7 +5028,7 @@ body {
 body {
   font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
   background: var(--background) !important;
-  letter-spacing: -0.011em !important;
+  letter-spacing: -0.012em !important;
 }
 
 body::before {
@@ -5038,7 +5038,7 @@ body::before {
 .font-serif {
   font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
   font-style: normal !important;
-  letter-spacing: -0.025em !important;
+  letter-spacing: -0.03em !important;
 }
 
 .public-device-layout {
@@ -5061,49 +5061,31 @@ body::before {
 
 .public-device-layout > main > *,
 .public-device-layout > main > article {
-  width: min(100%, 72rem) !important;
+  width: min(100%, 68rem) !important;
   margin-inline: auto !important;
 }
 
-.home-glow {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  background:
-    radial-gradient(36rem 28rem at 12% -10%, var(--signal-glow), transparent 72%),
-    radial-gradient(30rem 24rem at 88% 4%, var(--signal-glow-soft), transparent 70%) !important;
-}
-
+.home-glow,
 .home-grain {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  opacity: 0.028 !important;
-  mix-blend-mode: soft-light !important;
-}
-
-.light .home-grain {
-  opacity: 0.02 !important;
+  display: none !important;
 }
 
 .surface-card,
 .reader-article-card,
 .reader-width-frame,
 .narrative-article-card {
-  border: 1px solid var(--signal-panel-border) !important;
-  border-radius: calc(var(--radius) + 0.05rem) !important;
-  background: var(--signal-panel) !important;
-  box-shadow: var(--signal-shadow) !important;
+  border: 1px solid var(--room-rule) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   backdrop-filter: none !important;
 }
 
 .surface-card-hover:hover,
 .narrative-article-card:hover {
-  border-color: color-mix(in oklab, var(--foreground) 18%, var(--border)) !important;
-  box-shadow: var(--signal-shadow-hover) !important;
-  background: color-mix(in oklab, var(--card) 96%, var(--accent)) !important;
+  border-color: color-mix(in oklab, var(--foreground) 22%, var(--border)) !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 
 .reader-prose h1,
@@ -5111,12 +5093,12 @@ body::before {
   font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
   font-style: normal !important;
   font-weight: 600 !important;
-  letter-spacing: -0.025em !important;
+  letter-spacing: -0.03em !important;
 }
 
 .reader-prose h3 {
   font-family: var(--font-inter), "PingFang SC", "Microsoft YaHei", sans-serif !important;
-  font-size: 0.92rem !important;
+  font-size: 0.95rem !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em !important;
   text-transform: none !important;
@@ -5125,14 +5107,14 @@ body::before {
 
 .reader-prose p,
 .reader-prose li {
-  color: color-mix(in oklab, var(--foreground) 78%, var(--muted-foreground)) !important;
-  line-height: 1.85 !important;
+  color: color-mix(in oklab, var(--foreground) 82%, var(--muted-foreground)) !important;
+  line-height: 1.9 !important;
 }
 
 .reader-prose blockquote {
-  border-left: 2px solid color-mix(in oklab, var(--foreground) 28%, var(--border)) !important;
+  border-left: 1.5px solid color-mix(in oklab, var(--foreground) 28%, var(--border)) !important;
   border-radius: 0 !important;
-  background: color-mix(in oklab, var(--muted) 55%, transparent) !important;
+  background: transparent !important;
   font-style: normal !important;
 }
 
@@ -5149,14 +5131,14 @@ body::before {
 
 .prose pre {
   border: 1px solid var(--border) !important;
-  border-radius: calc(var(--radius) - 0.1rem) !important;
-  background: color-mix(in oklab, var(--muted) 70%, var(--card)) !important;
+  border-radius: 0.25rem !important;
+  background: color-mix(in oklab, var(--muted) 55%, transparent) !important;
   box-shadow: none !important;
 }
 
 .prose :not(pre) > code {
-  border-radius: 0.3rem !important;
-  background: color-mix(in oklab, var(--muted) 80%, transparent) !important;
+  border-radius: 0.2rem !important;
+  background: color-mix(in oklab, var(--muted) 70%, transparent) !important;
   color: var(--foreground) !important;
 }
 
@@ -5171,101 +5153,103 @@ body::before {
   gap: 0.4rem;
   color: var(--muted-foreground);
   font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 450;
+  letter-spacing: 0.01em;
 }
 
+/* Flat surface: no filled cards by default */
 .signal-panel {
-  border: 1px solid var(--signal-panel-border);
-  border-radius: calc(var(--radius) + 0.05rem);
-  background: var(--signal-panel);
-  box-shadow: var(--signal-shadow);
+  border: 1px solid var(--room-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .signal-panel-hover {
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    background-color 160ms ease;
+  transition: border-color 140ms ease, opacity 140ms ease;
 }
 
 .signal-panel-hover:hover {
-  border-color: color-mix(in oklab, var(--foreground) 16%, var(--border));
-  background: color-mix(in oklab, var(--card) 96%, var(--accent));
-  box-shadow: var(--signal-shadow-hover);
+  border-color: color-mix(in oklab, var(--foreground) 20%, var(--border));
+  background: transparent;
+  box-shadow: none;
 }
 
 .signal-primary-link {
   display: inline-flex;
-  min-height: 2.5rem;
+  min-height: 2.35rem;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: var(--primary);
-  padding: 0.55rem 1.1rem;
-  color: var(--primary-foreground);
-  font-size: 0.9rem;
-  font-weight: 550;
-  transition: opacity 160ms ease, background-color 160ms ease;
+  gap: 0.35rem;
+  border: 1px solid var(--foreground);
+  border-radius: 0;
+  background: var(--foreground);
+  padding: 0.5rem 1rem;
+  color: var(--background);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: opacity 140ms ease;
 }
 
 .signal-primary-link:hover {
-  opacity: 0.9;
+  opacity: 0.82;
 }
 
 .signal-secondary-link {
   display: inline-flex;
-  min-height: 2.5rem;
+  min-height: 2.35rem;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
+  gap: 0.35rem;
+  border: 1px solid var(--room-rule);
+  border-radius: 0;
   background: transparent;
-  padding: 0.55rem 1.1rem;
+  padding: 0.5rem 1rem;
   color: var(--foreground);
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition:
-    border-color 160ms ease,
-    background-color 160ms ease;
+  font-size: 0.875rem;
+  font-weight: 450;
+  letter-spacing: -0.01em;
+  transition: border-color 140ms ease, color 140ms ease;
 }
 
 .signal-secondary-link:hover {
-  border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
-  background: color-mix(in oklab, var(--muted) 55%, transparent);
+  border-color: color-mix(in oklab, var(--foreground) 28%, var(--border));
+  background: transparent;
 }
 
 .signal-meta {
-  font-size: 0.75rem;
-  letter-spacing: 0.01em;
+  font-size: 0.78rem;
+  font-weight: 450;
+  letter-spacing: 0;
   color: var(--muted-foreground);
 }
 
 .signal-dot {
-  width: 0.35rem;
-  height: 0.35rem;
+  width: 0.28rem;
+  height: 0.28rem;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--foreground) 55%, var(--muted-foreground));
+  background: color-mix(in oklab, var(--foreground) 35%, var(--muted-foreground));
 }
 
+/* List rows: rule separators, no card chrome */
 .content-row-link {
   margin-inline: 0 !important;
-  border: 1px solid var(--signal-panel-border) !important;
-  border-radius: calc(var(--radius) + 0.05rem) !important;
-  background: var(--signal-panel) !important;
-  box-shadow: var(--signal-shadow) !important;
-  padding: 1.1rem 1.15rem !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--room-rule) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 1.35rem 0 !important;
   backdrop-filter: none !important;
   transform: none !important;
 }
 
 .content-row-link:hover {
-  border-color: color-mix(in oklab, var(--foreground) 16%, var(--border)) !important;
-  background: color-mix(in oklab, var(--card) 96%, var(--accent)) !important;
-  box-shadow: var(--signal-shadow-hover) !important;
+  border-color: transparent !important;
+  border-bottom-color: color-mix(in oklab, var(--foreground) 22%, var(--border)) !important;
+  background: transparent !important;
+  box-shadow: none !important;
   transform: none !important;
   color: inherit !important;
 }
@@ -5274,8 +5258,14 @@ body::before {
 .content-row-link:hover [class*="text-base"],
 .content-row-link:hover [class*="text-\[1"] {
   color: var(--foreground) !important;
+  opacity: 0.72 !important;
 }
 
 .public-device-layout select {
-  border-radius: 999px !important;
+  border-radius: 0 !important;
+}
+
+/* Active filter text underline instead of chip */
+.public-device-layout a[aria-current="page"] {
+  text-decoration: none;
 }

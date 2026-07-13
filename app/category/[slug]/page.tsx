@@ -319,7 +319,7 @@ function CategoryFilterBar({
     <form
       action={`/category/${encodeURIComponent(slug)}`}
       aria-label="分类内容筛选"
-      className="signal-panel flex flex-col gap-2 p-4 sm:flex-row sm:items-center"
+      className="flex flex-col gap-2 border-b border-border/70 pb-4 sm:flex-row sm:items-center"
     >
       {rawQuery ? <input type="hidden" name="q" value={rawQuery} /> : null}
       <label htmlFor="category-detail-sort" className="sr-only">

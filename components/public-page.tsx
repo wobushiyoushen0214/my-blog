@@ -13,7 +13,7 @@ export function PublicPageShell({ children, className }: PublicPageShellProps) {
   return (
     <main
       className={cn(
-        "mx-auto w-full max-w-6xl flex-1 px-5 py-10 sm:px-8 lg:px-10 lg:py-14",
+        "mx-auto w-full max-w-5xl flex-1 px-5 py-10 sm:px-8 lg:px-10 lg:py-14",
         className
       )}
     >
@@ -42,7 +42,7 @@ export function PublicPageHeader({
   action,
 }: PublicPageHeaderProps) {
   return (
-    <header className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
+    <header className="mb-10">
       {backHref && backLabel ? (
         <Link
           href={backHref}
@@ -53,23 +53,21 @@ export function PublicPageHeader({
         </Link>
       ) : null}
 
-      <div className="grid gap-5 border-b border-border/70 pb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+      <div className="grid gap-5 border-b border-border/80 pb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0 space-y-3">
-          {eyebrow ? (
-            <p className="signal-meta">{eyebrow}</p>
-          ) : null}
+          {eyebrow ? <p className="signal-meta">{eyebrow}</p> : null}
           <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-2">
-            <h1 className="min-w-0 text-[2.35rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[2.85rem]">
+            <h1 className="min-w-0 text-[2.2rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[2.6rem]">
               {title}
             </h1>
             {countLabel ? (
-              <span className="text-[13px] text-muted-foreground">
+              <span className="text-[13px] tabular-nums text-muted-foreground">
                 {countLabel}
               </span>
             ) : null}
           </div>
           {description ? (
-            <p className="max-w-2xl text-[15px] leading-7 text-muted-foreground">
+            <p className="max-w-xl text-[15px] leading-7 text-muted-foreground">
               {description}
             </p>
           ) : null}
@@ -102,12 +100,7 @@ export function PublicCompactHeader({
   className,
 }: PublicCompactHeaderProps) {
   return (
-    <header
-      className={cn(
-        "mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both",
-        className
-      )}
-    >
+    <header className={cn("mb-8", className)}>
       {backHref && backLabel ? (
         <Link
           href={backHref}
@@ -117,16 +110,14 @@ export function PublicCompactHeader({
           {backLabel}
         </Link>
       ) : null}
-      <div className="grid gap-4 border-b border-border/70 pb-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+      <div className="grid gap-4 border-b border-border/80 pb-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
-          {eyebrow ? (
-            <p className="signal-meta">{eyebrow}</p>
-          ) : null}
-          <h1 className="mt-2 min-w-0 text-[2.1rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[2.5rem]">
+          {eyebrow ? <p className="signal-meta">{eyebrow}</p> : null}
+          <h1 className="mt-1 min-w-0 text-[2rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[2.35rem]">
             {title}
           </h1>
           {description ? (
-            <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">
+            <p className="mt-3 max-w-xl text-[15px] leading-7 text-muted-foreground">
               {description}
             </p>
           ) : null}
@@ -167,18 +158,11 @@ export function PublicControlStrip({
   className?: string;
 }) {
   return (
-    <section
-      className={cn(
-        "mb-8 animate-in fade-in slide-in-from-bottom-3 duration-600 fill-mode-both delay-100",
-        className
-      )}
-    >
-      {children}
-    </section>
+    <section className={cn("mb-8", className)}>{children}</section>
   );
 }
 
-/** Quiet filter text — soft active chip, no magazine underline. */
+/** Quiet filter text — no chip chrome. */
 export function PublicPillLink({
   href,
   active,
@@ -197,9 +181,9 @@ export function PublicPillLink({
       href={href}
       aria-current={ariaCurrent}
       className={cn(
-        "inline-flex shrink-0 items-center gap-1.5 px-1 py-1 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex shrink-0 items-center gap-1.5 py-1 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "font-medium text-foreground"
+          ? "font-medium text-foreground underline decoration-foreground/50 underline-offset-6"
           : "text-muted-foreground hover:text-foreground",
         className
       )}
@@ -221,14 +205,14 @@ export function PublicFilterRow({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2",
+        "flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-border/70 pb-4",
         className
       )}
     >
       {label ? (
-        <span className="shrink-0 signal-meta px-1">{label}</span>
+        <span className="shrink-0 signal-meta">{label}</span>
       ) : null}
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1.5">
         {children}
       </div>
     </div>
@@ -277,13 +261,13 @@ export function PublicFilterPill({
 }
 
 export const publicSelectClassName =
-  "h-9 rounded-md border border-border bg-card/80 px-3 text-[13px] text-muted-foreground shadow-none outline-none transition-colors hover:border-foreground/20 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50";
+  "h-9 rounded-none border border-border bg-transparent px-3 text-[13px] text-muted-foreground shadow-none outline-none transition-colors hover:border-foreground/25 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50";
 
 export const publicPrimaryButtonClassName =
-  "inline-flex h-9 items-center justify-center rounded-md border border-transparent bg-primary px-4 text-[13px] font-medium text-primary-foreground shadow-none transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+  "inline-flex h-9 items-center justify-center rounded-none border border-foreground bg-foreground px-4 text-[13px] font-medium text-background shadow-none transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 
 export const publicSecondaryButtonClassName =
-  "inline-flex h-9 items-center justify-center rounded-md border border-border bg-transparent px-4 text-[13px] text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+  "inline-flex h-9 items-center justify-center rounded-none border border-border bg-transparent px-4 text-[13px] text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 
 type PublicActionLinkProps = {
   href: string;
@@ -321,18 +305,19 @@ export function PublicEmptyState({
   return (
     <div
       className={cn(
-        "signal-panel mx-auto w-full max-w-xl px-6 py-16 text-center",
+        "mx-auto w-full max-w-xl border-y border-border/80 px-2 py-16 text-center",
         className
       )}
     >
       <div className="grid place-items-center gap-3">
         {Icon ? (
-          <span className="grid h-11 w-11 place-items-center rounded-xl border border-border/80 text-muted-foreground">
-            <Icon className="h-5 w-5" suppressHydrationWarning />
-          </span>
+          <Icon
+            className="h-5 w-5 text-muted-foreground/70"
+            suppressHydrationWarning
+          />
         ) : null}
         <div className="min-w-0">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">
             {title}
           </h2>
           <p className="mx-auto mt-3 max-w-md text-[15px] leading-7 text-muted-foreground">
