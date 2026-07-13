@@ -237,7 +237,7 @@ export default async function PostsPage({
       <Header />
       <PublicPageShell>
         <PublicCompactHeader
-          eyebrow="Journal"
+          eyebrow="01 — Journal"
           title={
             categoryName
               ? `文章 · ${categoryName}`
@@ -245,7 +245,12 @@ export default async function PostsPage({
                 ? `文章 · ${searchQuery}`
                 : "文章"
           }
-          description="技术笔记、项目复盘与长期主题。"
+          description="技术笔记、项目复盘与长期主题。按时间索引，像杂志目录一样扫读。"
+          meta={
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              {allArticleCount} entries
+            </span>
+          }
         />
 
         <PublicControlStrip>
@@ -273,10 +278,18 @@ export default async function PostsPage({
 
         {postsWithTags.length > 0 ? (
           <div className="space-y-8">
-            <section aria-label="文章列表">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <section
+              aria-label="文章列表"
+              className="border-t border-border"
+            >
+              <div className="grid">
                 {postsWithTags.map((post) => (
-                  <ContentRow key={post.id} post={post} typeLabel="文章" />
+                  <ContentRow
+                    key={post.id}
+                    post={post}
+                    typeLabel="文章"
+                    variant="index"
+                  />
                 ))}
               </div>
             </section>
@@ -286,7 +299,6 @@ export default async function PostsPage({
               totalPages={totalPages}
               basePath={basePath}
             />
-
           </div>
         ) : (
           <PublicEmptyState
@@ -335,14 +347,16 @@ function CategoryNav({
   return (
     <nav
       aria-label="文章分类"
-      className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+      className="-mx-4 flex gap-x-5 gap-y-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
     >
       <CategoryLink
         href={buildPostsPath({ searchQuery, sort })}
         active={!activeSlug}
       >
         全部
-        <span className="text-xs text-muted-foreground">{totalCount}</span>
+        <span className="font-mono text-[10px] text-muted-foreground/70">
+          {totalCount}
+        </span>
       </CategoryLink>
       {categories.map((category) => (
         <CategoryLink
@@ -355,7 +369,7 @@ function CategoryNav({
           active={activeSlug === category.slug}
         >
           {category.name}
-          <span className="text-xs text-muted-foreground">
+          <span className="font-mono text-[10px] text-muted-foreground/70">
             {category.postCount}
           </span>
         </CategoryLink>
@@ -374,7 +388,16 @@ function CategoryLink({
   children: ReactNode;
 }) {
   return (
-    <PublicPillLink href={href} active={active}>
+    <PublicPillLink
+      href={href}
+      active={active}
+      ariaCurrent={active ? "page" : undefined}
+      className={
+        active
+          ? "border-b border-foreground pb-1 text-foreground"
+          : "border-b border-transparent pb-1"
+      }
+    >
       {children}
     </PublicPillLink>
   );

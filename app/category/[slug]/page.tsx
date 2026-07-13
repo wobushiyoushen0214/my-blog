@@ -257,10 +257,13 @@ export default async function CategoryPage({
 
         {(postsWithTags || []).length > 0 ? (
           <div className="space-y-8">
-            <section aria-label={`${categoryTypeLabel}列表`}>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <section
+              aria-label={`${categoryTypeLabel}列表`}
+              className="border-t border-border"
+            >
+              <div className="grid">
                 {postsWithTags.map((post) => (
-                  <ContentRow key={post.id} post={post} />
+                  <ContentRow key={post.id} post={post} variant="index" />
                 ))}
               </div>
             </section>

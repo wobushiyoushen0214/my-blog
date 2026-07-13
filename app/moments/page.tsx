@@ -256,7 +256,7 @@ export default async function MomentsPage({
       <Header />
       <PublicPageShell>
         <PublicCompactHeader
-          eyebrow="Moments"
+          eyebrow="02 — Field notes"
           title={
             activeCategory
               ? `见闻 · ${activeCategory.name}`
@@ -264,7 +264,12 @@ export default async function MomentsPage({
                 ? `见闻 · ${searchQuery}`
                 : "见闻"
           }
-          description="轻量观察、摘录和阶段性记录。"
+          description="轻量观察、摘录和阶段性记录。以时间流呈现，而不是卡片墙。"
+          meta={
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              {totalMomentCount} notes
+            </span>
+          }
         />
 
         <PublicControlStrip>
@@ -348,14 +353,16 @@ function CategoryNav({
   return (
     <nav
       aria-label="见闻分类"
-      className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+      className="-mx-4 flex gap-x-5 gap-y-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
     >
       <CategoryLink
         href={buildMomentsPath({ searchQuery, sort })}
         active={!activeSlug}
       >
         全部
-        <span className="text-xs text-muted-foreground">{totalCount}</span>
+        <span className="font-mono text-[10px] text-muted-foreground/70">
+          {totalCount}
+        </span>
       </CategoryLink>
       {categories.map((category) => (
         <CategoryLink
@@ -368,7 +375,7 @@ function CategoryNav({
           active={activeSlug === category.slug}
         >
           {category.name}
-          <span className="text-xs text-muted-foreground">
+          <span className="font-mono text-[10px] text-muted-foreground/70">
             {category.postCount}
           </span>
         </CategoryLink>
@@ -387,7 +394,16 @@ function CategoryLink({
   children: ReactNode;
 }) {
   return (
-    <PublicPillLink href={href} active={active}>
+    <PublicPillLink
+      href={href}
+      active={active}
+      ariaCurrent={active ? "page" : undefined}
+      className={
+        active
+          ? "border-b border-foreground pb-1 text-foreground"
+          : "border-b border-transparent pb-1"
+      }
+    >
       {children}
     </PublicPillLink>
   );
@@ -488,8 +504,8 @@ function MomentStream({
   posts: PostWithTaxonomy[];
 }) {
   return (
-    <section aria-label="见闻列表">
-      <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <section aria-label="见闻列表" className="max-w-3xl border-t border-border">
+      <ol className="grid">
         {posts.map((post) => {
           const updated =
             post.updated_at.slice(0, 10) !== post.created_at.slice(0, 10);
@@ -498,8 +514,9 @@ function MomentStream({
             <li key={post.id}>
               <ContentRow
                 post={post}
-                dateLabel={`${formatMonthDay(post.created_at)} ${formatYear(post.created_at)}`}
+                dateLabel={`${formatMonthDay(post.created_at)} · ${formatYear(post.created_at)}`}
                 typeLabel="见闻"
+                variant="stream"
                 meta={[
                   "见闻",
                   ...(post.category?.name ? [post.category.name] : []),

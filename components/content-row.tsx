@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Calendar, Clock, Eye } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -26,6 +26,8 @@ type ContentRowProps = {
   meta?: string[];
   rightMeta?: string[];
   showTags?: boolean;
+  /** card = cover tile; index = magazine list row; stream = denser moment line */
+  variant?: "card" | "index" | "stream";
   className?: string;
 };
 
@@ -73,8 +75,9 @@ export function ContentRow({
   dateTime,
   typeLabel,
   meta,
-  rightMeta: _rightMeta,
+  rightMeta,
   showTags = true,
+  variant = "index",
   className,
 }: ContentRowProps) {
   const cleanExcerpt = stripHtml(post.excerpt || "");
@@ -84,23 +87,266 @@ export function ContentRow({
     displayType,
     ...(post.category?.name ? [post.category.name] : []),
   ];
-  const visibleTags = showTags ? post.tags?.slice(0, 4) || [] : [];
+  const visibleTags = showTags ? post.tags?.slice(0, 3) || [] : [];
   const readMinutes = estimateReadingMinutes(post);
   const coverImage = post.cover_image?.trim();
+  const footMeta =
+    rightMeta && rightMeta.length > 0
+      ? rightMeta
+      : [`${readMinutes}m`, `${formatViews(post.view_count)} 阅读`];
 
+  if (variant === "card") {
+    return (
+      <CardVariant
+        post={post}
+        cleanExcerpt={cleanExcerpt}
+        displayType={displayType}
+        displayDate={displayDate}
+        dateTime={dateTime}
+        visibleTags={visibleTags}
+        displayMeta={displayMeta}
+        footMeta={footMeta}
+        coverImage={coverImage}
+        className={className}
+      />
+    );
+  }
+
+  if (variant === "stream") {
+    return (
+      <StreamVariant
+        post={post}
+        cleanExcerpt={cleanExcerpt}
+        displayDate={displayDate}
+        dateTime={dateTime}
+        displayMeta={displayMeta}
+        visibleTags={visibleTags}
+        footMeta={footMeta}
+        className={className}
+      />
+    );
+  }
+
+  return (
+    <IndexVariant
+      post={post}
+      cleanExcerpt={cleanExcerpt}
+      displayType={displayType}
+      displayDate={displayDate}
+      dateTime={dateTime}
+      displayMeta={displayMeta}
+      visibleTags={visibleTags}
+      footMeta={footMeta}
+      coverImage={coverImage}
+      className={className}
+    />
+  );
+}
+
+function IndexVariant({
+  post,
+  cleanExcerpt,
+  displayType,
+  displayDate,
+  dateTime,
+  displayMeta,
+  visibleTags,
+  footMeta,
+  coverImage,
+  className,
+}: {
+  post: ContentRowPost;
+  cleanExcerpt: string;
+  displayType: string;
+  displayDate: string;
+  dateTime?: string;
+  displayMeta: string[];
+  visibleTags: Pick<Tag, "id" | "name" | "slug">[];
+  footMeta: string[];
+  coverImage?: string;
+  className?: string;
+}) {
   return (
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "content-row-link narrative-article-card surface-card-hover group relative flex min-w-0 flex-col overflow-hidden border border-border bg-card/70 p-5 transition-all duration-300 hover:border-foreground/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
+        "group grid min-w-0 gap-4 border-b border-border py-7 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:gap-8 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
+        className
+      )}
+    >
+      <span className="flex items-start gap-3 sm:block">
+        <time
+          dateTime={dateTime || post.created_at}
+          className="block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          {displayDate}
+        </time>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 sm:mt-2 sm:block">
+          {displayType}
+        </span>
+      </span>
+
+      <span className="min-w-0">
+        <span className="block font-serif text-2xl font-light italic leading-snug tracking-tight text-foreground transition-opacity duration-300 group-hover:opacity-70 sm:text-[1.65rem]">
+          {post.title}
+        </span>
+        {cleanExcerpt ? (
+          <span className="mt-2 line-clamp-2 block max-w-2xl text-sm leading-7 text-muted-foreground">
+            {cleanExcerpt}
+          </span>
+        ) : null}
+        <span className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          {visibleTags.length > 0
+            ? visibleTags.map((tag) => (
+                <span key={tag.id}>#{tag.name.toLowerCase()}</span>
+              ))
+            : displayMeta.slice(0, 2).map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+          {footMeta.map((item) => (
+            <span key={item} className="text-muted-foreground/70">
+              {item}
+            </span>
+          ))}
+        </span>
+      </span>
+
+      <span className="flex items-center gap-4 sm:items-start sm:pt-1">
+        {coverImage ? (
+          <span
+            className="hidden h-16 w-24 shrink-0 bg-muted/50 bg-cover bg-center md:block"
+            style={{
+              backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")`,
+            }}
+            aria-hidden
+          />
+        ) : null}
+        <ArrowUpRight
+          className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+          suppressHydrationWarning
+        />
+      </span>
+    </Link>
+  );
+}
+
+function StreamVariant({
+  post,
+  cleanExcerpt,
+  displayDate,
+  dateTime,
+  displayMeta,
+  visibleTags,
+  footMeta,
+  className,
+}: {
+  post: ContentRowPost;
+  cleanExcerpt: string;
+  displayDate: string;
+  dateTime?: string;
+  displayMeta: string[];
+  visibleTags: Pick<Tag, "id" | "name" | "slug">[];
+  footMeta: string[];
+  className?: string;
+}) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className={cn(
+        "group relative block border-b border-border/80 py-6 pl-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
         className
       )}
     >
       <span
-        className="narrative-media-slot relative mb-4 block aspect-[16/10] overflow-hidden bg-muted/50"
+        aria-hidden
+        className="absolute left-0 top-7 h-2 w-2 rounded-full border border-border bg-background transition-colors group-hover:border-foreground group-hover:bg-foreground"
+      />
+      <span
+        aria-hidden
+        className="absolute left-[3px] top-10 bottom-[-1px] w-px bg-border/70"
+      />
+
+      <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <time
+          dateTime={dateTime || post.created_at}
+          className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          {displayDate}
+        </time>
+        {displayMeta.slice(0, 2).map((item) => (
+          <span
+            key={item}
+            className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70"
+          >
+            {item}
+          </span>
+        ))}
+      </span>
+
+      <span className="mt-2 block font-serif text-xl font-light italic leading-snug text-foreground transition-opacity group-hover:opacity-70 sm:text-2xl">
+        {post.title}
+      </span>
+
+      {cleanExcerpt ? (
+        <span className="mt-2 line-clamp-3 block max-w-2xl text-sm leading-7 text-muted-foreground">
+          {cleanExcerpt}
+        </span>
+      ) : null}
+
+      <span className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
+        {visibleTags.map((tag) => (
+          <span key={tag.id}>#{tag.name.toLowerCase()}</span>
+        ))}
+        {footMeta.map((item) => (
+          <span key={item}>{item}</span>
+        ))}
+        <ArrowUpRight
+          className="ml-auto h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+          suppressHydrationWarning
+        />
+      </span>
+    </Link>
+  );
+}
+
+function CardVariant({
+  post,
+  cleanExcerpt,
+  displayType,
+  displayDate,
+  dateTime,
+  visibleTags,
+  displayMeta,
+  footMeta,
+  coverImage,
+  className,
+}: {
+  post: ContentRowPost;
+  cleanExcerpt: string;
+  displayType: string;
+  displayDate: string;
+  dateTime?: string;
+  visibleTags: Pick<Tag, "id" | "name" | "slug">[];
+  displayMeta: string[];
+  footMeta: string[];
+  coverImage?: string;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className={cn(
+        "group relative flex min-w-0 flex-col overflow-hidden border border-border bg-card/50 p-5 transition-colors duration-300 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
+        className
+      )}
+    >
+      <span
+        className="relative mb-4 block aspect-[16/10] overflow-hidden bg-muted/40 bg-cover bg-center"
         style={
           coverImage
-            ? { backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")` }
+            ? {
+                backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")`,
+              }
             : undefined
         }
         aria-label={coverImage ? post.title : undefined}
@@ -144,9 +390,8 @@ export function ContentRow({
         </span>
         <time
           dateTime={dateTime || post.created_at}
-          className="flex shrink-0 items-center gap-1 font-mono text-[9px] text-muted-foreground"
+          className="shrink-0 font-mono text-[9px] text-muted-foreground"
         >
-          <Calendar className="h-3 w-3" suppressHydrationWarning />
           {displayDate}
         </time>
       </span>
@@ -155,7 +400,6 @@ export function ContentRow({
         <span className="mb-2 block font-serif text-lg font-light italic leading-tight text-foreground transition-opacity duration-300 group-hover:opacity-75">
           {post.title}
         </span>
-
         {cleanExcerpt ? (
           <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
             {cleanExcerpt}
@@ -167,14 +411,9 @@ export function ContentRow({
 
       <span className="flex items-center justify-between">
         <span className="flex items-center gap-3 font-mono text-[9px] text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
-            <span>{readMinutes}m read</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
-            <span>{formatViews(post.view_count)}</span>
-          </span>
+          {footMeta.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
         </span>
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-foreground group-hover:bg-foreground group-hover:text-background">
           <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />

@@ -320,8 +320,9 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
           <div className="space-y-8">
             <section
               aria-label={`${getSearchTypeLabel(contentType)}列表`}
+              className="border-t border-border"
             >
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div className="grid">
                 {postsWithTags.map((post) => (
                   <ContentRow
                     key={post.id}
@@ -329,6 +330,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
                     typeLabel={getSearchTypeLabel(
                       post.category?.type === "moment" ? "moment" : "post"
                     )}
+                    variant="index"
                   />
                 ))}
               </div>

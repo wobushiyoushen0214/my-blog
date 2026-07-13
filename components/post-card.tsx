@@ -54,7 +54,7 @@ export function PostCard({
   const readingMinutes = estimateReadingMinutes(post);
 
   if (isCompact) {
-    return <ContentRow post={post} />;
+    return <ContentRow post={post} variant="index" />;
   }
 
   return (

@@ -62,7 +62,7 @@ export function PublicPageHeader({
               </p>
             ) : null}
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-              <h1 className="min-w-0 font-serif text-3xl font-light italic leading-tight tracking-tight text-foreground md:text-4xl">
+              <h1 className="min-w-0 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-foreground md:text-5xl">
                 {title}
               </h1>
               {countLabel ? (
@@ -128,7 +128,7 @@ export function PublicCompactHeader({
               {eyebrow}
             </p>
           ) : null}
-          <h1 className="mt-2 min-w-0 font-serif text-3xl font-light italic leading-tight tracking-tight text-foreground md:text-4xl">
+          <h1 className="mt-2 min-w-0 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-foreground md:text-5xl">
             {title}
           </h1>
           {description ? (

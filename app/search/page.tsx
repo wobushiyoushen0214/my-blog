@@ -419,6 +419,7 @@ export default async function SearchPage({
                     key={post.id}
                     post={post}
                     typeLabel={getSearchTypeLabel(getPostType(post))}
+                    variant="index"
                   />
                 ))}
               </div>

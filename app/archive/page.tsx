@@ -558,7 +558,8 @@ function ArchiveRow({ post }: { post: ArchivePost }) {
       dateLabel={formatDate(post.created_at)}
       typeLabel={getContentTypeLabel(post)}
       rightMeta={[`${formatNumber(post.view_count)} 阅读`]}
-      className="sm:grid-cols-[4rem_minmax(0,1fr)_5.5rem]"
+      variant="index"
+      className="py-5 sm:grid-cols-[4.5rem_minmax(0,1fr)_auto]"
     />
   );
 }
