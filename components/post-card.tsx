@@ -143,7 +143,7 @@ export function PostCard({
           <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 font-mono text-[10px] text-muted-foreground">
             {post.tags.slice(0, 3).map((tag) => (
               <span key={tag.id} className="max-w-36 truncate">
-                #{tag.name}
+                {tag.name}
               </span>
             ))}
           </div>

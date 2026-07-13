@@ -9,6 +9,7 @@ import {
   PublicControlStrip,
   PublicEmptyState,
   PublicFilterPill,
+  PublicFilterRow,
   PublicFilterSummary,
   PublicMetaPill,
   PublicPageShell,
@@ -204,18 +205,20 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="-mx-4 flex gap-x-6 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0"
+      className="border-y border-border/70 py-4"
     >
-      {items.map((item) => (
-        <PublicPillLink
-          key={item.value}
-          href={buildCategoryPath({ query, type: item.value })}
-          active={activeType === item.value}
-          ariaCurrent={activeType === item.value ? "page" : undefined}
-        >
-          {item.label}
-        </PublicPillLink>
-      ))}
+      <PublicFilterRow label="类型">
+        {items.map((item) => (
+          <PublicPillLink
+            key={item.value}
+            href={buildCategoryPath({ query, type: item.value })}
+            active={activeType === item.value}
+            ariaCurrent={activeType === item.value ? "page" : undefined}
+          >
+            {item.label}
+          </PublicPillLink>
+        ))}
+      </PublicFilterRow>
     </nav>
   );
 }

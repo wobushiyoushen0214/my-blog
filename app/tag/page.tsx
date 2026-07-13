@@ -235,23 +235,30 @@ function TagStatusSwitch({
   return (
     <nav
       aria-label="标签使用状态"
-      className="-mx-4 flex gap-x-6 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0"
+      className="border-y border-border/70 py-4"
     >
-      {items.map((item) => (
-        <Link
-          key={item.value}
-          href={buildTagPath({ query, status: item.value })}
-          aria-current={activeStatus === item.value ? "page" : undefined}
-          className={cn(
-            "inline-flex h-9 shrink-0 items-center border-b font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-            activeStatus === item.value
-              ? "border-foreground text-foreground"
-              : "border-transparent text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {item.label}
-        </Link>
-      ))}
+      <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
+        <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50">
+          状态
+        </span>
+        <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1.5">
+          {items.map((item) => (
+            <Link
+              key={item.value}
+              href={buildTagPath({ query, status: item.value })}
+              aria-current={activeStatus === item.value ? "page" : undefined}
+              className={cn(
+                "inline-flex shrink-0 items-baseline font-mono text-[11px] tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                activeStatus === item.value
+                  ? "font-semibold text-foreground"
+                  : "font-medium text-muted-foreground/70 hover:text-foreground"
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
     </nav>
   );
 }
@@ -320,7 +327,7 @@ function TagCloudItem({
       href={`/tag/${tag.slug}`}
       className="group inline-flex max-w-full flex-col items-start gap-1 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
-      <span className={cn("leading-none", weightClass)}>#{tag.name}</span>
+      <span className={cn("leading-none", weightClass)}>{tag.name}</span>
       <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70">
         {tag.postCount} posts
       </span>
@@ -335,7 +342,7 @@ function TagIndexRow({ tag }: { tag: TagWithCount }) {
       className="group flex min-w-0 items-baseline justify-between gap-4 bg-background px-4 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <span className="min-w-0 truncate font-serif text-base font-light italic text-foreground">
-        #{tag.name}
+        {tag.name}
       </span>
       <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
         {tag.postCount}

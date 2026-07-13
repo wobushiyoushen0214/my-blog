@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -11,12 +10,12 @@ import {
   PublicControlStrip,
   PublicEmptyState,
   PublicFilterPill,
+  PublicFilterRow,
   PublicFilterSummary,
   PublicPageShell,
   PublicPillLink,
 } from "@/components/public-page";
 import { FileText } from "lucide-react";
-import type { ReactNode } from "react";
 import type { Category, Post, Tag } from "@/lib/types";
 
 const PAGE_SIZE = 10;
@@ -254,7 +253,7 @@ export default async function PostsPage({
         />
 
         <PublicControlStrip>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-3 border-y border-border/70 py-4 lg:flex-row lg:items-baseline lg:justify-between">
             <CategoryNav
               categories={categorySummaries}
               activeSlug={activeCategorySlug}
@@ -345,56 +344,37 @@ function CategoryNav({
   if (categories.length === 0) return null;
 
   return (
-    <nav
-      aria-label="文章分类"
-      className="-mx-4 flex gap-x-6 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0"
-    >
-      <CategoryLink
-        href={buildPostsPath({ searchQuery, sort })}
-        active={!activeSlug}
-      >
-        全部
-        <span className="font-normal text-muted-foreground/70">
-          {totalCount}
-        </span>
-      </CategoryLink>
-      {categories.map((category) => (
-        <CategoryLink
-          key={category.id}
-          href={buildPostsPath({
-            categorySlug: category.slug,
-            searchQuery,
-            sort,
-          })}
-          active={activeSlug === category.slug}
+    <nav aria-label="文章分类">
+      <PublicFilterRow label="分类">
+        <PublicPillLink
+          href={buildPostsPath({ searchQuery, sort })}
+          active={!activeSlug}
+          ariaCurrent={!activeSlug ? "page" : undefined}
         >
-          {category.name}
-          <span className="font-normal text-muted-foreground/70">
-            {category.postCount}
-          </span>
-        </CategoryLink>
-      ))}
+          全部
+          <span className="text-muted-foreground/50">{totalCount}</span>
+        </PublicPillLink>
+        {categories.map((category) => (
+          <PublicPillLink
+            key={category.id}
+            href={buildPostsPath({
+              categorySlug: category.slug,
+              searchQuery,
+              sort,
+            })}
+            active={activeSlug === category.slug}
+            ariaCurrent={
+              activeSlug === category.slug ? "page" : undefined
+            }
+          >
+            {category.name}
+            <span className="text-muted-foreground/50">
+              {category.postCount}
+            </span>
+          </PublicPillLink>
+        ))}
+      </PublicFilterRow>
     </nav>
-  );
-}
-
-function CategoryLink({
-  href,
-  active,
-  children,
-}: {
-  href: string;
-  active: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <PublicPillLink
-      href={href}
-      active={active}
-      ariaCurrent={active ? "page" : undefined}
-    >
-      {children}
-    </PublicPillLink>
   );
 }
 
@@ -408,37 +388,29 @@ function ListFilterBar({
   sort: SortOption;
 }) {
   const sortItems: Array<{ value: SortOption; label: string }> = [
-    { value: "newest", label: "最新发布" },
-    { value: "updated", label: "最近更新" },
-    { value: "popular", label: "阅读最多" },
+    { value: "newest", label: "最新" },
+    { value: "updated", label: "更新" },
+    { value: "popular", label: "热读" },
   ];
 
   return (
-    <nav
-      aria-label="文章排序"
-      className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1"
-    >
-      <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/60">
-        排序
-      </span>
-      {sortItems.map((item) => (
-        <Link
-          key={item.value}
-          href={buildPostsPath({
-            categorySlug,
-            searchQuery,
-            sort: item.value,
-          })}
-          aria-current={sort === item.value ? "page" : undefined}
-          className={
-            sort === item.value
-              ? "font-mono text-[10px] font-bold uppercase tracking-wider text-foreground"
-              : "font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
-          }
-        >
-          {item.label}
-        </Link>
-      ))}
+    <nav aria-label="文章排序">
+      <PublicFilterRow label="排序">
+        {sortItems.map((item) => (
+          <PublicPillLink
+            key={item.value}
+            href={buildPostsPath({
+              categorySlug,
+              searchQuery,
+              sort: item.value,
+            })}
+            active={sort === item.value}
+            ariaCurrent={sort === item.value ? "page" : undefined}
+          >
+            {item.label}
+          </PublicPillLink>
+        ))}
+      </PublicFilterRow>
     </nav>
   );
 }

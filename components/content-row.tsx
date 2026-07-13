@@ -174,38 +174,42 @@ function IndexVariant({
         className
       )}
     >
-      <span className="flex items-start gap-3 sm:block">
+      <span className="sm:block">
         <time
           dateTime={dateTime || post.created_at}
-          className="block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground"
+          className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80"
         >
           {displayDate}
         </time>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 sm:mt-2 sm:block">
-          {displayType}
-        </span>
       </span>
 
       <span className="min-w-0">
-        <span className="block font-serif text-2xl font-light italic leading-snug tracking-tight text-foreground transition-opacity duration-300 group-hover:opacity-70 sm:text-[1.65rem]">
+        <span className="block font-serif text-[1.55rem] font-light italic leading-snug tracking-tight text-foreground transition-opacity duration-300 group-hover:opacity-70 sm:text-[1.75rem]">
           {post.title}
         </span>
         {cleanExcerpt ? (
-          <span className="mt-2 line-clamp-2 block max-w-2xl text-sm leading-7 text-muted-foreground">
+          <span className="mt-2.5 line-clamp-2 block max-w-2xl text-[0.925rem] leading-7 text-muted-foreground">
             {cleanExcerpt}
           </span>
         ) : null}
-        <span className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-          {visibleTags.length > 0
-            ? visibleTags.map((tag) => (
-                <span key={tag.id}>#{tag.name.toLowerCase()}</span>
-              ))
-            : displayMeta.slice(0, 2).map((item) => (
-                <span key={item}>{item}</span>
-              ))}
+        <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[10px] tracking-[0.12em] text-muted-foreground/65">
+          <span>{displayType}</span>
+          {post.category?.name ? (
+            <>
+              <span className="text-border">·</span>
+              <span>{post.category.name}</span>
+            </>
+          ) : null}
+          {visibleTags.slice(0, 2).map((tag) => (
+            <span key={tag.id} className="contents">
+              <span className="text-border">·</span>
+              <span>{tag.name}</span>
+            </span>
+          ))}
           {footMeta.map((item) => (
-            <span key={item} className="text-muted-foreground/70">
-              {item}
+            <span key={item} className="contents">
+              <span className="text-border">·</span>
+              <span>{item}</span>
             </span>
           ))}
         </span>
@@ -266,39 +270,41 @@ function StreamVariant({
         className="absolute left-[3px] top-10 bottom-[-1px] w-px bg-border/70"
       />
 
-      <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <time
-          dateTime={dateTime || post.created_at}
-          className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
-        >
-          {displayDate}
-        </time>
-        {displayMeta.slice(0, 2).map((item) => (
-          <span
-            key={item}
-            className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70"
-          >
-            {item}
-          </span>
-        ))}
-      </span>
+      <time
+        dateTime={dateTime || post.created_at}
+        className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80"
+      >
+        {displayDate}
+      </time>
 
       <span className="mt-2 block font-serif text-xl font-light italic leading-snug text-foreground transition-opacity group-hover:opacity-70 sm:text-2xl">
         {post.title}
       </span>
 
       {cleanExcerpt ? (
-        <span className="mt-2 line-clamp-3 block max-w-2xl text-sm leading-7 text-muted-foreground">
+        <span className="mt-2 line-clamp-3 block max-w-2xl text-[0.925rem] leading-7 text-muted-foreground">
           {cleanExcerpt}
         </span>
       ) : null}
 
-      <span className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
-        {visibleTags.map((tag) => (
-          <span key={tag.id}>#{tag.name.toLowerCase()}</span>
+      <span className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[10px] tracking-[0.12em] text-muted-foreground/65">
+        {displayMeta.slice(0, 2).map((item, index) => (
+          <span key={item} className="contents">
+            {index > 0 ? <span className="text-border">·</span> : null}
+            <span>{item}</span>
+          </span>
+        ))}
+        {visibleTags.slice(0, 2).map((tag) => (
+          <span key={tag.id} className="contents">
+            <span className="text-border">·</span>
+            <span>{tag.name}</span>
+          </span>
         ))}
         {footMeta.map((item) => (
-          <span key={item}>{item}</span>
+          <span key={item} className="contents">
+            <span className="text-border">·</span>
+            <span>{item}</span>
+          </span>
         ))}
         <ArrowUpRight
           className="ml-auto h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
@@ -376,7 +382,7 @@ function CardVariant({
                   key={tag.id}
                   className="max-w-24 truncate font-mono text-[9px] text-muted-foreground"
                 >
-                  #{tag.name.toLowerCase()}
+                  {tag.name}
                 </span>
               ))
             : displayMeta.slice(0, 2).map((item, index) => (
@@ -384,7 +390,7 @@ function CardVariant({
                   key={`${item}-${index}`}
                   className="max-w-24 truncate font-mono text-[9px] text-muted-foreground"
                 >
-                  #{item.toLowerCase()}
+                  {item}
                 </span>
               ))}
         </span>

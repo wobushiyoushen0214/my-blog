@@ -561,20 +561,18 @@ function SearchMatchPanel({
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="text-sm text-neutral-500 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 hover:text-foreground"
+            className="font-mono text-[11px] tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             {category.name}
-            <span className="ml-1 text-xs">分类</span>
           </Link>
         ))}
         {tags.slice(0, 8).map((tag) => (
           <Link
             key={tag.id}
             href={`/tag/${tag.slug}`}
-            className="text-sm text-neutral-500 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 hover:text-foreground"
+            className="font-mono text-[11px] tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            #{tag.name}
-            <span className="ml-1 text-xs">标签</span>
+            {tag.name}
           </Link>
         ))}
       </div>

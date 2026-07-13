@@ -175,7 +175,7 @@ export function PublicControlStrip({
   return (
     <section
       className={cn(
-        "mb-8 animate-in fade-in slide-in-from-bottom-3 duration-600 fill-mode-both delay-100",
+        "mb-10 animate-in fade-in slide-in-from-bottom-3 duration-600 fill-mode-both delay-100",
         className
       )}
     >
@@ -184,6 +184,7 @@ export function PublicControlStrip({
   );
 }
 
+/** Quiet magazine filter text — no pill, no underline tab. */
 export function PublicPillLink({
   href,
   active,
@@ -202,15 +203,43 @@ export function PublicPillLink({
       href={href}
       aria-current={ariaCurrent}
       className={cn(
-        "relative inline-flex h-9 shrink-0 items-center gap-2 border-b border-transparent font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "inline-flex shrink-0 items-baseline gap-1.5 font-mono text-[11px] tracking-[0.14em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "border-foreground text-foreground"
-          : "text-muted-foreground hover:text-foreground",
+          ? "font-semibold text-foreground"
+          : "font-medium text-muted-foreground/70 hover:text-foreground",
         className
       )}
     >
       {children}
     </Link>
+  );
+}
+
+export function PublicFilterRow({
+  label,
+  children,
+  className,
+}: {
+  label?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2",
+        className
+      )}
+    >
+      {label ? (
+        <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50">
+          {label}
+        </span>
+      ) : null}
+      <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1.5">
+        {children}
+      </div>
+    </div>
   );
 }
 
