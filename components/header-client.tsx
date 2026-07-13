@@ -39,7 +39,7 @@ function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "relative inline-flex h-full items-center font-mono text-[10px] font-bold uppercase tracking-[0.22em] transition-colors duration-200",
+        "relative inline-flex h-full items-center font-mono text-[10px] font-medium uppercase tracking-[0.2em] transition-colors duration-200",
         active
           ? "text-foreground"
           : "text-muted-foreground hover:text-foreground"

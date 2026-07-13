@@ -7,11 +7,16 @@ import { ContentRow } from "@/components/content-row";
 import {
   PublicActionLink,
   PublicEmptyState,
+  PublicFilterPill,
+  PublicFilterSummary,
   PublicPageHeader,
   PublicPageShell,
+  publicPrimaryButtonClassName,
+  publicSecondaryButtonClassName,
+  publicSelectClassName,
 } from "@/components/public-page";
 import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import type { Metadata } from "next";
 import type { Category, Post, PostTag, Tag } from "@/lib/types";
 
@@ -317,9 +322,9 @@ export default async function SearchPage({
           countLabel={resultLabel}
         />
 
-        <section className="py-1">
+        <section className="border-y border-border/70 py-4">
           <form
-            className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_150px_150px_auto_auto]"
+            className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_140px_140px_auto_auto]"
             role="search"
             action="/search"
           >
@@ -328,7 +333,7 @@ export default async function SearchPage({
             </label>
             <div className="relative min-w-0 flex-1">
               <Search
-                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400"
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60"
                 suppressHydrationWarning
               />
               <Input
@@ -337,7 +342,7 @@ export default async function SearchPage({
                 name="q"
                 defaultValue={rawQuery}
                 placeholder="搜索标题、正文、分类或标签..."
-                className="h-9 rounded-full border-neutral-200 bg-neutral-50/50 pl-10 text-xs transition-colors placeholder:text-neutral-400 hover:bg-white focus-visible:bg-white border-border dark:bg-neutral-900/40 dark:hover:bg-[#0a0a0a] dark:focus-visible:bg-[#0a0a0a]"
+                className="h-9 rounded-none border-border bg-transparent pl-10 text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
               />
             </div>
             <label htmlFor="search-type" className="sr-only">
@@ -347,7 +352,7 @@ export default async function SearchPage({
               id="search-type"
               name="type"
               defaultValue={contentType}
-              className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 border-border dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]"
+              className={publicSelectClassName}
             >
               <option value="all">全部内容</option>
               <option value="post">只看文章</option>
@@ -360,24 +365,18 @@ export default async function SearchPage({
               id="search-sort"
               name="sort"
               defaultValue={sort}
-              className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 border-border dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]"
+              className={publicSelectClassName}
             >
               <option value="newest">最新发布</option>
               <option value="updated">最近更新</option>
               <option value="popular">阅读最多</option>
             </select>
-            <button
-              type="submit"
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            >
-              <Search className="h-4 w-4" suppressHydrationWarning />
+            <button type="submit" className={`${publicPrimaryButtonClassName} gap-2`}>
+              <Search className="h-3.5 w-3.5" suppressHydrationWarning />
               搜索
             </button>
             {query || hasFilters ? (
-              <Link
-                href="/search"
-                className="inline-flex h-9 items-center justify-center rounded-full border border-border bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-              >
+              <Link href="/search" className={publicSecondaryButtonClassName}>
                 清除
               </Link>
             ) : null}
@@ -473,48 +472,26 @@ function ActiveSearchSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-neutral-100 pb-3 border-border sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">FILTER</span>
-        {query ? (
-          <FilterPill
-            label={`关键词：${query}`}
-            href={buildSearchPath({ type: activeType, sort })}
-          />
-        ) : null}
-        {activeType !== DEFAULT_TYPE ? (
-          <FilterPill
-            label={`类型：${getSearchTypeLabel(activeType)}`}
-            href={buildSearchPath({ query, sort })}
-          />
-        ) : null}
-        {sort !== DEFAULT_SORT ? (
-          <FilterPill
-            label={`排序：${getSortLabel(sort)}`}
-            href={buildSearchPath({ query, type: activeType })}
-          />
-        ) : null}
-      </div>
-      <Link
-        href="/search"
-        className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-border bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        清除全部
-      </Link>
-    </section>
-  );
-}
-
-function FilterPill({ label, href }: { label: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 font-mono text-[10px] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      aria-label={`移除${label}`}
-    >
-      <span className="truncate">{label}</span>
-      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
-    </Link>
+    <PublicFilterSummary clearHref="/search">
+      {query ? (
+        <PublicFilterPill
+          label={`关键词：${query}`}
+          href={buildSearchPath({ type: activeType, sort })}
+        />
+      ) : null}
+      {activeType !== DEFAULT_TYPE ? (
+        <PublicFilterPill
+          label={`类型：${getSearchTypeLabel(activeType)}`}
+          href={buildSearchPath({ query, sort })}
+        />
+      ) : null}
+      {sort !== DEFAULT_SORT ? (
+        <PublicFilterPill
+          label={`排序：${getSortLabel(sort)}`}
+          href={buildSearchPath({ query, type: activeType })}
+        />
+      ) : null}
+    </PublicFilterSummary>
   );
 }
 
@@ -547,7 +524,7 @@ function SearchMatchPanel({
   tags: Tag[];
 }) {
   return (
-    <section className="mt-5 border-y border-neutral-100 py-4 border-border">
+    <section className="mt-5 border-y border-border py-5">
       <div>
         <h2 className="font-serif text-base font-light italic text-foreground">
           主题命中

@@ -46,7 +46,7 @@ export function PublicPageHeader({
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-5 inline-flex h-8 items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mb-5 inline-flex h-8 items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="h-3.5 w-3.5" suppressHydrationWarning />
           {backLabel}
@@ -57,7 +57,7 @@ export function PublicPageHeader({
         <div className="min-w-0 space-y-3">
           <div className="space-y-2">
             {eyebrow ? (
-              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+              <p className="font-mono text-[10px] font-medium uppercase tracking-[0.26em] text-muted-foreground">
                 {eyebrow}
               </p>
             ) : null}
@@ -115,7 +115,7 @@ export function PublicCompactHeader({
       {backHref && backLabel ? (
         <Link
           href={backHref}
-          className="mb-4 inline-flex h-8 items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mb-4 inline-flex h-8 items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <ArrowLeft className="h-3.5 w-3.5" suppressHydrationWarning />
           {backLabel}
@@ -124,7 +124,7 @@ export function PublicCompactHeader({
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
           {eyebrow ? (
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.26em] text-muted-foreground">
               {eyebrow}
             </p>
           ) : null}
@@ -260,7 +260,7 @@ export function PublicFilterSummary({
       </div>
       <Link
         href={clearHref}
-        className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -288,13 +288,13 @@ export function PublicFilterPill({
 }
 
 export const publicSelectClassName =
-  "h-9 rounded-md border border-border bg-card/60 px-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground shadow-none outline-none transition-colors hover:bg-card focus-visible:ring-2 focus-visible:ring-ring/50";
+  "h-9 rounded-none border border-border bg-transparent px-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground shadow-none outline-none transition-colors hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring/50";
 
 export const publicPrimaryButtonClassName =
-  "inline-flex h-9 items-center justify-center rounded-md border border-foreground bg-foreground px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-background shadow-none transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+  "inline-flex h-9 items-center justify-center rounded-none border border-foreground bg-foreground px-4 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-background shadow-none transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 
 export const publicSecondaryButtonClassName =
-  "inline-flex h-9 items-center justify-center rounded-md border border-border bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+  "inline-flex h-9 items-center justify-center rounded-none border border-border bg-transparent px-4 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 
 type PublicActionLinkProps = {
   href: string;
@@ -332,24 +332,24 @@ export function PublicEmptyState({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-2xl border border-border bg-card/40 px-8 py-12 text-center",
+        "mx-auto w-full max-w-2xl border-y border-border px-2 py-14 text-center",
         className
       )}
     >
-      <div className="grid place-items-center gap-4">
+      <div className="grid place-items-center gap-3">
         {Icon ? (
-          <span className="flex size-10 items-center justify-center border border-border bg-muted/40 text-muted-foreground">
+          <span className="text-muted-foreground/70">
             <Icon className="h-5 w-5" suppressHydrationWarning />
           </span>
         ) : null}
         <div className="min-w-0">
-          <h2 className="font-serif text-lg font-light italic leading-tight text-foreground">
+          <h2 className="font-serif text-xl font-light italic leading-tight text-foreground">
             {title}
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-muted-foreground">
             {description}
           </p>
-          {action ? <div className="mt-6">{action}</div> : null}
+          {action ? <div className="mt-7">{action}</div> : null}
         </div>
       </div>
     </div>

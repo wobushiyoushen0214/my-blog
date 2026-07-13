@@ -458,30 +458,32 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[6.5rem_minmax(0,52rem)_18rem] lg:justify-center xl:grid-cols-[7.5rem_minmax(0,54rem)_18.5rem]">
             <aside className="hidden lg:block" aria-label="Reader actions">
-              <div className="sticky top-28 flex flex-col items-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-150">
-                <div className="flex flex-col items-center space-y-1">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors">
-                    <Clock className="h-5 w-5" suppressHydrationWarning />
-                  </div>
-                  <span className="font-mono text-xs font-semibold text-muted-foreground">
-                    {readingMinutes} Min Read
-                  </span>
+              <div className="sticky top-28 flex flex-col items-start gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-150">
+                <div className="space-y-1">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
+                    Read
+                  </p>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {readingMinutes} min
+                  </p>
                 </div>
-
-                <a href="#comments" className="flex flex-col items-center space-y-1">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:bg-muted/50">
-                    <MessageSquare className="h-5 w-5" suppressHydrationWarning />
-                  </span>
-                  <span className="font-mono text-xs font-semibold text-muted-foreground">
-                    {commentCount} Comments
-                  </span>
+                <a
+                  href="#comments"
+                  className="space-y-1 transition-colors hover:text-foreground"
+                >
+                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
+                    Notes
+                  </p>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {commentCount} comments
+                  </p>
                 </a>
               </div>
             </aside>
 
             <article>
-              <div className="reader-article-card surface-card mx-auto max-w-[52rem] rounded-md px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
-                <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+              <div className="reader-article-card surface-card mx-auto max-w-[52rem] px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
+                <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   <span>{contentTypeLabel}</span>
                   {post.category ? (
                     <>
@@ -551,15 +553,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 {tags.length > 0 ? (
                   <nav
                     aria-label="文章标签"
-                    className="mt-10 flex flex-wrap gap-2 border-t border-border pt-6"
+                    className="mt-10 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-border pt-6"
                   >
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
+                      Tags
+                    </span>
                     {tags.map((tagItem) => (
                       <Link
                         key={tagItem.id}
                         href={`/tag/${tagItem.slug}`}
-                        className="border border-border bg-muted/30 px-3 py-1 font-mono text-[9px] font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
+                        className="font-mono text-[11px] tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
                       >
-                        #{tagItem.name}
+                        {tagItem.name}
                       </Link>
                     ))}
                   </nav>
@@ -585,11 +590,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <section
                 id="comments"
                 aria-labelledby="comments-title"
-                className="reader-article-card surface-card mx-auto mt-8 max-w-[52rem] rounded-md p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both"
+                className="reader-article-card surface-card mx-auto mt-8 max-w-[52rem] p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both"
               >
                 <div className="mb-6 flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       Discussion
                     </p>
                     <h2
@@ -614,10 +619,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="sticky top-28 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-300">
                 <TableOfContents headings={headings} />
 
-                <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[400ms]">
-                  <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[400ms]">
+                  <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                     <Share2 className="h-3.5 w-3.5" suppressHydrationWarning />
-                    <span>Article Signals</span>
+                    <span>Signals</span>
                   </h2>
                   <ul className="space-y-3 text-xs text-muted-foreground">
                     <li className="flex items-center justify-between">
@@ -660,9 +665,9 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
   if (headings.length === 0) return null;
 
   return (
-    <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[350ms]">
-      <h2 className="mb-4 border-b border-border pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
-        Table of Contents
+    <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[350ms]">
+      <h2 className="mb-4 border-b border-border pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        Contents
       </h2>
       <nav aria-label="文章目录" className="space-y-2">
         {headings.map((heading) => (
@@ -786,8 +791,8 @@ function RelatedSection({
   contentTypeLabel: string;
 }) {
   return (
-    <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[500ms]">
-      <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+    <section className="surface-card p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[500ms]">
+      <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
         <span>Related</span>
       </h2>
@@ -838,7 +843,7 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                     key={tag.id}
                     className="max-w-36 truncate"
                   >
-                    #{tag.name}
+                    {tag.name}
                   </span>
                 ))}
               </div>

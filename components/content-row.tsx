@@ -369,7 +369,7 @@ function CardVariant({
             </span>
           </span>
         )}
-        <span className="absolute right-3 top-3 border border-border bg-background/90 px-2 py-0.5 font-mono text-[8px] font-bold uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
+        <span className="absolute right-3 top-3 border border-border bg-background/90 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
           {displayType}
         </span>
       </span>
@@ -421,7 +421,7 @@ function CardVariant({
             <span key={item}>{item}</span>
           ))}
         </span>
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-foreground group-hover:bg-foreground group-hover:text-background">
+        <span className="flex h-7 w-7 items-center justify-center border border-border text-muted-foreground transition-colors group-hover:border-foreground group-hover:bg-foreground group-hover:text-background">
           <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
         </span>
       </span>

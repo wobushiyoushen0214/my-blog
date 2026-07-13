@@ -157,14 +157,14 @@ function Hero() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/posts"
-              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-foreground bg-foreground px-5 font-mono text-[10px] font-bold uppercase tracking-wider text-background transition-colors hover:bg-foreground/85"
+              className="inline-flex h-10 items-center gap-1.5 border border-foreground bg-foreground px-5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-background transition-colors hover:bg-foreground/85"
             >
               Read posts
               <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
             </Link>
             <Link
               href="/archive"
-              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-border bg-transparent px-5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
+              className="inline-flex h-10 items-center gap-1.5 border border-border bg-transparent px-5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
             >
               Archive
               <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />

@@ -5,18 +5,18 @@ import { DeviceShell } from "@/components/device-shell";
 import {
   PublicActionLink,
   PublicEmptyState,
+  PublicFilterPill,
+  PublicFilterSummary,
   PublicPageHeader,
   PublicPageShell,
   publicPrimaryButtonClassName,
   publicSecondaryButtonClassName,
   publicSelectClassName,
 } from "@/components/public-page";
-import { Badge } from "@/components/ui/badge";
 import {
   ExternalLink,
   Link2,
   Search,
-  X,
 } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -312,99 +312,52 @@ function ActiveLinkSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-          Filter
-        </span>
-        {query ? (
-          <FilterPill
-            label={`关键词：${query}`}
-            href={buildLinksPath({ status })}
-          />
-        ) : null}
-        {status !== DEFAULT_STATUS ? (
-          <FilterPill
-            label={`状态：${getStatusLabel(status)}`}
-            href={buildLinksPath({ query })}
-          />
-        ) : null}
-      </div>
-      <Link
-        href="/links"
-        className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        清除全部
-      </Link>
-    </section>
-  );
-}
-
-function FilterPill({ label, href }: { label: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      aria-label={`移除${label}`}
-    >
-      <span className="truncate">{label}</span>
-      <X className="h-3 w-3 shrink-0" suppressHydrationWarning />
-    </Link>
+    <PublicFilterSummary clearHref="/links">
+      {query ? (
+        <PublicFilterPill
+          label={`关键词：${query}`}
+          href={buildLinksPath({ status })}
+        />
+      ) : null}
+      {status !== DEFAULT_STATUS ? (
+        <PublicFilterPill
+          label={`状态：${getStatusLabel(status)}`}
+          href={buildLinksPath({ query })}
+        />
+      ) : null}
+    </PublicFilterSummary>
   );
 }
 
 function FriendLinkRow({ item }: { item: FriendLink }) {
+  const meta = [
+    item.status === "new" ? "新收录" : "已收录",
+    ...(item.tags?.slice(0, 3) || []),
+    ...(item.rss ? ["RSS"] : []),
+  ];
+
   return (
     <Link
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="friend-link-row group grid min-w-0 gap-3 border-b border-border/70 px-1 py-5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px] animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
+      className="friend-link-row group grid min-w-0 gap-3 border-b border-border/70 px-1 py-5 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_auto] animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
     >
       <span className="min-w-0">
-        <span className="flex min-w-0 flex-wrap items-center gap-2">
+        <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="truncate font-serif text-lg font-light italic leading-6 text-foreground transition-opacity group-hover:opacity-75">
             {item.name}
           </span>
-          <Badge
-            variant="secondary"
-            className="rounded-md font-normal"
-          >
-            {item.status === "new" ? "新收录" : "已收录"}
-          </Badge>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            {meta.join(" · ")}
+          </span>
         </span>
         <span className="mt-2 line-clamp-2 block text-sm leading-6 text-muted-foreground">
           {item.description}
         </span>
       </span>
-
-      {(item.tags && item.tags.length > 0) || item.rss ? (
-        <span className="flex flex-wrap gap-1.5 sm:justify-end">
-          {item.tags?.slice(0, 3).map((tag) => (
-            <Badge
-              key={tag}
-              variant="secondary"
-              className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
-            >
-              {tag}
-            </Badge>
-          ))}
-          {item.rss ? (
-            <Badge
-              variant="secondary"
-              className="h-5 rounded-md px-1.5 py-0 text-[10px] font-normal"
-            >
-              RSS
-            </Badge>
-          ) : null}
-        </span>
-      ) : (
-        <span className="text-sm text-muted-foreground sm:text-right">
-          {item.category}
-        </span>
-      )}
       <ExternalLink
-        className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
+        className="h-4 w-4 shrink-0 self-center text-muted-foreground transition-colors group-hover:text-foreground sm:justify-self-end"
         suppressHydrationWarning
       />
     </Link>

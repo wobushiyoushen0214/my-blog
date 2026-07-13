@@ -8,6 +8,10 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
+import {
+  publicPrimaryButtonClassName,
+  publicSecondaryButtonClassName,
+} from "@/components/public-page";
 
 interface CommentFormProps {
   postId: string;
@@ -147,34 +151,31 @@ export function CommentForm({
     <form
       onSubmit={handleSubmit}
       noValidate
-      className={cn(
-        "py-1 text-neutral-600 dark:text-neutral-300",
-        compact && "bg-transparent py-0"
-      )}
+      className={cn("py-1 text-muted-foreground", compact && "bg-transparent py-0")}
     >
       {!isReply ? (
-        <div className="py-3">
+        <div className="pb-4">
           <div className="space-y-1">
             <h3 className="font-serif text-base font-light italic text-foreground">
               发表评论
             </h3>
-            <p className="text-xs leading-6 text-neutral-500 dark:text-neutral-400">
+            <p className="text-xs leading-6 text-muted-foreground">
               评论提交后会进入审核队列，通过后展示在页面中。
             </p>
           </div>
         </div>
       ) : (
         <div className="pb-3">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          <p className="text-xs text-muted-foreground">
             回复会进入审核队列，通过后展示在对应评论下。
           </p>
         </div>
       )}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="space-y-2 py-3">
+        <div className="space-y-2">
           <Label
             htmlFor={ids.name}
-            className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+            className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
           >
             昵称 *
           </Label>
@@ -183,7 +184,7 @@ export function CommentForm({
             value={form.author_name}
             onChange={(e) => updateField("author_name", e.target.value)}
             placeholder="你的昵称"
-            className="h-10 rounded-full border-border bg-muted/30 text-xs transition-colors placeholder:text-muted-foreground hover:bg-card focus-visible:bg-card"
+            className="h-10 rounded-none border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
             autoFocus={autoFocus}
             disabled={loading}
             maxLength={NAME_MAX_LENGTH}
@@ -197,10 +198,10 @@ export function CommentForm({
             </p>
           ) : null}
         </div>
-        <div className="space-y-2 py-3">
+        <div className="space-y-2">
           <Label
             htmlFor={ids.email}
-            className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+            className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
           >
             邮箱（选填）
           </Label>
@@ -210,7 +211,7 @@ export function CommentForm({
             value={form.author_email}
             onChange={(e) => updateField("author_email", e.target.value)}
             placeholder="you@example.com"
-            className="h-10 rounded-full border-border bg-muted/30 text-xs transition-colors placeholder:text-muted-foreground hover:bg-card focus-visible:bg-card"
+            className="h-10 rounded-none border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
             disabled={loading}
             maxLength={EMAIL_MAX_LENGTH}
             aria-invalid={Boolean(errors.author_email)}
@@ -223,10 +224,10 @@ export function CommentForm({
           ) : null}
         </div>
       </div>
-      <div className="space-y-2 py-3">
+      <div className="mt-3 space-y-2">
         <Label
           htmlFor={ids.content}
-          className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+          className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
         >
           评论内容 *
         </Label>
@@ -236,7 +237,7 @@ export function CommentForm({
           onChange={(e) => updateField("content", e.target.value)}
           placeholder="写下你的想法..."
           rows={isReply ? 3 : 4}
-          className="resize-none rounded-md border-border bg-muted/30 text-xs transition-colors placeholder:text-muted-foreground hover:bg-card focus-visible:bg-card"
+          className="resize-none rounded-none border-border bg-transparent text-xs shadow-none transition-colors placeholder:text-muted-foreground/60 hover:bg-muted/20 focus-visible:bg-card"
           disabled={loading}
           maxLength={CONTENT_MAX_LENGTH}
           aria-invalid={Boolean(errors.content)}
@@ -262,7 +263,7 @@ export function CommentForm({
         </div>
       </div>
 
-      <div className="grid gap-3 py-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+      <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
         <div id={ids.formStatus} aria-live="polite" className="min-h-5">
           {errors.form ? (
             <p className="text-sm text-destructive">{errors.form}</p>
@@ -277,7 +278,7 @@ export function CommentForm({
               type="button"
               disabled={loading}
               onClick={onCancel}
-              className="inline-flex h-9 items-center justify-center rounded-full border border-border bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+              className={cn(publicSecondaryButtonClassName, "disabled:pointer-events-none disabled:opacity-50")}
             >
               取消
             </button>
@@ -285,9 +286,12 @@ export function CommentForm({
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+            className={cn(
+              publicPrimaryButtonClassName,
+              "gap-2 disabled:pointer-events-none disabled:opacity-50"
+            )}
           >
-            <Send className="h-4 w-4" suppressHydrationWarning />
+            <Send className="h-3.5 w-3.5" suppressHydrationWarning />
             {loading ? "提交中..." : isReply ? "提交回复" : "提交评论"}
           </button>
         </div>
