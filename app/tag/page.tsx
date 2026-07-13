@@ -235,7 +235,7 @@ function TagStatusSwitch({
   return (
     <nav
       aria-label="标签使用状态"
-      className="-mx-4 flex gap-x-5 overflow-x-auto border-b border-border px-4 pb-4 sm:mx-0 sm:px-0"
+      className="-mx-4 flex gap-x-6 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0"
     >
       {items.map((item) => (
         <Link
@@ -243,7 +243,7 @@ function TagStatusSwitch({
           href={buildTagPath({ query, status: item.value })}
           aria-current={activeStatus === item.value ? "page" : undefined}
           className={cn(
-            "inline-flex shrink-0 border-b pb-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+            "inline-flex h-9 shrink-0 items-center border-b font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
             activeStatus === item.value
               ? "border-foreground text-foreground"
               : "border-transparent text-muted-foreground hover:text-foreground"

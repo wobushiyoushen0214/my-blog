@@ -204,7 +204,7 @@ function CategoryTypeSwitch({
   return (
     <nav
       aria-label="分类类型"
-      className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+      className="-mx-4 flex gap-x-6 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0"
     >
       {items.map((item) => (
         <PublicPillLink

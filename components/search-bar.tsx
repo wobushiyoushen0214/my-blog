@@ -14,6 +14,7 @@ export function SearchBar({ className }: SearchBarProps = {}) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -25,7 +26,13 @@ export function SearchBar({ className }: SearchBarProps = {}) {
 
       if (event.key === "/" && !isTyping) {
         event.preventDefault();
-        inputRef.current?.focus();
+        setOpen(true);
+        requestAnimationFrame(() => inputRef.current?.focus());
+      }
+
+      if (event.key === "Escape") {
+        setOpen(false);
+        inputRef.current?.blur();
       }
     };
 
@@ -37,33 +44,53 @@ export function SearchBar({ className }: SearchBarProps = {}) {
     e.preventDefault();
     const value = query.trim();
     router.push(value ? `/search?q=${encodeURIComponent(value)}` : "/search");
+    setOpen(false);
   };
 
   return (
     <form
       onSubmit={handleSearch}
-      className={cn("hidden max-w-[180px] sm:block", className)}
+      className={cn("hidden items-center sm:flex", className)}
       role="search"
     >
       <label htmlFor="header-search" className="sr-only">
         搜索站内内容
       </label>
-      <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <Search
-            className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500"
-            suppressHydrationWarning
-          />
-        </div>
+      <div
+        className={cn(
+          "flex h-8 items-center overflow-hidden border-b transition-[width,border-color] duration-200",
+          open || query
+            ? "w-44 border-foreground/40"
+            : "w-8 border-transparent hover:border-border"
+        )}
+      >
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(true);
+            requestAnimationFrame(() => inputRef.current?.focus());
+          }}
+          className="flex h-8 w-8 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          aria-label="打开搜索"
+        >
+          <Search className="h-3.5 w-3.5" suppressHydrationWarning />
+        </button>
         <input
           ref={inputRef}
           id="header-search"
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="搜索内容..."
+          onFocus={() => setOpen(true)}
+          onBlur={() => {
+            if (!query) setOpen(false);
+          }}
+          placeholder="搜索 /"
           aria-keyshortcuts="/"
-          className="w-full rounded-full border border-neutral-200 bg-neutral-50/50 py-1.5 pl-8 pr-4 font-sans text-[10px] uppercase tracking-wider text-neutral-800 outline-none transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:bg-white dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-700 dark:focus:bg-[#0a0a0a]"
+          className={cn(
+            "h-8 w-full bg-transparent pr-1 font-mono text-[10px] uppercase tracking-wider text-foreground outline-none placeholder:text-muted-foreground/70",
+            open || query ? "opacity-100" : "pointer-events-none opacity-0"
+          )}
         />
       </div>
     </form>

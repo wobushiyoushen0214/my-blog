@@ -175,7 +175,7 @@ export function PublicControlStrip({
   return (
     <section
       className={cn(
-        "mb-6 border-b border-border/80 pb-4 animate-in fade-in slide-in-from-bottom-3 duration-600 fill-mode-both delay-100",
+        "mb-8 animate-in fade-in slide-in-from-bottom-3 duration-600 fill-mode-both delay-100",
         className
       )}
     >
@@ -202,9 +202,9 @@ export function PublicPillLink({
       href={href}
       aria-current={ariaCurrent}
       className={cn(
-        "inline-flex h-7 shrink-0 items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "relative inline-flex h-9 shrink-0 items-center gap-2 border-b border-transparent font-mono text-[10px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         active
-          ? "text-foreground"
+          ? "border-foreground text-foreground"
           : "text-muted-foreground hover:text-foreground",
         className
       )}
