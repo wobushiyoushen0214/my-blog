@@ -448,7 +448,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const nextPost = nextPostData as unknown as NavigationPost | null;
 
   return (
-    <div className="min-h-screen bg-neutral-50 font-sans text-slate-800 transition-colors duration-300 dark:bg-transparent dark:text-neutral-200">
+    <div className="min-h-screen bg-background font-sans text-foreground transition-colors duration-300">
       <Header />
       <ReaderProgress />
 
@@ -460,19 +460,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <aside className="hidden lg:block" aria-label="Reader actions">
               <div className="sticky top-28 flex flex-col items-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-150">
                 <div className="flex flex-col items-center space-y-1">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition-colors dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors">
                     <Clock className="h-5 w-5" suppressHydrationWarning />
                   </div>
-                  <span className="font-mono text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                  <span className="font-mono text-xs font-semibold text-muted-foreground">
                     {readingMinutes} Min Read
                   </span>
                 </div>
 
                 <a href="#comments" className="flex flex-col items-center space-y-1">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition-colors hover:bg-slate-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:bg-zinc-800">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:bg-muted/50">
                     <MessageSquare className="h-5 w-5" suppressHydrationWarning />
                   </span>
-                  <span className="font-mono text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                  <span className="font-mono text-xs font-semibold text-muted-foreground">
                     {commentCount} Comments
                   </span>
                 </a>
@@ -481,16 +481,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <article>
               <div className="reader-article-card surface-card mx-auto max-w-[52rem] rounded-md px-6 py-10 sm:px-8 sm:py-12 animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
-                <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+                <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
                   <span>{contentTypeLabel}</span>
                   {post.category ? (
                     <>
-                      <span className="text-neutral-300 dark:text-neutral-700">
+                      <span className="text-border">
                         /
                       </span>
                       <Link
                         href={getCategoryBrowseHref(post.category)}
-                        className="transition-colors hover:text-slate-950 dark:hover:text-white"
+                        className="transition-colors hover:text-foreground"
                       >
                         {post.category.name}
                       </Link>
@@ -498,19 +498,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   ) : null}
                 </div>
 
-                <h1 className="mt-5 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-slate-950 dark:text-white sm:text-5xl">
+                <h1 className="mt-5 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-foreground sm:text-5xl">
                   {post.title}
                 </h1>
 
-                <div className="mt-7 w-16 border-t border-neutral-300 dark:border-neutral-700" />
+                <div className="mt-7 w-16 border-t border-border" />
 
                 {post.excerpt ? (
-                  <p className="mt-7 max-w-2xl font-serif text-lg font-light italic leading-relaxed text-neutral-500 dark:text-neutral-400">
+                  <p className="mt-7 max-w-2xl font-serif text-lg font-light italic leading-relaxed text-muted-foreground">
                     {post.excerpt}
                   </p>
                 ) : null}
 
-                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-neutral-200 pt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 dark:border-[#1f1f26] dark:text-neutral-500">
+                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   <time
                     dateTime={post.created_at}
                     className="flex items-center gap-1.5"
@@ -518,7 +518,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <Calendar className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>Published {formatDate(post.created_at)}</span>
                   </time>
-                  <span className="text-neutral-300 dark:text-neutral-700">/</span>
+                  <span className="text-border">/</span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>{readingMinutes} min read</span>
@@ -527,7 +527,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                 {post.cover_image ? (
                   <div
-                    className="narrative-media-slot mb-8 aspect-[16/10] overflow-hidden rounded-sm border border-neutral-200 bg-neutral-100 dark:border-[#262626] dark:bg-neutral-900"
+                    className="narrative-media-slot mb-8 aspect-[16/10] overflow-hidden border border-border bg-muted/40"
                     style={{
                       backgroundImage: `url("${post.cover_image.replace(/"/g, '\\"')}")`,
                     }}
@@ -540,24 +540,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   className="prose prose-neutral dark:prose-invert max-w-none
                     reader-prose
                     prose-headings:scroll-mt-24
-                    prose-p:my-5 prose-p:text-neutral-600 prose-p:leading-relaxed dark:prose-p:text-neutral-400
-                    prose-a:text-slate-950 prose-a:underline prose-a:decoration-neutral-300 prose-a:underline-offset-4 hover:prose-a:decoration-slate-950 dark:prose-a:text-white dark:prose-a:decoration-neutral-700
-                    prose-blockquote:border-l-2 prose-blockquote:border-neutral-400 prose-blockquote:bg-neutral-50/50 prose-blockquote:py-3 prose-blockquote:pl-5 prose-blockquote:text-neutral-500 dark:prose-blockquote:border-neutral-700 dark:prose-blockquote:bg-neutral-900/10 dark:prose-blockquote:text-neutral-400
-                    prose-pre:rounded-md prose-pre:border prose-pre:border-[#262626] prose-pre:bg-neutral-950 prose-pre:text-xs
-                    prose-code:before:content-none prose-code:after:content-none prose-code:rounded prose-code:bg-neutral-100 prose-code:px-1 prose-code:py-0.5 prose-code:text-[11px] dark:prose-code:bg-neutral-900"
+                    prose-p:my-5 prose-p:text-muted-foreground prose-p:leading-relaxed
+                    prose-a:text-foreground prose-a:underline prose-a:decoration-border prose-a:underline-offset-4 hover:prose-a:decoration-foreground
+                    prose-blockquote:border-l-2 prose-blockquote:border-border prose-blockquote:bg-muted/30 prose-blockquote:py-3 prose-blockquote:pl-5 prose-blockquote:text-muted-foreground
+                    prose-pre:rounded-md prose-pre:border prose-pre:border-border prose-pre:bg-foreground prose-pre:text-background prose-pre:text-xs
+                    prose-code:before:content-none prose-code:after:content-none prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:text-[11px]"
                   dangerouslySetInnerHTML={{ __html: articleContent }}
                 />
 
                 {tags.length > 0 ? (
                   <nav
                     aria-label="文章标签"
-                    className="mt-10 flex flex-wrap gap-2 border-t border-neutral-100 pt-6 dark:border-[#262626]"
+                    className="mt-10 flex flex-wrap gap-2 border-t border-border pt-6"
                   >
                     {tags.map((tagItem) => (
                       <Link
                         key={tagItem.id}
                         href={`/tag/${tagItem.slug}`}
-                        className="border border-neutral-200 bg-neutral-50/50 px-3 py-1 font-mono text-[9px] font-medium text-neutral-400 transition-colors hover:border-neutral-400 hover:text-slate-950 dark:border-[#262626] dark:bg-neutral-900/20 dark:text-neutral-500 dark:hover:border-neutral-700 dark:hover:text-white"
+                        className="border border-border bg-muted/30 px-3 py-1 font-mono text-[9px] font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
                       >
                         #{tagItem.name}
                       </Link>
@@ -566,14 +566,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 ) : null}
               </div>
 
-              <div className="reader-width-frame mx-auto mt-8 flex max-w-[52rem] items-center justify-around border-y border-slate-100 py-3 lg:hidden dark:border-zinc-800">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-zinc-400">
+              <div className="reader-width-frame mx-auto mt-8 flex max-w-[52rem] items-center justify-around border-y border-border py-3 lg:hidden">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
                   <Clock className="h-4 w-4" suppressHydrationWarning />
                   {readingMinutes} Min Read
                 </span>
                 <a
                   href="#comments"
-                  className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white"
+                  className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground"
                 >
                   <MessageSquare className="h-4 w-4" suppressHydrationWarning />
                   {commentCount} Comments
@@ -587,19 +587,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 aria-labelledby="comments-title"
                 className="reader-article-card surface-card mx-auto mt-8 max-w-[52rem] rounded-md p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both"
               >
-                <div className="mb-6 flex flex-col gap-2 border-b border-neutral-100 pb-4 dark:border-[#262626] sm:flex-row sm:items-end sm:justify-between">
+                <div className="mb-6 flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
+                    <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
                       Discussion
                     </p>
                     <h2
                       id="comments-title"
-                      className="mt-1 font-serif text-xl font-light italic text-slate-950 dark:text-white"
+                      className="mt-1 font-serif text-xl font-light italic text-foreground"
                     >
                       评论
                     </h2>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                     {commentCount} approved comments
                   </span>
                 </div>
@@ -615,26 +615,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <TableOfContents headings={headings} />
 
                 <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[400ms]">
-                  <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#262626] dark:text-neutral-500">
+                  <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
                     <Share2 className="h-3.5 w-3.5" suppressHydrationWarning />
                     <span>Article Signals</span>
                   </h2>
-                  <ul className="space-y-3 text-xs text-neutral-500 dark:text-neutral-400">
+                  <ul className="space-y-3 text-xs text-muted-foreground">
                     <li className="flex items-center justify-between">
                       <span>Reading Time</span>
-                      <span className="font-serif font-bold italic text-slate-950 dark:text-white">
+                      <span className="font-serif font-bold italic text-foreground">
                         {readingMinutes}m
                       </span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span>Total Views</span>
-                      <span className="font-mono text-[10px] text-neutral-400">
+                      <span className="font-mono text-[10px] text-muted-foreground">
                         {numberFormatter.format(post.view_count + 1)}
                       </span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span>Comments</span>
-                      <span className="font-serif font-bold italic text-slate-950 dark:text-white">
+                      <span className="font-serif font-bold italic text-foreground">
                         {commentCount}
                       </span>
                     </li>
@@ -661,7 +661,7 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
 
   return (
     <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[350ms]">
-      <h2 className="mb-4 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#1a1a1f] dark:text-neutral-500">
+      <h2 className="mb-4 border-b border-border pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
         Table of Contents
       </h2>
       <nav aria-label="文章目录" className="space-y-2">
@@ -670,8 +670,8 @@ function TableOfContents({ headings }: { headings: TocItem[] }) {
             key={heading.id}
             href={`#${heading.id}`}
             className={cn(
-              "group flex items-start text-left text-[11px] text-neutral-600 transition-colors hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white",
-              heading.level === 3 && "pl-3 text-neutral-400 dark:text-neutral-500"
+              "group flex items-start text-left text-[11px] text-muted-foreground transition-colors hover:text-foreground",
+              heading.level === 3 && "pl-3 text-muted-foreground/80"
             )}
           >
             {heading.level === 3 ? (
@@ -700,7 +700,7 @@ function ArticlePager({
   return (
     <nav
       aria-label="相邻文章"
-      className="reader-width-frame mx-auto mt-8 grid max-w-[52rem] overflow-hidden rounded-md border border-neutral-200 bg-white dark:border-[#262626] dark:bg-[#0d0d0d]/40 md:grid-cols-2"
+      className="reader-width-frame mx-auto mt-8 grid max-w-[52rem] overflow-hidden border border-border bg-card/60 md:grid-cols-2"
     >
       <NavigationPostCard
         post={previousPost}
@@ -726,13 +726,13 @@ function NavigationPostCard({
       <div
         className={cn(
           "p-5",
-          direction === "previous" ? "md:border-r md:border-neutral-200 md:dark:border-[#262626]" : "md:text-right"
+          direction === "previous" ? "md:border-r md:border-border" : "md:text-right"
         )}
       >
-        <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
           {label}
         </p>
-        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="mt-2 text-sm text-muted-foreground">
           暂无更多相邻文章
         </p>
       </div>
@@ -743,33 +743,33 @@ function NavigationPostCard({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group p-5 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:hover:bg-neutral-900/30",
-        direction === "previous" && "md:border-r md:border-neutral-200 md:dark:border-[#262626]"
+        "group p-5 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        direction === "previous" && "md:border-r md:border-border"
       )}
     >
       <div className="flex items-start justify-between gap-3">
         {direction === "previous" ? (
           <ChevronLeft
-            className="mt-0.5 h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-slate-950 dark:group-hover:text-white"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
             suppressHydrationWarning
           />
         ) : null}
         <div className={direction === "next" ? "min-w-0 text-right" : "min-w-0"}>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
             {label}
           </p>
-          <h3 className="mt-2 line-clamp-2 font-serif text-base font-light italic leading-6 text-slate-950 transition-colors dark:text-white">
+          <h3 className="mt-2 line-clamp-2 font-serif text-base font-light italic leading-6 text-foreground transition-colors">
             {post.title}
           </h3>
           {post.category ? (
-            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+            <p className="mt-2 text-xs text-muted-foreground">
               {post.category.name}
             </p>
           ) : null}
         </div>
         {direction === "next" ? (
           <ChevronRight
-            className="mt-0.5 h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-slate-950 dark:group-hover:text-white"
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
             suppressHydrationWarning
           />
         ) : null}
@@ -787,14 +787,14 @@ function RelatedSection({
 }) {
   return (
     <section className="surface-card rounded-md p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-[500ms]">
-      <h2 className="mb-4 flex items-center gap-2 border-b border-neutral-100 pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:border-[#1a1a1f] dark:text-neutral-500">
+      <h2 className="mb-4 flex items-center gap-2 border-b border-border pb-2 font-sans text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
         <Tag className="h-3.5 w-3.5" suppressHydrationWarning />
         <span>Related</span>
       </h2>
       {posts.length > 0 ? (
         <RelatedContentList posts={posts} />
       ) : (
-        <p className="font-serif text-[11px] italic leading-relaxed text-neutral-400 dark:text-neutral-500">
+        <p className="font-serif text-[11px] italic leading-relaxed text-muted-foreground">
           暂无同类{contentTypeLabel}。
         </p>
       )}
@@ -811,9 +811,9 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
           <Link
             key={post.id}
             href={`/blog/${post.slug}`}
-            className="group block border-l-2 border-neutral-200 py-0.5 pl-3 transition-colors hover:border-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:hover:border-neutral-500"
+            className="group block border-l-2 border-border py-0.5 pl-3 transition-colors hover:border-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <div className="flex min-w-0 items-center gap-2 font-mono text-[9px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+            <div className="flex min-w-0 items-center gap-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
               <span>
                 {getContentTypeLabel(contentType)}
               </span>
@@ -823,16 +823,16 @@ function RelatedContentList({ posts }: { posts: RelatedPost[] }) {
                 <span className="min-w-0 truncate">{post.category.name}</span>
               ) : null}
             </div>
-            <h3 className="mt-1 line-clamp-2 font-serif text-sm font-light italic leading-5 text-slate-950 transition-colors group-hover:text-slate-700 dark:text-white dark:group-hover:text-neutral-200">
+            <h3 className="mt-1 line-clamp-2 font-serif text-sm font-light italic leading-5 text-foreground transition-opacity group-hover:opacity-75">
               {post.title}
             </h3>
             {post.excerpt ? (
-              <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-neutral-500 dark:text-neutral-400">
+              <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-muted-foreground">
                 {post.excerpt}
               </p>
             ) : null}
             {post.tags && post.tags.length > 0 ? (
-              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
+              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[9px] text-muted-foreground">
                 {post.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag.id}

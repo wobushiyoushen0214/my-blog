@@ -263,12 +263,12 @@ function CategorySection({
     <section className="space-y-3">
       <div className="flex flex-col gap-1 border-b border-border/60 pb-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-serif text-base font-light italic text-slate-950 dark:text-white">{title}</h2>
-          <p className="mt-1 text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+          <h2 className="font-serif text-base font-light italic text-foreground">{title}</h2>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
             {description}
           </p>
         </div>
-        <span className="text-sm text-neutral-500 dark:text-neutral-400">
+        <span className="text-sm text-muted-foreground">
           {categories.length} 个
         </span>
       </div>
@@ -277,26 +277,26 @@ function CategorySection({
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="group grid min-w-0 gap-3 border-b border-neutral-100 px-3 py-5 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-[#262626] dark:hover:bg-neutral-900/20 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
+            className="group grid min-w-0 gap-3 border-b border-neutral-100 px-3 py-5 transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 border-border dark:hover:bg-neutral-900/20 sm:grid-cols-[minmax(0,1fr)_120px_24px]"
           >
             <span className="min-w-0">
-              <span className="block truncate font-serif text-base font-light italic leading-6 text-slate-950 transition-colors group-hover:text-slate-700 dark:text-white">
+              <span className="block truncate font-serif text-base font-light italic leading-6 text-foreground transition-opacity group-hover:opacity-75">
                 {category.name}
               </span>
-              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
-                <span className="font-medium text-slate-950 dark:text-white">
+              <span className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">
                   {categoryTypeLabel(category.type)}
                 </span>
-                <span className="truncate text-sm text-neutral-500 dark:text-neutral-400">
+                <span className="truncate text-sm text-muted-foreground">
                   {category.slug || "未设置 slug"}
                 </span>
               </span>
             </span>
-            <span className="text-sm text-neutral-500 dark:text-neutral-400 sm:text-right">
+            <span className="text-sm text-muted-foreground sm:text-right">
               {category.postCount} 篇内容
             </span>
             <ArrowRight
-              className="h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-slate-950 dark:group-hover:text-white sm:justify-self-end"
+              className="h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-foreground sm:justify-self-end"
               suppressHydrationWarning
             />
           </Link>

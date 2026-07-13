@@ -83,7 +83,7 @@ const blogEntrances = [
   },
 ];
 
-const ruleCls = "border-t border-neutral-200 dark:border-[#1f1f26]";
+const ruleCls = "border-t border-border";
 
 export default function PersonalHomePage() {
   return (
@@ -109,7 +109,7 @@ function Hero() {
       <div className="absolute right-5 top-6 flex items-center gap-4 sm:right-8 sm:top-8">
         <Link
           href="/rss.xml"
-          className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 transition-colors hover:text-foreground dark:text-neutral-500"
+          className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:text-foreground"
         >
           RSS
         </Link>
@@ -118,36 +118,36 @@ function Hero() {
 
       <div className="grid items-end gap-10 md:grid-cols-[minmax(0,1fr)_20rem] md:gap-16">
         <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
             01 — Hello / 你好
           </p>
-          <h1 className="mt-6 font-serif text-7xl font-light italic leading-[0.88] tracking-tight text-slate-950 dark:text-white sm:text-8xl">
+          <h1 className="mt-6 font-serif text-7xl font-light italic leading-[0.88] tracking-tight text-foreground sm:text-8xl">
             leempty.
           </h1>
           <div className={cn(ruleCls, "mt-8 w-24")} />
-          <p className="mt-8 max-w-xl font-serif text-lg font-light italic leading-relaxed text-neutral-500 dark:text-neutral-400 sm:text-xl">
+          <p className="mt-8 max-w-xl font-serif text-lg font-light italic leading-relaxed text-muted-foreground sm:text-xl">
             I build web products, write down engineering notes, and keep a small
             public notebook about code, tools and daily observations.
           </p>
         </div>
 
         <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both delay-150 md:pb-2">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
             — Roles
           </p>
           <ul className="mt-5 space-y-2.5">
             {roles.map((role) => (
               <li
                 key={role}
-                className="flex items-baseline gap-3 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400"
+                className="flex items-baseline gap-3 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
               >
-                <span className="text-neutral-300 dark:text-neutral-700">/</span>
+                <span className="text-border">/</span>
                 <span>{role}</span>
               </li>
             ))}
           </ul>
           <div className={cn(ruleCls, "mt-6")} />
-          <p className="mt-5 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-500">
+          <p className="mt-5 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -173,7 +173,7 @@ function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-7 left-5 font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-600 sm:left-8">
+      <div className="absolute bottom-7 left-5 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground sm:left-8">
         <span className="hidden sm:inline">Scroll</span>
         <span className="ml-2 inline-block animate-bounce">↓</span>
       </div>
@@ -195,20 +195,20 @@ function SectionHeader({
   id?: string;
 }) {
   return (
-    <header className="grid gap-6 border-t border-neutral-200 pt-8 dark:border-[#1f1f26] md:grid-cols-[minmax(0,1fr)_22rem] md:gap-12">
+    <header className="grid gap-6 border-t border-border pt-8 md:grid-cols-[minmax(0,1fr)_22rem] md:gap-12">
       <div>
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
           {number} — {label}
         </p>
         <h2
           id={id}
-          className="mt-5 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-slate-950 dark:text-white sm:text-5xl"
+          className="mt-5 font-serif text-4xl font-light italic leading-[1.05] tracking-tight text-foreground sm:text-5xl"
         >
           {title}
         </h2>
       </div>
       {description ? (
-        <p className="max-w-sm text-sm leading-7 text-neutral-500 dark:text-neutral-400 md:pb-1">
+        <p className="max-w-sm text-sm leading-7 text-muted-foreground md:pb-1">
           {description}
         </p>
       ) : null}
@@ -229,30 +229,30 @@ function FocusSection() {
         id="focus-heading"
         description="三个方向并行：写代码、写文字、记日常。彼此互相喂养。"
       />
-      <div className="mt-12 grid gap-px overflow-hidden rounded-md border border-neutral-200 bg-neutral-200 dark:border-[#1f1f26] dark:bg-[#1f1f26] sm:grid-cols-3">
+      <div className="mt-12 grid gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-3">
         {focusAreas.map((item, index) => (
           <section
             key={item.id}
             id={item.id}
             className={cn(
-              "surface-card-hover group flex flex-col gap-5 bg-white p-7 transition-colors duration-200 hover:bg-neutral-50 dark:bg-[#0d0d0d] dark:hover:bg-[#16161a] animate-in fade-in slide-in-from-bottom-4 duration-600 fill-mode-both",
+              "surface-card-hover group flex flex-col gap-5 bg-card p-7 transition-colors duration-200 hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-4 duration-600 fill-mode-both",
               index === 1 && "delay-100",
               index === 2 && "delay-200"
             )}
           >
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
                 {item.number} / {item.eyebrow}
               </span>
               <item.icon
-                className="h-4 w-4 text-neutral-300 transition-colors group-hover:text-slate-950 dark:text-neutral-600 dark:group-hover:text-white"
+                className="h-4 w-4 text-muted-foreground/70 transition-colors group-hover:text-foreground"
                 suppressHydrationWarning
               />
             </div>
-            <h3 className="font-serif text-2xl font-light italic leading-snug text-slate-950 dark:text-white">
+            <h3 className="font-serif text-2xl font-light italic leading-snug text-foreground">
               {item.title}
             </h3>
-            <p className="text-sm leading-7 text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm leading-7 text-muted-foreground">
               {item.description}
             </p>
           </section>
@@ -275,7 +275,7 @@ function EntranceSection() {
         id="entrance-heading"
         description="根路由用于个人介绍；文章、见闻、归档、友链和 RSS 继续作为独立内容入口。"
       />
-      <ul className="mt-12 divide-y divide-neutral-200 border-t border-b border-neutral-200 dark:divide-[#1f1f26] dark:border-[#1f1f26]">
+      <ul className="mt-12 divide-y divide-border border-t border-b border-border">
         {blogEntrances.map((item, index) => (
           <li
             key={item.href}
@@ -290,24 +290,24 @@ function EntranceSection() {
               href={item.href}
               className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-6 py-7 transition-colors"
             >
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-300 dark:text-neutral-700">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-border">
                 {item.number}
               </span>
               <div className="flex min-w-0 items-center gap-4">
                 <item.icon
-                  className="h-5 w-5 shrink-0 text-neutral-300 transition-colors group-hover:text-slate-950 dark:text-neutral-600 dark:group-hover:text-white"
+                  className="h-5 w-5 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground"
                   suppressHydrationWarning
                 />
                 <div className="min-w-0">
-                  <h3 className="font-serif text-3xl font-light italic leading-tight text-slate-950 transition-colors group-hover:text-slate-700 dark:text-white dark:group-hover:text-neutral-200">
+                  <h3 className="font-serif text-3xl font-light italic leading-tight text-foreground transition-opacity group-hover:opacity-75">
                     {item.title}
                   </h3>
-                  <p className="mt-1 text-sm leading-6 text-neutral-500 dark:text-neutral-400">
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
                     {item.description}
                   </p>
                 </div>
               </div>
-              <ArrowUpRight className="h-5 w-5 shrink-0 text-neutral-300 transition-all duration-200 group-hover:translate-x-1 group-hover:text-slate-950 dark:text-neutral-600 dark:group-hover:text-white" />
+              <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground/70 transition-all duration-200 group-hover:translate-x-1 group-hover:text-foreground" />
             </Link>
           </li>
         ))}
@@ -321,11 +321,11 @@ function ClosingSection() {
     <section className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
       <SectionHeader number="04" label="Colophon" title="关于这个站点" />
       <div className="mt-12 grid gap-12 md:grid-cols-[minmax(0,1fr)_20rem] md:gap-16">
-        <p className="max-w-2xl font-serif text-2xl font-light italic leading-relaxed text-neutral-600 dark:text-neutral-300">
+        <p className="max-w-2xl font-serif text-2xl font-light italic leading-relaxed text-muted-foreground">
           这个个人页只负责第一印象和方向导航。更细的内容继续沉淀在博客系统里，避免把首页变成重复的信息列表。
         </p>
         <div>
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
             — Contact
           </p>
           <ul className="mt-5 space-y-3">
@@ -346,8 +346,8 @@ function ClosingSection() {
 
 function StandaloneFooter() {
   return (
-    <footer className="mx-auto w-full max-w-6xl border-t border-neutral-200 px-5 py-10 dark:border-[#1f1f26] sm:px-8">
-      <div className="flex flex-col gap-3 font-mono text-[10px] font-medium uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-600 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="mx-auto w-full max-w-6xl border-t border-border px-5 py-10 sm:px-8">
+      <div className="flex flex-col gap-3 font-mono text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <span>© {new Date().getFullYear()} leempty</span>
         <span>Set in Lora &amp; JetBrains Mono</span>
       </div>
@@ -368,10 +368,10 @@ function ContactLink({
     <li>
       <Link
         href={href}
-        className="group flex items-center gap-3 text-sm text-neutral-500 transition-colors hover:text-slate-950 dark:text-neutral-400 dark:hover:text-white"
+        className="group flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <Icon
-          className="h-4 w-4 text-neutral-300 transition-colors group-hover:text-slate-950 dark:text-neutral-600 dark:group-hover:text-white"
+          className="h-4 w-4 text-muted-foreground/70 transition-colors group-hover:text-foreground"
           suppressHydrationWarning
         />
         <span className="truncate">{label}</span>

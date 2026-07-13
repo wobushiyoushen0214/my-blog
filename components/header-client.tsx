@@ -22,14 +22,20 @@ function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "transition-colors duration-200",
+        "relative transition-colors duration-200",
         active
-          ? "text-slate-950 dark:text-white"
-          : "text-neutral-400 hover:text-slate-950 dark:text-neutral-500 dark:hover:text-white",
+          ? "text-foreground"
+          : "text-muted-foreground hover:text-foreground",
         className
       )}
     >
       {label}
+      {active ? (
+        <span
+          aria-hidden
+          className="absolute -bottom-1 left-0 h-px w-full bg-foreground"
+        />
+      ) : null}
     </Link>
   );
 }
@@ -43,20 +49,20 @@ export function HeaderClient() {
   const isSearch = pathname === "/search";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-neutral-100 bg-white/95 backdrop-blur-md transition-colors duration-300 dark:border-border dark:bg-background/80">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 sm:px-8 lg:px-10">
-        <div className="flex min-w-0 items-center space-x-6">
+    <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/85 backdrop-blur-md transition-colors duration-300">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
+        <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/"
-            className="shrink-0 font-serif text-2xl font-bold italic tracking-tighter text-slate-900 transition-colors dark:text-white"
+            className="shrink-0 font-serif text-2xl font-light italic tracking-tight text-foreground transition-opacity hover:opacity-70"
           >
             leempty
           </Link>
 
-          <div className="hidden h-4 w-px bg-neutral-200 dark:bg-neutral-800 md:block" />
+          <div className="hidden h-3.5 w-px bg-border md:block" />
 
           <nav
-            className="hidden items-center space-x-6 text-[10px] font-bold uppercase tracking-[0.25em] md:flex"
+            className="hidden items-center gap-6 font-mono text-[10px] font-bold uppercase tracking-[0.22em] md:flex"
             aria-label="主导航"
           >
             <NavLink href="/" label="首页" active={isHome} />
@@ -66,26 +72,17 @@ export function HeaderClient() {
           </nav>
         </div>
 
-        <div className="flex shrink-0 items-center space-x-6" id="header-controls">
+        <div className="flex shrink-0 items-center gap-4" id="header-controls">
           {isSearch ? null : <SearchBar />}
 
-          <div className="hidden items-center gap-2 text-[9px] font-medium uppercase tracking-[0.25em] text-neutral-400 dark:text-neutral-600 lg:flex">
-            <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
-            </span>
-            <span>SYSTEM ONLINE</span>
-          </div>
-
-          <div className="h-4 w-px bg-neutral-200 dark:bg-neutral-800" />
+          <div className="hidden h-3.5 w-px bg-border sm:block" />
 
           <nav
-            className="flex items-center space-x-3 text-[10px] font-bold uppercase tracking-wider md:hidden"
+            className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-wider md:hidden"
             aria-label="移动端导航"
           >
-            <NavLink href="/" label="首页" active={isHome} className="tracking-wider" />
-            <NavLink href="/posts" label="文章" active={isPosts} className="tracking-wider" />
-            <NavLink href="/moments" label="见闻" active={isMoments} className="tracking-wider" />
+            <NavLink href="/posts" label="文章" active={isPosts} />
+            <NavLink href="/moments" label="见闻" active={isMoments} />
           </nav>
 
           <ThemeToggle />

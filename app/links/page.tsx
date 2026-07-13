@@ -7,6 +7,9 @@ import {
   PublicEmptyState,
   PublicPageHeader,
   PublicPageShell,
+  publicPrimaryButtonClassName,
+  publicSecondaryButtonClassName,
+  publicSelectClassName,
 } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -279,23 +282,17 @@ function LinkFilterBar({
           id="links-status"
           name="status"
           defaultValue={status}
-          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
+          className={`${publicSelectClassName} sm:w-40`}
         >
           <option value="all">全部状态</option>
           <option value="active">已收录</option>
           <option value="new">新收录</option>
         </select>
-        <button
-          type="submit"
-          className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-3 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
+        <button type="submit" className={publicPrimaryButtonClassName}>
           应用
         </button>
         {hasFilters ? (
-          <Link
-            href="/links"
-            className="inline-flex h-10 items-center justify-center border border-border bg-background px-3 font-mono text-sm font-medium text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
+          <Link href="/links" className={publicSecondaryButtonClassName}>
             清除
           </Link>
         ) : null}
@@ -317,7 +314,9 @@ function ActiveLinkSummary({
   return (
     <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-primary">FILTER</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          Filter
+        </span>
         {query ? (
           <FilterPill
             label={`关键词：${query}`}
@@ -333,7 +332,7 @@ function ActiveLinkSummary({
       </div>
       <Link
         href="/links"
-        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -345,7 +344,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -360,11 +359,11 @@ function FriendLinkRow({ item }: { item: FriendLink }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="friend-link-row group grid min-w-0 gap-3 border-x border-b border-transparent border-b-border/60 px-3 py-5 transition-[background-color,border-color,box-shadow] hover:border-x-border hover:bg-accent/60 hover:shadow-[3px_3px_0_var(--terminal-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px] animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
+      className="friend-link-row group grid min-w-0 gap-3 border-b border-border/70 px-1 py-5 transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:grid-cols-[minmax(0,1fr)_120px_24px] animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both"
     >
       <span className="min-w-0">
         <span className="flex min-w-0 flex-wrap items-center gap-2">
-          <span className="truncate text-base font-medium leading-6 transition-colors group-hover:text-primary">
+          <span className="truncate font-serif text-lg font-light italic leading-6 text-foreground transition-opacity group-hover:opacity-75">
             {item.name}
           </span>
           <Badge

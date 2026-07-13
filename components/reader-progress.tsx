@@ -27,7 +27,7 @@ export function ReaderProgress() {
   return (
     <div className="fixed left-0 right-0 top-20 z-50 h-[2px] bg-neutral-100 dark:bg-neutral-900">
       <div
-        className="h-full bg-slate-950 transition-[width] duration-75 dark:bg-white"
+        className="h-full bg-foreground transition-[width] duration-75"
         style={{ width: `${progress}%` }}
       />
     </div>

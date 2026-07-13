@@ -427,8 +427,8 @@ function ListFilterBar({
           aria-current={sort === item.value ? "page" : undefined}
           className={
             sort === item.value
-              ? "font-mono text-[10px] font-bold uppercase tracking-wider text-slate-950 dark:text-white"
-              : "font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:text-slate-950 dark:text-neutral-400 dark:hover:text-white"
+              ? "font-mono text-[10px] font-bold uppercase tracking-wider text-foreground"
+              : "font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
           }
         >
           {item.label}

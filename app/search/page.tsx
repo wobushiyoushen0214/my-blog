@@ -337,7 +337,7 @@ export default async function SearchPage({
                 name="q"
                 defaultValue={rawQuery}
                 placeholder="搜索标题、正文、分类或标签..."
-                className="h-9 rounded-full border-neutral-200 bg-neutral-50/50 pl-10 text-xs transition-colors placeholder:text-neutral-400 hover:bg-white focus-visible:bg-white dark:border-neutral-800 dark:bg-neutral-900/40 dark:hover:bg-[#0a0a0a] dark:focus-visible:bg-[#0a0a0a]"
+                className="h-9 rounded-full border-neutral-200 bg-neutral-50/50 pl-10 text-xs transition-colors placeholder:text-neutral-400 hover:bg-white focus-visible:bg-white border-border dark:bg-neutral-900/40 dark:hover:bg-[#0a0a0a] dark:focus-visible:bg-[#0a0a0a]"
               />
             </div>
             <label htmlFor="search-type" className="sr-only">
@@ -347,7 +347,7 @@ export default async function SearchPage({
               id="search-type"
               name="type"
               defaultValue={contentType}
-              className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]"
+              className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 border-border dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]"
             >
               <option value="all">全部内容</option>
               <option value="post">只看文章</option>
@@ -360,7 +360,7 @@ export default async function SearchPage({
               id="search-sort"
               name="sort"
               defaultValue={sort}
-              className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]"
+              className="h-9 rounded-full border border-neutral-200 bg-neutral-50/50 px-3 font-mono text-[10px] uppercase tracking-wider text-neutral-600 outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring/50 border-border dark:bg-neutral-900/40 dark:text-neutral-300 dark:hover:bg-[#0a0a0a]"
             >
               <option value="newest">最新发布</option>
               <option value="updated">最近更新</option>
@@ -368,7 +368,7 @@ export default async function SearchPage({
             </select>
             <button
               type="submit"
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-neutral-950 bg-neutral-950 px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-white dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <Search className="h-4 w-4" suppressHydrationWarning />
               搜索
@@ -376,7 +376,7 @@ export default async function SearchPage({
             {query || hasFilters ? (
               <Link
                 href="/search"
-                className="inline-flex h-9 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+                className="inline-flex h-9 items-center justify-center rounded-full border border-border bg-transparent px-4 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
               >
                 清除
               </Link>
@@ -472,7 +472,7 @@ function ActiveSearchSummary({
   if (!hasFilters) return null;
 
   return (
-    <section className="mt-3 flex flex-col gap-2 border-b border-neutral-100 pb-3 dark:border-[#262626] sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-3 flex flex-col gap-2 border-b border-neutral-100 pb-3 border-border sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">FILTER</span>
         {query ? (
@@ -496,7 +496,7 @@ function ActiveSearchSummary({
       </div>
       <Link
         href="/search"
-        className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-border bg-transparent px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -508,7 +508,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-2.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-neutral-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-white"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 font-mono text-[10px] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>
@@ -531,7 +531,7 @@ function SearchResultSummary({
   sort: SortOption;
 }) {
   return (
-    <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+    <p className="mt-4 text-sm text-muted-foreground">
       {resultCount} 条结果 · {getSearchTypeLabel(activeType)} · {getSortLabel(sort)} ·{" "}
       {matchedCategoryCount} 个分类命中 · {matchedTagCount} 个标签命中
     </p>
@@ -546,12 +546,12 @@ function SearchMatchPanel({
   tags: Tag[];
 }) {
   return (
-    <section className="mt-5 border-y border-neutral-100 py-4 dark:border-[#262626]">
+    <section className="mt-5 border-y border-neutral-100 py-4 border-border">
       <div>
-        <h2 className="font-serif text-base font-light italic text-slate-950 dark:text-white">
+        <h2 className="font-serif text-base font-light italic text-foreground">
           主题命中
         </h2>
-        <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">
           匹配到 {categories.length} 个分类、{tags.length} 个标签。
         </p>
       </div>
@@ -560,7 +560,7 @@ function SearchMatchPanel({
           <Link
             key={category.id}
             href={`/category/${category.slug}`}
-            className="text-sm text-neutral-500 underline-offset-4 transition-colors hover:text-slate-950 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 dark:hover:text-white"
+            className="text-sm text-neutral-500 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 hover:text-foreground"
           >
             {category.name}
             <span className="ml-1 text-xs">分类</span>
@@ -570,7 +570,7 @@ function SearchMatchPanel({
           <Link
             key={tag.id}
             href={`/tag/${tag.slug}`}
-            className="text-sm text-neutral-500 underline-offset-4 transition-colors hover:text-slate-950 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 dark:hover:text-white"
+            className="text-sm text-neutral-500 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:text-neutral-400 hover:text-foreground"
           >
             #{tag.name}
             <span className="ml-1 text-xs">标签</span>

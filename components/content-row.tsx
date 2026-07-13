@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Calendar, Clock, Eye, Heart } from "lucide-react";
+import { ArrowUpRight, Calendar, Clock, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Category, Post, Tag } from "@/lib/types";
 
@@ -73,7 +73,7 @@ export function ContentRow({
   dateTime,
   typeLabel,
   meta,
-  rightMeta,
+  rightMeta: _rightMeta,
   showTags = true,
   className,
 }: ContentRowProps) {
@@ -84,12 +84,6 @@ export function ContentRow({
     displayType,
     ...(post.category?.name ? [post.category.name] : []),
   ];
-  const displayRightMeta =
-    rightMeta ||
-    [
-      `${formatViews(post.view_count)} 阅读`,
-      `约 ${estimateReadingMinutes(post)} 分钟`,
-    ];
   const visibleTags = showTags ? post.tags?.slice(0, 4) || [] : [];
   const readMinutes = estimateReadingMinutes(post);
   const coverImage = post.cover_image?.trim();
@@ -98,12 +92,12 @@ export function ContentRow({
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "content-row-link narrative-article-card group relative flex min-w-0 flex-col overflow-hidden rounded-md border border-neutral-200 bg-white p-5 transition-all duration-300 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 dark:border-[#262626] dark:bg-neutral-900/10 dark:hover:border-neutral-700 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
+        "content-row-link narrative-article-card surface-card-hover group relative flex min-w-0 flex-col overflow-hidden border border-border bg-card/70 p-5 transition-all duration-300 hover:border-foreground/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
         className
       )}
     >
       <span
-        className="narrative-media-slot relative mb-4 block aspect-[16/10] overflow-hidden rounded-sm bg-neutral-100 dark:bg-neutral-900"
+        className="narrative-media-slot relative mb-4 block aspect-[16/10] overflow-hidden bg-muted/50"
         style={
           coverImage
             ? { backgroundImage: `url("${coverImage.replace(/"/g, '\\"')}")` }
@@ -112,18 +106,18 @@ export function ContentRow({
         aria-label={coverImage ? post.title : undefined}
       >
         {coverImage ? (
-          <span className="absolute inset-0 bg-neutral-950/10 transition-colors duration-500 group-hover:bg-transparent" />
+          <span className="absolute inset-0 bg-foreground/5 transition-colors duration-500 group-hover:bg-transparent" />
         ) : (
           <span className="absolute inset-0 flex flex-col justify-between p-4">
-            <span className="font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-neutral-400">
+            <span className="font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
               leempty
             </span>
-            <span className="max-w-[8rem] font-serif text-xl italic leading-tight text-neutral-500 dark:text-neutral-400">
+            <span className="max-w-[8rem] font-serif text-xl italic leading-tight text-muted-foreground">
               {displayType}
             </span>
           </span>
         )}
-        <span className="absolute right-3 top-3 border border-neutral-200 bg-neutral-100 px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+        <span className="absolute right-3 top-3 border border-border bg-background/90 px-2 py-0.5 font-mono text-[8px] font-bold uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
           {displayType}
         </span>
       </span>
@@ -134,7 +128,7 @@ export function ContentRow({
             ? visibleTags.slice(0, 2).map((tag) => (
                 <span
                   key={tag.id}
-                  className="max-w-24 truncate font-mono text-[9px] text-neutral-400 dark:text-neutral-500"
+                  className="max-w-24 truncate font-mono text-[9px] text-muted-foreground"
                 >
                   #{tag.name.toLowerCase()}
                 </span>
@@ -142,7 +136,7 @@ export function ContentRow({
             : displayMeta.slice(0, 2).map((item, index) => (
                 <span
                   key={`${item}-${index}`}
-                  className="max-w-24 truncate font-mono text-[9px] text-neutral-400 dark:text-neutral-500"
+                  className="max-w-24 truncate font-mono text-[9px] text-muted-foreground"
                 >
                   #{item.toLowerCase()}
                 </span>
@@ -150,7 +144,7 @@ export function ContentRow({
         </span>
         <time
           dateTime={dateTime || post.created_at}
-          className="flex shrink-0 items-center gap-1 font-mono text-[9px] text-neutral-400 dark:text-neutral-500"
+          className="flex shrink-0 items-center gap-1 font-mono text-[9px] text-muted-foreground"
         >
           <Calendar className="h-3 w-3" suppressHydrationWarning />
           {displayDate}
@@ -158,21 +152,21 @@ export function ContentRow({
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="mb-2 block font-serif text-lg font-light italic leading-tight text-slate-950 transition-colors duration-300 group-hover:text-slate-800 dark:text-white dark:group-hover:text-neutral-200">
+        <span className="mb-2 block font-serif text-lg font-light italic leading-tight text-foreground transition-opacity duration-300 group-hover:opacity-75">
           {post.title}
         </span>
 
         {cleanExcerpt ? (
-          <span className="line-clamp-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+          <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
             {cleanExcerpt}
           </span>
         ) : null}
       </span>
 
-      <span className="my-3.5 block border-t border-neutral-100 dark:border-[#262626]" />
+      <span className="my-3.5 block border-t border-border/80" />
 
       <span className="flex items-center justify-between">
-        <span className="flex items-center gap-3 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
+        <span className="flex items-center gap-3 font-mono text-[9px] text-muted-foreground">
           <span className="flex items-center gap-1">
             <Clock className="h-3.5 w-3.5" suppressHydrationWarning />
             <span>{readMinutes}m read</span>
@@ -181,16 +175,9 @@ export function ContentRow({
             <Eye className="h-3.5 w-3.5" suppressHydrationWarning />
             <span>{formatViews(post.view_count)}</span>
           </span>
-          <span className="flex items-center gap-1">
-            <Heart
-              className="h-3.5 w-3.5 text-neutral-400 transition-colors group-hover:text-rose-500"
-              suppressHydrationWarning
-            />
-            <span>{displayRightMeta[0]?.replace(/\D/g, "") || 0}</span>
-          </span>
         </span>
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-neutral-200 text-neutral-400 transition-colors group-hover:bg-neutral-950 group-hover:text-white dark:border-neutral-800 dark:text-neutral-500 dark:group-hover:bg-white dark:group-hover:text-black">
-          <span className="h-3 w-3 bg-current [clip-path:polygon(20%_0,80%_0,80%_100%,50%_78%,20%_100%)]" />
+        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-foreground group-hover:bg-foreground group-hover:text-background">
+          <ArrowUpRight className="h-3.5 w-3.5" suppressHydrationWarning />
         </span>
       </span>
     </Link>

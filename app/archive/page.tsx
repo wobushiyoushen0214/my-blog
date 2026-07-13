@@ -9,6 +9,9 @@ import {
   PublicActionLink,
   PublicEmptyState,
   PublicPageShell,
+  publicPrimaryButtonClassName,
+  publicSecondaryButtonClassName,
+  publicSelectClassName,
 } from "@/components/public-page";
 import {
   ArrowRight,
@@ -362,29 +365,26 @@ function ArchiveHero({
     : ["等待第一篇记录", "按年份自动整理"];
 
   return (
-    <header className="pixel-frame mb-7 p-4 md:p-5">
+    <header className="mb-8 border-b border-border pb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
       <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
-          <p className="pixel-label text-primary">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
             Archive
           </p>
           <div className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-2">
-            <h1 className="min-w-0 text-2xl font-semibold leading-tight md:text-3xl">
+            <h1 className="min-w-0 font-serif text-3xl font-light italic leading-tight tracking-tight text-foreground md:text-4xl">
               {title}
             </h1>
-            <span className="border border-border bg-muted/60 px-2 py-1 font-mono text-xs text-muted-foreground">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
               {countLabel}
             </span>
           </div>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
             按发布时间回看文章和见闻。
           </p>
-          <dl className="mt-4 flex flex-wrap gap-2 font-mono text-xs text-muted-foreground">
+          <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
             {metaItems.map((item) => (
-              <div
-                key={item}
-                className="border border-border bg-muted/60 px-2 py-1"
-              >
+              <div key={item}>
                 <dt className="sr-only">归档信息</dt>
                 <dd>{item}</dd>
               </div>
@@ -424,23 +424,17 @@ function ArchiveFilterBar({
           id="archive-type"
           name="type"
           defaultValue={type}
-          className="h-10 border border-border bg-background px-3 font-mono text-sm text-foreground shadow-[2px_2px_0_var(--terminal-shadow)] outline-none transition-[background-color,color,border-color,box-shadow] hover:border-primary hover:bg-accent focus-visible:border-ring focus-visible:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-40"
+          className={`${publicSelectClassName} sm:w-40`}
         >
           <option value="all">全部内容</option>
           <option value="post">只看文章</option>
           <option value="moment">只看见闻</option>
         </select>
-        <button
-          type="submit"
-          className="inline-flex h-10 items-center justify-center border border-primary bg-primary px-4 font-mono text-sm font-medium text-primary-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:bg-primary/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
+        <button type="submit" className={publicPrimaryButtonClassName}>
           应用
         </button>
         {hasFilters ? (
-          <Link
-            href="/archive"
-            className="inline-flex h-10 items-center justify-center border border-border bg-background px-3 font-mono text-sm font-medium text-muted-foreground shadow-[2px_2px_0_var(--terminal-shadow)] transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
+          <Link href="/archive" className={publicSecondaryButtonClassName}>
             清除
           </Link>
         ) : null}
@@ -462,7 +456,9 @@ function ActiveArchiveSummary({
   return (
     <section className="mt-3 flex flex-col gap-2 border-b border-border/70 pb-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-primary">FILTER</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          Filter
+        </span>
         {query ? (
           <FilterPill
             label={`关键词：${query}`}
@@ -478,7 +474,7 @@ function ActiveArchiveSummary({
       </div>
       <Link
         href="/archive"
-        className="inline-flex h-8 shrink-0 items-center justify-center border border-border bg-background px-2 font-mono text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         清除全部
       </Link>
@@ -490,7 +486,7 @@ function FilterPill({ label, href }: { label: string; href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-7 max-w-full items-center gap-1.5 border border-border bg-muted/60 px-2 font-mono text-xs text-foreground transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex h-7 max-w-full items-center gap-1.5 font-mono text-[10px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       aria-label={`移除${label}`}
     >
       <span className="truncate">{label}</span>

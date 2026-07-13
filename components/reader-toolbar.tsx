@@ -42,7 +42,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
       <div className="mb-10 flex items-center justify-between gap-4">
         <Link
           href={backHref}
-          className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-400 transition-colors hover:text-slate-900 dark:text-neutral-500 dark:hover:text-white"
+          className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft
             className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1"
@@ -57,8 +57,8 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
             onClick={() => setShowSettings((value) => !value)}
             className={
               showSettings
-                ? "flex h-8 items-center gap-1.5 rounded-full border border-neutral-950 bg-neutral-950 px-4 text-[10px] font-bold uppercase tracking-wider text-white transition-colors dark:border-white dark:bg-white dark:text-black"
-                : "flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 px-4 text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900"
+                ? "flex h-8 items-center gap-1.5 rounded-full border border-foreground bg-foreground px-4 text-[10px] font-bold uppercase tracking-wider text-background transition-colors"
+                : "flex h-8 items-center gap-1.5 rounded-full border border-border px-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-muted/40"
             }
           >
             <Sliders className="h-3 w-3" suppressHydrationWarning />
@@ -69,8 +69,8 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
             onClick={() => setSaved((value) => !value)}
             className={
               saved
-                ? "flex h-8 items-center gap-1.5 rounded-full border border-neutral-950 bg-neutral-950 px-4 text-[10px] font-bold uppercase tracking-wider text-white transition-colors dark:border-white dark:bg-white dark:text-black"
-                : "flex h-8 items-center gap-1.5 rounded-full border border-neutral-200 px-4 text-[10px] font-bold uppercase tracking-wider text-neutral-500 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900"
+                ? "flex h-8 items-center gap-1.5 rounded-full border border-foreground bg-foreground px-4 text-[10px] font-bold uppercase tracking-wider text-background transition-colors"
+                : "flex h-8 items-center gap-1.5 rounded-full border border-border px-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-muted/40"
             }
           >
             {saved ? (
@@ -84,7 +84,7 @@ export function ReaderToolbar({ backHref }: ReaderToolbarProps) {
       </div>
 
       {showSettings ? (
-        <div className="mb-8 rounded-md border border-neutral-200 bg-white p-6 dark:border-[#262626] dark:bg-neutral-900/10">
+        <div className="mb-8 rounded-md border border-border bg-card/60 p-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <ReaderSegment
               label="Font Family"
@@ -124,10 +124,10 @@ function ReaderSegment<T extends string>({
 }) {
   return (
     <div className="space-y-2">
-      <span className="block text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+      <span className="block text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
         {label}
       </span>
-      <div className="flex rounded-sm border border-neutral-200 bg-neutral-50/30 p-1 dark:border-neutral-800 dark:bg-[#0a0a0a]">
+      <div className="flex rounded-sm border border-border bg-muted/30 p-1">
         {options.map((option) => (
           <button
             key={option}
@@ -135,8 +135,8 @@ function ReaderSegment<T extends string>({
             onClick={() => onChange(option)}
             className={
               value === option
-                ? "flex-1 rounded-sm bg-neutral-950 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm transition-all dark:bg-white dark:text-black"
-                : "flex-1 rounded-sm py-1.5 text-[10px] font-bold uppercase tracking-wider text-neutral-400 transition-all hover:text-slate-950 dark:text-neutral-500 dark:hover:text-white"
+                ? "flex-1 rounded-sm bg-foreground py-1.5 text-[10px] font-bold uppercase tracking-wider text-background shadow-sm transition-all"
+                : "flex-1 rounded-sm py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-all hover:text-foreground"
             }
           >
             {option}
